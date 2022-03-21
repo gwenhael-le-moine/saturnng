@@ -1,0 +1,148 @@
+@c $Id: clopt.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Command Line Options, Customizing saturn, Using the Emulator, Top
+@chapter Command Line Options
+@cindex Command Line Options
+
+The @code{saturn} program accepts the command line options listed below;
+notice that recent versions of the X Toolkit allow you to abbreviate
+option's names to their shortest, non-ambiguous prefix.
+
+@table @code
+@item -reset
+This option instructs @code{saturn} to reset the emulated CPU,
+by forcing a jump to address @code{0}, before starting execution.
+It should be useful when the emulated calculator ``gets stuck'', since
+it has the same effect as pressing the reset switch on the real
+calculator.
+
+@item -monitor
+This option instructs @code{saturn} to enter the monitor/debugger
+during startup; since this feature of @code{saturn} is pitiful,
+use of this option is strongly discouraged for now.
+
+@item -batchXfer
+When this option is present on the command line, all fast file
+transfers requested through the @code{sutil} library will be
+made in batch mode, that is, @code{saturn} will always load and save
+files in the current directory and will use the default file names
+given by the calculator, without any user interaction.
+
+@item -stateDir @var{dir_name}
+This option must be followed by the name of a directory, @var{dir_name};
+@code{saturn} will use this directory to load/save the calculator's
+state.  By specifying different state directories, you can emulate
+multiple calculator models and/or multiple instances of the same
+calculator, even simultaneously.  However, keep in mind that
+calculator's state files are @strong{not} platform-independent, so you
+cannot share them among different platforms.  The default value of this
+option is @code{.}, that is, by default @code{saturn} places its
+state files in the current directory.
+
+@item -cpu @var{cpu_state}
+This option must be followed by the name of a file, @var{cpu_state},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load/save the calculator's emulated CPU state.
+The default value of this option is @code{cpu}.
+
+@item -mod @var{mod_state}
+This option must be followed by the name of a file, @var{mod_state},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load/save the calculator's emulated peripheral modules
+state.
+The default value of this option is @code{mod}.
+
+@item -hdw @var{hdw_state}
+This option must be followed by the name of a file, @var{hdw_state},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load/save the calculator's emulated peripheral devices
+state.
+The default value of this option is @code{hdw}.
+
+@item -rom @var{rom_image}
+This option must be followed by the name of a file, @var{rom_image},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load (and save, when emulating an HP49) the calculator's
+ROM image.
+The default value of this option is @code{rom}.
+
+@item -ram @var{ram_image}
+This option must be followed by the name of a file, @var{ram_image},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load/save the calculator's main RAM image.
+The default value of this option is @code{ram}.
+
+@item -port1 @var{port1_image}
+This option must be followed by the name of a file, @var{port1_image},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load/save the calculator's port 1 image.
+The default value of this option is @code{port1}.
+This option is meaningful only when emulating an HP48GX.
+
+@item -port2 @var{port2_image}
+This option must be followed by the name of a file, @var{port2_image},
+relative to the emulator's state directory; @code{saturn} will use
+this file to load/save the calculator's port 2 image.
+The default value of this option is @code{port2}.
+This option is meaningful only when emulating an HP48GX.
+
+@item -face @var{face_name}
+This option must be followed by the name of a faceplate, @var{face_name},
+defined in the application resources of @code{saturn}.  The faceplate
+defines the ``look'' of the emulated calculator, such as its color
+and the size and position of its keys, the mapping between
+calculator's keys and IN/OUT codes seen by the CPU, and keyboard
+shortcuts.  Each user can define its own faceplates for @code{saturn},
+and use them without rebuilding the executable; for more information
+see @ref{Customizing saturn}.  The application resource file
+distributed with @code{saturn} defines the following faceplates:
+
+@table @code
+@item hp48
+Naive HP48GX faceplate
+@item hp49
+Naive HP49 faceplate
+@item hp40
+Naive HP40 faceplate
+@end table
+
+The default value of this option is @code{hp48}, corresponding
+to a naive HP48GX faceplate in the default application resource
+file distributed with @code{saturn}.
+
+@item -hw @var{hw_name}
+This option must be followed by the name of an hardware configuration,
+@var{hw_name}, chosen among those supported by @code{saturn}.
+The hardware configuration defines things like ROM/RAM sizes, bank
+switching mechanism, and so on.  Currently, @code{saturn} supports two
+hardware configurations:
+
+@table @code
+@item hp48
+HP48GX calculator
+@item hp49
+HP49 calculator, also suitable to emulate the HP40
+@end table
+
+Even if @code{saturn} has a modular structure, unfortunately
+general users cannot add custom hardware architectures to it
+without rebuilding the executable.  Moreover, since I am a lazy guy,
+the steps required to do this are not documented at all.
+@end table
+
+In addition, @code{saturn} understands all standard X Toolkit command-line
+options, and does its best to honor them.  Among such options, the
+most useful ones are:
+
+@table @code
+@item -display @var{display_name}
+This option must be followed by a valid X display name, and instructs
+the emulator to use that display to show its windows.  If this option
+is not present on the command line the default display, that is,
+the display named by the @code{DISPLAY} environment variable, is used.
+@item -xrm @var{resource_spec}
+This option must be followed by a valid X resource specifier, and
+allows you to add/override one or more @code{saturn}'s X resources
+``on-the-fly''.
+@end table
+

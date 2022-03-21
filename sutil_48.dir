@@ -1,0 +1,303 @@
+%%HP: T(3)A(R)F(.);
+
+@ sutil - A poor-man's utility library for Saturn
+@ HP48 Version
+@
+@ Original code by Bernard Parisse, Jean-Yves Avenard, and Bob Miller,
+@ with minimal adaptations by Ivan Cibrario Bertolotti.
+@
+@ $Id: sutil_48.dir,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+@
+@ $Revision: 4.1 $
+
+
+DIR
+    @ Build the sutil library from sources in this directory
+    MAKE
+    \<< ZAP BUILD
+
+@ Library creation file
+"!ASM
+!NO CODE
+LIB
+; Library definitions
+{   "
+
+    34 CHR +
+    "sutil - Saturn Utility Library" +
+    34 CHR +
+
+    "
+    888
+
+    MESSAGE {
+    }
+
+    VISIBLE {
+        kget
+        send
+        speed
+    }
+
+    HIDDEN {
+        conf
+    }
+
+    LCONFIG conf
+}
+@"  +
+    ASM
+
+    \>>
+
+    @ Detach old version of same library, if needed
+    ZAP
+    \<< 888 PATH HOME SWAP DETACH EVAL \>>
+
+    @ Build the library components
+    BUILD
+    \<< 2. TVARS
+        1.
+        \<< DUP \->STR
+            IF DUP ".s" POS NOT THEN
+                DROP2
+            ELSE
+                1. OVER SIZE 3. - SUB OBJ\-> SWAP RCL ASM SWAP STO
+            END
+        \>> DOSUBS
+    \>>
+
+    @ Generate list of visible library objects
+    G.VISIBLE
+    \<< 2. TVARS
+        1.
+        \<< \->STR
+            IF DUP ".s" POS NOT THEN
+                DROP
+            ELSE
+                1. OVER SIZE 3. - SUB OBJ\->
+            END
+        \>> DOSUBS
+    \>>
+
+    @ Source code of kget, MASD syntax
+    kget.s
+"
+!RPL
+!NO CODE
+::
+  CK1&Dispatch
+    id
+    ::
+      ' xMEM EvalNoCK % 2000 %-
+      DUP %0> NcaseSIZEERR
+      %15 %+ COERCE
+
+      CODE
+        GOSBVL =SAVPTR
+
+        ; Fetch bint from stack level 1 into A[A]
+        A=DAT1.A
+        D1=A
+        D1=D1+5
+        A=DAT1.A
+
+        ; Compute available memory in nibbles into C[A] (C=A*2)
+        C=A.A
+        C=C+C.A
+
+        ; Get boundaries of available memory: D0=lower, D1=upper
+        ; Adjust D1 to leave space for link (5 nibbles) and GC info (1 nibble)
+        GOSBVL =GETTEMP
+        D1=D1-6
+
+        ; Save lower bound into R3[A]
+        A=D0
+        R3=A.A
+
+        ; Save upper bound into R4[A]
+        A=D1
+        R4=A.A
+
+        ; Write a valid object in (bint 0)
+        LA(5) DOBINT
+        DAT0=A.A
+
+        D0=D0+5
+
+        A=0.A
+        DAT0=A.A
+
+        ; Get rpl pointers back
+        GOSBVL =GETPTR
+
+        ; Load body address of id in stack level 2 into D1
+        D1=D1+5
+        A=DAT1.A
+        D1=A
+        D1=D1+5
+
+        ; Load RBR address into D0
+        LC(5) =RBR
+        CD0EX
+
+        ; Load C[A] = upper bound, A[A] = lower bound
+        A=R4.A
+        C=A.A
+        A=R3.A
+
+        ; Write RBR, function code 1
+        A=0.S
+        A=A+1.S
+        DAT0=A.S
+
+        ; Skip object just loaded, end pointer in D0
+        A=R3.A
+        D0=A
+        GOSBVL =SKIPOB
+
+        ; Compute object length, including link and GC info, in C[A]
+        A=D0
+        C=A.A
+        A=R3.A
+        C=C-A.A
+        C=C+6.A
+
+        ; Write the link
+        DAT0=C.A
+        D0=D0+5
+
+        ; From supentry list
+        EQU TEMPTOP $806EE
+        EQU RSKTOP $806F3
+
+        ; Recover tempob - was =recover
+        CD0EX                   ; C=new temptop, 
+        D=C.A                   ; save for MOVEDOWN
+        D0=(5)TEMPTOP        
+        D1=(5)RSKTOP
+        A=DAT0.A                ; old temptop
+        DAT0=C.A                ; set new temptop
+        D0=A                    ; set D0 for MOVEDOWN
+        C=A-C.A                 ; rsktop adj factor
+        B=C.A                   ; B=rsktop adj, A=old temptop
+        C=DAT1.A                ; C=old rsktop
+        ACEX.A                  ; switch for convenience
+        C=A-C.A                 ; size to move
+        A=A-B.A                 ; new rsktop
+        DAT1=A.A                ; set new rsktop
+        CDEX.A
+        D1=C                    ; new temptop for MOVEDOWN
+        C=D.A                   ; size to move
+        GOSBVL  =MOVEDOWN       ; recover space
+        GOSBVL  =ADJMEM         ; adjust memory - was inlined GOVLNG
+
+        ; Restore rpl pointers
+        GOSBVL =GETPTR
+
+        ; Replace stack level 1 with new object and return to rpl
+        A=R3.A
+        DAT1=A.A
+        GOVLNG =Loop
+      ENDCODE
+
+      SWAP ' xSTO EvalNoCK
+    ;
+;
+@"
+
+    @ Source code of send, MASD syntax
+    send.s
+"!RPL
+!NO CODE
+::
+  CK1&Dispatch
+    id
+    ::
+      DUP ' xRCL EvalNoCK
+      CODE
+        GOSBVL =SAVPTR
+
+        ; Save start address into R4[A]
+        A=DAT1.A
+        R4=A.A
+
+        ; Skip object; result in D0
+        D0=A
+        GOSBVL =SKIPOB
+
+        ; Load body address of id in stack level 2 into D1
+        D1=D1+5
+        A=DAT1.A
+        D1=A
+        D1=D1+5
+
+        ; Load start address into A[A]
+        A=R4 A
+
+        ; Load RBR address into D0 and bring end address back in C[A]
+        LC(5) =RBR
+        CD0EX
+
+        ; Write RBR, function code 2
+        A=0.S
+        A=A+2.S
+        DAT0=A.S
+
+        ; Restore rpl pointers and return to rpl
+        GOSBVL =GETPTR
+        GOVLNG =Loop
+
+      ENDCODE
+      2DROP
+    ;
+;
+@"
+
+    @ Source code of speed, MASD syntax
+    speed.s
+"!RPL
+!NO CODE
+::
+  CK1&Dispatch
+    real
+    ::
+      COERCE
+      CODE
+        GOSBVL =SAVPTR
+
+	; Load bint in stack level 1 into A[A]
+        A=DAT1.A
+        D1=A
+        D1=D1+5
+        A=DAT1.A
+
+	; Load RBR address into D0
+        LC(5) =RBR
+        CD0EX
+
+	; Write RBR, function code 0; speed is in C[A]
+        C=A.A
+        A=0.S
+        DAT0=A.S
+
+	; Restore rpl pointers and return to rpl
+        GOSBVL =GETPTR
+        GOVLNG =Loop
+
+      ENDCODE
+      DROP
+    ;
+;
+@"
+
+    @ Source code of conf, MASD syntax
+    conf.s
+"!RPL
+!NO CODE
+::
+    # #888 TOSRRP
+;
+@"
+
+END

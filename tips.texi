@@ -1,0 +1,59 @@
+@c $Id: tips.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Tips Tricks and Known Bugs, GNU GENERAL PUBLIC LICENSE, The sutil Library, Top
+@chapter Tips, Tricks, and Known Bugs
+@cindex Tips
+@cindex Tricks
+@cindex Known Bugs
+
+As every other piece of software I know of, @code{saturn} is not
+bug-free.  This chapter lists known bugs and gives some tips and tricks
+that, I hope, will be useful to circumvent the most common problems.
+
+@itemize @bullet
+@item
+ROM views are not reset when @code{-reset} is given on the command line;
+as a result, @code{-reset} could be unable to recover from all possible
+calculator hangup conditions.  This bug affects the HP49 / HP40 models
+only.  As a workaround, remove the @code{cpu} and @code{mod} state files
+and restart the emulator, with @code{-reset}.
+
+@item
+The peripheral module initialization sequence can generate an interrupt
+request to the CPU emulator; this can give a segmentation fault if the
+CPU state loaded from file was corrupt. This situation cannot be
+recovered with @code{-reset}, because the CPU reset is executed much
+later in the emulator's init sequence.  This bug bites only if something
+terrible happened to your CPU state file, or if you attempted to load a
+state file saved on a different host architecture; in this case, remove
+the @code{cpu} state file and restart the emulator, with @code{-reset}.
+
+@item
+The serial port emulation no longer works when the machine state
+is saved and then restored while the serial port was @strong{on};
+the port is automagically turned @strong{off} when the state is restored,
+but nobody cares to notify the calculator's firmware about this.
+
+@item
+Some X keysyms, for example @code{Return} and @code{Tab}, don't work
+correctly in keyboard shortcuts, because Motif insists on grabbing
+them for its own use.
+
+@item
+The emulation of the LCD display is poor; in particular, neither
+gray-scale nor hardware-assisted scrolling are supported.
+As a result, most action games will not work on @code{saturn}.
+
+@item
+The emulation of the Flash ROM is limited to the bare minimum
+needed to run the HP49 firmware.
+
+@item
+The infrared port is not emulated at all.
+
+@item
+There is no support to revector the calculator's serial port
+to a real serial port on the host machine.  Only pseudo-terminals
+are supported.
+
+@end itemize

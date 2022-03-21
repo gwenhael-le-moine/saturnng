@@ -1,0 +1,509 @@
+head	2.2;
+access;
+symbols
+	V4_1_1_1:2.2;
+locks; strict;
+comment	@# @;
+
+
+2.2
+date	2001.01.25.14.12.47;	author cibrario;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+2.2
+log
+@*** empty log message ***
+@
+text
+@# Microsoft eMbedded Visual Tools Project File - Name="libChf" - Package Owner=<4>
+# Microsoft eMbedded Visual Tools Generated Build File, Format Version 6.02
+# ** DO NOT EDIT **
+
+# TARGTYPE "Win32 (WCE x86em) Static Library" 0x7f04
+# TARGTYPE "Win32 (WCE ARM) Static Library" 0x8504
+
+CFG=libChf - Win32 (WCE ARM) Debug
+!MESSAGE This is not a valid makefile. To build this project using NMAKE,
+!MESSAGE use the Export Makefile command and run
+!MESSAGE 
+!MESSAGE NMAKE /f "libChf.vcn".
+!MESSAGE 
+!MESSAGE You can specify a configuration when running NMAKE
+!MESSAGE by defining the macro CFG on the command line. For example:
+!MESSAGE 
+!MESSAGE NMAKE /f "libChf.vcn" CFG="libChf - Win32 (WCE ARM) Debug"
+!MESSAGE 
+!MESSAGE Possible choices for configuration are:
+!MESSAGE 
+!MESSAGE "libChf - Win32 (WCE ARM) Release" (based on "Win32 (WCE ARM) Static Library")
+!MESSAGE "libChf - Win32 (WCE ARM) Debug" (based on "Win32 (WCE ARM) Static Library")
+!MESSAGE "libChf - Win32 (WCE x86em) Release" (based on "Win32 (WCE x86em) Static Library")
+!MESSAGE "libChf - Win32 (WCE x86em) Debug" (based on "Win32 (WCE x86em) Static Library")
+!MESSAGE 
+
+# Begin Project
+# PROP AllowPerConfigDependencies 0
+# PROP Scc_ProjName ""
+# PROP Scc_LocalPath ""
+# PROP ATL_Project 2
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "ARMRel"
+# PROP BASE Intermediate_Dir "ARMRel"
+# PROP BASE CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "ARMRel"
+# PROP Intermediate_Dir "ARMRel"
+# PROP CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=clarm.exe
+# ADD BASE CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /Oxs /M$(CECrtMT) /c
+# ADD CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "NDEBUG" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /Oxs /M$(CECrtMT) /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "ARMDbg"
+# PROP BASE Intermediate_Dir "ARMDbg"
+# PROP BASE CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "ARMDbg"
+# PROP Intermediate_Dir "ARMDbg"
+# PROP CPU_ID "{D6518FFC-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=clarm.exe
+# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /M$(CECrtMTDebug) /c
+# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "$(CePlatform)" /D "ARM" /D "_ARM_" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_LIB" /YX /M$(CECrtMTDebug) /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "X86EMRel"
+# PROP BASE Intermediate_Dir "X86EMRel"
+# PROP BASE CPU_ID "{D6518FF4-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "X86EMRel"
+# PROP Intermediate_Dir "X86EMRel"
+# PROP CPU_ID "{D6518FF4-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=cl.exe
+# ADD BASE CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "i486" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Oxs /Gz /c
+# ADD CPP /nologo /W3 /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "i486" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "NDEBUG" /D "_LIB" /YX /Oxs /Gz /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "X86EMDbg"
+# PROP BASE Intermediate_Dir "X86EMDbg"
+# PROP BASE CPU_ID "{D6518FF4-710F-11D3-99F2-00105A0DF099}"
+# PROP BASE Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "X86EMDbg"
+# PROP Intermediate_Dir "X86EMDbg"
+# PROP CPU_ID "{D6518FF4-710F-11D3-99F2-00105A0DF099}"
+# PROP Platform_ID "{8A9A2F80-6887-11D3-842E-005004848CBA}"
+# PROP Target_Dir ""
+CPP=cl.exe
+# ADD BASE CPP /nologo /W3 /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "i486" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_LIB" /YX /Gz /c
+# ADD CPP /nologo /W3 /Zi /Od /D "DEBUG" /D _WIN32_WCE=$(CEVersion) /D "WIN32" /D "STRICT" /D "_WIN32_WCE_EMULATION" /D "INTERNATIONAL" /D "USA" /D "INTLMSG_CODEPAGE" /D "$(CePlatform)" /D "i486" /D UNDER_CE=$(CEVersion) /D "UNICODE" /D "_UNICODE" /D "_X86_" /D "x86" /D "_LIB" /FR /YX /Gz /c
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+
+!ENDIF 
+
+# Begin Target
+
+# Name "libChf - Win32 (WCE ARM) Release"
+# Name "libChf - Win32 (WCE ARM) Debug"
+# Name "libChf - Win32 (WCE x86em) Release"
+# Name "libChf - Win32 (WCE x86em) Debug"
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Begin Source File
+
+SOURCE=.\chf_abrt.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_A=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_A=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_A=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_A=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_gen.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_G=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_G=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_G=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_G=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_hdlr.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_H=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_H=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_H=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_H=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_init.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_I=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_I=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_I=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_I=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_msgc.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_M=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_M=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_M=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_M=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_sig.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_S=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_S=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_S=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_S=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_st.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_ST=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_ST=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_ST=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_ST=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_top.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_T=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_T=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_T=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_T=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\chf_win32.c
+
+!IF  "$(CFG)" == "libChf - Win32 (WCE ARM) Release"
+
+DEP_CPP_CHF_W=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE ARM) Debug"
+
+DEP_CPP_CHF_W=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Release"
+
+DEP_CPP_CHF_W=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ELSEIF  "$(CFG)" == "libChf - Win32 (WCE x86em) Debug"
+
+DEP_CPP_CHF_W=\
+	".\Chf.h"\
+	".\ChfPriv.h"\
+	
+
+!ENDIF 
+
+# End Source File
+# End Group
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\Chf.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\ChfPriv.h
+# End Source File
+# End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter "rc"
+# Begin Source File
+
+SOURCE=.\chf.rc
+# End Source File
+# End Group
+# End Target
+# End Project
+@

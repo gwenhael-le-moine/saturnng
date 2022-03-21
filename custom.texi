@@ -1,0 +1,393 @@
+@c $Id: custom.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Customizing saturn, The sutil Library, Command Line Options, Top
+@chapter Customizing saturn
+@cindex Customizing saturn
+
+The @code{saturn} program uses OSF/Motif widgets to make up its
+user interface, and supports the standard X application
+resource mechanism for customization; in addition, it is fully
+internationalized and uses a message catalog to retrieve almost
+all error and informational messages the user will ever see.
+
+Therefore, you can modify the ``look and feel'' of @code{saturn}
+to fit your preferences to a great extent, without touching
+the source code and/or rebuilding the executable.
+
+This chapter deals with advanced customization, that is, X resources,
+message catalog, and so on, and does not discuss the command-line
+options of @code{saturn}; see @ref{Command Line Options}, for more
+information about command-line options.
+
+@menu
+* Widget Tree::                 
+* Custom Resources::            
+* Application Actions::         
+* Message Catalog::             
+* Environment Variables::       
+* Customizing the Translation Table::  
+* Customizing the Font Size::   
+* Configuration Options::       
+@end menu
+
+
+@node Widget Tree, Custom Resources, Customizing saturn, Customizing saturn
+@section Widget Tree
+@cindex Widget Tree
+
+This is @code{saturn}'s widget tree; all widgets are standard Motif
+widgets.  See the Motif documentation for more information about
+standard widget's resources.
+
+@table @code
+@item main (XmMainWindow)
+This is the emulator's main window, and is a child of the main
+application shell.
+@item *fsb (XmFileSelectionBox)
+This is the file selection box that pops up when a fast load/save
+operation is started.  Notice the star; it is there because this
+widget is wrapped in a dialog.
+@item *error (XmMessageBox)
+This is the message box that pops up when @code{saturn} wants to tell
+something to the user, usually when an error occurs. Notice the star; it
+is there because this widget is wrapped in a dialog.
+@item main.@var{faceplate} (XmRowColumn)
+This container contains all widgets of the calculator's faceplate.
+The name of this widget, @var{faceplate}, depends on the value
+of the custom resource @code{.face}; this way you can define
+a different set of resources for each faceplate.
+@item main.@var{faceplate}.kbd (XmForm)
+This form contains all calculator's keys.
+@item main.@var{faceplate}.kbd.@var{n} (XmForm)
+Another @code{XmForm}, containing all widgets pertaining to calculator's
+key number @var{n}.
+@item main.@var{faceplate}.kbd.@var{n}.ul (XmLabel)
+@itemx main.@var{faceplate}.kbd.@var{n}.ur (XmLabel)
+@itemx main.@var{faceplate}.kbd.@var{n}.ll (XmLabel)
+@itemx main.@var{faceplate}.kbd.@var{n}.lr (XmLabel)
+These widgets contain, respectively, the upper-left, upper-right,
+lower-left, and lower-right label of calculator's key number @var{n}.
+@item main.@var{faceplate}.kbd.@var{n}.btn (XmToggleButton)
+This widget represents calculator's key number @var{n}.
+@item main.@var{faceplate}.frame (XmFrame)
+This widget encloses the LCD display area.
+@item main.@var{faceplate}.frame.lcd (XmDrawingArea)
+This widget is the LCD display area of the emulated calculator.
+@item main.@var{faceplate}.msg (XmTextField)
+This text field is used by the emulator to display its most important
+messages; for example, it is used to display the name of the
+emulator's pseudo-terminal.
+@end table
+
+In the list above:
+
+@table @var
+@item faceplate
+is the name of the active calculator's faceplate selected by the
+@code{.face} custom resource.
+@item n
+is the ASCII decimal representation of a non-negative integer number,
+that identifies a calculator's key uniquely; its value goes from
+@code{0} to the value of the @var{faceplate}.@code{nKeys} resource minus
+one, inclusive.
+@end table
+
+@node Custom Resources, Application Actions, Widget Tree, Customizing saturn
+@section Custom Resources
+@cindex Custom Resources
+
+In addition to standard Motif resources, @code{saturn} has the
+following custom resources:
+
+@table @code
+@item main.@var{faceplate}.nKeys
+This resource must translate into an integer, representing the number of
+keys that faceplate @var{faceplate} has.
+@item main.@var{faceplate}.kbd.@var{n}.btn.inOut
+This resource associates calculator's key number @var{n} with a
+combination of IN/OUT codes seen by the emulated CPU.  It is a
+string, and can be either:
+
+@table @code
+@item @var{o}/@var{i}
+When pressed, the key activates the bit(s) of the IN register specified
+by the @var{i} bit @strong{mask}, when bit @strong{number} @var{o} is
+set in the OUT register.  Both @var{i} and @var{o} are hexadecimal
+constants.  For example, on the HP49 the calculator's function key
+@code{F1} sets the IN bit mask @code{01} when OUT bit number @code{5} is set;
+accordingly, the IN/OUT mapping of this key is @code{5/01}.
+@item *
+This special value uniquely identifies the ON/Cancel key.
+@end table
+@item *compoundString
+This custom resource can be set for @code{XmLabel} and
+@code{XmToggleButton} widgets only and, when set, overrides the standard
+resource @code{labelString}.  Its value is a string with the
+following syntax:
+
+@example
+   @var{compoundString}: ([# @var{fontlist_tag}] @var{string})*
+@end example
+
+Here, @var{string} is a sequence of ordinary characters,
+excluding @code{#}, and @var{fontlist_tag} can be:
+@table @code
+@item #
+Put a single @code{#} character in current compound string segment.
+@item @var{space}
+Create a new compound string segment using @code{XmFONTLIST_DEFAULT_TAG}
+as tag.
+@item @var{tag}
+Create a new segment using @var{tag} as tag; @var{tag} can be
+any single character, except @code{#} and @var{space}.
+@end table
+
+Each segment is limited to @code{MAX_CS_SEGMENT_LEN} characters; longer
+segments are silently truncated.
+
+The resource is scanned from left to right according to the syntax
+described above.  The result is a compound string (@code{XmString})
+that becomes the @code{labelString} resource of the target widget.
+The original value of the @code{labelString} resource is discarded
+when @code{compoundString} is defined.  This resource allows you
+to have more than one font in button labels.
+@end table
+
+In the list above:
+
+@table @var
+@item faceplate
+is the name of the calculator's faceplate selected by the
+@code{.face} custom resource.
+@item n
+is the ASCII decimal representation of a non-negative integer number
+that uniquely identifies a calculator's key; its value goes from
+@code{0} to the value of the @var{faceplate}.@code{nKeys} resource minus
+one, inclusive.
+@end table
+
+Notice also that all command-line options are mapped into custom
+top-level application resources, too; in this case, the name of the
+resource is the same as the name of the option.  For example,
+the @code{-face} command-line option is mapped to the custom
+resource @code{.face}.
+
+@node Application Actions, Message Catalog, Custom Resources, Customizing saturn
+@section Application Actions
+@cindex Application Actions
+
+The emulator installs the application actions listed below:
+
+@table @code
+@item kbdKeyPress
+@itemx kbdKeyRelease
+Both actions accept one string as argument; the string represents an
+IN/OUT mapping with the same syntax already described for the
+@code{inOut} custom resource.  These functions command the emulation of
+a key press and key release event, respectively.
+@end table
+
+These actions are useful to define keyboard shortcuts.  For example, on
+the HP49 the calculator's function key @code{F1} sets the IN bit mask
+@code{01} when OUT bit number @code{5} is set; accordingly, the IN/OUT
+mapping of this key is @code{5/01}.
+
+If you want to define the X keysym @code{F1} to act as a shortcut for
+this calculator's key, simply add the following two lines to the
+@code{translations} resource of your faceplate:
+
+@example
+...
+<KeyDown>F1: kbdKeyPress(5/01) \n\
+<KeyUp>F1: kbdKeyRelease(5/01) \n\
+...
+@end example
+
+
+@node Message Catalog, Environment Variables, Application Actions, Customizing saturn
+@section Message Catalog
+@cindex Message Catalog
+
+The @code{saturn} emulator opens the message catalog @code{saturn.cat}
+during startup, and retrieves all its messages from there.  Internally,
+@code{saturn} uses a pair of integers to uniquely identify a message.
+
+By default, that is, when the @code{NLSPATH} environment variable is not
+set, @code{saturn} first attempts to locate the message catalog in the
+system's default location of such files; if this first attempt fails,
+@code{saturn} prints a warning and generates an alternate catalog name
+using the directory name found in @code{argv[0]}; if even this second
+attempt fails, @code{saturn} tries again using the @code{C} locale
+instead of the current one.  If all attempts fail, @code{saturn}
+terminated.
+
+The @code{.msf} files found in the source distribution of @code{saturn}
+list all message codes and translate them into human-readable english
+messages; they can be used as a starting point to prepare message
+catalogs for additional languages.  See the documentation of
+@code{gencat}, for more information about how to process them to
+generate a @code{.cat} file.
+
+
+@node Environment Variables, Customizing the Translation Table, Message Catalog, Customizing saturn
+@section Environment Variables
+@cindex Environment Variables
+
+The @code{saturn} emulator looks at the following environment variables:
+
+@table @code
+@item NLSPATH
+@itemx LC_ALL
+@itemx LC_MESSAGES
+@itemx LANG
+These environment variables are used to locate the @code{saturn}'s
+message catalog, and to specialize the load paths of application
+resources; see the documentation of @code{catopen()} and
+@code{XtResolvePathname()}, for more information.
+
+@item DISPLAY
+This variable contains the default X display name used by @code{saturn}.
+
+@item XENVIRONMENT
+This variable is used to locate the per-host user environment
+resources; see the documentation of @code{XtDisplayInitialize()}, for
+more information.
+
+@item XUSERFILESEARCHPATH
+@itemx XAPPLRESDIR
+These variables control the loading process of the user's application
+resource file; see the documentation of @code{XtDisplayInitialize()}, for
+more information.
+
+@item XFILESEARCHPATH
+This variable controls the loading process of the application class
+resource file; see the documentation of @code{XtDisplayInitialize()}, for
+more information.
+@end table
+
+
+@node Customizing the Translation Table, Customizing the Font Size, Environment Variables, Customizing saturn
+@section Customizing the Translation Table
+@cindex Customizing the Translation Table
+
+As said before, all widgets in a given faceplate have their own
+translation table; this table is useful to define keyboard
+shortcuts.  The default application resource file distributed
+with the emulator, @file{Saturn.ad}, already contains a
+predefined set of shortcuts; to customize it, proceed
+as follows:
+
+@itemize @bullet
+@item
+Locate the translation table of the faceplate you are interested in.
+For example, the predefined HP49's faceplate name is @code{hp49}; the X
+resource specifier of its base translation table is:
+
+@example
+*hp49*baseTranslations
+@end example
+
+@item
+This resource has two lines of text for each key on the real keyboard
+you want to map on the emulated keyboard; for example, these lines map
+the @code{0} keypad key to the @code{0} key of the calculator:
+
+@example
+<KeyDown>KP_0: kbdKeyPress(3/01) \n\
+<KeyUp>KP_0: kbdKeyRelease(3/01) \n\
+@end example
+
+@item
+Here, @code{KP_0} is the name of the X keysym (representing a keyboard
+key or a combination of keys) that is currently mapped to the @code{0}
+key (@code{3/01} are the OUT/IN bit masks of the @code{0} key on the
+calculator, reflecting its wiring on the calculator's keyboard).  To
+change the mapping to another key, simply replace the old X keysym name
+with the new one.  For example, if you want to remap the @code{F8} key
+to the @code{0} key, update the lines above as follows:
+
+@example
+<KeyDown>F8: kbdKeyPress(3/01) \n\
+<KeyUp>F8: kbdKeyRelease(3/01) \n\
+@end example
+
+If you want to keep the existing mapping, too, duplicate the existing
+lines and change the X keysym on the duplicate only.
+
+@item
+To get the keysym name of a given key you can use, for example, the
+@code{xev} utility: when you start it, it opens a small window on your
+screen and starts dumping on stdout all X events that window receives.
+Give the focus to the @code{xev} window, press the key you are
+interested in and look at its output; you should see something like:
+
+@example
+KeyPress event, serial 22, synthetic NO, window 0x4800001,
+    root 0x26, subw 0x0, time 18446744071995733347, (77,-9),
+        root:(123,37),
+    state 0x1, keycode 34 (keysym 0x7b, braceleft), same_screen YES,
+    XLookupString gives 1 characters:  "@{"
+@end example
+
+Here, I pressed the @code{@{} key, and @code{xev} is telling me that its
+keysym name is @code{braceleft}.  Use that name if you want to put the
+@code{@{} key in translations.
+
+@item
+Be careful with continuation characters: each line of the translation
+table resource except the last one must end with @code{\n\}
+
+@item
+Keep in mind that this is a simple example; actually, since
+@code{saturn} leverages the standard X Toolkit translation table parser
+and translator, it accepts the @strong{full} translation table syntax
+described in MIT documents, that is much more complex and powerful than
+this.
+
+@end itemize
+
+
+@node Customizing the Font Size, Configuration Options, Customizing the Translation Table, Customizing saturn
+@section Customizing the Font Size
+@cindex Customizing the Font Size
+
+The simplest way to change the size of the @code{saturn}'s main window
+is to change the size of the fonts it uses.  To do this, locate the
+@code{fontList} resources of the faceplate you want to modify in your
+application resource file.  For example, the default application
+resource file sets the following resources for the @code{hp49}
+faceplate:
+
+@example
+*hp49.kbd*fontList: *helvetica-*-r-*-*-12-*,*symbol-*-*-*-*-12-*=S
+*hp49.kbd*btn.fontList: *helvetica-*-r-*-*-14-*,*symbol-*-*-*-*-14-*=S
+@end example
+
+Fonts are selected with their standard XLFD font designators;
+in the above lines, @code{12} and @code{14} are the @code{pxlsz} specifiers.
+Make them smaller to reduce the font size; make them bigger to
+enlarge the font size.  For example:
+
+@example
+*hp49.kbd*fontList: *helvetica-*-r-*-*-8-*,*symbol-*-*-*-*-8-*=S
+*hp49.kbd*btn.fontList: *helvetica-*-r-*-*-10-*,*symbol-*-*-*-*-10-*=S
+@end example
+
+reduces the window size to about 400x700 pixels on my system.
+
+If this is not enough, you can define a brand new keyboard layout;
+again, no need to touch the source code, only resources must be
+updated. Hint: for each key, its @code{topPosition},
+@code{bottomPosition}, @code{leftPosition} and @code{rightPosition}
+resources determine where the key is located on the keyboard faceplate.
+
+
+@node Configuration Options,  , Customizing the Font Size, Customizing saturn
+@section Configuration Options
+@cindex Configuration Options
+
+In addition to the run-time customization methods mentioned above,
+@code{saturn} has build-time configuration options, too.  See the
+documentation embedded in the source file @code{config.h}, for more
+information.  Of course, you can change these options only if you build
+@code{saturn} yourself from the source distribution.

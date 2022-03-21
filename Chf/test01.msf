@@ -1,0 +1,18 @@
+$set 1
+255 Chf Test
+
+$set 255
+1 Set_255,Message_1
+3 Set_255,Arg_%d,Message_3
+4 Set_255,Arg_%s,Message_4
+5 Set_255,Arg_%d-%d,Message_5
+6 Set_255,Message_6 (thread %d, sub-condition)
+7 Set_255,Message_7 (thread %d, main)
+8 Set_255,Message_8 (thread %d, main)
+9 Set_255,Message_9
+
+10 Invalid descriptor link detected
+11 Bad hdlr stack push count %d; should be %d
+12 Bad cond stack push count %d; should be %d
+
+20 Structured exc handling test cond

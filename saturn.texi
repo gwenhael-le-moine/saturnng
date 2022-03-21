@@ -1,0 +1,150 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename saturn.info
+@settitle Saturn User Manual
+@iftex
+@afourpaper
+@end iftex
+@c @setchapternewpage odd @c (deprecated in Texinfo documentation)
+@c %**end of header
+
+@c $Id: saturn.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@c ---------------------------------------------------------------------------
+
+
+@ifinfo
+This file documents saturn, a poor-man's emulator of the HP48GX,
+HP49, and HP40 calculators for Unix systems.
+     
+Copyright 1998-2000 Ivan Cibrario Bertolotti
+
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+     
+@ignore
+Permission is granted to process this file through TeX
+and print the results, provided the printed document
+carries a copying permission notice identical to this
+one except for the removal of this paragraph (this
+paragraph not being relevant to the printed manual).
+     
+@end ignore
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the section
+entitled ``GNU General Public License''
+is included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+     
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by original copyright holder.
+@end ifinfo
+     
+
+@c ---------------------------------------------------------------------------
+
+
+@titlepage
+@title @code{saturn} User Manual
+@subtitle $Revision: 4.1 $
+@subtitle (for @code{saturn} release @code{4.1})
+@author Ivan Cibrario Bertolotti
+
+@c Copyright page     
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1998-2000 Ivan Cibrario Bertolotti
+     
+Permission is granted to make and distribute verbatim
+copies of this manual provided the copyright notice and
+this permission notice are preserved on all copies.
+     
+Permission is granted to copy and distribute modified
+versions of this manual under the conditions for
+verbatim copying, provided also that the section
+entitled ``GNU General Public License''
+is included exactly as in the original, and provided
+that the entire resulting derived work is distributed
+under the terms of a permission notice identical to this
+one.
+     
+Permission is granted to copy and distribute
+translations of this manual into another language,
+under the above conditions for modified versions,
+except that this permission notice may be stated in a
+translation approved by the original copyright holder.
+@end titlepage
+
+
+@c ---------------------------------------------------------------------------
+
+     
+@node Top, Introduction and License Conditions, (dir), (dir)
+     
+@ifinfo
+This document describes saturn, a poor-man's emulator of the HP48GX,
+HP49, and HP40 calculators for Unix-like systems, and applies to
+revision 4.1 of the software.
+@end ifinfo
+
+@menu
+* Introduction and License Conditions::  
+* Preparing saturn for Use::    
+* Using the Emulator::          
+* Command Line Options::        
+* Customizing saturn::          
+* The sutil Library::           
+* Tips Tricks and Known Bugs::  
+* GNU GENERAL PUBLIC LICENSE::  
+* Concept Index::               
+@end menu
+
+@c ---------------------------------------------------------------------------
+
+@include introd.texi
+
+@c ---------------------------------------------------------------------------
+
+@include prep.texi
+
+@c ---------------------------------------------------------------------------
+
+@include using.texi
+
+@c ---------------------------------------------------------------------------
+
+@include clopt.texi
+
+@c ---------------------------------------------------------------------------
+
+@include custom.texi
+
+@c ---------------------------------------------------------------------------
+
+@include sutil.texi
+
+@c ---------------------------------------------------------------------------
+
+@include tips.texi
+
+@c ---------------------------------------------------------------------------
+
+@c GNU General Public License
+@include gpl.texi
+
+@c ---------------------------------------------------------------------------
+
+@include cindex.texi
+
+@c ---------------------------------------------------------------------------
+
+@c The End
+@contents
+@bye

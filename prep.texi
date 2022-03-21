@@ -1,0 +1,132 @@
+@c $Id: prep.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Preparing saturn for Use, Using the Emulator, Introduction and License Conditions, Top
+@chapter Preparing saturn for Use
+@cindex Preparing saturn for Use
+
+If you are in a real hurry and you only want to emulate an HP49 as soon
+as possible, you can run the @code{./quick_start} shell script;
+hopefully, it will guide you through a simplified setup process.
+Otherwise, read the detailed explanation below.
+
+To run @code{saturn} successfully, you need a suitable ROM image for
+each calculator model you want to emulate.  ROM images are copyrighted
+by Hewlett-Packard and cannot be freely redistributed, therefore they
+are not distributed with the emulator itself.
+
+During startup, the @code{saturn} software reads a ``packed'' ROM image
+file from mass storage, according to the @code{-stateDir} and
+@code{-rom} command-line options, if any.  In order to be able to use it
+directly, the ROM image file must hold two nibbles per byte, and the
+nibble at lower address must be stored in the least significative four
+bits of each byte.
+
+To obtain a ROM image, you can either dump your calculator's ROM using
+any ROM-dump utility you have available or, for the HP49 only, download
+it from the Hewlett-Packard web site.  In any case, be sure you don't
+infringe any copyright in the process and that the ROM image file you
+have actually has the format described above.
+
+To make this task easier, the @code{saturn} software provides a small
+utility, the @code{pack} program; it converts a popular emu48/49 ROM
+image into a format suitable for use with @code{saturn}.  Invoke it as
+follows:
+
+@example
+$ ./pack @var{emu48_ROM_image} @var{saturn_ROM_image}
+@end example
+
+In this example, @var{emu48_ROM_image} is the name of the emu48/49 ROM
+image file, and @var{saturn_ROM_image} is the name of the destination
+file that @code{pack} creates and that will contain the @code{saturn}
+ROM image.  After running @code{pack} successfully once, you can of
+course delete the original ROM image.
+
+When you have all ROM images you need, place each of them into its own,
+empty directory; create one directory for each calculator model you want
+to emulate. @code{saturn} will use these directories to hold the saved
+state of each calculator model, according to the @code{-stateDir}
+command-line option.
+
+You can emulate multiple instances of the same calculator model,
+possibly using different ROM revisions for them, too: simply create one
+state directory for each instance, and place the appropriate ROM image
+into them.
+
+For example, suppose you want to emulate an HP49 and you have an
+emu48/49 ROM image available in @var{rom_1.19_4.e48}; to prepare a state
+directory named @var{~/saturn_state} for use, enter the following commands:
+
+@example
+$ mkdir @var{~/saturn_state}
+$ pack @var{rom_1.19_4.e48} @var{~/saturn_state}/rom
+@end example
+
+This example assumes that the @code{pack} executable
+is in your search path, @var{rom_1.19_4.e48} resides in your
+current working directory, and your shell expands the
+@code{~} character to the invoker's home directory.
+
+To run @code{saturn}, instructing it to emulate an HP49 and
+to use the state directory you just created, enter one of
+the following commands:
+
+@example
+$ ./run_saturn -stateDir @var{~/saturn_state} -face hp49 -hw hp49
+@end example
+
+or
+
+@example
+$ saturn -stateDir @var{~/saturn_state} -face hp49 -hw hp49
+@end example
+
+You should use the former command from your build directory if you
+didn't install the @code{saturn} software systemwide, or if you have
+a user-level, binary-only package; instead, use the latter one if you
+built @code{saturn} yourself and then installed it, or
+if you installed a systemwide, binary-only package.
+
+Also, the latter command assumes that the target installation
+directory of @code{saturn} (usually @code{/usr/bin/X11}) is in your
+search path.
+
+To emulate an HP40, follow the same steps outlined above, using
+an HP40 ROM image of course, and then run @code{saturn} with either:
+
+@example
+$ ./run_saturn -stateDir @var{~/saturn_state} -face hp40 -hw hp49
+@end example
+
+or
+
+@example
+$ saturn -stateDir @var{~/saturn_state} -face hp40 -hw hp49
+@end example
+
+To emulate an HP48GX, you have an additional task: create the
+initial, empty images of port1 and port2 storage areas. To
+do this, enter the following commands:
+
+@example
+$ dd if=/dev/zero of=@var{~/saturn_state}/port1 bs=1k count=128
+$ dd if=/dev/zero of=@var{~/saturn_state}/port2 bs=1k count=1024
+@end example
+
+This example assumes that you have not modified the
+@code{N_PORT_2_BANK} configuration option.
+
+Then, you can invoke @code{saturn} with either:
+
+@example
+$ ./run_saturn -stateDir @var{~/saturn_state}
+@end example
+
+or
+
+@example
+$ saturn -stateDir @var{~/saturn_state}
+@end example
+
+In all examples above, you may want to specify additional command-line options
+for @code{saturn}; for additional information, see @ref{Command Line Options}.

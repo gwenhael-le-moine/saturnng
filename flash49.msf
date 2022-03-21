@@ -1,0 +1,38 @@
+$ .+
+$ .identifier   : $Id: flash49.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+$ .context      : SATURN, Saturn CPU / HPxx emulator
+$ .title        : $RCSfile: flash49.msf,v $
+$ .kind	        : Message catalog source
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 25-Sep-2000
+$ .keywords     : *
+$ .description  :
+$   Message catalog source file for the flash rom emulator.
+$ .notes        :
+$ . $Log: flash49.msf,v $
+$ . Revision 4.1  2000/12/11 09:54:19  cibrario
+$ . Public release.
+$ .
+$ . Revision 3.8  2000/10/19 15:00:41  cibrario
+$ . Bug fix:
+$ . Removed lines with empty directives
+$ .
+$   Revision 3.3  2000/09/26 15:30:28  cibrario
+$   *** empty log message ***
+$ .-
+
+$set 1
+16 Flash
+
+$set 16
+101 Read (Nibble) A[%08X] D[%01X]
+102 Write (Nibble) A[%08X] D[%01X]
+103 FSM STATE[%d] CYCLE[%d]
+104 \tFSM Args: (Byte)A[%08X] D[%02X]
+105 \tFSM Next: STATE[%d] RESULT[%02X]
+106 \tFSM Operation: [%s]
+201 Command unknown/not implemented - FSM Info:\n\
+\tSTATE[%d] CYCLE[%d] A[%08X] D[%02X]
+202 Invalid address in Write to Buffer - FSM Info:\n\
+\tSTATE[%d] CYCLE[%d] A[%08X] D[%02X]

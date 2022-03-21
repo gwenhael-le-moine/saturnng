@@ -1,0 +1,274 @@
+@c $Id: using.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Using the Emulator, Command Line Options, Preparing saturn for Use, Top
+@chapter Using the Emulator
+@cindex Using the Emulator
+
+This chapter describes the behavior of the emulator, how you
+interact with it, and how to perform external interfacing operations,
+such as file transfer.  Instead, it does not describe the behavior of
+the emulated calculator; for this, plase refer to the
+calculator's documentation.
+
+Moreover, the emulator is highly customizable: the behavior described
+here is the default behavior, that is, the behavior you obtain when
+the original emulator's application resource file distributed with it is
+in effect. See @ref{Customizing saturn}, for additional details about
+customization.
+
+
+@menu
+* Running saturn::              
+* Mouse and Keyboard::          
+* Speed Control::               
+* File Transfer with Kermit or Xmodem::  
+* File Transfer with InstantLoad::  
+@end menu
+
+
+@node Running saturn, Mouse and Keyboard, Using the Emulator, Using the Emulator
+@section Running saturn
+@cindex Running saturn
+
+You run @code{saturn} in two different ways, depending on how
+you installed it:
+
+@itemize @bullet
+@item
+If you installed @code{saturn} systemwide, that is, if you either
+installed a systemwide binary package or you ran @code{make install}
+after building @code{saturn} yourself, you can run the emulator
+directly:
+
+@example
+$ saturn @var{options}
+@end example
+
+@item
+Else, if you built @code{saturn} from the source distribution and you
+didn't install it yet, or if you have a user-level, binary-only
+distribution, you must use the startup shell @code{run_saturn} to run
+it; you must also enter the build directory, @var{build_dir} in the
+example below, before invoking the startup shell.  For user-level,
+binary-only distributions, @var{build_dir} is the directory where
+you unpacked the distribution.
+
+@example
+$ cd @var{build_dir}
+$ ./run_saturn @var{options}
+@end example
+
+@end itemize
+
+In either case, you probably would like to specify additional
+command-line options, @var{options} in the examples above,
+for @code{saturn}; see @ref{Command Line Options}, for more
+information.
+
+
+@node Mouse and Keyboard, Speed Control, Running saturn, Using the Emulator
+@section Mouse and Keyboard
+@cindex Mouse and Keyboard
+
+When started, the emulator displays a window containing a reproduction
+of the emulated calculator; your primary means of interaction with
+the calculator are the mouse and the keyboard.
+
+When you click the primary Motif button of your mouse on a
+calculator's key, that key is pressed; when you release the mouse
+button, the key is released.  If you are right-handed, the primary
+Motif button usually is the leftmost one.
+
+To press a calculator's key and keep it pressed without having to keep
+the mouse button pressed, too, click the key with mouse button 3;
+to release the key, click it again with either mouse button.
+If you are right-handed, mouse button 3 usually is the rightmost one.
+
+To exit the emulator and save the current state of the calculator
+into the emulator's state directory, use your mouse or your keyboard
+to trigger the ``Close Application'' command of your
+window manager.  For example, if you are using @code{mwm},
+activate the window manager's application menu by clicking the
+upper-left button on the window decoration and select the
+``Close'' option.
+
+Do @strong{not} use the ``Kill Client'' command to kill the emulator,
+unless you want to exit the emulator @strong{without} saving
+the current calculator's state.
+
+To press the calculator's keys you can use your real keyboard, too,
+provided that the emulator window has the keyboard focus.  Depending on
+which focus model your window manager uses, you need to either
+click on the emulator window's border with the mouse or move the pointer
+into the emulator's window and keep it there to give it the focus.
+
+In the latter case, in order to have the full set of shortcuts described
+below available, keep the pointer on the LCD display of the emulated
+calculator; some versions of Motif can override user shortcuts when the
+pointer is moved elsewhere, for example on a pushbutton.
+
+When the emulator window has the focus, the following keyboard shortcuts
+are in effect:
+
+@itemize @bullet
+@item
+The alphanumeric keys of the real keyboard are mapped to the
+corresponding calculator's keys.
+@item
+The add, subtract, multiply and divide keys of the numeric keypad, if any,
+are mapped to the corresponding calculator's keys.
+@item
+Both the return and enter keys are mapped to the calculator's enter key;
+notice that the return key could not work with some versions of Motif
+when the keyboardFocusPolicy is set to XmPOINTER, because Motif
+insists on grabbing the return key for its own use in this case.
+@item
+The backspace key is mapped to the calculator's backspace/delete key.
+@item
+If the emulated calculator has two shift keys, the left shift key
+is mapped to the calculator's left shift key and the right shift key
+is mapped to the calculator's right shift key, else both shift keys
+are mapped to the calculator's shift key.
+@item
+Both alt keys are mapped to the calculator's alpha key.
+@item
+Function keys from F1 to F6 are mapped to the calculator's uppermost
+row of keys.
+@item
+Function keys F10, F11 and F12 are mapped to the calculator's
+left shift, right shift, and alpha keys; this mapping is useful
+when the real keyboard has only one shift key (rare) or is unable
+to distinguish between left and right shift (more frequent).
+@item
+The escape key is mapped to the calculator's ON/Cancel key.
+@end itemize
+
+Each emulated calculator's key is kept pressed as long as the
+corresponding real key is kept pressed; this way you can simulate
+multiple, simultaneous key presses using the keyboard, at least in
+principle; however, many keyboards and operating systems impose severe
+limits on the maximum number of simultaneous key presses they can detect
+reliably, so your mileage may vary.
+
+Notice also that all window and session manager's keyboard shortcuts
+@strong{do} work with @code{saturn}; be careful to avoid
+triggering them by accident, expecially @code{Alt-F4}, the default
+keyboard shortcut for ``Close Application'' put in effect by @code{mwm}.
+
+
+@node Speed Control, File Transfer with Kermit or Xmodem, Mouse and Keyboard, Using the Emulator
+@section Speed Control
+@cindex Speed Control
+
+By default, the emulator runs the calculator at the maximum possible
+speed, depending on the actual system load and on the emulator's
+niceness level.
+
+For some calculator models, you can change the speed of the emulated
+calculator using the calculator itself and the @code{speed} command,
+found in the utility library @code{sutil}; for more information, see
+@ref{The sutil Library}.
+
+
+@node File Transfer with Kermit or Xmodem, File Transfer with InstantLoad, Speed Control, Using the Emulator
+@section File Transfer with Kermit or Xmodem
+@cindex File Transfer with Kermit or Xmodem
+
+The emulator revectors the calculator's serial port to a pseudo-terminal.
+Since the allocation of pseudo-terminals is dynamic, @code{saturn}
+announces the name of the pseudo-terminal it just allocated during
+startup, either with a console message like:
+
+@example
+saturn-Serial (serial.c,553)-I-Slave pseudo-terminal name is [/dev/ttyp1]
+@end example
+
+or by permanently displaying a message like:
+
+@example
+Slave pseudo-terminal name is [/dev/ttyp1]
+@end example
+
+on the bottom line of the emulated calculator's main window.
+
+A pseudo-terminal acts just like a real serial port; in particular,
+you can run a kermit or xmodem session on it.  Therefore, to transfer a file
+from/to the emulator with kermit or xmodem, simply follow the same procedure 
+you would follow to transfer the file from/to a real calculator,
+replacing the name of the real serial port with the name of the
+pseudo-terminal, for example @code{/dev/ttyp1} in the message above.
+
+Notice that some versions of kermit, notably @code{C-Kermit 7.0.196} for
+Linux, could require the following additional command to be able to talk
+with the emulator:
+
+@example
+set prefixing all
+@end example
+
+Incidentally, the same command could be required to talk with the
+real calculator via a real serial port, too, depending on the
+default flow-control settings of the port.
+
+If you are emulating an HP39/40, you can transfer applets to/from
+the emulator by means of a kermit server session; you need to execute
+the following kermit commands:
+
+@example
+set line @var{pseudo-terminal}
+set prefixing all
+set file collision overwrite
+set file names literal
+enable all
+server
+@end example
+
+In the example above, replace @var{pseudo-terminal} with the
+name of the emulator's pseudo-terminal.  You can then use the
+usual calculator's commands to send and receive applets to/from
+the disk drive.
+
+Using @code{xmodem} is somewhat simpler: to transfer an object from the
+calculator into a disk file, issue the @code{xmodem} receive command on
+the host computer:
+
+@example
+rx @var{file_name} < @var{pseudo-terminal} > @var{pseudo-terminal}
+@end example
+
+and then the @code{xmodem} send command on the calculator:
+
+@example
+'@var{object_name}' XSEND
+@end example
+
+To transfer a disk file into the calculator, issue the @code{xmodem}
+receive command on the calculator:
+
+@example
+'@var{object_name}' XRECV
+@end example
+
+and then the @code{xmodem} send command on the host:
+
+@example
+sx @var{file_name} < @var{pseudo-terminal} > @var{pseudo-terminal}
+@end example
+
+As before, you need to replace @var{pseudo-terminal} with the
+name of the emulator's pseudo-terminal in all examples above;
+@var{file_name} represents the name of the host file, and
+@var{object_name} represents the name of the calculator's object.
+
+
+@node File Transfer with InstantLoad,  , File Transfer with Kermit or Xmodem, Using the Emulator
+@section File Transfer with InstantLoad
+@cindex File Transfer with InstantLoad
+
+Once you have transferred the @code{sutil} library into the emulated
+calculator with a kermit or xmodem file transfer, you can use the
+@code{kget} and @code{send} commands provided by this library to
+perform very fast transfers directly to/from the calculator's memory.
+
+The @code{sutil} library is available for some calculator models only;
+see @ref{The sutil Library}, for more information.

@@ -1,0 +1,78 @@
+#!/bin/csh
+#
+# $Id: gpl_replace,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+#
+# This script adds/replaces the GPL header $gpl_template in
+# all .c and .h files in the RCS repository.  Must be executed on
+# a clean (no locked files) repository.
+#
+# Arguments:
+#
+# argv[1]: -r argument to ci
+# argv[2]: -m argument to ci, default provided
+
+if( $#argv < 1 ) then
+    echo "gpl_replace: missing target release number"
+    exit 1
+endif
+
+if( $#argv == 1 ) then
+    set argv = ($argv "Added/Replaced GPL header")
+endif
+
+set gpl_template = gpl_template
+set rcs_flist = `ls RCS/*.[ch],v`
+set exit_code = 0
+
+co $gpl_template
+if( $status != 0 ) then
+    echo "gpl_replace: co ${gpl_template} failed"
+    exit 9
+endif
+
+foreach rcs_file ($rcs_flist)
+    set file = `basename $rcs_file ,v`
+    set s_file = "${file}_s"
+    set j_file = "${file}_j"
+    set b_file = "${file}_b"
+
+    # Extract file from repository
+    co -l $file
+    if( $status != 0 ) then
+	echo "gpl_replace: ${file}: checkout failed; edit manually"
+	set exit_code = 2
+	continue
+    endif
+	
+    sed -e '/.*+-+.*/,$\!d' $file > $s_file
+
+    if( -z $s_file ) then
+	# File does not contain the template yet; add
+        cat $gpl_template - $file > $j_file <<EOF
+
+/* +-+ */
+
+EOF
+    else
+	# File did contain an older template; replace
+	cat $gpl_template - $s_file > $j_file <<EOF
+
+EOF
+    endif
+
+    rm $s_file
+    mv $file $b_file
+    mv $j_file $file
+    ci -r$argv[1] -m"$argv[2]" $file
+
+    # Remove backup file only if update was ok
+    if( $status == 0 ) then
+	rm $b_file
+    else
+	echo "gpl_replace: ${file}: ci failed; backup in ${b_file}"
+	rcs -u $file
+	set exit_code = 3
+	continue
+    endif
+end
+exit $exit_code

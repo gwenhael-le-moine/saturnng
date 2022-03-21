@@ -1,0 +1,229 @@
+# .+
+#
+# .identifier   : $Id: Imakefile,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+# .context      : SATURN, Saturn CPU / HP48 emulator
+# .title        : $RCSfile: Imakefile,v $
+# .kind	        : Makefile
+# .author       : Ivan Cibrario B.
+# .site	        : CSTV-CNR
+# .creation     : *
+# .keywords     : *
+# .description  :
+#   Imakefile.
+# .notes        :
+#   $Log: Imakefile,v $
+#   Revision 4.1  2000/12/11 09:54:19  cibrario
+#   Public release.
+#
+#   Revision 3.16  2000/11/21 16:37:20  cibrario
+#   Ultrix/IRIX support:
+#   - Propagate CC and CFLAGS to Chf library as fallback values
+#   - Added -li library for Ultrix
+#   - Use RM directly if needed macros are not available
+#
+#   Revision 3.14  2000/11/13 10:24:52  cibrario
+#   Implemented fast load/save; improved keyboard interface emulation at
+#   high emulated CPU speed:
+#
+#   - New file disk_io_obj.c
+#
+#   Revision 3.13  2000/11/09 11:14:50  cibrario
+#   Revised to add file selection box GUI element, CPU halt/run
+#   requests and emulator's extended functions:
+#
+#   - New files: x_func.h, x_func.c, x_func.msf
+#
+#   Revision 3.9  2000/10/24 16:12:55  cibrario
+#   Added Texinfo documentation targets
+#
+#   Revision 3.8  2000/10/23 13:18:58  cibrario
+#   Bug fixes:
+#   - saturn.cat did not contain Chf messages
+#   - extended 'clean' target to remove saturn.cat as well
+#   - CatDestination was wrong on Debian GNU/Linux
+#
+#   Revision 3.6  2000/10/02 13:54:04  cibrario
+#   ROM handling utilities:
+#   - Added support for stand-alone build of Chf library in its subdirectory
+#   - Added build commands for 'pack' utility
+#
+#   Revision 3.5  2000/10/02 09:55:10  cibrario
+#   Linux support:
+#   - openpty() is in -lutil
+#   - message catalog must be installed in /usr/lib/locale/C
+#
+#   Revision 3.3  2000/09/26 15:26:07  cibrario
+#   Revised to implement Flash ROM write access:
+#   - Added new files flash49.c and flash49.msf
+#
+# Revision 3.2  2000/09/22  13:21:33  cibrario
+# Implemented preliminary support of HP49 hw architecture:
+# - added new modules hw_config.c and romram49.c to SRCS list
+#
+# Revision 2.5  2000/09/14  15:41:16  cibrario
+# Added new files serial.c and serial.msf
+#
+# Revision 2.1  2000/09/08  15:39:34  cibrario
+# Added automatic installation of application default file and
+# message catalog; removed platform-dependent options.
+#
+# Revision 1.1  1998/02/19  12:03:28  cibrario
+# Initial revision
+#
+#
+# .-
+
+#
+# Stand-alone build of Chf library in its subdirectory
+#
+# 3.16: Propagate CC and CFLAGS to Chf library as fallback values
+#
+#define IHaveSubdirs
+#define PassCDebugFlags X_CC="$(CC)" X_CFLAGS="$(CFLAGS)"
+SUBDIRS = Chf
+MakeSubdirs($(SUBDIRS))
+
+#
+# Programs built by this Imakefile
+#
+PROGRAMS= saturn pack
+
+#
+# Source/object files
+# Each row corresponds to a group of files; each group has its own
+# CHF module identifier and message catalog source file.
+#
+SRCS1=	debug.c \
+	cpu.c dis.c emulator.c monitor.c \
+	modules.c hw_config.c romram.c romram49.c hdw.c keyb.c \
+	disk_io.c disk_io_obj.c \
+	display.c x11.c \
+	serial.c flash49.c x_func.c\
+	saturn.c
+
+#
+# Message catalog source files for the modules defined above.
+#
+MSFS=	debug.msf \
+	cpu.msf \
+	modules.msf \
+	disk_io.msf \
+	x11.msf \
+	serial.msf flash49.msf x_func.msf\
+	saturn.msf util.msf \
+	Chf/chf.msf
+
+#
+# Source/object files of secondary target
+#
+SRCS2=	pack.c
+
+#
+# Automatic generation of object file list
+#
+OBJS1=	$(SRCS1:.c=.o)
+OBJS2=	$(SRCS2:.c=.o) disk_io.o debug.o
+
+#
+# Now, some extras... bring the Chf library in.
+#
+EXTRA_INCLUDES =	-I./Chf
+EXTRA_LOAD_FLAGS =	-L./Chf/st_build
+
+# 3.5: Added linux support; openpty() is in -lutil
+#
+
+#if defined(LinuxArchitecture)
+EXTRA_ARCH_LIBRARIES =	-lutil
+#endif
+
+# 3.16: Added Ultrix support; catopen() is in -li
+#
+
+#if defined(UltrixArchitecture)
+EXTRA_TAIL_LIBRARIES =	-li
+#endif
+
+EXTRA_LIBRARIES =	$(EXTRA_ARCH_LIBRARIES) \
+-lXm $(XTOOLLIB) $(XLIB) -lChf \
+$(EXTRA_TAIL_LIBRARIES)
+
+#
+# Main Target
+#
+ComplexProgramTarget_1(saturn,NullParameter,NullParameter)
+
+#
+# Main Target
+#
+ComplexProgramTarget_2(pack,NullParameter,NullParameter)
+
+#
+# Installation of the application default file; primary target only.
+#
+InstallAppDefaults(Saturn)
+
+#
+# Special message catalog targets
+#
+saturn.cat:	$(MSFS)
+	for msf in $? ;	\
+	  do gencat saturn.cat $$msf ; \
+	done
+
+all:: saturn.cat
+
+#
+# 3.16: Use RM directly if macro is not available
+#
+#ifdef ImakeConfigRelease
+clean::
+	RemoveFile(saturn.cat)
+#else
+clean::
+	$(RM) saturn.cat
+#endif
+
+#
+# Determine destination of saturn.cat; for now, few architectures are
+# supported.
+#
+#if defined(AlphaArchitecture)
+#define CatDestination /usr/lib/nls/msg/C
+#elif defined(SunArchitecture)
+#define CatDestination /usr/lib/locale/C/LC_MESSAGES
+#elif defined(LinuxArchitecture)
+#define CatDestination /usr/share/locale/C/LC_MESSAGES
+#endif
+
+#if defined(CatDestination)
+InstallNonExecFile(saturn.cat,CatDestination)
+#else
+install::
+	echo "*** Can't determine CatDestination; install saturn.cat manually"
+#endif
+
+#
+# TexInfo Documentation
+#
+MAKEINFO= makeinfo
+TEXI2DVI= texi2dvi
+DVIPS= dvips
+
+doc:
+	$(MAKEINFO) saturn.texi
+	$(TEXI2DVI) saturn.texi && $(DVIPS) -o saturn.ps saturn.dvi
+	@echo "*** Install saturn.info manually, please"
+
+#
+# 3.16: Use RM directly if macro is not available
+#
+#ifdef ImakeConfigRelease
+clean::
+	RemoveFiles(*.aux *.cp *.cps *.dvi *.fn *.info *.ky *.log *.pg)
+	RemoveFiles(*.ps *.toc *.tp *.vr)
+#else
+clean::
+	$(RM) *.aux *.cp *.cps *.dvi *.fn *.info *.ky *.log *.pg
+	$(RM) *.ps *.toc *.tp *.vr
+#endif

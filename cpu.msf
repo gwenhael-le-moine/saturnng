@@ -1,0 +1,64 @@
+$ .+
+$ .identifier   : $Id: cpu.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+$ .context      : SATURN, Saturn CPU / HP48 emulator
+$ .title        : $RCSfile: cpu.msf,v $
+$ .kind	        : Message catalog source
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 13-Feb-1998
+$ .keywords     : *
+$ .description  :
+$   Message catalog source file for the CPU emulation modules.
+$ .notes        :
+$ . $Log: cpu.msf,v $
+$ . Revision 4.1  2000/12/11 09:54:19  cibrario
+$ . Public release.
+$ .
+$ . Revision 3.13  2000/11/09 11:27:48  cibrario
+$ . Revised to add file selection box GUI element, CPU halt/run
+$ . requests and emulator's extended functions:
+$ .
+$ . - New messages: 118, 119, 303
+$ .
+$ . Revision 3.8  2000/10/19 14:56:52  cibrario
+$ . Bug fix:
+$ . Removed lines with empty directives
+$ .
+$   Revision 3.1  2000/09/20 13:44:30  cibrario
+$   Revised to implement passive CPU shutdown:
+$   - new messages 114, 115, 116, 117
+$ .
+$   Revision 1.1  1998/02/18  11:50:36  cibrario
+$   Initial revision
+$ .-
+
+$set 1
+11 Cpu
+
+$set 11
+101 Function [%s] called
+102 Executing @ PC[%05X]
+103 CPU shutdown executed
+104 CPU wake-up executed
+105 %s request accepted
+106 %s request pending
+107 RTI loop to service %s
+108 RTI returning
+109 INTON servicing %s
+110 CPU emulator [%s]
+111 Timer1 expired CTRL[%01X]
+112 Timer2 expired CTRL[%01X]
+113 Emulator interrupt request detected
+114 Timer[%s] Ctrl[%01X] Val[%08X]
+115 Timer[%s] expires in [%d]d ms
+116 Starting idle loop, timeout [%d]d ms
+117 Spooling up after [%d]d us in idle loop
+118 CPU halted by CpuHaltRequest()
+119 CPU awoken by CpuRunRequest()
+201 Can't restore CPU status from disk; resetting CPU
+202 Monitor command syntax error [%s]
+301 Bad opcode @ PC[%05X], N[%01X]
+302 Can't save CPU status to disk
+303 Halt/Run requests not allowed; #undef CPU_SPIN_SHUTDN
+401 Internal error [%s]
+402 Unexpected CPU shutdown

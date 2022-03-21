@@ -1,0 +1,85 @@
+2000-12-21  Ivan Cibrario Bertolotti  <cibrario@refolo.iriti.cnr.it>
+
+	* >4.1, BUG: add installation support for IRIX and Ultrix
+
+	* >4.1, BUG: 'pack' exits with 'Chf initialization failed'
+	if setlocale() fails during Chf initialization; apply the same
+	patch as 'saturn'.
+	Reported by Julian Einwag <julian@brightstar.swin.de>
+	
+	* >4.1, BUG: Bad interaction with 'Emulate3Buttons' option
+	of XFree86; need key memory or key dispatch delay.
+	Reported by Dean Darlison <dean@dasco.ltd.uk>
+
+2000-11-30  Ivan Cibrario Bertolotti  <cibrario@refolo.iriti.cnr.it>
+
+	* >3.17: with HP49 ROM 1.19-4, command-line activity
+	results in a lot of late hits during unconfig.  Investigate
+	why, in this case, late hits do not result in immediate hits
+	in subsequent unconfigs.
+
+	* >3.17, Saturn.ad, BUG: some X Terminals, e.g. VXT2000,
+	don't have an Escape key; the existing conventions,
+	e.g. F11 for Escape on VXT2000, conflicts with the
+	existing shortcuts.
+
+2000-11-28  Ivan Cibrario Bertolotti  <cibrario@refolo.iriti.cnr.it>
+
+	* >3.17, Saturn.ad, BUG: some X Terminals, e.g. VXT2000, only have a
+	Delete (*not* BackSpace) key; make sure that backspace shortcut
+	is available anyway in baseTranslations.
+
+2000-11-21  Ivan Cibrario Bertolotti  <cibrario@refolo.iriti.cnr.it>
+
+	* >3.15, BUG: xmodem file transfers don't work with
+	big binary objects (like lib 258); flow control?
+	(Fixed in 3.17)
+
+2000-11-20  Ivan Cibrario Bertolotti  <cibrario@refolo.iriti.cnr.it>
+
+	* >3.15: Revise init/reset sequence to be ready to accept
+	interrupt requests during module initialization.
+
+	* >3.15: Reset bank switcher when '-reset' is asserted
+
+2000-11-16  Ivan Cibrario Bertolotti  <cibrario@refolo.iriti.cnr.it>
+
+	* >3.15, serial.c: Implement hangup on exit on pty;
+	kermit insists that 'A serial connection might still be active'
+	even when the emulator is no longer running.
+	(Possibly not a bug)
+
+	* >3.15: IRIX support
+	(Implemented in 3.16)
+	
+	* >3.15, sutil: update with =recover code for HP49
+	(Updated in 4.1)
+	
+	* >3.15, sutil: implement for HP48
+	(Implemented in 4.1)
+	
+	* >=3.15, config.h, Ultrix: usleep() not supported;
+	disable REAL_CPU_SPEED on this platform
+	(Implemented in 3.16)
+	(NEW_FILE: config_x.h)
+	
+	* >=3.15, Imakefile, Ultrix: EXTRA_TAIL_LIBRARIES = -li
+	(Implemented in 3.16)
+	
+	* >=3.15, Chf, Ultrix: add default compile mode for unsupported
+	platforms
+	(Implemented in 3.16)
+	
+	* =3.15, using.texi: pty name message no longer signaled
+	(Fixed in 3.16)
+	
+	* >=3.15, serial.c: remove #error and install a dummy handler instead
+	(Fixed in 3.16; tested on already supported platforms and Ultrix)
+		
+	* >=3.15, Saturn.ad, Ultrix: Keypad's numeric keys don't work;
+	they work removing the leading ':' specifier
+	(Fixed in 3.16, both code and documentation; tested on all platforms)
+	
+	* =3.15, x11.c: remove XmNapplyCallback from file_sel_box
+	(Fixed in 3.16; tested on supported platforms)
+	

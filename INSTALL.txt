@@ -1,0 +1,80 @@
+$Id: INSTALL.txt,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+Quick build/installation instructions; shell commands are preceded by '$':
+
+   saturn - A poor-man's emulator of some HP calculators
+   Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with the documentation of this program; if not, write to
+   the Free Software Foundation, Inc.,
+   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+   For more information, please contact the author, preferably by email,
+   at the following address:
+
+   Ivan Cibrario Bertolotti
+   IRITI - National Research Council
+   c/o IEN "Galileo Ferraris"
+   Strada delle Cacce, 91
+   10135 - Torino (ITALY)
+
+   email: cibrario@iriti.cnr.it
+
+
+To build saturn from the source distribution, follow these steps:
+
+0) Create an empty directory, and unpack the source distribution archive
+   into it, for example:
+
+   $ mkdir build_dir
+   $ cd build_dir
+   $ gunzip < ../saturn_src_V4_1.tar.gz | tar xf - .
+
+   If you are reading this notice, you probably have already done this...
+
+
+1) Generate the platform-specific Makefile:
+
+   $ xmkmf
+
+   On Solaris platforms, if gcc is your default (or only) compiler,
+   you may need to force its selection, using the following
+   command instead of xmkmf:
+
+   $ imake -DUseInstalled -DHasGcc -I/usr/openwin/lib/X11/config
+
+
+2) Generate module dependencies:
+
+   $ make depend
+
+
+3) Build saturn:
+
+   $ make
+
+
+4) Build the documentation.
+   You need a working Texinfo system to do this:
+
+   $ make doc
+
+
+5) Optionally, install saturn systemwide (you need root privileges
+   to do this):
+
+   $ make install
+
+
+6) Enjoy

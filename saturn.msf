@@ -1,0 +1,33 @@
+$ .+
+$ .identifier   : $Id: saturn.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+$ .context      : SATURN, Saturn CPU / HP48 emulator
+$ .title        : $RCSfile: saturn.msf,v $
+$ .kind	        : Message catalog source
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 8-Sep-2000
+$ .keywords     : *
+$ .description  :
+$   Message catalog source file for the main program.
+$ .notes        :
+$ . $Log: saturn.msf,v $
+$ . Revision 4.1  2000/12/11 09:54:19  cibrario
+$ . Public release.
+$ .
+$ . Revision 3.9  2000/10/24 16:11:48  cibrario
+$ . Added messages 10/501 and 10/502 as suggested by GPL
+$ .
+$ . Revision 3.8  2000/10/19 15:01:20  cibrario
+$ . Bug fix:
+$ . Removed lines with empty directives
+$ .
+$   Revision 2.1  2000/09/08 15:35:43  cibrario
+$   *** empty log message ***
+$ .-
+
+$set 1
+10 Main
+
+$set 10
+501 saturn %s - A poor-man's emulator of HP48GX, HP49, HP39/40\nCopyright (C) 1998-2000 Ivan Cibrario Bertolotti\n
+502 This program is free software, and comes with ABSOLUTELY NO WARRANTY;\nfor details see the accompanying documentation.\n\n

@@ -1,0 +1,10 @@
+2001-01-25  Ivan Cibrario Bertolotti  <cibrario@brontolo.iriti.cnr.it>
+
+	* Win32 support is limited to the Windows CE platform
+
+	* _REENTRANT is not supported on Win32.
+
+2000-05-29  Ivan Cibrario Bertolotti  <cibrario@brontolo.cstv.to.cnr.it>
+
+	* chf.texi: Bad punctuation characters after xref.
+	(Fixed in 2.2)

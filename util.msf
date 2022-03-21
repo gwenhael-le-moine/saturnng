@@ -1,0 +1,38 @@
+$ .+
+$ .identifier   : $Id: util.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+$ .context      : SATURN, Saturn CPU / HPxx emulator
+$ .title        : $RCSfile: util.msf,v $
+$ .kind	        : Message catalog source
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 2-Oct-2000
+$ .keywords     : *
+$ .description  :
+$   Message catalog source file for the utility programs.
+$ .notes        :
+$ . $Log: util.msf,v $
+$ . Revision 4.1  2000/12/11 09:54:19  cibrario
+$ . Public release.
+$ .
+$ . Revision 3.8  2000/10/19 15:01:43  cibrario
+$ . Bug fix:
+$ . Removed lines with empty directives
+$ .
+$   Revision 3.6  2000/10/02 13:59:02  cibrario
+$   *** empty log message ***
+$ .-
+
+$set 1
+17 Utilities
+
+$set 17
+1 Usage:\n\
+	pack <emu48_source_rom> <saturn_dest_rom>
+
+2 Command line syntax error
+3 stat(%s) failed
+4 Invalid source file size: %d
+5 malloc(%d) failed
+6 open(%s) failed
+7 read(%s) failed
+8 WriteNibblesToFile() failed

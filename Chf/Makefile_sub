@@ -1,0 +1,40 @@
+# .+
+#
+# .identifier   : $Id: Makefile_sub,v 2.1 2000/05/29 13:08:51 cibrario Rel $
+# .context      : CHF, Condition Handling Facility
+# .title        : $RCSfile: Makefile_sub,v $, Makefile
+# .kind	        : Makefile
+# .author       : Ivan Cibrario B.
+# .site	        : CSTV-CNR
+# .creation     : 22-May-2000
+# .keywords     : *
+# .description  :
+#   Makefile for CHF library subdirectories
+# .notes        :
+#   $Log: Makefile_sub,v $
+#   Revision 2.1  2000/05/29 13:08:51  cibrario
+#   *** empty log message ***
+#
+#
+# .-
+
+#
+# Include common definitions
+#
+include ../Makefile_def
+
+#
+# Targets
+#
+all: $(LIB)
+
+$(LIB): $(OBJ)
+	$(AR) $(ARFLAGS) $@ $?
+
+test: $(TBIN)
+	@for b in $(TBIN) ; do \
+	  ./$$b ; \
+	done
+
+depend: $(SRC)
+	@makedepend $(HPATH) $(SRC)

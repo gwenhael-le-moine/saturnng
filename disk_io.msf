@@ -1,0 +1,44 @@
+$ .+
+$ .identifier   : $Id: disk_io.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+$ .context      : SATURN, Saturn CPU / HP48 emulator
+$ .title        : $RCSfile: disk_io.msf,v $
+$ .kind	        : Message catalog source
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 13-Feb-1998
+$ .keywords     : *
+$ .description  :
+$   Message catalog source file for the disk I/O functions.
+$ .notes        :
+$ . $Log: disk_io.msf,v $
+$ . Revision 4.1  2000/12/11 09:54:19  cibrario
+$ . Public release.
+$ .
+$ . Revision 3.14  2000/11/13 10:32:24  cibrario
+$ . Implemented fast load/save; improved keyboard interface emulation at
+$ . high emulated CPU speed:
+$ .
+$ . - Fixed spelling error in message 405
+$ . - Added new messages: 407, 408
+$ .
+$ . Revision 3.8  2000/10/19 14:58:41  cibrario
+$ . Bug fix:
+$ . Removed lines with empty directives
+$ .
+$   Revision 1.1  1998/02/17 11:54:49  cibrario
+$   Initial revision
+$ .-
+
+$set 1
+13 Disk_IO
+
+$set 13
+101 Function [%s] called
+401 Can't open file [%s]
+402 getc() failed reading file [%s]
+403 putc() failed writing file [%s]
+404 fread() failed reading file [%s]
+405 fwrite() failed writing file [%s]
+406 Close file [%s] failed
+407 File [%s] has a bad header
+408 File [%s] is too large

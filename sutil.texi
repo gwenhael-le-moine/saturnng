@@ -1,0 +1,92 @@
+@c $Id: sutil.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node The sutil Library, Tips Tricks and Known Bugs, Customizing saturn, Top
+@chapter The sutil Library
+@cindex The sutil Library
+
+The @code{sutil} library is currently available for the HP48 and HP49
+calculators only, and provides the following commands:
+
+@table @code
+@item kget ( '@var{file_name}' -> )
+This command retrieves the file @var{file_name} from mass storage and
+stores it into a calculator's variable with the same name.  In response
+to this command the emulator pops up a file selection box, allowing you
+to accept the transfer, possibly altering the source file name/location
+proposed by the calculator, or to cancel the transfer.
+@item send ( '@var{var_name}' -> )
+This command saves the calculator's variable @var{var_name} into mass
+storage.  In response to this command the emulator pops up a file
+selection box, allowing you to accept the transfer, possibly altering
+the target file name/location proposed by the calulator, or to cancel the
+transfer.
+@item speed ( @var{speed_sel} -> )
+This command allows you to set the speed of the emulated calculator:
+@var{speed_sel} must be a real number denoting the desired speed
+in MHz; the special value @code{0} indicates that the calculator must
+be run to the maximum possible speed.  The speed change takes
+effect immediately.
+@end table
+
+Of course, these commands work on the @code{saturn} emulator @strong{only},
+and could crash when invoked on another emulator or on the
+real calculator.
+
+You can load the @code{sutil} library into your emulated HP48 by
+following these steps:
+
+@itemize @bullet
+@item
+Transfer the file @code{sutil_48.lib} into your emulated calculator,
+using either xmodem or kermit.
+@item
+Bring the library on stack level 1 and store it into a port of your choice.
+@item
+Warmstart the emulated calculator; the @code{sutil} library should
+now be in your library catalog.
+@end itemize
+
+To rebuild the library object on your HP48 calculator, the following
+steps are required:
+
+@itemize @bullet
+@item
+Ensure that both the MetaKernel version 2.30 and the SysRPL entry point
+table are loaded on the calculator, and that the @code{STARTEXT}
+reserved variable points to the entry point table.
+@item
+Transfer the source directory @code{sutil_48.dir} into the calculator;
+ensure that the transfer is done in ASCII mode.
+@item
+Enter the source directory and run the @code{MAKE} word; the
+@code{sutil} library should now be on stack level 1.
+@end itemize
+
+You can load the @code{sutil} library into your emulated HP49 by
+following these steps:
+
+@itemize @bullet
+@item
+Transfer the file @code{sutil_49.lib} into your emulated calculator,
+using either xmodem or kermit.
+@item
+Bring the library on stack level 1 and store it into a port of your choice.
+@item
+Warmstart the emulated calculator; the @code{sutil} library should
+now be in your library catalog.
+@end itemize
+
+To rebuild the library object on your HP49 calculator, the following
+steps are required:
+
+@itemize @bullet
+@item
+Ensure that library 256 is attached and that library 258 (extable)
+is loaded on the calculator.
+@item
+Transfer the source directory @code{sutil_49.dir} into the calculator;
+ensure that the transfer is done in ASCII mode.
+@item
+Enter the source directory and run the @code{MAKE} word; the
+@code{sutil} library should now be on stack level 1.
+@end itemize

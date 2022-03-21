@@ -1,0 +1,81 @@
+#!/bin/csh
+#
+# $Id: quick_start,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+#
+# This script performs a step-by-step setup of saturn, to emulate an HP49
+# in current directory.  The current directory must be either the build
+# directory of source distributions, or the unpack directory of user-level
+# binary distributions.
+
+set emu_rom = rom.e49
+set saturn_rom = rom
+set saturn_ram = ram
+
+if( ! -r $saturn_rom  &&  ! -r $emu_rom ) then
+    cat - <<EOF
+
+Sorry, you have not prepared a ROM image for saturn yet.
+In order to do this, go to the HP web site:
+
+	http://www.hp.com/calculators
+
+and select the HP49G Flash ROM information page.  From there, you should
+be able to download a .zip file containing a ROM image for the hp49
+emulator; for example, you can download the Beta ROM 1.19-3 from:
+
+	http://www.hp.com/calculators/graphing/rom/emu119-3.zip
+
+Please, first of all be sure you do not infringe any copyright
+before downloading anything from the HP web site; I decline any
+responsibility about this.
+
+Then, unzip the file you downloaded: it should
+contain a file named ${emu_rom}; put it in this directory and run
+this shell again.
+
+See you later!
+EOF
+    exit 1
+endif
+
+if( ! -r $saturn_rom ) then
+    if( ! -x ./pack ) then
+	cat - <<EOF
+
+Sorry, I cannot find the 'pack' executable in the current directory.
+Either your binary distribution is corrupt, or you were unable to
+successfully build 'pack' from the source distribution.
+EOF
+	exit 2
+    else
+	./pack $emu_rom $saturn_rom
+	set pack_status = $status
+ 	if( $pack_status != 0 ) then
+	    cat - <<EOF
+
+Sorry, the 'pack' executable failed with status code $pack_status;
+please notify the maintainer.
+EOF
+	exit 3
+	endif
+    endif
+endif
+
+if( ! -r $saturn_ram ) then
+    set saturn_reset = -reset
+else
+    set saturn_reset =
+endif
+
+if( ! -x ./run_saturn ) then
+    cat - <<EOF
+
+Sorry, I cannot find the 'run_saturn' shell script in the current
+directory.  Either your binary distribution is corrupt, or you were
+unable to successfully build 'run_saturn' from the source distribution.
+EOF
+    exit 4
+endif
+
+./run_saturn -face hp49 -hw hp49 -stateDir . $saturn_reset
+exit $status

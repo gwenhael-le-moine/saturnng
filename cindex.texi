@@ -1,0 +1,5 @@
+@c $Id: cindex.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Concept Index, , GNU GENERAL PUBLIC LICENSE, Top
+@unnumbered Concept Index
+@printindex cp

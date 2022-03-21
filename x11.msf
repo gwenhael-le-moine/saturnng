@@ -1,0 +1,77 @@
+$ .+
+$ .identifier   : $Id: x11.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+$ .context      : SATURN, Saturn CPU / HP48 emulator
+$ .title        : $RCSfile: x11.msf,v $
+$ .kind	        : Message catalog source
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 13-Feb-1998
+$ .keywords     : *
+$ .description  :
+$   Message catalog source file for the X11 interface modules and main program.
+$ .notes        :
+$ . $Log: x11.msf,v $
+$ . Revision 4.1  2000/12/11 09:54:19  cibrario
+$ . Public release.
+$ .
+$ . Revision 3.17  2000/11/23 17:03:52  cibrario
+$ . Implemented sutil library and assorted bug fixes:
+$ . - Added ending newline
+$ .
+$ . Revision 3.16  2000/11/21 16:43:40  cibrario
+$ . Ultrix/IRIX support:
+$ . - Removed single quote from message 402
+$ .
+$ . Revision 3.15  2000/11/15 14:16:14  cibrario
+$ . GUI enhancements and assorted bug fixes:
+$ . - Revised message 108 to list the new command-line option -batchXfer
+$ . - Added new messages 204 and 402
+$ .
+$ . Revision 3.13  2000/11/09 11:39:18  cibrario
+$ . Revised to add file selection box GUI element, CPU halt/run
+$ . requests and emulator's extended functions:
+$ .
+$ . - New messages: 113, 114, 203, 303
+$ .
+$ . Revision 3.9  2000/10/24 16:12:25  cibrario
+$ . Revised messages 108 (updated command-line options) and 301
+$ .
+$ . Revision 3.8  2000/10/19 14:59:23  cibrario
+$ . Bug fix:
+$ . Removed lines with empty directives
+$ .
+$   Revision 2.1  2000/09/08 15:31:18  cibrario
+$   - Updated messages 104, 105, 108
+$   - Removed message 106
+$   - New messages 109, 110, 111, 112, 201, 202, 302
+$ .
+$  Revision 1.1  1998/02/19  12:01:14  cibrario
+$  Initial revision
+$ .-
+
+$set 1
+14 X11
+
+$set 14
+101 Function [%s] called
+102 LCD Parameter [%s]: [%05X]
+103 X Expose event LCD window, count=%d
+104 Pressed key [%s]
+105 Released key [%s]
+107 X11 Interface [%s]
+108 Usage:\n\t%s [-reset] [-monitor] [-batchXfer] [-stateDir <>]\n\t\t[-face <>] [-hw <>]\n\t\t[-cpu <>] [-mod <>] [-hdw <>]\n\t\t[-rom <>] [-ram <>] [-port1 <>] [-port2 <>]
+109 Selected GUI face [%s]
+110 Active GUI face has [%d] keys
+111 Created key [%d], inOut [%s]
+112 Found compoundString for widget [%s], value [%s]
+113 Traversing widget [%s]
+114 Current widget has [%d] children
+201 Xt action called with wrong argc: [%d]
+202 X Atom [%s] unknown
+203 FSB continuation procedure not set
+204 Too many messages not yet acknowledged (> [%d]).\n\tGUI logging temporarily suspended
+301 Invalid option [%s] ignored
+302 WM_COMMAND property bad or not set
+303 No text segment found in a FSB XmString
+401 X Window System fatal error
+402 Face [%s] has no keys; the application resource\n\tfile probably is missing, corrupt, or unreachable

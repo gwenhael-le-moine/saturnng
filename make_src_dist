@@ -1,0 +1,44 @@
+#!/bin/csh
+#
+# $Id: make_src_dist,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+#
+# This script builds the source distribution tar, saturn_src_....tar;
+# the source distribution contains a snapshot of the RCS repository
+# for release $argv[1].  The name of the source distribution tar
+# includes $argv[1] as its last component.
+
+if( $#argv < 1 ) then
+    echo "make_src_dist: missing target release number"
+    exit 1
+endif
+
+set rel = $argv[1]
+set target_tar = saturn_src_$rel.tar
+set rcs_flist = (RCS/*,v)
+set flist = ""
+set exit_code = 0
+
+foreach rcs_file ($rcs_flist)
+    set file = `basename $rcs_file ,v`
+
+    # Extract file from repository
+    co -r$rel $file
+    if( $status != 0 ) then
+	echo "make_src_dist: ${file}: checkout failed for release $rel"
+	set exit_code = 2
+	continue
+    endif
+
+    # Add file to file list
+    set flist = ($flist $file)
+end
+
+make clean
+tar cf $target_tar $flist Chf/*
+
+if( $status != 0 ) then
+    echo "make_src_dist: tar failed"
+    set exit_code = 3
+endif
+
+exit $exit_code

@@ -1,0 +1,128 @@
+@c $Id: introd.texi,v 4.1 2000/12/11 09:54:19 cibrario Rel $
+
+@node Introduction and License Conditions, Preparing saturn for Use, Top, Top
+@chapter Introduction and License Conditions
+@cindex Introduction
+@cindex License Conditions
+
+The @code{saturn} software is a poor-man's emulator of the HP48GX, HP49,
+and HP40 calculators made by Hewlett-Packard.  It should compile and run
+on any recent, XPG4-UNIX compliant, Unix-like system with a working X
+Window System interface and OSF/Motif-compatible libraries.  For
+example, @code{saturn} is known to work on the following systems:
+
+@itemize @bullet
+@item
+Digital UNIX V4.0D on a Digital AlphaStation 200 4/100
+@item
+Solaris 2.6 on a Sun Ultra 5, GNU gcc compiler
+@item
+Debian GNU/Linux 2.1v0 with LessTif 0.91.8 on a HP Kayak XU
+@item
+Ultrix 4.4 on a Digital DECsystem 5500, GNU make@footnote{Limited
+support: REAL_CPU_SPEED build option and serial port emulation
+are not available}
+@item
+IRIX 6.5 on a SiliconGraphics Octane
+@end itemize
+
+If you succeed in building @code{saturn} on a system not mentioned
+above, plase drop an email to the author, so that this documentation
+can be updated.
+
+@strong{Important notice:} I, the author, wrote the source code of
+@code{saturn} in my spare time and, more often than not, while I was in
+a hurry; therefore, it neither is nor intends to be a shiny reference
+about good programming practice and so on.  The documentation embedded
+in the source code often is sparse, incomplete and not much useful; even
+the structure of the code itself and some design choices, seen in
+retrospective, are not so appropriate.
+
+The @code{saturn} software is ``free''; this means that everyone is free to
+use it and free to redistribute it on a free basis.  However,
+@code{saturn} is @strong{not} in the public domain; it is copyrighted
+and there are restrictions on its distribution, but these restrictions
+are designed to permit everything that a good cooperating citizen would
+want to do.  What is not allowed is to try to prevent others from
+further sharing any version of these programs that they might get from
+you.
+
+Also, for my own protection, I must make certain that everyone finds
+out that there is no warranty for the @code{saturn} software.  If this
+program is modified by someone else and passed on, I want their
+recipients to know that what they have is not what I distributed, so
+that any problems introduced by others will not reflect on my
+reputation.
+
+The precise conditions of the licenses for the programs currently
+being distributed that relate to @code{saturn} are found in the General Public
+License. For more information, see @ref{GNU GENERAL PUBLIC LICENSE}.
+
+In addition, the name of IRITI-CNR shall not be used in advertising
+or publicity pertaining to distribution of the software or of any
+derived work without specific, written prior permission.
+
+Bug reports or suggestions for @code{saturn} are most welcome.  To do
+this, please contact the author, preferably by email, at the following
+address:
+
+@sp 2
+@center Ivan Cibrario Bertolotti
+@center IRITI - National Research Council
+@center c/o IEN "Galileo Ferraris"
+@center Strada delle Cacce, 91
+@center 10135 - Torino (ITALY)
+@center email: cibrario@@iriti.cnr.it
+@sp 2
+
+For bug reports and/or build problems, please include at least:
+
+@itemize @bullet
+@item
+the release number of the @code{saturn} component involved.
+@item
+hardware, operating system, and compiler versions.
+@item
+for bugs, the calculator model on which the bug arises,
+the release number of the calculator's ROM image you have,
+a thorough description of the problem and, if possible,
+a patch.
+@item
+for build problems, a transcript of the build session,
+preferably made by @code{script} and, if possible,
+a patch.
+@item
+anything else that you think would be helpful, provided
+its size is reasonable.  In particular, do @strong{not}
+send me your ROM images; this is not only a copyright violation,
+it will also hog my mailbox.
+@end itemize
+
+Last, but not least, I wish to thank the following
+people; without their help, @code{saturn} would probably
+not exist:
+
+@sp 2
+@center My little twin sons, Samuele and Guglielmo
+@center (I denied them the time I spent developing @code{saturn})
+@sp 1
+@center Jean-Yves Avenard
+@center (No need to say why...)
+@sp 1
+@center Bernard Parisse
+@center (Instant-load code, beta test and good advice)
+@sp 1
+@center Matthew Mastracci
+@center (author of the "Guide to the Saturn Processor")
+@sp 1
+@center Eddie C. Dost
+@center (author of @code{x48})
+@sp 1
+@c A simple ligature requires much work iftex...
+@iftex
+@center Sebastien Carlier and Christoph Gie@ss elink
+@end iftex
+@ifinfo
+@center Sebastien Carlier and Christoph Giesselink
+@end ifinfo
+@center (respectively, author and maintainer of @code{emu48}).
