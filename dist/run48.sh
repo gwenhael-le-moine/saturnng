@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-STATEDIR=./stateDir.gwh_run48
+STATEDIR=./stateDir.48
 mkdir -p $STATEDIR
 
 if [ ! -e $STATEDIR/gxrom-r ]; then

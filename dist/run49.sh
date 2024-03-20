@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-STATEDIR=./stateDir.gwh_run49
+STATEDIR=./stateDir.49
 mkdir -p $STATEDIR
 
 if [ ! -e $STATEDIR/rom.49g ]; then

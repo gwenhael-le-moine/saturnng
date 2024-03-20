@@ -16,5 +16,4 @@ dist/Saturn
 dist/pack
 dist/saturn
 dist/saturn.cat
-dist/stateDir.gwh_run48/
-dist/stateDir.gwh_run49/
+dist/stateDir.*
