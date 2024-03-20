@@ -1,9 +1,0 @@
-#!/bin/sh
-#
-# $Id: make_dist,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-#
-# This script builds the RCS distribution tar, saturn_RCS.tar;
-# to do this, it first executes a 'make clean'.
-
-make clean
-tar cf saturn_RCS.tar RCS/* Chf/*

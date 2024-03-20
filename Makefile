@@ -40,23 +40,45 @@ DOTOS = src/cpu.o \
 	src/x11.o \
 	src/x_func.o
 
+MSFS=	Msfs/debug.msf \
+	Msfs/cpu.msf \
+	Msfs/modules.msf \
+	Msfs/disk_io.msf \
+	Msfs/x11.msf \
+	Msfs/serial.msf Msfs/flash49.msf Msfs/x_func.msf\
+	Msfs/saturn.msf Msfs/util.msf \
+	Chf/chf.msf
+
 .PHONY: all clean clean-all pretty-code install mrproper
 
-all: saturn pack
+all: Chf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat docs
 
 # Binaries
-saturn: $(DOTOS)
+Chf/st_build/libChf.a:
+	make -C Chf
+
+dist/saturn: $(DOTOS) Chf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
-pack: src/pack.o src/disk_io.o src/debug.o
+dist/pack: src/pack.o src/disk_io.o src/debug.o Chf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
+
+dist/saturn.cat: $(MSFS)
+	for msf in $? ;	\
+	  do gencat $@ $$msf ; \
+	done
+
+docs:
+	make -C docs
 
 # Cleaning
 clean:
 	rm -f src/*.o
+	make -C Chf clean
+	make -C docs clean
 
 mrproper: clean
-	rm -f pack saturn
+	rm -f dist/pack dist/saturn dist/saturn.cat
 
 clean-all: mrproper
 
