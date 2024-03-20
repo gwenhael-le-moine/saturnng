@@ -4,11 +4,8 @@ STATEDIR=./stateDir.48
 mkdir -p $STATEDIR
 
 if [ ! -e $STATEDIR/gxrom-r ]; then
-    ( cd $STATEDIR
-      wget -c https://www.hpcalc.org/hp48/pc/emulators/gxrom-r.zip -O gxrom-r.zip
-      unzip gxrom-r.zip
-      rm gxrom-r.zip
-    )
+    make -C .. get-roms
+    cp ../ROMs/gxrom-r $STATEDIR/gxrom-r
 fi
 
 RAM=''
