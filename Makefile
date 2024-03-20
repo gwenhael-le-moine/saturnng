@@ -35,7 +35,7 @@ DOTOS = src/cpu.o \
 	src/monitor.o \
 	src/romram.o \
 	src/romram49.o \
-	src/saturn.o \
+	src/main.o \
 	src/serial.o \
 	src/x11.o \
 	src/x_func.o
