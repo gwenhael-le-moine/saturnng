@@ -12,9 +12,9 @@ if [ ! -e $STATEDIR/rom.49g ]; then
     )
 fi
 
-RAM="-ram ram"
+RAM=''
 if [ ! -e $STATEDIR/ram ]; then
-    RAM="-reset"
+    RAM=-reset
 fi
 
-./run_saturn -face hp49 -hw hp49 -stateDir $STATEDIR -rom rom.49g "$RAM"
+./run_saturn -face hp49 -hw hp49 -stateDir $STATEDIR -rom rom.49g $RAM

@@ -3,9 +3,9 @@
 # .identifier   : $Id: Imakefile,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 # .context      : SATURN, Saturn CPU / HP48 emulator
 # .title        : $RCSfile: Imakefile,v $
-# .kind	        : Makefile
+# .kind		: Makefile
 # .author       : Ivan Cibrario B.
-# .site	        : CSTV-CNR
+# .site		: CSTV-CNR
 # .creation     : *
 # .keywords     : *
 # .description  :
@@ -93,13 +93,13 @@ PROGRAMS= saturn pack
 # Each row corresponds to a group of files; each group has its own
 # CHF module identifier and message catalog source file.
 #
-SRCS1=	debug.c \
-	cpu.c dis.c emulator.c monitor.c \
-	modules.c hw_config.c romram.c romram49.c hdw.c keyb.c \
-	disk_io.c disk_io_obj.c \
-	display.c x11.c \
-	serial.c flash49.c x_func.c\
-	saturn.c
+SRCS1=	src/debug.c \
+	src/cpu.c src/dis.c src/emulator.c src/monitor.c \
+	src/modules.c src/hw_config.c src/romram.c src/romram49.c src/hdw.c src/keyb.c \
+	src/disk_io.c src/disk_io_obj.c \
+	src/display.c src/x11.c \
+	src/serial.c src/flash49.c src/x_func.c\
+	src/saturn.c
 
 #
 # Message catalog source files for the modules defined above.
@@ -116,13 +116,13 @@ MSFS=	debug.msf \
 #
 # Source/object files of secondary target
 #
-SRCS2=	pack.c
+SRCS2=	src/pack.c
 
 #
 # Automatic generation of object file list
 #
 OBJS1=	$(SRCS1:.c=.o)
-OBJS2=	$(SRCS2:.c=.o) disk_io.o debug.o
+OBJS2=	$(SRCS2:.c=.o) src/disk_io.o src/debug.o
 
 #
 # Now, some extras... bring the Chf library in.

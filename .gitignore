@@ -13,4 +13,12 @@
 /saturn.cat
 /stateDir.gwh_run48/
 /stateDir.gwh_run49/
-/*.o
+/src/*.o
+/saturn.toc
+/saturn.aux
+/saturn.cp
+/saturn.cps
+/saturn.dvi
+/saturn.info
+/saturn.pdf
+/saturn.ps

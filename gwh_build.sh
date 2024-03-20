@@ -1,7 +1,9 @@
 #!/bin/bash -eu
 
-make clean
 xmkmf
+
+make clean
+rm src/*.o
 
 make depend
 make
