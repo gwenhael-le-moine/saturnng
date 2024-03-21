@@ -6,7 +6,7 @@ CC ?= gcc
 
 OPTIM ?= 2
 
-CFLAGS = -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./Chf -L./Chf/st_build -lutil
+CFLAGS = -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./src/libChf -L./src/libChf/st_build -lutil
 LIBS = -lm -lChf -lXm
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext) -D_GNU_SOURCE=1
@@ -50,20 +50,20 @@ MSFS=	src/debug.msf \
 	src/x_func.msf \
 	src/saturn.msf \
 	src/util.msf \
-	Chf/chf.msf
+	src/libChf/chf.msf
 
 .PHONY: all clean clean-all pretty-code install mrproper
 
-all: Chf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat docs
+all: src/libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
 
 # Binaries
-Chf/st_build/libChf.a:
-	make -C Chf
+src/libChf/st_build/libChf.a:
+	make -C src/libChf
 
-dist/saturn: $(DOTOS) Chf/st_build/libChf.a
+dist/saturn: $(DOTOS) src/libChf/st_build/src/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
-dist/pack: src/pack.o src/disk_io.o src/debug.o Chf/st_build/libChf.a
+dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 dist/saturn.cat: $(MSFS)
@@ -71,14 +71,14 @@ dist/saturn.cat: $(MSFS)
 	  do gencat $@ $$msf ; \
 	done
 
-docs:
-	make -C docs
+manual:
+	make -C manual
 
 # Cleaning
 clean:
 	rm -f src/*.o
-	make -C Chf clean
-	make -C docs clean
+	make -C src/libChf clean
+	make -C manual clean
 
 mrproper: clean
 	rm -f dist/pack dist/saturn dist/saturn.cat
