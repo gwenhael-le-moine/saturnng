@@ -40,16 +40,16 @@ DOTOS = src/cpu.o \
 	src/x11.o \
 	src/x_func.o
 
-MSFS=	Msfs/debug.msf \
-	Msfs/cpu.msf \
-	Msfs/modules.msf \
-	Msfs/disk_io.msf \
-	Msfs/x11.msf \
-	Msfs/serial.msf \
-	Msfs/flash49.msf \
-	Msfs/x_func.msf \
-	Msfs/saturn.msf \
-	Msfs/util.msf \
+MSFS=	src/debug.msf \
+	src/cpu.msf \
+	src/modules.msf \
+	src/disk_io.msf \
+	src/x11.msf \
+	src/serial.msf \
+	src/flash49.msf \
+	src/x_func.msf \
+	src/saturn.msf \
+	src/util.msf \
 	Chf/chf.msf
 
 .PHONY: all clean clean-all pretty-code install mrproper
