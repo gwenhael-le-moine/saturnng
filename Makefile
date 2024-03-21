@@ -60,7 +60,7 @@ all: src/libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
 src/libChf/st_build/libChf.a:
 	make -C src/libChf
 
-dist/saturn: $(DOTOS) src/libChf/st_build/src/libChf.a
+dist/saturn: $(DOTOS) src/libChf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/st_build/libChf.a
