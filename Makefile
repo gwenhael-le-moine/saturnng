@@ -52,11 +52,11 @@ MSFS=	src/debug.msf \
 	src/util.msf \
 	src/libChf/chf.msf
 
-.PHONY: all clean clean-all pretty-code install mrproper
+.PHONY: all clean clean-all pretty-code install mrproper get-roms
 
 all: src/libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
 
-# Binaries
+# Building
 src/libChf/st_build/libChf.a:
 	make -C src/libChf
 
@@ -89,51 +89,6 @@ clean-all: mrproper
 pretty-code:
 	clang-format -i src/*.c src/*.h
 
-# Installing
-ROMs/sxrom-a:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/sxrom-a.zip" --output - | funzip > "ROMs/sxrom-a"
-ROMs/sxrom-b:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/sxrom-b.zip" --output - | funzip > "ROMs/sxrom-b"
-ROMs/sxrom-c:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/sxrom-c.zip" --output - | funzip > "ROMs/sxrom-c"
-ROMs/sxrom-d:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/sxrom-d.zip" --output - | funzip > "ROMs/sxrom-d"
-ROMs/sxrom-e:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/sxrom-e.zip" --output - | funzip > "ROMs/sxrom-e"
-ROMs/sxrom-j:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/sxrom-j.zip" --output - | funzip > "ROMs/sxrom-j"
-ROMs/gxrom-l:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/gxrom-l.zip" --output - | funzip > "ROMs/gxrom-l"
-ROMs/gxrom-m:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/gxrom-m.zip" --output - | funzip > "ROMs/gxrom-m"
-ROMs/gxrom-p:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/gxrom-p.zip" --output - | funzip > "ROMs/gxrom-p"
-ROMs/gxrom-r:
-	curl "https://www.hpcalc.org/hp48/pc/emulators/gxrom-r.zip" --output - | funzip > "ROMs/gxrom-r"
-
-get-roms: ROMs/sxrom-a ROMs/sxrom-b ROMs/sxrom-c ROMs/sxrom-d ROMs/sxrom-e ROMs/sxrom-j ROMs/gxrom-l ROMs/gxrom-m ROMs/gxrom-p ROMs/gxrom-r
-
-# install: all get-roms
-#	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
-#	install -c -m 755 x48ng $(DESTDIR)$(PREFIX)/bin/x48ng
-
-#	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/x48ng
-#	install -c -m 755 mkcard $(DESTDIR)$(PREFIX)/share/x48ng/mkcard
-#	install -c -m 755 dump2rom $(DESTDIR)$(PREFIX)/share/x48ng/dump2rom
-#	install -c -m 755 checkrom $(DESTDIR)$(PREFIX)/share/x48ng/checkrom
-#	install -c -m 644 hplogo.png $(DESTDIR)$(PREFIX)/share/x48ng/hplogo.png
-#	cp -R ROMs/ $(DESTDIR)$(PREFIX)/share/x48ng/
-#	sed "s|@PREFIX@|$(PREFIX)|g" setup-x48ng-home.sh > $(DESTDIR)$(PREFIX)/share/x48ng/setup-x48ng-home.sh
-#	chmod 755 $(DESTDIR)$(PREFIX)/share/x48ng/setup-x48ng-home.sh
-
-#	install -m 755 -d -- $(DESTDIR)$(MANDIR)/man1
-#	sed "s|@VERSION@|$(VERSION_MAJOR).$(VERSION_MINOR).$(PATCHLEVEL)|g" x48ng.man.1 > $(DESTDIR)$(MANDIR)/man1/x48ng.1
-#	gzip -9  $(DESTDIR)$(MANDIR)/man1/x48ng.1
-
-#	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
-#	cp -R AUTHORS LICENSE README* doc* romdump/ $(DESTDIR)$(DOCDIR)
-#	x48ng --print-config > config.lua
-#	install -c -m 644 config.lua $(DESTDIR)$(DOCDIR)/config.lua
-
-#	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
-#	sed "s|@PREFIX@|$(PREFIX)|g" x48ng.desktop > $(DESTDIR)$(PREFIX)/share/applications/x48ng.desktop
+# Dependencies
+get-roms:
+	make -C ROMs get-roms
