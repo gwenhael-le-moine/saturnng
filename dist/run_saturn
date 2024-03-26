@@ -15,4 +15,4 @@ fi
 
 XAPPLRESDIR=.; export XAPPLRESDIR  # Take resources from here
 NLSPATH=./%N; export NLSPATH       # Message catalog is here, too
-./saturn $*
+./saturn "$@"
