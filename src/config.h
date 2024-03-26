@@ -185,7 +185,7 @@
    between 1 and 32, inclusive.  When undefined, Port_2 is not emulated at all.
    The default value is 8, that is, Port_2 is emulated and its size is 1Mbyte.
 */
-#define N_PORT_2_BANK 8
+#define N_PORT_2_BANK 32
 
 /* 2.5: SERIAL_FORCE_OPENPTY, SERIAL_FORCE_STREAMSPTY
    Optionally define exactly one of these symbols to force the use of a
