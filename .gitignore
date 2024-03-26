@@ -1,5 +1,5 @@
-/src/libChf/mt_build/
-/src/libChf/st_build/
+/libChf/mt_build/
+/libChf/st_build/
 /src/*.o
 manual/saturn.toc
 manual/saturn.aux

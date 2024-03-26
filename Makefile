@@ -6,7 +6,7 @@ CC ?= gcc
 
 OPTIM ?= 2
 
-CFLAGS = -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./src/libChf -L./src/libChf/st_build -lutil
+CFLAGS = -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/st_build -lutil
 LIBS = -lm -lChf -lXm
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext) -D_GNU_SOURCE=1
@@ -40,30 +40,30 @@ DOTOS = src/cpu.o \
 	src/x11.o \
 	src/x_func.o
 
-MSFS=	src/debug.msf \
-	src/cpu.msf \
-	src/modules.msf \
-	src/disk_io.msf \
-	src/x11.msf \
-	src/serial.msf \
-	src/flash49.msf \
-	src/x_func.msf \
-	src/saturn.msf \
-	src/util.msf \
-	src/libChf/chf.msf
+MSFS=	src/MSFs/debug.msf \
+	src/MSFs/cpu.msf \
+	src/MSFs/modules.msf \
+	src/MSFs/disk_io.msf \
+	src/MSFs/x11.msf \
+	src/MSFs/serial.msf \
+	src/MSFs/flash49.msf \
+	src/MSFs/x_func.msf \
+	src/MSFs/saturn.msf \
+	src/MSFs/util.msf \
+	libChf/chf.msf
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms
 
-all: src/libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
+all: libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
 
 # Building
-src/libChf/st_build/libChf.a:
-	make -C src/libChf
+libChf/st_build/libChf.a:
+	make -C libChf
 
-dist/saturn: $(DOTOS) src/libChf/st_build/libChf.a
+dist/saturn: $(DOTOS) libChf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
-dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/st_build/libChf.a
+dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 dist/saturn.cat: $(MSFS)
@@ -77,7 +77,7 @@ manual:
 # Cleaning
 clean:
 	rm -f src/*.o
-	make -C src/libChf clean
+	make -C libChf clean
 	make -C manual clean
 
 mrproper: clean
@@ -87,7 +87,7 @@ clean-all: mrproper
 
 # Formatting
 pretty-code:
-	clang-format -i src/*.c src/*.h src/libChf/*.c src/libChf/*.h
+	clang-format -i src/*.c src/*.h libChf/*.c libChf/*.h
 
 # Dependencies
 get-roms:
