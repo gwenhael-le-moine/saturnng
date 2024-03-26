@@ -1,19 +1,21 @@
 #!/bin/bash -eu
 
-STATEDIR=./stateDir.48
-mkdir -p $STATEDIR
+cd "$(dirname "$0")" ; CWD=$(pwd)
 
-if [ ! -e $STATEDIR/gxrom-r ]; then
+STATEDIR=$CWD/stateDir.48
+mkdir -p "$STATEDIR"
+
+if [ ! -e "$STATEDIR"/gxrom-r ]; then
     make -C .. get-roms
-    cp ../ROMs/gxrom-r $STATEDIR/gxrom-r
+    cp ../ROMs/gxrom-r "$STATEDIR"/gxrom-r
 fi
 
 RAM=''
-if [ ! -e $STATEDIR/ram ]; then
+if [ ! -e "$STATEDIR"/ram ]; then
     RAM=-reset
 fi
 
-[ ! -e $STATEDIR/port1 ] && dd if=/dev/zero of=$STATEDIR/port1 bs=1k count=128
-[ ! -e $STATEDIR/port2 ] && dd if=/dev/zero of=$STATEDIR/port2 bs=1k count=1024
+[ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
+[ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
 
-./run_saturn -face hp48 -hw hp48 -stateDir $STATEDIR -rom gxrom-r $RAM -port1 port1 -port2 port2
+./run_saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2
