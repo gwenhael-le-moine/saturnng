@@ -76,13 +76,12 @@
 
 .- */
 
-
 /*---------------------------------------------------------------------------
-	Function prototypes
+        Function prototypes
   ---------------------------------------------------------------------------*/
 
-void KeybRSI(void);
-InputRegister KeybIN(OutputRegister out);
-void KeybPress(const char *key);
-void KeybRelease(const char *key);
-void KeybReset(void);
+void KeybRSI( void );
+InputRegister KeybIN( OutputRegister out );
+void KeybPress( const char* key );
+void KeybRelease( const char* key );
+void KeybReset( void );

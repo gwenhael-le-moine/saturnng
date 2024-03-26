@@ -76,9 +76,8 @@ static char rcs_id[] = "$Id: disk_io.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include "disk_io.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	DISK_IO_CHF_MODULE_ID
+#define CHF_MODULE_ID DISK_IO_CHF_MODULE_ID
 #include <Chf.h>
-
 
 /* .+
 
@@ -91,59 +90,54 @@ static char rcs_id[] = "$Id: disk_io.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
   caller a status code.
 
 .call	      :
-		st = ReadNibbledFromFile(name, size, dest);
+                st = ReadNibbledFromFile(name, size, dest);
 .input	      :
-		const char *name, file name
-		int size, size of the file (nibbles, NOT bytes)
+                const char *name, file name
+                int size, size of the file (nibbles, NOT bytes)
 .output	      :
-		Nibble *dest, pointer to the destination memory area
-		int st, status code
+                Nibble *dest, pointer to the destination memory area
+                int st, status code
 .status_codes :
-		DISK_IO_I_CALLED	(signalled)
-		DISK_IO_E_OPEN
-		DISK_IO_E_GETC
+                DISK_IO_I_CALLED	(signalled)
+                DISK_IO_E_OPEN
+                DISK_IO_E_GETC
 .notes	      :
   1.1, 11-Feb-1998, creation
 
 .- */
-int ReadNibblesFromFile(const char *name, int size, Nibble *dest)
+int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 {
-  FILE *f;
-  int i;
-  int by;
-  int st = DISK_IO_S_OK;
+    FILE* f;
+    int i;
+    int by;
+    int st = DISK_IO_S_OK;
 
-  debug1(DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile");
+    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile" );
 
-  if((f = fopen(name, "rb")) == (FILE *)NULL)
-  {
-    ChfErrnoCondition;
-    ChfCondition st=DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-  }
-
-  else
-  {
-    for(i=0; i<size;)
-    {
-      by = getc(f);
-
-      if(by == -1)
-      {
+    if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
-        ChfCondition st=DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
-	break;
-      }
-
-      dest[i++] = (Nibble)(by & 0x0F);
-      dest[i++] = (Nibble)((by & 0xF0) >> 4);
+        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     }
 
-    (void)fclose(f);
-  }
+    else {
+        for ( i = 0; i < size; ) {
+            by = getc( f );
 
-  return st;
+            if ( by == -1 ) {
+                ChfErrnoCondition;
+                ChfCondition st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
+                break;
+            }
+
+            dest[ i++ ] = ( Nibble )( by & 0x0F );
+            dest[ i++ ] = ( Nibble )( ( by & 0xF0 ) >> 4 );
+        }
+
+        ( void )fclose( f );
+    }
+
+    return st;
 }
-
 
 /* .+
 
@@ -155,62 +149,56 @@ int ReadNibblesFromFile(const char *name, int size, Nibble *dest)
   It returns to the caller a status code
 
 .call	      :
-		st = WriteNibblesToFile(src, size, name);
+                st = WriteNibblesToFile(src, size, name);
 .input	      :
-		const Nibble *src, pointer to data to be written
-		int size, # of nibble to write
-		const char *name, file name
+                const Nibble *src, pointer to data to be written
+                int size, # of nibble to write
+                const char *name, file name
 .output	      :
-		int st, status code
+                int st, status code
 .status_codes :
-		DISK_IO_I_CALLED	(signalled)
-		DISK_IO_E_OPEN
-		DISK_IO_E_PUTC
-		DISK_IO_E_CLOSE
+                DISK_IO_I_CALLED	(signalled)
+                DISK_IO_E_OPEN
+                DISK_IO_E_PUTC
+                DISK_IO_E_CLOSE
 .notes	      :
   1.1, 11-Feb-1998, creation
 
 .- */
-int WriteNibblesToFile(const Nibble *src, int size, const char *name)
+int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 {
-  FILE *f;
-  int i;
-  int by;
-  int st = DISK_IO_S_OK;
+    FILE* f;
+    int i;
+    int by;
+    int st = DISK_IO_S_OK;
 
-  debug1(DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile");
+    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile" );
 
-  if((f = fopen(name, "wb")) == (FILE *)NULL)
-  {
-    ChfErrnoCondition;
-    ChfCondition st=DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-  }
-
-  else
-  {
-    for(i=0; i<size;)
-    {
-      by  = (int)src[i++];
-      by |= (int)src[i++] << 4;
-
-      if(putc(by, f) == EOF)
-      {
+    if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
-        ChfCondition st=DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
-	break;
-      }
+        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     }
 
-    if(fclose(f) == EOF)
-    {
-      ChfErrnoCondition;
-      ChfCondition st=DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
-    }
-  }
+    else {
+        for ( i = 0; i < size; ) {
+            by = ( int )src[ i++ ];
+            by |= ( int )src[ i++ ] << 4;
 
-  return st;
+            if ( putc( by, f ) == EOF ) {
+                ChfErrnoCondition;
+                ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                break;
+            }
+        }
+
+        if ( fclose( f ) == EOF ) {
+            ChfErrnoCondition;
+            ChfCondition st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
+        }
+    }
+
+    return st;
 }
-
 
 /* .+
 
@@ -222,47 +210,43 @@ int WriteNibblesToFile(const Nibble *src, int size, const char *name)
   from the disk file 'name' and returns a status code to the caller.
 
 .call	      :
-		st = ReadStructFromFile(name, s_size, s);
+                st = ReadStructFromFile(name, s_size, s);
 .input	      :
-		const char *name, file name
-		size_t s_size, structure size
+                const char *name, file name
+                size_t s_size, structure size
 .output	      :
-		void *s, pointer to the structure
+                void *s, pointer to the structure
 .status_codes :
-		DISK_IO_I_CALLED	(signalled)
-		DISK_IO_E_OPEN
-		DISK_IO_E_READ
+                DISK_IO_I_CALLED	(signalled)
+                DISK_IO_E_OPEN
+                DISK_IO_E_READ
 .notes	      :
   1.1, 11-Feb-1998, creation
 
 .- */
-int ReadStructFromFile(const char *name, size_t s_size, void *s)
+int ReadStructFromFile( const char* name, size_t s_size, void* s )
 {
-  FILE *f;
-  int st = DISK_IO_S_OK;
+    FILE* f;
+    int st = DISK_IO_S_OK;
 
-  debug1(DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile");
+    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile" );
 
-  if((f = fopen(name, "rb")) == (FILE *)NULL)
-  {
-    ChfErrnoCondition;
-    ChfCondition st=DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-  }
-
-  else
-  {
-    if(fread(s, s_size, (size_t)1, f) != 1)
-    {
-      ChfErrnoCondition;
-      ChfCondition st=DISK_IO_E_READ, CHF_ERROR, name ChfEnd;
+    if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     }
 
-    (void)fclose(f);
-  }
+    else {
+        if ( fread( s, s_size, ( size_t )1, f ) != 1 ) {
+            ChfErrnoCondition;
+            ChfCondition st = DISK_IO_E_READ, CHF_ERROR, name ChfEnd;
+        }
 
-  return st;
+        ( void )fclose( f );
+    }
+
+    return st;
 }
-
 
 /* .+
 
@@ -274,49 +258,45 @@ int ReadStructFromFile(const char *name, size_t s_size, void *s)
   'name' and returns to the caller a status code.
 
 .call	      :
-		st =WriteStructToFile(s, s_size, name);
+                st =WriteStructToFile(s, s_size, name);
 .input	      :
-		const void *s, pointer to the structure to be written
-		size_t s_size, structure size
-		const char *name, output file name
+                const void *s, pointer to the structure to be written
+                size_t s_size, structure size
+                const char *name, output file name
 .output	      :
-		int st, status code
+                int st, status code
 .status_codes :
-		DISK_IO_I_CALLED	(signalled)
-		DISK_IO_E_OPEN
-		DISK_IO_E_WRITE
-		DISK_IO_E_CLOSE
+                DISK_IO_I_CALLED	(signalled)
+                DISK_IO_E_OPEN
+                DISK_IO_E_WRITE
+                DISK_IO_E_CLOSE
 .notes	      :
   1.1, 11-Feb-1998, creation
 
 .- */
-int WriteStructToFile(const void *s, size_t s_size, const char *name)
+int WriteStructToFile( const void* s, size_t s_size, const char* name )
 {
-  FILE *f;
-  int st = DISK_IO_S_OK;
+    FILE* f;
+    int st = DISK_IO_S_OK;
 
-  debug1(DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile");
+    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile" );
 
-  if((f = fopen(name, "wb")) == (FILE *)NULL)
-  {
-    ChfErrnoCondition;
-    ChfCondition st=DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-  }
-
-  else
-  {
-    if(fwrite(s, s_size, (size_t)1, f) != 1)
-    {
-      ChfErrnoCondition;
-      ChfCondition st=DISK_IO_E_WRITE, CHF_ERROR, name ChfEnd;
+    if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     }
 
-    if(fclose(f) == EOF)
-    {
-      ChfErrnoCondition;
-      ChfCondition st=DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
-    }
-  }
+    else {
+        if ( fwrite( s, s_size, ( size_t )1, f ) != 1 ) {
+            ChfErrnoCondition;
+            ChfCondition st = DISK_IO_E_WRITE, CHF_ERROR, name ChfEnd;
+        }
 
-  return st;
+        if ( fclose( f ) == EOF ) {
+            ChfErrnoCondition;
+            ChfCondition st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
+        }
+    }
+
+    return st;
 }

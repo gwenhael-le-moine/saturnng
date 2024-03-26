@@ -73,25 +73,23 @@ static char rcs_id[] = "$Id: debug.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "cpu.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	DEBUG_CHF_MODULE_ID
+#define CHF_MODULE_ID DEBUG_CHF_MODULE_ID
 #include <Chf.h>
 
-
 /*---------------------------------------------------------------------------
-	Static/Global variables
+        Static/Global variables
   ---------------------------------------------------------------------------*/
 
 #ifdef DEBUG
-#ifdef DEBUG_LEVEL
+#  ifdef DEBUG_LEVEL
 int debug_level = DEBUG_LEVEL;
-#else
+#  else
 int debug_level = 0;
+#  endif
 #endif
-#endif
-
 
 /*---------------------------------------------------------------------------
-	Public functions
+        Public functions
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -105,23 +103,23 @@ int debug_level = 0;
   it signals a condition and does nothing more.
 
 .call	      :
-		SetDebugLevel(new_level)
+                SetDebugLevel(new_level)
 .input	      :
-		int new_level, new value of the debug_level flag
+                int new_level, new value of the debug_level flag
 .output	      :
-		void
+                void
 .status_codes :
-		DEBUG_W_NOT_SUPPORTED
+                DEBUG_W_NOT_SUPPORTED
 .notes	      :
   1.1, 28-Jan-1998, creation
 
 .- */
-void SetDebugLevel(int new_level)
+void SetDebugLevel( int new_level )
 {
 #ifdef DEBUG
-  debug_level = new_level;
+    debug_level = new_level;
 #else
-  ChfCondition DEBUG_W_NOT_SUPPORTED, CHF_WARNING ChfEnd;
-  ChfSignal();
+    ChfCondition DEBUG_W_NOT_SUPPORTED, CHF_WARNING ChfEnd;
+    ChfSignal();
 #endif
 }

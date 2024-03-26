@@ -103,8 +103,8 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include <stdio.h>
 #include <stdlib.h>
 #include <setjmp.h>
-#include <string.h>		/* 3.1: strcpy(), strcat() */
-#include <unistd.h>		/* isatty() */
+#include <string.h> /* 3.1: strcpy(), strcat() */
+#include <unistd.h> /* isatty() */
 
 #include "config.h"
 #include "machdep.h"
@@ -114,24 +114,22 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "args.h"
 #include "debug.h"
 
-
 /* Chf condition codes (main program only) */
 
-#define	CHF_MODULE_ID	MAIN_CHF_MODULE_ID
+#define CHF_MODULE_ID MAIN_CHF_MODULE_ID
 #include <Chf.h>
 
-#define MAIN_M_COPYRIGHT	501
-#define MAIN_M_LICENSE		502
-
+#define MAIN_M_COPYRIGHT 501
+#define MAIN_M_LICENSE 502
 
 /*---------------------------------------------------------------------------
    Chf parameters - Do not change.
    The ABNORMAL_EXIT_CODE is taken from stdlib.h (EXIT_FAILURE)
   ---------------------------------------------------------------------------*/
 
-#define CONDITION_STACK_SIZE	16
-#define HANDLER_STACK_SIZE	8
-#define ABNORMAL_EXIT_CODE	EXIT_FAILURE
+#define CONDITION_STACK_SIZE 16
+#define HANDLER_STACK_SIZE 8
+#define ABNORMAL_EXIT_CODE EXIT_FAILURE
 
 /* Conditional prefix and mandatory suffix to make a message catalog
    name from argv[0]
@@ -139,30 +137,26 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 static const char cat_prefix[] = "./";
 static const char cat_suffix[] = ".cat";
 
-#define CAT_PREFIX_LEN (sizeof(cat_prefix)+1)
-#define CAT_SUFFIX_LEN (sizeof(cat_suffix)+1)
+#define CAT_PREFIX_LEN ( sizeof( cat_prefix ) + 1 )
+#define CAT_SUFFIX_LEN ( sizeof( cat_suffix ) + 1 )
 
-
-static void adjust_setlocale(void)
+static void adjust_setlocale( void )
 {
-    fprintf(stderr,
-	    "saturn-W-locale probably bad; reverting to C locale\n");
+    fprintf( stderr, "saturn-W-locale probably bad; reverting to C locale\n" );
 
-    putenv("LC_ALL=C");
-    putenv("LC_COLLATE=C");
-    putenv("LC_CTYPE=C");
-    putenv("LC_MESSAGES=C");
-    putenv("LC_MONETARY=C");
-    putenv("LC_NUMERIC=C");
-    putenv("LC_TIME=C");
-    putenv("LANG=C");
+    putenv( "LC_ALL=C" );
+    putenv( "LC_COLLATE=C" );
+    putenv( "LC_CTYPE=C" );
+    putenv( "LC_MESSAGES=C" );
+    putenv( "LC_MONETARY=C" );
+    putenv( "LC_NUMERIC=C" );
+    putenv( "LC_TIME=C" );
+    putenv( "LANG=C" );
 }
 
-
 /*---------------------------------------------------------------------------
-	Public functions
+        Public functions
   ---------------------------------------------------------------------------*/
-
 
 /* .+
 
@@ -182,98 +176,89 @@ static void adjust_setlocale(void)
     - made Chf initialization more robust with respect to bad locales
 
 .- */
-int main(int argc, char *argv[])
+int main( int argc, char* argv[] )
 {
-    char *cat_name;
+    char* cat_name;
     int st;
     int retry = 0;
 
-    if((cat_name = malloc(strlen(argv[0])+CAT_PREFIX_LEN+CAT_SUFFIX_LEN+1))
-       == NULL)
-    {
-	fprintf(stderr, "saturn-E-cat_name initialization failed\n");
-	exit(ABNORMAL_EXIT_CODE);
+    if ( ( cat_name = malloc( strlen( argv[ 0 ] ) + CAT_PREFIX_LEN + CAT_SUFFIX_LEN + 1 ) ) == NULL ) {
+        fprintf( stderr, "saturn-E-cat_name initialization failed\n" );
+        exit( ABNORMAL_EXIT_CODE );
     }
 
     /* Generate catalog name, without optional prefix */
-    strcpy(cat_name, argv[0]);
-    strcat(cat_name, cat_suffix);
+    strcpy( cat_name, argv[ 0 ] );
+    strcat( cat_name, cat_suffix );
 
     /* 3.15: Retry the initialization steps below two times; before trying
        the second time, adjust the setlocale() environment variables
        with adjust_setlocale()
     */
-    while(retry < 2)
-    {
-	/* Chf initialization with msgcat subsystem; notice that on
-	   some systems (e.g. Digital UNIX) catopen() can succeed even
-	   if it was not able to open the right message catalog;
-	   better try it now.
-	*/
-	if((st = ChfMsgcatInit(
-	    argv[0],			/* Application's name */
-	    CHF_DEFAULT,		/* Options */
-	    cat_name,			/* Name of the message catalog */
-	    CONDITION_STACK_SIZE,	/* Size of the condition stack */
-	    HANDLER_STACK_SIZE,		/* Size of the handler stack */
-	    ABNORMAL_EXIT_CODE		/* Abnormal exit code */
-	    )) != CHF_S_OK
-	   ||
-	   ChfGetMessage(CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL) == NULL)
-	    fprintf(stderr,
-		    "saturn-E-Primary Chf initialization failed (%d)\n", st);
+    while ( retry < 2 ) {
+        /* Chf initialization with msgcat subsystem; notice that on
+           some systems (e.g. Digital UNIX) catopen() can succeed even
+           if it was not able to open the right message catalog;
+           better try it now.
+        */
+        if ( ( st = ChfMsgcatInit( argv[ 0 ],            /* Application's name */
+                                   CHF_DEFAULT,          /* Options */
+                                   cat_name,             /* Name of the message catalog */
+                                   CONDITION_STACK_SIZE, /* Size of the condition stack */
+                                   HANDLER_STACK_SIZE,   /* Size of the handler stack */
+                                   ABNORMAL_EXIT_CODE    /* Abnormal exit code */
+                                   ) ) != CHF_S_OK ||
+             ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL )
+            fprintf( stderr, "saturn-E-Primary Chf initialization failed (%d)\n", st );
 
-	else
-	    break;
+        else
+            break;
 
-	/* Bring down Chf before initializing it again */
-	if(st == CHF_S_OK)  ChfExit();
+        /* Bring down Chf before initializing it again */
+        if ( st == CHF_S_OK )
+            ChfExit();
 
-	/* Try alternate message catalog name (with prefix) */
-	strcpy(cat_name, cat_prefix);
-	strcat(cat_name, argv[0]);
-	strcat(cat_name, cat_suffix);
+        /* Try alternate message catalog name (with prefix) */
+        strcpy( cat_name, cat_prefix );
+        strcat( cat_name, argv[ 0 ] );
+        strcat( cat_name, cat_suffix );
 
-	if((st = ChfMsgcatInit(
-	    argv[0],			/* Application's name */
-	    CHF_DEFAULT,		/* Options */
-	    cat_name,			/* Name of the message catalog */
-	    CONDITION_STACK_SIZE,	/* Size of the condition stack */
-	    HANDLER_STACK_SIZE,		/* Size of the handler stack */
-	    ABNORMAL_EXIT_CODE		/* Abnormal exit code */
-	    )) != CHF_S_OK
-	   ||
-	   ChfGetMessage(CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL) == NULL)
-	    fprintf(stderr,
-		    "saturn-E-Alternate Chf initialization failed (%d)\n",
-		    st);
+        if ( ( st = ChfMsgcatInit( argv[ 0 ],            /* Application's name */
+                                   CHF_DEFAULT,          /* Options */
+                                   cat_name,             /* Name of the message catalog */
+                                   CONDITION_STACK_SIZE, /* Size of the condition stack */
+                                   HANDLER_STACK_SIZE,   /* Size of the handler stack */
+                                   ABNORMAL_EXIT_CODE    /* Abnormal exit code */
+                                   ) ) != CHF_S_OK ||
+             ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL )
+            fprintf( stderr, "saturn-E-Alternate Chf initialization failed (%d)\n", st );
 
-	else
-	    break;
+        else
+            break;
 
-	/* Bring down Chf before initializing it again */
-	if(st == CHF_S_OK)  ChfExit();
+        /* Bring down Chf before initializing it again */
+        if ( st == CHF_S_OK )
+            ChfExit();
 
-	/* Attempt to adjust setlocale() environment variables */
-	if(retry++ == 0)  adjust_setlocale();
+        /* Attempt to adjust setlocale() environment variables */
+        if ( retry++ == 0 )
+            adjust_setlocale();
     }
 
-    if(retry == 2)
-    {
-	fprintf(stderr, "saturn-F-Application aborted\n");
-	exit(ABNORMAL_EXIT_CODE);
+    if ( retry == 2 ) {
+        fprintf( stderr, "saturn-F-Application aborted\n" );
+        exit( ABNORMAL_EXIT_CODE );
     }
 
     /* cat_name no longer needed */
-    free(cat_name);
+    free( cat_name );
 
     /* 3.9: Print out MAIN_M_COPYRIGHT and MAIN_M_LICENSE on stdout now */
-    fprintf(stdout, ChfGetMessage(CHF_MODULE_ID, MAIN_M_COPYRIGHT, ""),
-	    "$Revision: 4.1 $");
-    fprintf(stdout, ChfGetMessage(CHF_MODULE_ID, MAIN_M_LICENSE, ""));
+    fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, "" ), "$Revision: 4.1 $" );
+    fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_LICENSE, "" ) );
 
     /* Initialize GUI and associated lcd display emulation module */
-    InitializeGui(argc, argv);
+    InitializeGui( argc, argv );
 
     /* Initialize serial port emulation.
        This function returns the name of the slave side of the pty;
@@ -281,30 +266,28 @@ int main(int argc, char *argv[])
        a condition containing the same information and displays the pty name
        on the main emulator's window.
     */
-    (void)SerialInit();
+    ( void )SerialInit();
 
     /* Initialize emulator proper */
     EmulatorInit();
 
     /* 3.15: Repeat copyright message on GUI if stdout is not a tty */
-    if(! isatty(fileno(stdout)))
-    {
-	ChfCondition MAIN_M_LICENSE, CHF_INFO ChfEnd;
-	ChfCondition MAIN_M_COPYRIGHT, CHF_INFO, "$Revision: 4.1 $" ChfEnd;
+    if ( !isatty( fileno( stdout ) ) ) {
+        ChfCondition MAIN_M_LICENSE, CHF_INFO ChfEnd;
+        ChfCondition MAIN_M_COPYRIGHT, CHF_INFO, "$Revision: 4.1 $" ChfEnd;
 
-	ChfSignal();
+        ChfSignal();
     }
 
-    if(args.monitor)
-    {
-	/* Invoke Monitor */
-	void Monitor(void);
-	Monitor();
+    if ( args.monitor ) {
+        /* Invoke Monitor */
+        void Monitor( void );
+        Monitor();
     }
 
     else
-	/* Call Emulator directly */
-	Emulator();
+        /* Call Emulator directly */
+        Emulator();
 
     return EXIT_SUCCESS;
 }

@@ -80,65 +80,62 @@
 
 .- */
 
-
 /*---------------------------------------------------------------------------
-	Macro/Data type definitions
+        Macro/Data type definitions
   ---------------------------------------------------------------------------*/
 
-#define SERIAL_RCS_INFO		"$Revision: 4.1 $ $State: Rel $"
-
+#define SERIAL_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
 
 /*---------------------------------------------------------------------------
-	Chf condition codes
+        Chf condition codes
   ---------------------------------------------------------------------------*/
 
-#define SERIAL_I_CALLED		101	/* Function %s called */
-#define SERIAL_I_REVISION	102	/* Serial port emulation rev. %s */
-#define SERIAL_I_READ		103	/* Read %s -> %x */
-#define SERIAL_I_WRITE		104	/* Write %s %x -> %x */
-#define SERIAL_I_RBR		105	/* Read RBR -> %x */
-#define SERIAL_I_TBR		106	/* Write TBR <- %x */
-#define SERIAL_I_PTY_NAME	107	/* Slave pty name is %s */
-#define SERIAL_W_EMPTY_RRB	201	/* Read from empty RX buffer, rcs=%x */
-#define SERIAL_W_FULL_TRB	202	/* Write into full TX buffer, tcs=%x */
-#define SERIAL_W_NOPTY		203	/* 3.16: Pty support not available */
-#define SERIAL_E_TRB_DRAIN	301	/* Error draining TX buffer */
-#define SERIAL_E_RRB_CHARGE	302	/* Error charging RX buffer */
-#define SERIAL_E_PTY_CLOSE	303	/* Error closing pty */
-#define SERIAL_F_OPENPTY	401	/* openpty() failed on master pty */
-#define SERIAL_F_FCNTL		402	/* fcntl() failed on master pty */
-#define SERIAL_F_OPEN_MASTER	403	/* Can't open pty master %s */
-#define SERIAL_F_GRANTPT	404	/* grantpt() failed on master pty */
-#define SERIAL_F_UNLOCKPT	405	/* unlockpt() failed on master pty */
-#define SERIAL_F_OPEN_SLAVE	406	/* Can't open pty slave %s */
-#define SERIAL_F_PUSH		407	/* ioctl(I_PUSH,%s) failed on slave */
-#define SERIAL_F_TCGETATTR	408	/* tcgetattr() failed on master */
-#define SERIAL_F_TCSETATTR	409	/* tcsetattr() failed on master */
-
+#define SERIAL_I_CALLED 101      /* Function %s called */
+#define SERIAL_I_REVISION 102    /* Serial port emulation rev. %s */
+#define SERIAL_I_READ 103        /* Read %s -> %x */
+#define SERIAL_I_WRITE 104       /* Write %s %x -> %x */
+#define SERIAL_I_RBR 105         /* Read RBR -> %x */
+#define SERIAL_I_TBR 106         /* Write TBR <- %x */
+#define SERIAL_I_PTY_NAME 107    /* Slave pty name is %s */
+#define SERIAL_W_EMPTY_RRB 201   /* Read from empty RX buffer, rcs=%x */
+#define SERIAL_W_FULL_TRB 202    /* Write into full TX buffer, tcs=%x */
+#define SERIAL_W_NOPTY 203       /* 3.16: Pty support not available */
+#define SERIAL_E_TRB_DRAIN 301   /* Error draining TX buffer */
+#define SERIAL_E_RRB_CHARGE 302  /* Error charging RX buffer */
+#define SERIAL_E_PTY_CLOSE 303   /* Error closing pty */
+#define SERIAL_F_OPENPTY 401     /* openpty() failed on master pty */
+#define SERIAL_F_FCNTL 402       /* fcntl() failed on master pty */
+#define SERIAL_F_OPEN_MASTER 403 /* Can't open pty master %s */
+#define SERIAL_F_GRANTPT 404     /* grantpt() failed on master pty */
+#define SERIAL_F_UNLOCKPT 405    /* unlockpt() failed on master pty */
+#define SERIAL_F_OPEN_SLAVE 406  /* Can't open pty slave %s */
+#define SERIAL_F_PUSH 407        /* ioctl(I_PUSH,%s) failed on slave */
+#define SERIAL_F_TCGETATTR 408   /* tcgetattr() failed on master */
+#define SERIAL_F_TCSETATTR 409   /* tcsetattr() failed on master */
 
 /*---------------------------------------------------------------------------
-	Function prototypes
+        Function prototypes
   ---------------------------------------------------------------------------*/
 
 /* Initialization */
-const char *SerialInit(void);
-void SerialClose(void);
+const char* SerialInit( void );
+void SerialClose( void );
 
 /* Information about slave side of pty */
-const char *SerialPtyName(void);
+const char* SerialPtyName( void );
 
 /* Register read */
-Nibble Serial_IOC_Read(void);
-Nibble Serial_RCS_Read(void);
-Nibble Serial_TCS_Read(void);
-int8 Serial_RBR_Read(void);
+Nibble Serial_IOC_Read( void );
+Nibble Serial_RCS_Read( void );
+Nibble Serial_TCS_Read( void );
+int8 Serial_RBR_Read( void );
 
 /* Register write */
-void Serial_IOC_Write(Nibble n);
-void Serial_RCS_Write(Nibble n);
-void Serial_TCS_Write(Nibble n);
-void Serial_CRER_Write(Nibble n);
-void Serial_TBR_Write(int8 d);
+void Serial_IOC_Write( Nibble n );
+void Serial_RCS_Write( Nibble n );
+void Serial_TCS_Write( Nibble n );
+void Serial_CRER_Write( Nibble n );
+void Serial_TBR_Write( int8 d );
 
 /* Event handling */
-void HandleSerial(void);
+void HandleSerial( void );

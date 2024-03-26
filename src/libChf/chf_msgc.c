@@ -35,23 +35,22 @@ static char rcs_id[] = "$Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef _WIN32
-#include <errno.h>
+#  include <errno.h>
 #endif
 #include <setjmp.h>
 #include <string.h>
 #ifndef _WIN32
-#include <locale.h>
-#include <nl_types.h>
+#  include <locale.h>
+#  include <nl_types.h>
 #endif
 
 #ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
+#  include <windows.h>
+#  include <tchar.h>
 #endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
-
 
 /* -------------------------------------------------------------------------
    Global and static variables
@@ -62,40 +61,27 @@ static char rcs_id[] = "$Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $
    ------------------------------------------------------------------------- */
 
 #ifndef _WIN32
-typedef struct
-{
-  nl_catd catalog;		/* Message catalog descriptor */
-}
-  ChfMsgcatContext;
+typedef struct {
+    nl_catd catalog; /* Message catalog descriptor */
+} ChfMsgcatContext;
 #endif
-
 
 /* -------------------------------------------------------------------------
    Private functions
    ------------------------------------------------------------------------- */
 
-
 #ifndef _WIN32
-static const char *GetMessage(
-  void *private_context,
-  const int module_id,
-  const int condition_code,
-  const char *default_message
-)
+static const char* GetMessage( void* private_context, const int module_id, const int condition_code, const char* default_message )
 {
-  return(catgets(((ChfMsgcatContext *)private_context)->catalog, module_id,
-    condition_code, default_message));
+    return ( catgets( ( ( ChfMsgcatContext* )private_context )->catalog, module_id, condition_code, default_message ) );
 }
 
-static void ExitMessage(
-  void *private_context
-)
+static void ExitMessage( void* private_context )
 {
-  (void)catclose(((ChfMsgcatContext *)private_context)->catalog);
-  free(private_context);
+    ( void )catclose( ( ( ChfMsgcatContext* )private_context )->catalog );
+    free( private_context );
 }
 #endif
-
 
 /* -------------------------------------------------------------------------
    Public functions
@@ -115,7 +101,7 @@ static void ExitMessage(
   other CHF initialization routines before using any other CHF function.
 
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_DUP_INIT
-	if CHF has already been initialized before.
+        if CHF has already been initialized before.
 
   WIN32:
 
@@ -123,79 +109,72 @@ static void ExitMessage(
     always returns CHF_F_NOT_AVAILABLE
 
 .call	      :
-		cc = ChfMsgcatInit(app_name, options,
-			msgcat_name,
-			condition_stack_size, handler_stack_size,
-			exit_code);
+                cc = ChfMsgcatInit(app_name, options,
+                        msgcat_name,
+                        condition_stack_size, handler_stack_size,
+                        exit_code);
 .input	      :
-		const char *app_name, Application's name
-		const ChfOptions options, Options
-		const char *msgcat_name, Name of the message catalog 
-		const int condition_stack_size, Size of the condition stack
-		const int handler_stack_size, Size of the handler stack
-		const int exit_code, Abnormal exit code
+                const char *app_name, Application's name
+                const ChfOptions options, Options
+                const char *msgcat_name, Name of the message catalog
+                const int condition_stack_size, Size of the condition stack
+                const int handler_stack_size, Size of the handler stack
+                const int exit_code, Abnormal exit code
 .output	      :
-		int cc, condition code
+                int cc, condition code
 .status_codes :
-		CHF_F_SETLOCALE, setlocale() failed
-		CHF_F_CATOPEN, catopen() failed
-		CHF_F_MALLOC, FATAL, memory allocation failed
-		CHF_F_NOT_AVAILABLE, FATAL, function not available
+                CHF_F_SETLOCALE, setlocale() failed
+                CHF_F_CATOPEN, catopen() failed
+                CHF_F_MALLOC, FATAL, memory allocation failed
+                CHF_F_NOT_AVAILABLE, FATAL, function not available
 .notes	      :
   1.1, 17-May-1996, creation
   2.2, 22-Jan-2001, update:
     - added Win32 support
 
 .- */
-int ChfMsgcatInit(		/* Initialization with msgcat subsystem */
-  const ChfChar *app_name,			/* Application's name */
-  const ChfOptions options,		/* Options */
-  const ChfChar *msgcat_name,		/* Name of the message catalog */
-  const int condition_stack_size,	/* Size of the condition stack */
-  const int handler_stack_size,		/* Size of the handler stack */
-  const int exit_code			/* Abnormal exit code */
+int ChfMsgcatInit(                                 /* Initialization with msgcat subsystem */
+                   const ChfChar* app_name,        /* Application's name */
+                   const ChfOptions options,       /* Options */
+                   const ChfChar* msgcat_name,     /* Name of the message catalog */
+                   const int condition_stack_size, /* Size of the condition stack */
+                   const int handler_stack_size,   /* Size of the handler stack */
+                   const int exit_code             /* Abnormal exit code */
 )
 {
 #ifdef _WIN32
-  /* This function always fails in _WIN32, because message catalogs
-     are not supported.
-  */
-  return CHF_F_NOT_AVAILABLE;
+    /* This function always fails in _WIN32, because message catalogs
+       are not supported.
+    */
+    return CHF_F_NOT_AVAILABLE;
 
 #else
-  ChfMsgcatContext *private_context;
-  int cc;
+    ChfMsgcatContext* private_context;
+    int cc;
 
-  if((private_context =
-    (ChfMsgcatContext *)malloc(sizeof(ChfMsgcatContext))) ==
-    (ChfMsgcatContext *)NULL)
-    cc = CHF_F_MALLOC;
+    if ( ( private_context = ( ChfMsgcatContext* )malloc( sizeof( ChfMsgcatContext ) ) ) == ( ChfMsgcatContext* )NULL )
+        cc = CHF_F_MALLOC;
 
-  else if(setlocale(LC_ALL, "") == (char *)NULL)
-  {
-    free(private_context);
-    cc = CHF_F_SETLOCALE;
-  }
+    else if ( setlocale( LC_ALL, "" ) == ( char* )NULL ) {
+        free( private_context );
+        cc = CHF_F_SETLOCALE;
+    }
 
-  else if((private_context->catalog = catopen(msgcat_name, 0)) ==
-    (nl_catd)(-1))
-  {
-    free(private_context);
-    cc = CHF_F_CATOPEN;
-  }
+    else if ( ( private_context->catalog = catopen( msgcat_name, 0 ) ) == ( nl_catd )( -1 ) ) {
+        free( private_context );
+        cc = CHF_F_CATOPEN;
+    }
 
-  else if((cc = ChfInit(app_name, options, (void *)private_context,
-    GetMessage, ExitMessage, condition_stack_size, handler_stack_size,
-    exit_code)) != CHF_S_OK)
-  {
-    (void)catclose(private_context->catalog);
-    free(private_context);
-  }
+    else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, GetMessage, ExitMessage, condition_stack_size,
+                              handler_stack_size, exit_code ) ) != CHF_S_OK ) {
+        ( void )catclose( private_context->catalog );
+        free( private_context );
+    }
 
-  else
-    cc = CHF_S_OK;
+    else
+        cc = CHF_S_OK;
 
-  return cc;
+    return cc;
 
 #endif
 }

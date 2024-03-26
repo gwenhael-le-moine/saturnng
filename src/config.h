@@ -121,27 +121,24 @@
 
 .- */
 
-
 /* CHF_EXTENDED_INFO:
    Define this symbol if extended information is desired during condition
    handling; this is usually useful only for debugging purposes.
 */
 /* #define CHF_EXTENDED_INFO */
 
-
 /* DEBUG:
    Define this symbol to include the debugging code for all source modules
    in the executable image.
-   
+
    At run-time, the debug level can be set using the function SetDebugLevel();
    the initial debug level is set to the value of the symbol DEBUG_LEVEL,
    if it is defined, otherwise it is set to zero.
 */
 /* #define DEBUG */
 
-
 /* DEBUG_LEVEL:
-   When this symbol is defined and the debugging code has been included 
+   When this symbol is defined and the debugging code has been included
    in the executable image (DEBUG symbol set), the initial debug level
    is set to its value.
 
@@ -149,8 +146,7 @@
    DEBUG_C_<> defined in debug.h; each of them corresponds to a class
    of debugging conditions that can be individually enabled or disabled.
 */
-#define DEBUG_LEVEL	DEBUG_C_REVISION
-
+#define DEBUG_LEVEL DEBUG_C_REVISION
 
 /* CPU_SPIN_SHUTDN
    If this symbol is defined, the cpu module implements the SHUTDN
@@ -176,7 +172,6 @@
 */
 /* #define CPU_SPIN_SHUTDN */
 
-
 /* 2.1: FORCE_NONMODAL
    If this symbol is defined, nonmodal navigation is forced in the
    OSF/Motif GUI, by setting navigationType to XmNONE and traversalOn
@@ -184,15 +179,13 @@
 */
 /* #define FORCE_NONMODAL */
 
-
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the
    number of 128 Kbyte banks the port must have and must be a power of 2
    between 1 and 32, inclusive.  When undefined, Port_2 is not emulated at all.
    The default value is 8, that is, Port_2 is emulated and its size is 1Mbyte.
 */
-#define N_PORT_2_BANK		8
-
+#define N_PORT_2_BANK 8
 
 /* 2.5: SERIAL_FORCE_OPENPTY, SERIAL_FORCE_STREAMSPTY
    Optionally define exactly one of these symbols to force the use of a
@@ -203,14 +196,12 @@
 /* #define SERIAL_FORCE_OPENPTY */
 /* #define SERIAL_FORCE_STREAMSPTY */
 
-
 /* 3.2: HP49_SUPPORT
    Define this symbol to enable HP49-specific support code in the
    emulator; it does not harm if this symbol is defined when emulating
    a HP48, too, since all changed should be backward-compatible.
 */
 #define HP49_SUPPORT
-
 
 /* 3.13: REAL_CPU_SPEED
    Define this symbol (recommended) to force the emulated CPU to run
@@ -219,7 +210,6 @@
 */
 #define REAL_CPU_SPEED
 
-
 /* 3.14: CPU_SLOW_IN
    Define this symbol (recommended) to slow down the A=IN and C=IN
    instructions depending on the current emulated CPU speed.
@@ -227,8 +217,7 @@
    The value of the macro determines the gain of the relation between
    CPU speed and slow down ratio.
 */
-#define CPU_SLOW_IN	16
-
+#define CPU_SLOW_IN 16
 
 /* 4.1.1.1: LCD_MAG
    This symbol represents the magnification ratio of the emulated LCD pixels
@@ -236,32 +225,29 @@
    default.  Currently, the value cannot be set at runtime for performance
    reasons.
 */
-#define LCD_MAG		2
-
+#define LCD_MAG 2
 
 /* 4.1.1.1: When defined, this symbol represents the threshold of the long
    key pression.  When the mouse button is kept pressed on a calculator's key
    for more than LONG_PRESS_THR milliseconds, the key stays pressed after
    release.
 */
-#define LONG_PRESS_THR	1000
-
+#define LONG_PRESS_THR 1000
 
 /* Chf Module Identifiers:
    Each main module of the emulator has its own Chf Module Identifier; the
    values defined here must match those actually used in the message catalogs.
 */
-#define MAIN_CHF_MODULE_ID	10
-#define CPU_CHF_MODULE_ID	11
-#define MOD_CHF_MODULE_ID	12
-#define DISK_IO_CHF_MODULE_ID	13
-#define X11_CHF_MODULE_ID	14
-#define SERIAL_CHF_MODULE_ID	15	/* 2.5 */
-#define FLASH_CHF_MODULE_ID	16	/* 3.3 */
-#define UTIL_CHF_MODULE_ID	17	/* 3.6 */
-#define X_FUNC_CHF_MODULE_ID	18	/* 3.13 */
-#define DEBUG_CHF_MODULE_ID	30
-
+#define MAIN_CHF_MODULE_ID 10
+#define CPU_CHF_MODULE_ID 11
+#define MOD_CHF_MODULE_ID 12
+#define DISK_IO_CHF_MODULE_ID 13
+#define X11_CHF_MODULE_ID 14
+#define SERIAL_CHF_MODULE_ID 15 /* 2.5 */
+#define FLASH_CHF_MODULE_ID 16  /* 3.3 */
+#define UTIL_CHF_MODULE_ID 17   /* 3.6 */
+#define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
+#define DEBUG_CHF_MODULE_ID 30
 
 /* 3.16: Include automatic exceptions to user configuration */
 #include "config_x.h"

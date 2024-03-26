@@ -58,8 +58,7 @@
 
 .- */
 
-
 /* REAL_CPU_SPEED is not supported on ultrix, because there is no usleep() */
 #ifdef ultrix
-#undef REAL_CPU_SPEED
+#  undef REAL_CPU_SPEED
 #endif

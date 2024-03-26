@@ -101,57 +101,52 @@
 
 .- */
 
-
 /*---------------------------------------------------------------------------
-	Macro/Data type definitions
+        Macro/Data type definitions
   ---------------------------------------------------------------------------*/
 
-#define X11_RCS_INFO		"$Revision: 4.1 $ $State: Rel $"
+#define X11_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
 
-
-typedef void (*FsbContinuation)(int proceed, char *file_name);
-
+typedef void ( *FsbContinuation )( int proceed, char* file_name );
 
 /*---------------------------------------------------------------------------
-	Global variables
+        Global variables
   ---------------------------------------------------------------------------*/
-
 
 /*---------------------------------------------------------------------------
-	Chf condition codes
+        Chf condition codes
   ---------------------------------------------------------------------------*/
 
-#define X11_I_CALLED		101	/* Function %s called */
-#define X11_I_LCD_PAR		102	/* LCD Parameter %s: %x */
-#define X11_I_LCD_EXPOSE	103	/* LCD X Expose event, count=%d */
-#define X11_I_KEY_PRESS		104	/* 2.1: Pressed key %s */
-#define X11_I_KEY_RELEASE	105	/* 2.1: Released key %s */
-#define X11_I_REVISION		107	/* X11 interface revision: %s */
-#define X11_I_USAGE		108	/* Usage %s: ... */
-#define X11_I_FACE		109	/* Selected face %s */
-#define X11_I_NKEYS		110	/* The face has %d keys */
-#define X11_I_KEY		111	/* Creating key %d, inOut %s */
-#define X11_I_FOUND_CS		112	/* Found cs widget %s, value %s */
-#define X11_I_HIER		113	/* Traversing widget %s */
-#define X11_I_HIER_NC		114	/* Current widget has %d children */
-#define X11_W_BAD_ACTION_CALL	201	/* Xt Action called with %d args */
-#define X11_W_UNKNOWN_ATOM	202	/* X Atom %s unknown */
-#define X11_W_NO_FSB_CONT	203	/* 3.13: FSB continuation not set */
-#define X11_W_TOO_MANY_MSG	204	/* 3.15: Too many messages (max %d) */
-#define X11_E_BAD_OPTION	301	/* Invalid option: %s */
-#define X11_E_NO_WM_COMMAND	302	/* WM_COMMAND property bad/not set */
-#define X11_E_NO_FSB_TSEG	303	/* 3.13: No txt seg in fsb XmString */
-#define X11_F_X_ERROR		401	/* X Window System fatal error */
-#define X11_F_NO_KEYS		402	/* 3.15: Face has no keys */
-
+#define X11_I_CALLED 101          /* Function %s called */
+#define X11_I_LCD_PAR 102         /* LCD Parameter %s: %x */
+#define X11_I_LCD_EXPOSE 103      /* LCD X Expose event, count=%d */
+#define X11_I_KEY_PRESS 104       /* 2.1: Pressed key %s */
+#define X11_I_KEY_RELEASE 105     /* 2.1: Released key %s */
+#define X11_I_REVISION 107        /* X11 interface revision: %s */
+#define X11_I_USAGE 108           /* Usage %s: ... */
+#define X11_I_FACE 109            /* Selected face %s */
+#define X11_I_NKEYS 110           /* The face has %d keys */
+#define X11_I_KEY 111             /* Creating key %d, inOut %s */
+#define X11_I_FOUND_CS 112        /* Found cs widget %s, value %s */
+#define X11_I_HIER 113            /* Traversing widget %s */
+#define X11_I_HIER_NC 114         /* Current widget has %d children */
+#define X11_W_BAD_ACTION_CALL 201 /* Xt Action called with %d args */
+#define X11_W_UNKNOWN_ATOM 202    /* X Atom %s unknown */
+#define X11_W_NO_FSB_CONT 203     /* 3.13: FSB continuation not set */
+#define X11_W_TOO_MANY_MSG 204    /* 3.15: Too many messages (max %d) */
+#define X11_E_BAD_OPTION 301      /* Invalid option: %s */
+#define X11_E_NO_WM_COMMAND 302   /* WM_COMMAND property bad/not set */
+#define X11_E_NO_FSB_TSEG 303     /* 3.13: No txt seg in fsb XmString */
+#define X11_F_X_ERROR 401         /* X Window System fatal error */
+#define X11_F_NO_KEYS 402         /* 3.15: Face has no keys */
 
 /*---------------------------------------------------------------------------
-	Function prototypes
+        Function prototypes
   ---------------------------------------------------------------------------*/
 
-void HandleXEvents(void);
-void IdleXLoop(unsigned long max_wait);
+void HandleXEvents( void );
+void IdleXLoop( unsigned long max_wait );
 
-void InitializeGui(int argc, char *argv[]);
+void InitializeGui( int argc, char* argv[] );
 
-void ActivateFSB(char *title, char *file_name, FsbContinuation continuation);
+void ActivateFSB( char* title, char* file_name, FsbContinuation continuation );

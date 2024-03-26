@@ -85,232 +85,229 @@ static char rcs_id[] = "$Id: monitor.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include "args.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	CPU_CHF_MODULE_ID
+#define CHF_MODULE_ID CPU_CHF_MODULE_ID
 #include <Chf.h>
 
-
 /*---------------------------------------------------------------------------
-	Macro & Data type definitions
+        Macro & Data type definitions
   ---------------------------------------------------------------------------*/
 
-#define LINE_BUFFER_SIZE	512
-#define TOK_DELIMITERS		" \t\n"
-#define ADDRESS_FMT		"%x"
-#define COUNT_FMT		"%d"
-#define PROMPT			"> "
-#define OK			0
-#define FAILED			1
+#define LINE_BUFFER_SIZE 512
+#define TOK_DELIMITERS " \t\n"
+#define ADDRESS_FMT "%x"
+#define COUNT_FMT "%d"
+#define PROMPT "> "
+#define OK 0
+#define FAILED 1
 
 /*---------------------------------------------------------------------------
-	Private functions - Command line parse
+        Private functions - Command line parse
   ---------------------------------------------------------------------------*/
 
 /* Read an Address from the command line */
-static int ReadHexAddress(Address *addr)
+static int ReadHexAddress( Address* addr )
 {
-  char *p = strtok((char *)NULL, TOK_DELIMITERS);
-  return (p == (char *)NULL ||
-    sscanf(p, ADDRESS_FMT, addr) != 1) ? FAILED : OK;
+    char* p = strtok( ( char* )NULL, TOK_DELIMITERS );
+    return ( p == ( char* )NULL || sscanf( p, ADDRESS_FMT, addr ) != 1 ) ? FAILED : OK;
 }
 
 /* Read a Nibble from the command line */
-static int ReadHexDatum(Nibble *n)
+static int ReadHexDatum( Nibble* n )
 {
-  Address addr;
-  int st;
-  if((st = ReadHexAddress(&addr)) == OK)  *n = (Nibble)addr;
-  return st;
+    Address addr;
+    int st;
+    if ( ( st = ReadHexAddress( &addr ) ) == OK )
+        *n = ( Nibble )addr;
+    return st;
 }
 
 /* Read a DECIMAL count from the command line */
-static int ReadCount(int *count)
+static int ReadCount( int* count )
 {
-  char *p = strtok((char *)NULL, TOK_DELIMITERS);
-  return (p == (char *)NULL || sscanf(p, COUNT_FMT, count) != 1 ||
-    *count <= 0) ? FAILED : OK;
+    char* p = strtok( ( char* )NULL, TOK_DELIMITERS );
+    return ( p == ( char* )NULL || sscanf( p, COUNT_FMT, count ) != 1 || *count <= 0 ) ? FAILED : OK;
 }
 
-
 /*---------------------------------------------------------------------------
-	Private functions - Command execution
+        Private functions - Command execution
   ---------------------------------------------------------------------------*/
 
 /* Run the emulator; this function exits normally only when an
    EmulatorIntRequest() is posted and satisfied
 */
-static int run(void)
+static int run( void )
 {
-  Emulator();
-  return OK;
+    Emulator();
+    return OK;
 }
 
 /* Set the debug level */
-static int debug(void)
+static int debug( void )
 {
-  Address addr;
-  if(ReadHexAddress(&addr)) return FAILED;
-  SetDebugLevel((int)addr);
-  return OK;
+    Address addr;
+    if ( ReadHexAddress( &addr ) )
+        return FAILED;
+    SetDebugLevel( ( int )addr );
+    return OK;
 }
 
 /* Check the mapping of an Address and print */
-static int map_check(void)
+static int map_check( void )
 {
-  Address addr;
-  char ob[MOD_MAP_CHECK_OB_SIZE];
-  if(ReadHexAddress(&addr))  return FAILED;
-  ModMapCheck(addr, ob);
-  puts(ob);
-  return OK;
+    Address addr;
+    char ob[ MOD_MAP_CHECK_OB_SIZE ];
+    if ( ReadHexAddress( &addr ) )
+        return FAILED;
+    ModMapCheck( addr, ob );
+    puts( ob );
+    return OK;
 }
 
 /* Print the current module map table */
-static int map(void)
+static int map( void )
 {
-  char ob[MOD_MAP_TABLE_OB_SIZE];
-  ModMapTable(ob);
-  puts(ob);
-  return OK;
+    char ob[ MOD_MAP_TABLE_OB_SIZE ];
+    ModMapTable( ob );
+    puts( ob );
+    return OK;
 }
 
 /* Write nibbles into memory */
-static int w(void)
+static int w( void )
 {
-  Address addr;
-  Nibble n;
-  if(ReadHexAddress(&addr))  return FAILED;
-  while(ReadHexDatum(&n) == OK)  WriteNibble(addr++, n);
-  return OK;
+    Address addr;
+    Nibble n;
+    if ( ReadHexAddress( &addr ) )
+        return FAILED;
+    while ( ReadHexDatum( &n ) == OK )
+        WriteNibble( addr++, n );
+    return OK;
 }
 
 /* Read nibbles from memory */
-static int r(void)
+static int r( void )
 {
-  Address addr;
-  int count;
-  if(ReadHexAddress(&addr))  return FAILED;
-  if(ReadCount(&count))  count=1;
+    Address addr;
+    int count;
+    if ( ReadHexAddress( &addr ) )
+        return FAILED;
+    if ( ReadCount( &count ) )
+        count = 1;
 
-  while(count-->0)
-  {
-    printf("A_%05X\t%X\n", addr, (int)FetchNibble(addr));
-    addr++;
-  }
+    while ( count-- > 0 ) {
+        printf( "A_%05X\t%X\n", addr, ( int )FetchNibble( addr ) );
+        addr++;
+    }
 
-  return OK;
+    return OK;
 }
 
 /* Disassemble */
-static int d(void)
+static int d( void )
 {
-  Address addr;
-  int count;
-  char ob[DISASSEMBLE_OB_SIZE];
+    Address addr;
+    int count;
+    char ob[ DISASSEMBLE_OB_SIZE ];
 
-  if(ReadHexAddress(&addr))  return FAILED;
-  if(ReadCount(&count))  count=1;
+    if ( ReadHexAddress( &addr ) )
+        return FAILED;
+    if ( ReadCount( &count ) )
+        count = 1;
 
-  while(count-->0)
-  {
-    addr = Disassemble(addr, ob);
-    puts(ob);
-  }
+    while ( count-- > 0 ) {
+        addr = Disassemble( addr, ob );
+        puts( ob );
+    }
 
-  return OK;
+    return OK;
 }
 
 /* Print CPU status */
-static int cpu(void)
+static int cpu( void )
 {
-  char ob[DUMP_CPU_STATUS_OB_SIZE];
-  DumpCpuStatus(ob);
-  puts(ob);
-  return OK;
+    char ob[ DUMP_CPU_STATUS_OB_SIZE ];
+    DumpCpuStatus( ob );
+    puts( ob );
+    return OK;
 }
 
 /* Reset CPU */
-static int reset(void)
+static int reset( void )
 {
-  CpuReset();
-  return OK;
+    CpuReset();
+    return OK;
 }
 
 /* Save & Exit */
-static int mon_exit(void)
+static int mon_exit( void )
 {
-  ModSave();
-  CpuSave();
-  exit(EXIT_SUCCESS);
-  return OK;			/* 3.1: Keep compiler happy */
+    ModSave();
+    CpuSave();
+    exit( EXIT_SUCCESS );
+    return OK; /* 3.1: Keep compiler happy */
 }
 
 /* Quit without saving */
-static int mon_quit(void)
+static int mon_quit( void )
 {
-  exit(EXIT_SUCCESS);
-  return OK;			/* 3.1: Keep compiler happy */
+    exit( EXIT_SUCCESS );
+    return OK; /* 3.1: Keep compiler happy */
 }
 
-
 /*---------------------------------------------------------------------------
-	Command table
+        Command table
   ---------------------------------------------------------------------------*/
 
-struct TEntry
-{
-  char *name;
-  char *desc;
-  int (*function)(void);
+struct TEntry {
+    char* name;
+    char* desc;
+    int ( *function )( void );
 };
 
-#define TableSize(t)	(sizeof(t)/sizeof(struct TEntry))
+#define TableSize( t ) ( sizeof( t ) / sizeof( struct TEntry ) )
 
 /* Forward declaration for the Help funcion */
-static int Help(void);
+static int Help( void );
 
-static const struct TEntry table[] =
-{
-  { "help", "Print this information", Help },
-  { "run", "Run the emulator with current CPU status", run },
-  { "?", "<addr>, Check address mapping", map_check },
-  { "r", "<addr> [count], Read nibbles from memory", r },
-  { "w", "<addr> [n]..., Write nibbles into memory", w },
-  { "d", "<addr> [count], Disassemble starting from 'addr'", d },
-  { "cpu", "Print CPU status", cpu },
-  { "map", "Print the contents of the module map table", map },
-  { "debug", "Set the debugging level", debug },
-  { "reset", "Reset CPU", reset },
-  { "exit", "Save emulator state & exit", mon_exit },
-  { "quit", "Quit emulator WITHOUT saving its state", mon_quit }
+static const struct TEntry table[] = {
+    {"help",  "Print this information",                           Help     },
+    {"run",   "Run the emulator with current CPU status",         run      },
+    {"?",     "<addr>, Check address mapping",                    map_check},
+    {"r",     "<addr> [count], Read nibbles from memory",         r        },
+    {"w",     "<addr> [n]..., Write nibbles into memory",         w        },
+    {"d",     "<addr> [count], Disassemble starting from 'addr'", d        },
+    {"cpu",   "Print CPU status",                                 cpu      },
+    {"map",   "Print the contents of the module map table",       map      },
+    {"debug", "Set the debugging level",                          debug    },
+    {"reset", "Reset CPU",                                        reset    },
+    {"exit",  "Save emulator state & exit",                       mon_exit },
+    {"quit",  "Quit emulator WITHOUT saving its state",           mon_quit }
 };
 
 /* Invoke the command 'tk' and return a status code */
-static int InvokeCommand(char *tk)
+static int InvokeCommand( char* tk )
 {
-  int i;
-  for(i=0; i<TableSize(table) && strcmp(tk, table[i].name); i++);
-  return i==TableSize(table) ? FAILED : table[i].function();
+    int i;
+    for ( i = 0; i < TableSize( table ) && strcmp( tk, table[ i ].name ); i++ )
+        ;
+    return i == TableSize( table ) ? FAILED : table[ i ].function();
 }
 
 /* Print help information */
-static int Help(void)
+static int Help( void )
 {
-  int i;
-  for(i=0; i<TableSize(table); i++)
-    printf("%s\t\t%s\n", table[i].name, table[i].desc);
+    int i;
+    for ( i = 0; i < TableSize( table ); i++ )
+        printf( "%s\t\t%s\n", table[ i ].name, table[ i ].desc );
 
-  return OK;
+    return OK;
 }
 
 /* Handler for SIGINT during monitor execution */
-static void sigint_handler(int s)
-{
-  EmulatorIntRequest();
-}
-
+static void sigint_handler( int s ) { EmulatorIntRequest(); }
 
 /*---------------------------------------------------------------------------
-	Public functions
+        Public functions
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -322,58 +319,53 @@ static void sigint_handler(int s)
   This function implements a very simple interactive monitor.
 
 .call	      :
-		Monitor();
+                Monitor();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		CPU_W_BAD_MONITOR_CMD
-		From lower level modules
+                CPU_W_BAD_MONITOR_CMD
+                From lower level modules
 .notes	      :
   1.1, 18-Feb-1998, creation
 
 .- */
-void Monitor(void)
+void Monitor( void )
 {
-  char cmd[LINE_BUFFER_SIZE];
-  char old_cmd[LINE_BUFFER_SIZE];
-  char *tk;
-  
-  /* Clear old_cmd buffer */
-  strcpy(old_cmd, "");
+    char cmd[ LINE_BUFFER_SIZE ];
+    char old_cmd[ LINE_BUFFER_SIZE ];
+    char* tk;
 
-  /* Establish SIGINT handler */
-  signal(SIGINT, sigint_handler);
+    /* Clear old_cmd buffer */
+    strcpy( old_cmd, "" );
 
-  /* Infinite loop; it's exited only when a condition is signalled */
-  while(1)
-  {
-    /* Write prompt */
-    fputs(PROMPT, stdout);
-    fflush(stdout);
+    /* Establish SIGINT handler */
+    signal( SIGINT, sigint_handler );
 
-    if(fgets(cmd, LINE_BUFFER_SIZE, stdin) == (char *)NULL ||
-      (tk = strtok(cmd, TOK_DELIMITERS)) == (char *)NULL)
-    {
-      /* New command empty; try old command */
-      if((tk = strtok(old_cmd, TOK_DELIMITERS)) != (char *)NULL)
-	if(InvokeCommand(tk))
-          ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
-          ChfSignal();
+    /* Infinite loop; it's exited only when a condition is signalled */
+    while ( 1 ) {
+        /* Write prompt */
+        fputs( PROMPT, stdout );
+        fflush( stdout );
+
+        if ( fgets( cmd, LINE_BUFFER_SIZE, stdin ) == ( char* )NULL || ( tk = strtok( cmd, TOK_DELIMITERS ) ) == ( char* )NULL ) {
+            /* New command empty; try old command */
+            if ( ( tk = strtok( old_cmd, TOK_DELIMITERS ) ) != ( char* )NULL )
+                if ( InvokeCommand( tk ) )
+                    ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
+            ChfSignal();
+        }
+
+        else {
+            /* Save command */
+            strcpy( old_cmd, cmd );
+
+            /* New command */
+            if ( InvokeCommand( tk ) ) {
+                ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
+                ChfSignal();
+            }
+        }
     }
-
-    else
-    {
-      /* Save command */
-      strcpy(old_cmd, cmd);
-
-      /* New command */
-      if(InvokeCommand(tk))
-      {
-	ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
-	ChfSignal();
-      }
-    }
-  }
 }

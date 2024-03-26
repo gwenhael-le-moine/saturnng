@@ -51,7 +51,7 @@
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
 
   NOTE: In the current (r1.1) implementation,
-	the emulation accuracy could be poor.
+        the emulation accuracy could be poor.
 
 .include      : config.h, machdep.h, cpu.h, modules.h, keyb.h
 
@@ -97,18 +97,17 @@ static char rcs_id[] = "$Id: keyb.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "keyb.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	MOD_CHF_MODULE_ID
+#define CHF_MODULE_ID MOD_CHF_MODULE_ID
 #include <Chf.h>
 
-#define OUT_BITS	12
+#define OUT_BITS 12
 
 /* cur_in:
 
    This array contains the current value the CPU IN register will assume
    for each bit set in the OUT register.
 */
-static InputRegister cur_in[OUT_BITS];
-
+static InputRegister cur_in[ OUT_BITS ];
 
 /* .+
 
@@ -121,28 +120,26 @@ static InputRegister cur_in[OUT_BITS];
   interrupt request if any key is pressed.
 
   NOTE: This function currently (r1.1) always posts an IRQ request; perhaps,
-	if the ON key is down, a NMI request should be posted instead.
+        if the ON key is down, a NMI request should be posted instead.
 
 .call	      :
-		KeybRSI();
+                KeybRSI();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		*
+                *
 .notes	      :
   1.1, 17-Feb-1998, creation
 
 .- */
-void KeybRSI(void)
+void KeybRSI( void )
 {
-  /* Post an IRQ if the IN register is not zero */
+    /* Post an IRQ if the IN register is not zero */
 
-  CpuIntRequest(KeybIN((OutputRegister)0x1FF) != (InputRegister)0 ?
-    INT_REQUEST_IRQ : INT_REQUEST_NONE);
+    CpuIntRequest( KeybIN( ( OutputRegister )0x1FF ) != ( InputRegister )0 ? INT_REQUEST_IRQ : INT_REQUEST_NONE );
 }
-
 
 /* .+
 
@@ -155,35 +152,34 @@ void KeybRSI(void)
   value of the IN register for the given value of the OUT reguster.
 
 .call	      :
-		in = KeybIN(out);
+                in = KeybIN(out);
 .input	      :
-		OutputRegister out, current value of the OUT register
+                OutputRegister out, current value of the OUT register
 .output	      :
-		InputRegister in, computed value of the IN register
+                InputRegister in, computed value of the IN register
 .status_codes :
-		*
+                *
 .notes	      :
   1.1, 17-Feb-1998, creation
 
 .- */
-InputRegister KeybIN(OutputRegister out)
+InputRegister KeybIN( OutputRegister out )
 {
-  /* Compute the current value of the IN register */
-  InputRegister in = (InputRegister)0;
-  int bit;
+    /* Compute the current value of the IN register */
+    InputRegister in = ( InputRegister )0;
+    int bit;
 
-  /* For each bit set in the 'out' register, OR the corresponding IN register
-     value into 'in'
-  */
-  for(bit=0; bit<OUT_BITS; bit++)
-  {
-    if(out & 0x01) in |= cur_in[bit];
-    out >>= 1;
-  }
+    /* For each bit set in the 'out' register, OR the corresponding IN register
+       value into 'in'
+    */
+    for ( bit = 0; bit < OUT_BITS; bit++ ) {
+        if ( out & 0x01 )
+            in |= cur_in[ bit ];
+        out >>= 1;
+    }
 
-  return in;
+    return in;
 }
-
 
 /* .+
 
@@ -196,62 +192,56 @@ InputRegister KeybIN(OutputRegister out)
   necessary, posts an interrupt request to the CPU.
 
 .call	      :
-		KeybPress(key);
+                KeybPress(key);
 .input	      :
-		const char *key, identifies the key that has been pressed.
+                const char *key, identifies the key that has been pressed.
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_W_BAD_KEY
-		MOD_W_BAD_OUT_BIT
+                MOD_W_BAD_KEY
+                MOD_W_BAD_OUT_BIT
 .notes	      :
   1.1, 17-Feb-1998, creation
   2.1, 6-Sep-2000,
     deeply revised to accomodate the new GUI
 
 .- */
-void KeybPress(const char *key)
+void KeybPress( const char* key )
 {
-    if(strcmp(key, "*") == 0)
-    {
-	/* This is the ON key */
-	int i;
+    if ( strcmp( key, "*" ) == 0 ) {
+        /* This is the ON key */
+        int i;
 
-	/* Set all 0x8000 lines */
-	for(i=0; i<OUT_BITS; i++)  cur_in[i] |= 0x8000;
+        /* Set all 0x8000 lines */
+        for ( i = 0; i < OUT_BITS; i++ )
+            cur_in[ i ] |= 0x8000;
 
-	/* Post an interrupt request to the CPU */
-	CpuIntRequest(INT_REQUEST_NMI);
+        /* Post an interrupt request to the CPU */
+        CpuIntRequest( INT_REQUEST_NMI );
     }
 
-    else
-    {
-	int in_val, out_bit;
+    else {
+        int in_val, out_bit;
 
-	if(sscanf(key, "%x/%x", &out_bit, &in_val) != 2)
-	{
-	    ChfCondition MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
-	    ChfSignal();
-	}
+        if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
+            ChfCondition MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
+            ChfSignal();
+        }
 
-	else if(out_bit < 0 || out_bit >= OUT_BITS)
-	{
-	    ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd;
-	    ChfSignal();
-	}
+        else if ( out_bit < 0 || out_bit >= OUT_BITS ) {
+            ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd;
+            ChfSignal();
+        }
 
-	else
-	{
-	    /* Update the cur_in array */
-	    cur_in[out_bit] |= in_val;
+        else {
+            /* Update the cur_in array */
+            cur_in[ out_bit ] |= in_val;
 
-	    /* Post an interrupt request to the CPU */
-	    CpuIntRequest(INT_REQUEST_NMI);
-
-	}
+            /* Post an interrupt request to the CPU */
+            CpuIntRequest( INT_REQUEST_NMI );
+        }
     }
 }
-
 
 /* .+
 
@@ -263,55 +253,50 @@ void KeybPress(const char *key)
   released. It updates the internal keyboard status information.
 
 .call	      :
-		KeybRelease(key);
+                KeybRelease(key);
 .input	      :
-		const char *key, identifies the key that has been released.
+                const char *key, identifies the key that has been released.
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_W_BAD_KEY
-		MOD_W_BAD_OUT_BIT
+                MOD_W_BAD_KEY
+                MOD_W_BAD_OUT_BIT
 .notes	      :
   1.1, 17-Feb-1998, creation
   2.1, 6-Sep-2000,
     deeply revised to accomodate the new GUI
 
 .- */
-void KeybRelease(const char *key)
+void KeybRelease( const char* key )
 {
-    if(strcmp(key, "*") == 0)
-    {
-	/* This is the ON key */
-	int i;
+    if ( strcmp( key, "*" ) == 0 ) {
+        /* This is the ON key */
+        int i;
 
-	/* Reset all 0x8000 lines */
-	for(i=0; i<OUT_BITS; i++)  cur_in[i] &= 0x7FFF;
+        /* Reset all 0x8000 lines */
+        for ( i = 0; i < OUT_BITS; i++ )
+            cur_in[ i ] &= 0x7FFF;
     }
 
-    else
-    {
-	int in_val, out_bit;
+    else {
+        int in_val, out_bit;
 
-	if(sscanf(key, "%x/%x", &out_bit, &in_val) != 2)
-	{
-	    ChfCondition MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
-	    ChfSignal();
-	}
+        if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
+            ChfCondition MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
+            ChfSignal();
+        }
 
-	else if(out_bit < 0 || out_bit >= OUT_BITS)
-	{
-	    ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd;
-	    ChfSignal();
-	}
+        else if ( out_bit < 0 || out_bit >= OUT_BITS ) {
+            ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd;
+            ChfSignal();
+        }
 
-	else
-	{
-	    /* Update the cur_in array */
-	    cur_in[out_bit] &= ~in_val;
-	}
+        else {
+            /* Update the cur_in array */
+            cur_in[ out_bit ] &= ~in_val;
+        }
     }
 }
-
 
 /* .+
 
@@ -322,20 +307,21 @@ void KeybRelease(const char *key)
   This function resets the emulated keyboard; all keys are released.
 
 .call	      :
-		KeybReset();
+                KeybReset();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
 .notes	      :
   3.13, 7-Nov-2000, creation
 
 .- */
-void KeybReset(void)
+void KeybReset( void )
 {
     int i;
 
     /* Reset all 0x8000 lines */
-    for(i=0; i<OUT_BITS; i++)  cur_in[i] = 0;
+    for ( i = 0; i < OUT_BITS; i++ )
+        cur_in[ i ] = 0;
 }

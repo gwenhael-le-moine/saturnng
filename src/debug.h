@@ -44,13 +44,13 @@
 .description  :
   This header defines the following macros:
 
-	- debug0(debug_class, condition_code)
-	- debug1(debug_class, condition_code, arg_1)
-	- debug2(debug_class, condition_code, arg_1, arg_2)
-	- debug3(debug_class, condition_code, arg_1, arg_2, arg_3)
+        - debug0(debug_class, condition_code)
+        - debug1(debug_class, condition_code, arg_1)
+        - debug2(debug_class, condition_code, arg_1, arg_2)
+        - debug3(debug_class, condition_code, arg_1, arg_2, arg_3)
 
   used throughout the source code for debugging purposes.
-  
+
   If the DEBUG cpp symbol is defined, each invocation of these macros is
   expanded into a block of code that, at runtime, checks if the global
   variable 'debug_level' has set at least one of the bit 'debug_class' has
@@ -60,7 +60,7 @@
   If this condition is met, the code generates and immediately signals
   the given condition code using the Chf facility, with severity CHF_INFO,
   otherwise nothing is done.
-  
+
   The arguments arg_1, arg_2, and arg_3 are used as additional arguments
   of the condition.
 
@@ -101,73 +101,62 @@
 
 #ifdef DEBUG
 
-#define debug_preamble(debug_class, condition_code)			\
-  {									\
-    extern int debug_level;						\
-    if(debug_level & (debug_class))					\
-    {									\
-      ChfCondition (condition_code), CHF_INFO
+#  define debug_preamble( debug_class, condition_code )                                                                                    \
+      {                                                                                                                                    \
+          extern int debug_level;                                                                                                          \
+          if ( debug_level & ( debug_class ) ) {                                                                                           \
+          ChfCondition( condition_code ), CHF_INFO
 
-#define debug_postamble							\
-      ChfEnd;								\
-      ChfSignal();							\
-    }									\
-  }
+#  define debug_postamble                                                                                                                  \
+      ChfEnd;                                                                                                                              \
+      ChfSignal();                                                                                                                         \
+      }                                                                                                                                    \
+      }
 
-#define debug0(debug_class, condition_code)				\
-  debug_preamble(debug_class, condition_code)				\
-  debug_postamble
+#  define debug0( debug_class, condition_code ) debug_preamble( debug_class, condition_code ) debug_postamble
 
-#define debug1(debug_class, condition_code, arg_1)			\
-  debug_preamble(debug_class, condition_code), arg_1			\
-  debug_postamble
+#  define debug1( debug_class, condition_code, arg_1 ) debug_preamble( debug_class, condition_code ), arg_1 debug_postamble
 
-#define debug2(debug_class, condition_code, arg_1, arg_2)		\
-  debug_preamble(debug_class, condition_code), arg_1, arg_2		\
-  debug_postamble
+#  define debug2( debug_class, condition_code, arg_1, arg_2 ) debug_preamble( debug_class, condition_code ), arg_1, arg_2 debug_postamble
 
-#define debug3(debug_class, condition_code, arg_1, arg_2, arg_3)	\
-  debug_preamble(debug_class, condition_code), arg_1, arg_2, arg_3	\
-  debug_postamble
+#  define debug3( debug_class, condition_code, arg_1, arg_2, arg_3 )                                                                       \
+      debug_preamble( debug_class, condition_code ), arg_1, arg_2, arg_3 debug_postamble
 
 #else
 
-#define debug0(debug_class, condition_code)
-#define debug1(debug_class, condition_code, arg_1)
-#define debug2(debug_class, condition_code, arg_1, arg_2)
-#define debug3(debug_class, condition_code, arg_1, arg_2, arg_3)
+#  define debug0( debug_class, condition_code )
+#  define debug1( debug_class, condition_code, arg_1 )
+#  define debug2( debug_class, condition_code, arg_1, arg_2 )
+#  define debug3( debug_class, condition_code, arg_1, arg_2, arg_3 )
 
 #endif
 
-
 /*---------------------------------------------------------------------------
-	Debug classes
+        Debug classes
   ---------------------------------------------------------------------------*/
 
-#define DEBUG_C_TRACE		0x8000		/* Function Call trace */
-#define DEBUG_C_MODULES		0x4000		/* Modules configuration */
-#define DEBUG_C_DISPLAY		0x2000		/* Display activity */
-#define DEBUG_C_INT		0x1000		/* Interrupt activity */
-#define DEBUG_C_TIMERS		0x0800		/* Timers activity */
-#define DEBUG_C_SERIAL		0x0400		/* 2.5: Serial port activity */
-#define DEBUG_C_MOD_CACHE	0x0200		/* 2.7: Module cache */
-#define DEBUG_C_IMPLEMENTATION	0x0100		/* Feature implementation */
-#define DEBUG_C_FLASH		0x0080		/* 3.3: Flash ROM */
-#define DEBUG_C_X_FUNC		0x0040		/* 3.13: Extended functions */
-#define DEBUG_C_REVISION	0x0010		/* Revision information */
-#define DEBUG_C_X11		0x0001		/* X11 Interface */
-
-
-/*---------------------------------------------------------------------------
-	Chf condition codes
-  ---------------------------------------------------------------------------*/
-
-#define DEBUG_W_NOT_SUPPORTED	201	/* Debug not supported */
-#define DEBUG_W_BAD_CMD		202	/* Invalid command */
-
+#define DEBUG_C_TRACE 0x8000          /* Function Call trace */
+#define DEBUG_C_MODULES 0x4000        /* Modules configuration */
+#define DEBUG_C_DISPLAY 0x2000        /* Display activity */
+#define DEBUG_C_INT 0x1000            /* Interrupt activity */
+#define DEBUG_C_TIMERS 0x0800         /* Timers activity */
+#define DEBUG_C_SERIAL 0x0400         /* 2.5: Serial port activity */
+#define DEBUG_C_MOD_CACHE 0x0200      /* 2.7: Module cache */
+#define DEBUG_C_IMPLEMENTATION 0x0100 /* Feature implementation */
+#define DEBUG_C_FLASH 0x0080          /* 3.3: Flash ROM */
+#define DEBUG_C_X_FUNC 0x0040         /* 3.13: Extended functions */
+#define DEBUG_C_REVISION 0x0010       /* Revision information */
+#define DEBUG_C_X11 0x0001            /* X11 Interface */
 
 /*---------------------------------------------------------------------------
-	Function prototypes
+        Chf condition codes
   ---------------------------------------------------------------------------*/
 
-void SetDebugLevel(int new_level);
+#define DEBUG_W_NOT_SUPPORTED 201 /* Debug not supported */
+#define DEBUG_W_BAD_CMD 202       /* Invalid command */
+
+/*---------------------------------------------------------------------------
+        Function prototypes
+  ---------------------------------------------------------------------------*/
+
+void SetDebugLevel( int new_level );

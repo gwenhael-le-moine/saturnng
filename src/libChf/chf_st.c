@@ -31,19 +31,18 @@ static char rcs_id[] = "$Id: chf_st.c,v 2.2 2001/01/25 14:08:45 cibrario Exp $";
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef _WIN32
-#include <errno.h>
+#  include <errno.h>
 #endif
 #include <setjmp.h>
 #include <string.h>
 
 #ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
+#  include <windows.h>
+#  include <tchar.h>
 #endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
-
 
 /* -------------------------------------------------------------------------
    Global and static variables
@@ -53,13 +52,10 @@ static char rcs_id[] = "$Id: chf_st.c,v 2.2 2001/01/25 14:08:45 cibrario Exp $";
    Private type definitions
    ------------------------------------------------------------------------- */
 
-typedef struct
-{
-  const ChfTable *table;
-  size_t size;
-}
-  ChfStaticContext;
-
+typedef struct {
+    const ChfTable* table;
+    size_t size;
+} ChfStaticContext;
 
 /* -------------------------------------------------------------------------
    Private functions
@@ -69,88 +65,67 @@ typedef struct
 /* Win32 does not have bsearch();
    provide a simple one from glibc here.
 */
-static void *bsearch(
-  const void *key,
-  const void *base,
-  size_t nmemb,
-  size_t size,
-  int (*compar)(const void *, const void *)
-)
+static void* bsearch( const void* key, const void* base, size_t nmemb, size_t size, int ( *compar )( const void*, const void* ) )
 {
-  size_t l, u, idx;
-  const void *p;
-  int comparison;
+    size_t l, u, idx;
+    const void* p;
+    int comparison;
 
-  l = 0;
-  u = nmemb;
-  while (l < u)
-    {
-      idx = (l + u) / 2;
-      p = (void *) (((const char *) base) + (idx * size));
-      comparison = (*compar) (key, p);
-      if (comparison < 0)
-        u = idx;
-      else if (comparison > 0)
-        l = idx + 1;
-      else
-        return (void *) p;
+    l = 0;
+    u = nmemb;
+    while ( l < u ) {
+        idx = ( l + u ) / 2;
+        p = ( void* )( ( ( const char* )base ) + ( idx * size ) );
+        comparison = ( *compar )( key, p );
+        if ( comparison < 0 )
+            u = idx;
+        else if ( comparison > 0 )
+            l = idx + 1;
+        else
+            return ( void* )p;
     }
 
-  return NULL;
+    return NULL;
 }
 #endif
 
-#define GT	1
-#define LT	-1
-#define EQ	0
+#define GT 1
+#define LT -1
+#define EQ 0
 
-static int Search(
-  const void *l,
-  const void *r
-)
+static int Search( const void* l, const void* r )
 {
-  if(((ChfTable *)l)->module > ((ChfTable *)r)->module)
-    return(GT);
+    if ( ( ( ChfTable* )l )->module > ( ( ChfTable* )r )->module )
+        return ( GT );
 
-  else if(((ChfTable *)l)->module < ((ChfTable *)r)->module)
-    return(LT);
+    else if ( ( ( ChfTable* )l )->module < ( ( ChfTable* )r )->module )
+        return ( LT );
 
-  else if(((ChfTable *)l)->code > ((ChfTable *)r)->code)
-    return(GT);
+    else if ( ( ( ChfTable* )l )->code > ( ( ChfTable* )r )->code )
+        return ( GT );
 
-  else if(((ChfTable *)l)->code < ((ChfTable *)r)->code)
-    return(LT);
+    else if ( ( ( ChfTable* )l )->code < ( ( ChfTable* )r )->code )
+        return ( LT );
 
-  return(EQ);
+    return ( EQ );
 }
 
-static const ChfChar *StGetMessage(
-  void *private_context,
-  const int module_id,
-  const int condition_code,
-  const ChfChar *default_message
-)
+static const ChfChar* StGetMessage( void* private_context, const int module_id, const int condition_code, const ChfChar* default_message )
 {
-  ChfTable key;
-  ChfTable *res;
+    ChfTable key;
+    ChfTable* res;
 
-  key.module = module_id;
-  key.code = condition_code;
+    key.module = module_id;
+    key.code = condition_code;
 
-  if((res = bsearch(&key, ((ChfStaticContext *)private_context)->table,
-    ((ChfStaticContext *)private_context)->size, sizeof(ChfTable), Search)) ==
-    (void *)NULL)
-    return(default_message);
+    if ( ( res = bsearch( &key, ( ( ChfStaticContext* )private_context )->table, ( ( ChfStaticContext* )private_context )->size,
+                          sizeof( ChfTable ), Search ) ) == ( void* )NULL )
+        return ( default_message );
 
-  return(((ChfTable *)res)->msg_template);
+    return ( ( ( ChfTable* )res )->msg_template );
 }
 
-static void ExitMessage(
-  void *private_context
-)
-{
-}
-
+static void ExitMessage( void* private_context ) {}
 
 /* -------------------------------------------------------------------------
    Public functions
@@ -170,58 +145,54 @@ static void ExitMessage(
   other CHF initialization routines before using any other CHF function.
 
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_DUP_INIT
-	if CHF has already been initialized before.
+        if CHF has already been initialized before.
 
 .call	      :
-		cc = ChfStaticInit(app_name, options,
-			table, table_size,
-			condition_stack_size, handler_stack_size,
-			exit_code);
+                cc = ChfStaticInit(app_name, options,
+                        table, table_size,
+                        condition_stack_size, handler_stack_size,
+                        exit_code);
 .input	      :
-		const char *app_name, Application's name
-		const ChfOptions options, Options
-		const ChfTable *table, pointer to the static message table
-		const size_t table_size, size of the table (# of entries)
-		const int condition_stack_size, Size of the condition stack
-		const int handler_stack_size, Size of the handler stack
-		const int exit_code, Abnormal exit code
+                const char *app_name, Application's name
+                const ChfOptions options, Options
+                const ChfTable *table, pointer to the static message table
+                const size_t table_size, size of the table (# of entries)
+                const int condition_stack_size, Size of the condition stack
+                const int handler_stack_size, Size of the handler stack
+                const int exit_code, Abnormal exit code
 .output	      :
-		int cc, condition code
+                int cc, condition code
 .status_codes :
-		CHF_F_MALLOC, FATAL, memory allocation failed
+                CHF_F_MALLOC, FATAL, memory allocation failed
 .notes	      :
   1.1, 27-May-1996, creation
 
 .- */
-int ChfStaticInit(		/* Initialization with static message tables */
-  const ChfChar *app_name,		/* Application's name */
-  const ChfOptions options,		/* Options */
-  const ChfTable *table,		/* Static message table */
-  const size_t table_size,		/* Size of the message table */
-  const int condition_stack_size,	/* Size of the condition stack */
-  const int handler_stack_size,		/* Size of the handler stack */
-  const int exit_code			/* Abnormal exit code */
+int ChfStaticInit(                                 /* Initialization with static message tables */
+                   const ChfChar* app_name,        /* Application's name */
+                   const ChfOptions options,       /* Options */
+                   const ChfTable* table,          /* Static message table */
+                   const size_t table_size,        /* Size of the message table */
+                   const int condition_stack_size, /* Size of the condition stack */
+                   const int handler_stack_size,   /* Size of the handler stack */
+                   const int exit_code             /* Abnormal exit code */
 )
 {
-  ChfStaticContext *private_context;
-  int cc;
+    ChfStaticContext* private_context;
+    int cc;
 
-  if((private_context =
-    (ChfStaticContext *)malloc(sizeof(ChfStaticContext))) ==
-    (ChfStaticContext *)NULL)
-    cc = CHF_F_MALLOC;
+    if ( ( private_context = ( ChfStaticContext* )malloc( sizeof( ChfStaticContext ) ) ) == ( ChfStaticContext* )NULL )
+        cc = CHF_F_MALLOC;
 
-  else if((cc = ChfInit(app_name, options, (void *)private_context,
-    StGetMessage, ExitMessage, condition_stack_size, handler_stack_size,
-    exit_code)) != CHF_S_OK)
-    free(private_context);
+    else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, StGetMessage, ExitMessage, condition_stack_size,
+                              handler_stack_size, exit_code ) ) != CHF_S_OK )
+        free( private_context );
 
-  else
-  {
-    private_context->table = table;
-    private_context->size = table_size;
-    cc = CHF_S_OK;
-  }
+    else {
+        private_context->table = table;
+        private_context->size = table_size;
+        cc = CHF_S_OK;
+    }
 
-  return cc;
+    return cc;
 }

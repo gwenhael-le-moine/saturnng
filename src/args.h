@@ -45,7 +45,7 @@
   This header declares a global data structure containing the emulator
   invocation arguments; this data structure is initialized before startup,
   either by means of argc/argv or in other ways.
-  
+
 .include      : config.h
 
 .notes	      :
@@ -74,27 +74,25 @@
 .- */
 
 /*---------------------------------------------------------------------------
-	Data type definitions - require config.h
+        Data type definitions - require config.h
   ---------------------------------------------------------------------------*/
 
-struct Args
-{
-  int reset;			/* 2.1: Force emulator reset */
-  int monitor;			/* 2.1: Call monitor() on startup */
-  int batchXfer;		/* 3.15: Non-interactive file transfers */
-  char *mod_file_name;
-  char *cpu_file_name;
-  char *hdw_file_name;
-  char *rom_file_name;
-  char *ram_file_name;
-  char *port_1_file_name;
-  char *port_2_file_name;
-  char *hw;			/* 2.1: Hardware configuration (unused) */
+struct Args {
+    int reset;     /* 2.1: Force emulator reset */
+    int monitor;   /* 2.1: Call monitor() on startup */
+    int batchXfer; /* 3.15: Non-interactive file transfers */
+    char* mod_file_name;
+    char* cpu_file_name;
+    char* hdw_file_name;
+    char* rom_file_name;
+    char* ram_file_name;
+    char* port_1_file_name;
+    char* port_2_file_name;
+    char* hw; /* 2.1: Hardware configuration (unused) */
 };
 
-
 /*---------------------------------------------------------------------------
-	Global variables
+        Global variables
   ---------------------------------------------------------------------------*/
 
 extern struct Args args;

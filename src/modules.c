@@ -52,17 +52,17 @@
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
 
   NOTE: Preliminary profiling information on Digital UNIX shows that,
-  	without module config/unconfig cache (revision 1.1), while the
-	Saturn CPU is doing bank switching over 48% of the CPU time is
-	spent in RebuildPageTable(), with a peak of 60% when opening
-	the PLOT input form.
+        without module config/unconfig cache (revision 1.1), while the
+        Saturn CPU is doing bank switching over 48% of the CPU time is
+        spent in RebuildPageTable(), with a peak of 60% when opening
+        the PLOT input form.
 
-	With the module config/unconfig cache enabled (revision 2.7),
-	RebuildPageTable() drops to the 45th place in the gprof's
-	listing of per-function cpu time.
+        With the module config/unconfig cache enabled (revision 2.7),
+        RebuildPageTable() drops to the 45th place in the gprof's
+        listing of per-function cpu time.
 
-	Moreover, even during intensive calculations, over 30% of the CPU
-	time is spent in either FetchNibble() or RomRead() in either case.
+        Moreover, even during intensive calculations, over 30% of the CPU
+        time is spent in either FetchNibble() or RomRead() in either case.
 
 .include      : config.h, machdep.h, cpu.h, modules.h
 
@@ -128,15 +128,14 @@ static char rcs_id[] = "$Id: modules.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include "args.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	MOD_CHF_MODULE_ID
+#define CHF_MODULE_ID MOD_CHF_MODULE_ID
 #include <Chf.h>
 
-
 /*---------------------------------------------------------------------------
-	Static/Global variables
+        Static/Global variables
   ---------------------------------------------------------------------------*/
 
-struct ModStatus mod_status;		/* Status information - global */
+struct ModStatus mod_status; /* Status information - global */
 
 /* 2.7: Replaced the statically-allocated module mapping structure with a
    pointer to a dynamically-allocated structure, to be able to switch
@@ -144,62 +143,60 @@ struct ModStatus mod_status;		/* Status information - global */
    refer to the current module mapping structure, and mod_map_ptr
    points to it.
 */
-static struct ModMap *mod_map_ptr;	/* Module mapping information */
-#define mod_map (*mod_map_ptr)
+static struct ModMap* mod_map_ptr; /* Module mapping information */
+#define mod_map ( *mod_map_ptr )
 
 /* 2.7: All dynamically-allocated module mapping structures are linked
    together; cache_head points to the head of the list.  The list
    is used to flush the cache when necessary.
 */
-static struct ModMap *cache_head = (struct ModMap *)NULL;
+static struct ModMap* cache_head = ( struct ModMap* )NULL;
 
 /* 3.2: The ModDescription table is now configured invoking
    ModRegisterDescription() before invoking any other function in this
    module.
 */
-static const struct ModDescriptionEntry *mod_description;
-
+static const struct ModDescriptionEntry* mod_description;
 
 /*---------------------------------------------------------------------------
-	Debugging & performance analysis data
+        Debugging & performance analysis data
   ---------------------------------------------------------------------------*/
 
 #ifdef DEBUG
 
-static int alloc_c = 0;		/* Counter of live AllocModMap() invocations */
-static int flush_c = 0;		/* Counter of FlushCache() invocations */
-static int hit_c = 0;		/* Cache hit counter */
-static int lhit_c = 0;		/* Cache late unconfig hit counter */
-static int miss_c = 0;		/* Cache miss (without replacement) counter */
-static int repl_c = 0;		/* Entry replacement counter */
+static int alloc_c = 0; /* Counter of live AllocModMap() invocations */
+static int flush_c = 0; /* Counter of FlushCache() invocations */
+static int hit_c = 0;   /* Cache hit counter */
+static int lhit_c = 0;  /* Cache late unconfig hit counter */
+static int miss_c = 0;  /* Cache miss (without replacement) counter */
+static int repl_c = 0;  /* Entry replacement counter */
 
-#define IncPerfCtr(x)	x++
-#define DecPerfCtr(x)	x--
-#define PrintPerfCtr(x)  debug2(DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x)
+#  define IncPerfCtr( x ) x++
+#  define DecPerfCtr( x ) x--
+#  define PrintPerfCtr( x ) debug2( DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
 
-#define PrintCacheStats					\
-{							\
-    PrintPerfCtr(alloc_c);				\
-    PrintPerfCtr(flush_c);				\
-    PrintPerfCtr(hit_c);				\
-    PrintPerfCtr(lhit_c);				\
-    PrintPerfCtr(miss_c);				\
-    PrintPerfCtr(repl_c);				\
-}
+#  define PrintCacheStats                                                                                                                  \
+      {                                                                                                                                    \
+          PrintPerfCtr( alloc_c );                                                                                                         \
+          PrintPerfCtr( flush_c );                                                                                                         \
+          PrintPerfCtr( hit_c );                                                                                                           \
+          PrintPerfCtr( lhit_c );                                                                                                          \
+          PrintPerfCtr( miss_c );                                                                                                          \
+          PrintPerfCtr( repl_c );                                                                                                          \
+      }
 
 #else
 
-#define IncPerfCtr(x)
-#define DecPerfCtr(x)
-#define PrintPerfCtr(x)
+#  define IncPerfCtr( x )
+#  define DecPerfCtr( x )
+#  define PrintPerfCtr( x )
 
-#define PrintCacheStats
+#  define PrintCacheStats
 
 #endif
 
-
 /*---------------------------------------------------------------------------
-	Private functions
+        Private functions
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -214,27 +211,26 @@ static int repl_c = 0;		/* Entry replacement counter */
   It signals a warning and returns 0x0 to the caller. Since two consecutive
   zeros represent a RTNSXM instruction, this is an easy way to detect when
   a gosub transfers control to an unmapped address.
-  
+
 .call	      :
-		d = BadRead(addr);
+                d = BadRead(addr);
 .input	      :
-		Address addr, address
+                Address addr, address
 .output	      :
-		Nibble d, datum
+                Nibble d, datum
 .status_codes :
-		MOD_E_BAD_READ
+                MOD_E_BAD_READ
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-static Nibble BadRead(Address addr)
+static Nibble BadRead( Address addr )
 {
-  ChfCondition MOD_E_BAD_READ, CHF_ERROR, addr ChfEnd;
-  ChfSignal();
+    ChfCondition MOD_E_BAD_READ, CHF_ERROR, addr ChfEnd;
+    ChfSignal();
 
-  return (Nibble)0x0;
+    return ( Nibble )0x0;
 }
-
 
 /* .+
 
@@ -246,26 +242,25 @@ static Nibble BadRead(Address addr)
   address.
 
   It signals a warning and does not execute the write.
-  
+
 .call	      :
-		BadWrite(addr, datum);
+                BadWrite(addr, datum);
 .input	      :
-		Address addr, address
-		Nibble datum, datum to be written
+                Address addr, address
+                Nibble datum, datum to be written
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_E_BAD_WRITE
+                MOD_E_BAD_WRITE
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-static void BadWrite(Address addr, Nibble datum)
+static void BadWrite( Address addr, Nibble datum )
 {
-  ChfCondition MOD_E_BAD_WRITE, CHF_ERROR, addr, datum ChfEnd;
-  ChfSignal();
+    ChfCondition MOD_E_BAD_WRITE, CHF_ERROR, addr, datum ChfEnd;
+    ChfSignal();
 }
-
 
 /* .+
 
@@ -278,14 +273,14 @@ static void BadWrite(Address addr, Nibble datum)
   mapping structure (mod_map.map_info).
 
 .call	      :
-		RebuildPageTable(lo, hi);
+                RebuildPageTable(lo, hi);
 .input	      :
-		int lo, first page table entry to rebuild
-		int hi, last page table entry to rebuild
+                int lo, first page table entry to rebuild
+                int hi, last page table entry to rebuild
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 26-Jan-1998, creation
   3.3, 25-Sep-2000, update
@@ -297,77 +292,66 @@ static void BadWrite(Address addr, Nibble datum)
       module configurations.
 
 .- */
-static void RebuildPageTable(int lo, int hi)
+static void RebuildPageTable( int lo, int hi )
 {
-  int page;
-  int mod;
+    int page;
+    int mod;
 
-  Address page_addr;
-  int prio;
-  int winner = -1;
+    Address page_addr;
+    int prio;
+    int winner = -1;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RebuildPageTable");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RebuildPageTable" );
 
-  /* Scan all pages in the [lo, hi] range */
-  for(page=lo; page<=hi; page++)
-  {
-    /* Calculate the base page address for the current page */
-    page_addr = ModAddress(page);
+    /* Scan all pages in the [lo, hi] range */
+    for ( page = lo; page <= hi; page++ ) {
+        /* Calculate the base page address for the current page */
+        page_addr = ModAddress( page );
 
-    /* Scan the module mapping information table, searching for the module
-       with the highest access priority that responds to the address
-       page_addr. If succesful, 'prio' contains the access priority of the
-       winner, and 'winner' contains its index, otherwise prio is set
-       to MOD_MIN_ACCESS_PRIO.
-    */
-    prio = MOD_MIN_ACCESS_PRIO;
-    for(mod=0; mod<N_MOD; mod++)
-    {
-      if(
-	mod_map.map_info[mod].config == MOD_CONFIGURED		&&
-	page_addr >= mod_map.map_info[mod].abs_base_addr	&&
-	page_addr <  mod_map.map_info[mod].abs_base_addr +
-		     mod_map.map_info[mod].size			&&
-	prio <  mod_description[mod].access_prio
-      )
-      {
-	winner = mod;
-	prio = mod_description[mod].access_prio;
-      }
+        /* Scan the module mapping information table, searching for the module
+           with the highest access priority that responds to the address
+           page_addr. If succesful, 'prio' contains the access priority of the
+           winner, and 'winner' contains its index, otherwise prio is set
+           to MOD_MIN_ACCESS_PRIO.
+        */
+        prio = MOD_MIN_ACCESS_PRIO;
+        for ( mod = 0; mod < N_MOD; mod++ ) {
+            if ( mod_map.map_info[ mod ].config == MOD_CONFIGURED && page_addr >= mod_map.map_info[ mod ].abs_base_addr &&
+                 page_addr < mod_map.map_info[ mod ].abs_base_addr + mod_map.map_info[ mod ].size &&
+                 prio < mod_description[ mod ].access_prio ) {
+                winner = mod;
+                prio = mod_description[ mod ].access_prio;
+            }
+        }
+
+        if ( prio == MOD_MIN_ACCESS_PRIO ) {
+            /* The page is unmapped; set the module index to the special value
+               MOD_NO_MOD_INDEX, the relative base address to zero and the
+               read/write functions to BadRead/BadWrite, to catch accesses to
+               unmapped addresses.
+            */
+            mod_map.page_table[ page ].index = MOD_NO_MOD_INDEX;
+            mod_map.page_table[ page ].rel_base_addr = 0x00000;
+            mod_map.page_table[ page ].read = BadRead;
+            mod_map.page_table[ page ].write = BadWrite;
+        }
+
+        else {
+            /* The page is mapped
+               3.3: If the MOD_MAP_FLAGS_ABS is set in the winner's module
+                    description, the base address of the page is set to its
+                    absolute address; this way, the module read/write functions
+                    will receive absolute addresses instead of relative ones.
+            */
+            mod_map.page_table[ page ].index = winner;
+            mod_map.page_table[ page ].rel_base_addr = ( mod_description[ winner ].map_flags & MOD_MAP_FLAGS_ABS )
+                                                           ? page_addr
+                                                           : page_addr - mod_map.map_info[ winner ].abs_base_addr;
+            mod_map.page_table[ page ].read = mod_description[ winner ].read;
+            mod_map.page_table[ page ].write = mod_description[ winner ].write;
+        }
     }
-
-    if(prio == MOD_MIN_ACCESS_PRIO)
-    {
-      /* The page is unmapped; set the module index to the special value
-	 MOD_NO_MOD_INDEX, the relative base address to zero and the
-	 read/write functions to BadRead/BadWrite, to catch accesses to
-	 unmapped addresses.
-      */
-      mod_map.page_table[page].index = MOD_NO_MOD_INDEX;
-      mod_map.page_table[page].rel_base_addr = 0x00000;
-      mod_map.page_table[page].read = BadRead;
-      mod_map.page_table[page].write = BadWrite;
-    }
-
-    else
-    {
-      /* The page is mapped
-	 3.3: If the MOD_MAP_FLAGS_ABS is set in the winner's module
-	      description, the base address of the page is set to its
-	      absolute address; this way, the module read/write functions
-	      will receive absolute addresses instead of relative ones.
-      */
-      mod_map.page_table[page].index = winner;
-      mod_map.page_table[page].rel_base_addr =
-	  (mod_description[winner].map_flags & MOD_MAP_FLAGS_ABS)
-	  ? page_addr
-	  : page_addr - mod_map.map_info[winner].abs_base_addr;
-      mod_map.page_table[page].read = mod_description[winner].read;
-      mod_map.page_table[page].write = mod_description[winner].write;
-    }
-  }
 }
-
 
 /* .+
 
@@ -380,36 +364,36 @@ static void RebuildPageTable(int lo, int hi)
   the same structure.
 
 .call	      :
-		d = ClearCachingInfo(d);
+                d = ClearCachingInfo(d);
 .input	      :
-		struct ModMap *d, ptr to the structure to be wiped off
+                struct ModMap *d, ptr to the structure to be wiped off
 .output	      :
-		struct ModMap *d, ptr to affected structure
+                struct ModMap *d, ptr to affected structure
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static struct ModMap *ClearCachingInfo(struct ModMap *d)
+static struct ModMap* ClearCachingInfo( struct ModMap* d )
 {
-    static const struct ModCacheTableEntry empty =
-    { (Address)0, (struct ModMap *)NULL };
+    static const struct ModCacheTableEntry empty = { ( Address )0, ( struct ModMap* )NULL };
 
     int i;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ClearCachingInfo");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ClearCachingInfo" );
 
-    for(i=0; i<N_MOD_CACHE_ENTRIES; i++)  d->cache.config[i] = empty;
+    for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
+        d->cache.config[ i ] = empty;
     d->cache.victim = 0;
 
-    for(i=0; i<N_MOD; i++)  d->cache.unconfig[i] = (struct ModMap *)NULL;
+    for ( i = 0; i < N_MOD; i++ )
+        d->cache.unconfig[ i ] = ( struct ModMap* )NULL;
     d->cache.config_point = 0;
     d->cache.ref_count = 0;
 
     return d;
 }
-
 
 /* .+
 
@@ -428,43 +412,40 @@ static struct ModMap *ClearCachingInfo(struct ModMap *d)
   current value of all cache performance counters (PrintCacheStats).
 
 .call	      :
-		p = NewModMap();
+                p = NewModMap();
 .input	      :
-		void
+                void
 .output	      :
-		struct ModMap *p, pointer to the new struct ModMap
+                struct ModMap *p, pointer to the new struct ModMap
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_PERF_CTR, performance counter: %s value: %d
-		MOD_F_MAP_ALLOC, allocation of new map failed
+                MOD_I_CALLED
+                MOD_I_PERF_CTR, performance counter: %s value: %d
+                MOD_F_MAP_ALLOC, allocation of new map failed
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static struct ModMap *NewModMap(void)
+static struct ModMap* NewModMap( void )
 {
-    struct ModMap *new;
+    struct ModMap* new;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap" );
 
-    if((new = (struct ModMap *)malloc(sizeof(struct ModMap)))
-       == (struct ModMap *)NULL)
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_F_MAP_ALLOC, CHF_FATAL ChfEnd;
-	ChfSignal();
+    if ( ( new = ( struct ModMap* )malloc( sizeof( struct ModMap ) ) ) == ( struct ModMap* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_F_MAP_ALLOC, CHF_FATAL ChfEnd;
+        ChfSignal();
     }
 
     /* Link new structure to the cache list */
     new->cache.link = cache_head;
     cache_head = new;
 
-    IncPerfCtr(alloc_c);
+    IncPerfCtr( alloc_c );
     PrintCacheStats;
 
     return new;
 }
-
 
 /* .+
 
@@ -480,28 +461,27 @@ static struct ModMap *NewModMap(void)
   list (.link field) is preserved.
 
 .call	      :
-		d = CopyModMap(d, s);
+                d = CopyModMap(d, s);
 .input	      :
-		const struct ModMap *s, ptr to source structure
+                const struct ModMap *s, ptr to source structure
 .output	      :
-		struct ModMap *d, ptr to destination structure
+                struct ModMap *d, ptr to destination structure
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static struct ModMap *CopyModMap(struct ModMap *d, const struct ModMap *s)
+static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 {
-    struct ModMap *link = d->cache.link;	/* Save .link of dest. */
+    struct ModMap* link = d->cache.link; /* Save .link of dest. */
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "CopyModMap");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "CopyModMap" );
 
     *d = *s;
-    d->cache.link = link;			/* Restore .link */
-    return ClearCachingInfo(d);
+    d->cache.link = link; /* Restore .link */
+    return ClearCachingInfo( d );
 }
-
 
 /* .+
 
@@ -522,36 +502,34 @@ static struct ModMap *CopyModMap(struct ModMap *d, const struct ModMap *s)
   destination structure.
 
 .call	      :
-		ReplaceModMap(d, s);
+                ReplaceModMap(d, s);
 .input	      :
-		struct ModMap **d, ptr to destination structure ptr
-		const struct ModMap *s, ptr to source structure
+                struct ModMap **d, ptr to destination structure ptr
+                const struct ModMap *s, ptr to source structure
 .output	      :
-		struct ModMap **d, ptr to destination structure ptr;
-		updated when original value of *d was NULL
+                struct ModMap **d, ptr to destination structure ptr;
+                updated when original value of *d was NULL
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_PERF_CTR, performance counter: %s value: %d
-		MOD_F_MAP_ALLOC, allocation of new map failed
+                MOD_I_CALLED
+                MOD_I_PERF_CTR, performance counter: %s value: %d
+                MOD_F_MAP_ALLOC, allocation of new map failed
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static void ReplaceModMap(struct ModMap **d, const struct ModMap *s)
+static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ReplaceModMap");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ReplaceModMap" );
 
-    if(*d == (struct ModMap *)NULL)
-	/* Allocation needed; cache cleared after allocation */
-	*d = CopyModMap(NewModMap(), s);
+    if ( *d == ( struct ModMap* )NULL )
+        /* Allocation needed; cache cleared after allocation */
+        *d = CopyModMap( NewModMap(), s );
 
-    else
-    {
-	CopyModMap(*d, s);
-	IncPerfCtr(repl_c);
+    else {
+        CopyModMap( *d, s );
+        IncPerfCtr( repl_c );
     }
 }
-
 
 /* .+
 
@@ -565,59 +543,55 @@ static void ReplaceModMap(struct ModMap **d, const struct ModMap *s)
   information is no longer valid after the flush.
 
 .call	      :
-		FlushCache(save);
+                FlushCache(save);
 .input	      :
-		struct ModMap *save
+                struct ModMap *save
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
+                MOD_I_CALLED
+                MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static void FlushCache(struct ModMap *save)
+static void FlushCache( struct ModMap* save )
 {
     struct ModMap *p, *n;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "FlushCache");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "FlushCache" );
 
     /* Scan the cache list; free all elements except that pointed by 'save' */
     p = cache_head;
-    while(p != (struct ModMap *)NULL)
-    {
+    while ( p != ( struct ModMap* )NULL ) {
 
-	n = p->cache.link;
+        n = p->cache.link;
 
-	if(p != save)
-	{
-	    free(p);
-	    DecPerfCtr(alloc_c);
-	}
+        if ( p != save ) {
+            free( p );
+            DecPerfCtr( alloc_c );
+        }
 
-	p = n;
+        p = n;
     }
 
     /* The cache list now contains only 'save' */
-    save->cache.link = (struct ModMap *)NULL;
+    save->cache.link = ( struct ModMap* )NULL;
     cache_head = save;
 
     /* Clear the caching information in 'save' */
-    ClearCachingInfo(save);
+    ClearCachingInfo( save );
 
-    IncPerfCtr(flush_c);
+    IncPerfCtr( flush_c );
 
 #ifdef DEBUG
     /* The alloc_c performance counter must be exactly 1 now */
-    if(alloc_c != 1)
-    {
-	ChfCondition MOD_F_BAD_ALLOC_C, CHF_ERROR, alloc_c ChfEnd;
-	ChfSignal();
+    if ( alloc_c != 1 ) {
+        ChfCondition MOD_F_BAD_ALLOC_C, CHF_ERROR, alloc_c ChfEnd;
+        ChfSignal();
     }
 #endif
 }
-
 
 /* .+
 
@@ -631,30 +605,29 @@ static void FlushCache(struct ModMap *save)
   just found, otherwise it returns NULL (cache miss).
 
 .call	      :
-		p = AccessConfigCache(tag);
+                p = AccessConfigCache(tag);
 .input	      :
-		Address tag, cache tag
+                Address tag, cache tag
 .output	      :
-		struct ModMap *p, cached pointer, or NULL
+                struct ModMap *p, cached pointer, or NULL
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static struct ModMap *AccessConfigCache(Address tag)
+static struct ModMap* AccessConfigCache( Address tag )
 {
     int i;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache" );
 
-    for(i=0; i<N_MOD_CACHE_ENTRIES; i++)
-	if(mod_map.cache.config[i].tag == tag)
-	    return mod_map.cache.config[i].map_ptr;
+    for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
+        if ( mod_map.cache.config[ i ].tag == tag )
+            return mod_map.cache.config[ i ].map_ptr;
 
-    return (struct ModMap *)NULL;
+    return ( struct ModMap* )NULL;
 }
-
 
 /* .+
 
@@ -670,31 +643,30 @@ static struct ModMap *AccessConfigCache(Address tag)
   struct ModMap just found, otherwise it returns NULL (cache miss).
 
 .call	      :
-		p = AccessUnconfigCache(i);
+                p = AccessUnconfigCache(i);
 .input	      :
-		int i, unconfig cache index (unconfigured module index)
+                int i, unconfig cache index (unconfigured module index)
 .output	      :
-		struct ModMap *p, cached pointer, or NULL
+                struct ModMap *p, cached pointer, or NULL
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static struct ModMap *AccessUnconfigCache(int i)
+static struct ModMap* AccessUnconfigCache( int i )
 {
-    struct ModMap *p;
+    struct ModMap* p;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
-    p = mod_map.cache.unconfig[i];
+    p = mod_map.cache.unconfig[ i ];
 
-    while(p != (struct ModMap *)NULL  &&  !p->cache.config_point)
-	p = p->cache.unconfig[i];
+    while ( p != ( struct ModMap* )NULL && !p->cache.config_point )
+        p = p->cache.unconfig[ i ];
 
     return p;
 }
-
 
 /* .+
 
@@ -716,73 +688,65 @@ static struct ModMap *AccessUnconfigCache(int i)
   function immediately signals the fatal condition MOD_F_NO_VICTIM.
 
 .call	      :
-		victim = SelectConfigVictim();
+                victim = SelectConfigVictim();
 .input	      :
-		void
+                void
 .output	      :
-		struct ModCacheTableEntry *victim, pointer to victim entry
+                struct ModCacheTableEntry *victim, pointer to victim entry
 .status_codes :
-		MOD_I_CALLED
-		MOD_W_NO_VICTIM
-		MOD_F_NO_VICTIM
-		MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
+                MOD_I_CALLED
+                MOD_W_NO_VICTIM
+                MOD_F_NO_VICTIM
+                MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-struct ModCacheTableEntry *SelectConfigVictim(int retry)
+struct ModCacheTableEntry* SelectConfigVictim( int retry )
 {
     int v = mod_map.cache.victim;
-    struct ModCacheTableEntry *victim = (struct ModCacheTableEntry *)NULL;
+    struct ModCacheTableEntry* victim = ( struct ModCacheTableEntry* )NULL;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     /* Scan the config cache entries, starting at .cache.victim,
        until a suitable one is found or the index loops around
     */
-    do
-    {
-	/* A config cache entry is suitable for use if:
-	   - it is empty (map_ptr == NULL)
-	   - or the reference count of the associated map is 0
-	*/
-	if((mod_map.cache.config[v].map_ptr == (struct ModMap *)NULL)
-	   || mod_map.cache.config[v].map_ptr->cache.ref_count == 0)
-	    victim = &(mod_map.cache.config[v]);
+    do {
+        /* A config cache entry is suitable for use if:
+           - it is empty (map_ptr == NULL)
+           - or the reference count of the associated map is 0
+        */
+        if ( ( mod_map.cache.config[ v ].map_ptr == ( struct ModMap* )NULL ) || mod_map.cache.config[ v ].map_ptr->cache.ref_count == 0 )
+            victim = &( mod_map.cache.config[ v ] );
 
-	v = (v + 1) % N_MOD_CACHE_ENTRIES;
-    }
-    while(victim == (struct ModCacheTableEntry *)NULL
-	  && v != mod_map.cache.victim);
+        v = ( v + 1 ) % N_MOD_CACHE_ENTRIES;
+    } while ( victim == ( struct ModCacheTableEntry* )NULL && v != mod_map.cache.victim );
 
-    if(victim == (struct ModCacheTableEntry *)NULL)
-    {
-	if(retry)
-	{
-	    /* Unable to find a victim; flush the cache and retry */
-	    ChfCondition MOD_W_NO_VICTIM, CHF_WARNING ChfEnd;
-	    ChfSignal();
+    if ( victim == ( struct ModCacheTableEntry* )NULL ) {
+        if ( retry ) {
+            /* Unable to find a victim; flush the cache and retry */
+            ChfCondition MOD_W_NO_VICTIM, CHF_WARNING ChfEnd;
+            ChfSignal();
 
-	    FlushCache(mod_map_ptr);
+            FlushCache( mod_map_ptr );
 
-	    victim = SelectConfigVictim(0);
-	}
+            victim = SelectConfigVictim( 0 );
+        }
 
-	else
-	{
-	    /* Unable to find a victim; retry is not an option; give up */
-	    ChfCondition MOD_F_NO_VICTIM, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
+        else {
+            /* Unable to find a victim; retry is not an option; give up */
+            ChfCondition MOD_F_NO_VICTIM, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
     }
 
     else
-	/* Found a victim; update next-victim index */
-	mod_map.cache.victim = v;
+        /* Found a victim; update next-victim index */
+        mod_map.cache.victim = v;
 
     return victim;
 }
-
 
 /* .+
 
@@ -801,59 +765,52 @@ struct ModCacheTableEntry *SelectConfigVictim(int retry)
   that encountered an early cache miss.
 
 .call	      :
-		p = CheckForLateHit();
+                p = CheckForLateHit();
 .input	      :
-		void
+                void
 .output	      :
-		struct ModMap *p, cached pointer, or NULL
+                struct ModMap *p, cached pointer, or NULL
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   2.7, 19-Sep-2000, creation
 
 .- */
-static struct ModMap *CheckForLateHit(void)
+static struct ModMap* CheckForLateHit( void )
 {
-    struct ModMap *p;
+    struct ModMap* p;
     int i;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     p = cache_head;
 
     /* Scan the cache to find an entry with the same modules configuration
        as the current one; return a pointer to it if successful
     */
-    while(p != (struct ModMap *)NULL)
-    {
-	/* Don't attempt to match an entry against itself */
-	if(p != mod_map_ptr)
-	{
-	    /* only .map_info contents must match */
-	    for(i=0; i<N_MOD; i++)
-	    {
-		/* Break the for if a difference was found */
-		if(
-		    (mod_map_ptr->map_info[i].config
-		     != p->map_info[i].config)
-		    || (mod_map_ptr->map_info[i].abs_base_addr !=
-			p->map_info[i].abs_base_addr)
-		    || (mod_map_ptr->map_info[i].size !=
-			p->map_info[i].size))
-		    break;
-	    }
+    while ( p != ( struct ModMap* )NULL ) {
+        /* Don't attempt to match an entry against itself */
+        if ( p != mod_map_ptr ) {
+            /* only .map_info contents must match */
+            for ( i = 0; i < N_MOD; i++ ) {
+                /* Break the for if a difference was found */
+                if ( ( mod_map_ptr->map_info[ i ].config != p->map_info[ i ].config ) ||
+                     ( mod_map_ptr->map_info[ i ].abs_base_addr != p->map_info[ i ].abs_base_addr ) ||
+                     ( mod_map_ptr->map_info[ i ].size != p->map_info[ i ].size ) )
+                    break;
+            }
 
-	    /* Break the while if we found a match ('for' was not broken) */
-	    if(i == N_MOD)  break;
-	}
+            /* Break the while if we found a match ('for' was not broken) */
+            if ( i == N_MOD )
+                break;
+        }
 
-	/* Go to the next cache entry */
-	p = p->cache.link;
+        /* Go to the next cache entry */
+        p = p->cache.link;
     }
 
     return p;
 }
-
 
 /* .+
 
@@ -868,62 +825,58 @@ static struct ModMap *CheckForLateHit(void)
   longer referenced.
 
 .call	      :
-		p = CheckForLateHit();
+                p = CheckForLateHit();
 .input	      :
-		void
+                void
 .output	      :
-		struct ModMap *p, cached pointer, or NULL
+                struct ModMap *p, cached pointer, or NULL
 .status_codes :
-		MOD_I_CALLED
-		MOD_F_CHAIN_CORRUPTED
+                MOD_I_CALLED
+                MOD_F_CHAIN_CORRUPTED
 .notes	      :
   2.7, 15-Sep-2000, creation
 
 .- */
-static void FreeModMap(struct ModMap *p)
+static void FreeModMap( struct ModMap* p )
 {
-    struct ModMap *n;
+    struct ModMap* n;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "FreeModMap");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "FreeModMap" );
 
     /* Free the struct ModMap pointed by p, preserving the linkage of
        other entries.  The caller must ensure that the entry is not
        referenced by any other entry through cache pointers.
     */
-    if(p == cache_head)
-    {
-	/* Free the list head */
-	cache_head = p->cache.link;
-	free(p);
-	DecPerfCtr(alloc_c);
+    if ( p == cache_head ) {
+        /* Free the list head */
+        cache_head = p->cache.link;
+        free( p );
+        DecPerfCtr( alloc_c );
     }
 
-    else
-    {
-	/* Scan the cache; at end, n is either null (!) or points to the
-	   cache entry that immediately precedes p
-	*/
-	n = cache_head;
-	while((n != (struct ModMap *)NULL)  &&  n->cache.link != p)
-	    n = n->cache.link;
+    else {
+        /* Scan the cache; at end, n is either null (!) or points to the
+           cache entry that immediately precedes p
+        */
+        n = cache_head;
+        while ( ( n != ( struct ModMap* )NULL ) && n->cache.link != p )
+            n = n->cache.link;
 
-	/* Should never happen */
-	if(n == (struct ModMap *)NULL)
-	{
-	    ChfCondition MOD_F_CHAIN_CORRUPTED, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
+        /* Should never happen */
+        if ( n == ( struct ModMap* )NULL ) {
+            ChfCondition MOD_F_CHAIN_CORRUPTED, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
 
-	/* Bypass element pointed by p and free it */
-	n->cache.link = p->cache.link;
-	free(p);
-	DecPerfCtr(alloc_c);
+        /* Bypass element pointed by p and free it */
+        n->cache.link = p->cache.link;
+        free( p );
+        DecPerfCtr( alloc_c );
     }
 }
 
-
 /*---------------------------------------------------------------------------
-	Public functions
+        Public functions
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -943,24 +896,23 @@ static void FreeModMap(struct ModMap *p)
   returns 'void' to the caller.
 
 .call	      :
-		ModRegisterDescription(p);
+                ModRegisterDescription(p);
 .input	      :
-		ModDescription p, module description table to be registered
+                ModDescription p, module description table to be registered
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void ModRegisterDescription(ModDescription p)
+void ModRegisterDescription( ModDescription p )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModRegisterDescription");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModRegisterDescription" );
     mod_description = p;
 }
-
 
 /* .+
 
@@ -977,23 +929,23 @@ void ModRegisterDescription(ModDescription p)
   returns 'void' to the caller.
 
 .call	      :
-		ModInit();
+                ModInit();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_REVISION
-		MOD_I_INITIALIZING
-		MOD_I_PERF_CTR, performance counter: %s value: %d
-		MOD_W_RESETTING_ALL
-		MOD_F_MAP_ALLOC
-		MOD_F_NO_DESCRIPTION
+                MOD_I_CALLED
+                MOD_I_REVISION
+                MOD_I_INITIALIZING
+                MOD_I_PERF_CTR, performance counter: %s value: %d
+                MOD_W_RESETTING_ALL
+                MOD_F_MAP_ALLOC
+                MOD_F_NO_DESCRIPTION
 
-		NOTE: This function can also (indirectly) report any condition
-		code generated and/or signalled by the module initialization
-		functions.
+                NOTE: This function can also (indirectly) report any condition
+                code generated and/or signalled by the module initialization
+                functions.
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.7, 15-Sep-2000, update
@@ -1002,55 +954,49 @@ void ModRegisterDescription(ModDescription p)
     - added sanity check on mod_description
 
 .- */
-void ModInit(void)
+void ModInit( void )
 {
-  int mod;
+    int mod;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModInit");
-  debug1(DEBUG_C_REVISION, MOD_I_REVISION, MOD_RCS_INFO);
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModInit" );
+    debug1( DEBUG_C_REVISION, MOD_I_REVISION, MOD_RCS_INFO );
 
-  /* First, a little sanity check on mod_description: ensure that
-     ModRegisterDescription() has been called at least once with a
-     non-NULL argument.
-  */
-  if(mod_description == NULL)
-  {
-      ChfCondition MOD_F_NO_DESCRIPTION, CHF_FATAL ChfEnd;
-      ChfSignal();
-  }
+    /* First, a little sanity check on mod_description: ensure that
+       ModRegisterDescription() has been called at least once with a
+       non-NULL argument.
+    */
+    if ( mod_description == NULL ) {
+        ChfCondition MOD_F_NO_DESCRIPTION, CHF_FATAL ChfEnd;
+        ChfSignal();
+    }
 
-  /* Scan the mod_description table, initializing all modules */
-  for(mod=0; mod<N_MOD; mod++)
-  {
-    debug1(DEBUG_C_MODULES, MOD_I_INITIALIZING, mod_description[mod].name);
-    mod_description[mod].init();
-  }
+    /* Scan the mod_description table, initializing all modules */
+    for ( mod = 0; mod < N_MOD; mod++ ) {
+        debug1( DEBUG_C_MODULES, MOD_I_INITIALIZING, mod_description[ mod ].name );
+        mod_description[ mod ].init();
+    }
 
-  /* Allocate the root struct ModMap and set it as the current one;
-     the structure can be accessed using either mod_map_ptr or mod_map.
-  */
-  mod_map_ptr = ClearCachingInfo(NewModMap());
+    /* Allocate the root struct ModMap and set it as the current one;
+       the structure can be accessed using either mod_map_ptr or mod_map.
+    */
+    mod_map_ptr = ClearCachingInfo( NewModMap() );
 
-  /* Attempt to restore the mod_map from file; reset modules if the read
-     fails.
-  */
-  if(ReadStructFromFile(args.mod_file_name,
-    sizeof(mod_map.map_info), &mod_map.map_info))
-  {
-    ChfCondition MOD_W_RESETTING_ALL, CHF_WARNING ChfEnd;
-    ChfSignal();
+    /* Attempt to restore the mod_map from file; reset modules if the read
+       fails.
+    */
+    if ( ReadStructFromFile( args.mod_file_name, sizeof( mod_map.map_info ), &mod_map.map_info ) ) {
+        ChfCondition MOD_W_RESETTING_ALL, CHF_WARNING ChfEnd;
+        ChfSignal();
 
-    /* Reset all modules */
-    ModReset();
-  }
+        /* Reset all modules */
+        ModReset();
+    }
 
-  else
-  {
-    /* Rebuild page table (not saved on disk) */
-    RebuildPageTable(0, N_PAGE_TABLE_ENTRIES-1);
-  }
+    else {
+        /* Rebuild page table (not saved on disk) */
+        RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
+    }
 }
-
 
 /* .+
 
@@ -1065,45 +1011,41 @@ void ModInit(void)
   returns 'void' to the caller.
 
 .call	      :
-		ModSave();
+                ModSave();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_SAVING
-		MOD_W_RESETTING
+                MOD_I_CALLED
+                MOD_I_SAVING
+                MOD_W_RESETTING
 
-		NOTE: This function can also (indirectly) report any condition
-		code generated and/or signalled by the module initialization
-		functions.
+                NOTE: This function can also (indirectly) report any condition
+                code generated and/or signalled by the module initialization
+                functions.
 .notes	      :
   1.1, 11-Feb-1998, creation
 
 .- */
-void ModSave(void)
+void ModSave( void )
 {
-  int mod;
+    int mod;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModSave");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModSave" );
 
-  /* Scan the mod_description table, initializing all modules */
-  for(mod=0; mod<N_MOD; mod++)
-  {
-    debug1(DEBUG_C_MODULES, MOD_I_SAVING, mod_description[mod].name);
-    mod_description[mod].save();
-  }
+    /* Scan the mod_description table, initializing all modules */
+    for ( mod = 0; mod < N_MOD; mod++ ) {
+        debug1( DEBUG_C_MODULES, MOD_I_SAVING, mod_description[ mod ].name );
+        mod_description[ mod ].save();
+    }
 
-  /* Attempt to save the mod_map from file */
-  if(WriteStructToFile(&mod_map.map_info, sizeof(mod_map.map_info),
-    args.mod_file_name))
-  {
-    ChfCondition MOD_F_MAP_SAVE, CHF_FATAL ChfEnd;
-    ChfSignal();
-  }
+    /* Attempt to save the mod_map from file */
+    if ( WriteStructToFile( &mod_map.map_info, sizeof( mod_map.map_info ), args.mod_file_name ) ) {
+        ChfCondition MOD_F_MAP_SAVE, CHF_FATAL ChfEnd;
+        ChfSignal();
+    }
 }
-
 
 /* .+
 
@@ -1119,56 +1061,54 @@ void ModSave(void)
   Bits		Meaning
 
   19..8		Three most-significant nibbles of the last configuration
-		address specified for this module.
+                address specified for this module.
 
   7..3		F: The next CONFIG data will specify a module base address
-		0: The next CONFIG data will specify a module size
+                0: The next CONFIG data will specify a module size
 
   3..0		Module ID data
-		If the size of the module has already been configured, the
-		base ID of the module is increased by one.
+                If the size of the module has already been configured, the
+                base ID of the module is increased by one.
 
 .call	      :
-		id = ModGetId();
+                id = ModGetId();
 .input	      :
-		void
+                void
 .output	      :
-		Address id, ID of the next module to be configured.
+                Address id, ID of the next module to be configured.
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_GET_ID
+                MOD_I_CALLED
+                MOD_I_GET_ID
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-Address ModGetID(void)
+Address ModGetID( void )
 {
-  int mod;
-  Address id;
+    int mod;
+    Address id;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModGetID");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModGetID" );
 
-  /* Scan the module information table searching for either an unconfigured
-     or a partially configured module
-  */
-  for(mod=0;
-    mod<N_MOD && mod_map.map_info[mod].config == MOD_CONFIGURED; mod++);
+    /* Scan the module information table searching for either an unconfigured
+       or a partially configured module
+    */
+    for ( mod = 0; mod < N_MOD && mod_map.map_info[ mod ].config == MOD_CONFIGURED; mod++ )
+        ;
 
-  if(mod==N_MOD)
-    /* All modules are configured */
-    id = (Address)0x00000;
+    if ( mod == N_MOD )
+        /* All modules are configured */
+        id = ( Address )0x00000;
 
-  else
-    /* Build the module id */
-    id = (mod_map.map_info[mod].abs_base_addr & 0xFFF00) |
-      (mod_map.map_info[mod].config == MOD_UNCONFIGURED ? 0x00000 : 0x000F0) |
-      (mod_description[mod].id +
-        (mod_map.map_info[mod].config == MOD_UNCONFIGURED ? 0 : 1));
+    else
+        /* Build the module id */
+        id = ( mod_map.map_info[ mod ].abs_base_addr & 0xFFF00 ) |
+             ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
+             ( mod_description[ mod ].id + ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ? 0 : 1 ) );
 
-  debug1(DEBUG_C_MODULES, MOD_I_GET_ID, id);
-  return id;
+    debug1( DEBUG_C_MODULES, MOD_I_GET_ID, id );
+    return id;
 }
-
 
 /* .+
 
@@ -1180,53 +1120,51 @@ Address ModGetID(void)
   table used for module access.
 
 .call	      :
-		ModReset();
+                ModReset();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_RESETTING
-		MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
+                MOD_I_CALLED
+                MOD_I_RESETTING
+                MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
 .notes	      :
   1.1, 26-Jan-1998, creation
   2.7, 15-Sep-2000, update
     - revised to implement module config/unconfig cache
 
 .- */
-void ModReset(void)
+void ModReset( void )
 {
-  int mod;
+    int mod;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModReset");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModReset" );
 
-  /* Scan the mod_description table, initializing the module
-     mapping information mod_map.map_info.
-  */
-  for(mod=0; mod<N_MOD; mod++)
-  {
-    debug1(DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[mod].name);
+    /* Scan the mod_description table, initializing the module
+       mapping information mod_map.map_info.
+    */
+    for ( mod = 0; mod < N_MOD; mod++ ) {
+        debug1( DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[ mod ].name );
 
-    /* Set the module configuration status */
-    mod_map.map_info[mod].config = mod_description[mod].r_config;
-    mod_map.map_info[mod].abs_base_addr = mod_description[mod].r_abs_base_addr;
-    mod_map.map_info[mod].size = mod_description[mod].r_size;
-  }
+        /* Set the module configuration status */
+        mod_map.map_info[ mod ].config = mod_description[ mod ].r_config;
+        mod_map.map_info[ mod ].abs_base_addr = mod_description[ mod ].r_abs_base_addr;
+        mod_map.map_info[ mod ].size = mod_description[ mod ].r_size;
+    }
 
-  /* Rebuild the module page table */
-  RebuildPageTable(0, N_PAGE_TABLE_ENTRIES-1);
+    /* Rebuild the module page table */
+    RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
 
-  /* Flush the whole struct ModMap cache, preserving the current map */
-  FlushCache(mod_map_ptr);
+    /* Flush the whole struct ModMap cache, preserving the current map */
+    FlushCache( mod_map_ptr );
 
-  /* Mark the current struct ModMap to be a configuration point;
-     this flag is used by the unconfig cache code to correctly
-     undo the last config
-  */
-  mod_map.cache.config_point = 1;
+    /* Mark the current struct ModMap to be a configuration point;
+       this flag is used by the unconfig cache code to correctly
+       undo the last config
+    */
+    mod_map.cache.config_point = 1;
 }
-
 
 /* .+
 
@@ -1235,7 +1173,7 @@ void ModReset(void)
 .creation     : 26-Jan-1998
 .description  :
   This function configures a module, using the given 'config_info'.
-  
+
   The target module will be the first unconfigured or partially configured
   module found in the mod_map.map_info table.
 
@@ -1250,20 +1188,20 @@ void ModReset(void)
   to reflect the visibility of the new module in the CPU address space.
 
 .call	      :
-		void ModConfig(config_info);
+                void ModConfig(config_info);
 .input	      :
-		Address config_info, configuration information
+                Address config_info, configuration information
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_CONFIG
-		MOD_I_CACHED_CONFIG
-		MOD_I_PERF_CTR, performance counter: %s value: %d
-		MOD_W_BAD_CONFIG
-		MOD_W_NO_VICTIM
-		MOD_F_MAP_ALLOC
-		MOD_F_NO_VICTIM
+                MOD_I_CALLED
+                MOD_I_CONFIG
+                MOD_I_CACHED_CONFIG
+                MOD_I_PERF_CTR, performance counter: %s value: %d
+                MOD_W_BAD_CONFIG
+                MOD_W_NO_VICTIM
+                MOD_F_MAP_ALLOC
+                MOD_F_NO_VICTIM
 .notes	      :
   1.1, 26-Jan-1998, creation
   2.7, 15-Sep-2000, update
@@ -1272,116 +1210,105 @@ void ModReset(void)
     - conditionally (#ifdef HP49_SUPPORT) enabled forced alignment
       of config_info
 .- */
-void ModConfig(Address config_info)
+void ModConfig( Address config_info )
 {
-  struct ModMap *old, *nxt;
-  struct ModCacheTableEntry *victim;
+    struct ModMap *old, *nxt;
+    struct ModCacheTableEntry* victim;
 
-  int mod;
+    int mod;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModConfig");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModConfig" );
 
 #ifdef HP49_SUPPORT
-  /* 3.2: The HP49 firmware (1.19-4) can generate misaligned config
-          addresses, that is, addresses that are not a multiple of 0x100;
-          silently align them here.
-  */
-  config_info &= ~0xFF;
+    /* 3.2: The HP49 firmware (1.19-4) can generate misaligned config
+            addresses, that is, addresses that are not a multiple of 0x100;
+            silently align them here.
+    */
+    config_info &= ~0xFF;
 #endif
 
-  /* ACCESS CONFIG CACHE */
-  if((nxt = AccessConfigCache(config_info)) != (struct ModMap *)NULL)
-  {
-      /* CACHE HIT; switch mod_map_ptr */
-      mod_map_ptr = nxt;
+    /* ACCESS CONFIG CACHE */
+    if ( ( nxt = AccessConfigCache( config_info ) ) != ( struct ModMap* )NULL ) {
+        /* CACHE HIT; switch mod_map_ptr */
+        mod_map_ptr = nxt;
 
-      IncPerfCtr(hit_c);
+        IncPerfCtr( hit_c );
 
-      debug1(DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info);
-      return;
-  }
-
-  /* CACHE MISS */
-  IncPerfCtr(miss_c);
-
-  /* Select a 'victim' cache table entry and update victim
-     selection info; retry after flushing the cache if necessary.
-
-     Initialize victim's tag to current config_info.
-
-     Initialize victim's map_ptr; this can be either a new
-     allocation if the pointer was NULL, or a replacement.
-     This clears the caching information of the map_ptr's pointee.
-
-     Switch mod_map_ptr to the new structure
-
-     The unconfig cache pointer of the new structure will be set when
-     the index of the module being configured will be known.
-  */
-  victim = SelectConfigVictim(1);
-
-  victim->tag = config_info;
-  ReplaceModMap(&(victim->map_ptr), mod_map_ptr);
-
-  old = mod_map_ptr;
-  mod_map_ptr = victim->map_ptr;
-
-  /* Scan the module information table searching for either an unconfigured
-     or a partially configured module
-  */
-  for(mod=0;
-    mod<N_MOD && mod_map.map_info[mod].config == MOD_CONFIGURED; mod++);
-
-  if(mod==N_MOD)
-  {
-    /* All modules are configured - Signal a warning */
-    ChfCondition MOD_W_BAD_CONFIG, CHF_WARNING, config_info ChfEnd;
-    ChfSignal();
-  }
-
-  else
-  {
-    if(mod_map.map_info[mod].config == MOD_UNCONFIGURED)
-    {
-      /* The module was unconfigured; configure its size */
-      mod_map.map_info[mod].size = 0x100000 - config_info;
-      mod_map.map_info[mod].config = MOD_SIZE_CONFIGURED;
+        debug1( DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info );
+        return;
     }
 
-    else
-    {
-      /* The module size was already configured; configure its base address */
-      mod_map.map_info[mod].abs_base_addr = config_info;
-      mod_map.map_info[mod].config = MOD_CONFIGURED;
+    /* CACHE MISS */
+    IncPerfCtr( miss_c );
 
-      /* Rebuild the page table */
-      RebuildPageTable(
-	ModPage(mod_map.map_info[mod].abs_base_addr),
-	ModPage(mod_map.map_info[mod].abs_base_addr +
-		mod_map.map_info[mod].size - 1));
+    /* Select a 'victim' cache table entry and update victim
+       selection info; retry after flushing the cache if necessary.
 
-      /* Mark the current struct ModMap to be a configuration point;
-	 this flag is used by the unconfig cache code to correctly
-	 undo the last config
-      */
-      mod_map.cache.config_point = 1;
+       Initialize victim's tag to current config_info.
 
-      debug3(DEBUG_C_MODULES|DEBUG_C_MOD_CACHE, MOD_I_CONFIG,
-        mod_description[mod].name,
-	mod_map.map_info[mod].abs_base_addr,
-	 mod_map.map_info[mod].size
-      );
-    }
+       Initialize victim's map_ptr; this can be either a new
+       allocation if the pointer was NULL, or a replacement.
+       This clears the caching information of the map_ptr's pointee.
 
-    /* Set the unconfig cache pointer of module 'mod' to the old ModMap,
-       and increment its reference counter, to avoid freeing it
-       improperly.
+       Switch mod_map_ptr to the new structure
+
+       The unconfig cache pointer of the new structure will be set when
+       the index of the module being configured will be known.
     */
-    mod_map.cache.unconfig[mod] = old;
-    old->cache.ref_count++;
-  }
-}
+    victim = SelectConfigVictim( 1 );
 
+    victim->tag = config_info;
+    ReplaceModMap( &( victim->map_ptr ), mod_map_ptr );
+
+    old = mod_map_ptr;
+    mod_map_ptr = victim->map_ptr;
+
+    /* Scan the module information table searching for either an unconfigured
+       or a partially configured module
+    */
+    for ( mod = 0; mod < N_MOD && mod_map.map_info[ mod ].config == MOD_CONFIGURED; mod++ )
+        ;
+
+    if ( mod == N_MOD ) {
+        /* All modules are configured - Signal a warning */
+        ChfCondition MOD_W_BAD_CONFIG, CHF_WARNING, config_info ChfEnd;
+        ChfSignal();
+    }
+
+    else {
+        if ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ) {
+            /* The module was unconfigured; configure its size */
+            mod_map.map_info[ mod ].size = 0x100000 - config_info;
+            mod_map.map_info[ mod ].config = MOD_SIZE_CONFIGURED;
+        }
+
+        else {
+            /* The module size was already configured; configure its base address */
+            mod_map.map_info[ mod ].abs_base_addr = config_info;
+            mod_map.map_info[ mod ].config = MOD_CONFIGURED;
+
+            /* Rebuild the page table */
+            RebuildPageTable( ModPage( mod_map.map_info[ mod ].abs_base_addr ),
+                              ModPage( mod_map.map_info[ mod ].abs_base_addr + mod_map.map_info[ mod ].size - 1 ) );
+
+            /* Mark the current struct ModMap to be a configuration point;
+               this flag is used by the unconfig cache code to correctly
+               undo the last config
+            */
+            mod_map.cache.config_point = 1;
+
+            debug3( DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_CONFIG, mod_description[ mod ].name, mod_map.map_info[ mod ].abs_base_addr,
+                    mod_map.map_info[ mod ].size );
+        }
+
+        /* Set the unconfig cache pointer of module 'mod' to the old ModMap,
+           and increment its reference counter, to avoid freeing it
+           improperly.
+        */
+        mod_map.cache.unconfig[ mod ] = old;
+        old->cache.ref_count++;
+    }
+}
 
 /* .+
 
@@ -1389,150 +1316,137 @@ void ModConfig(Address config_info)
 .kind	      : C function
 .creation     : 26-Jan-1998
 .description  :
-  This function unconfigures the module currently configured at address 
+  This function unconfigures the module currently configured at address
   'unconfig_info' and returns it to its after-reset configuration status.
 
   ModUnconfig also rebuilds the page table used for module access
   to reflect the loss of visibility of the module in the CPU address space.
 
 .call	      :
-		ModUnconfig(unconfig_info);
+                ModUnconfig(unconfig_info);
 .input	      :
-		Address unconfig_info, Unconfig information
+                Address unconfig_info, Unconfig information
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_UNCONFIG
-		MOD_I_CACHED_UNCONFIG
-		MOD_I_PERF_CTR, performance counter: %s value: %d
-		MOD_W_BAD_UNCONFIG
-		MOD_F_MAP_ALLOC
-		MOD_F_CHAIN_CORRUPTED
+                MOD_I_CALLED
+                MOD_I_UNCONFIG
+                MOD_I_CACHED_UNCONFIG
+                MOD_I_PERF_CTR, performance counter: %s value: %d
+                MOD_W_BAD_UNCONFIG
+                MOD_F_MAP_ALLOC
+                MOD_F_CHAIN_CORRUPTED
 .notes	      :
   1.1, 26-Jan-1998, creation
   2.7, 15-Sep-2000, update
     - implemented module config/unconfig cache
 
 .- */
-void ModUnconfig(Address unconfig_info)
+void ModUnconfig( Address unconfig_info )
 {
-  struct ModMap *nxt, *old;
-  int mod;
+    struct ModMap *nxt, *old;
+    int mod;
 
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig" );
 
-  /* Determine the module to unconfigure */
-  if((mod = mod_map.page_table[ModPage(unconfig_info)].index) ==
-    MOD_NO_MOD_INDEX)
-  {
-    /* There isn't any module configured at the given address -
-       Signal a warning
-    */
-    ChfCondition MOD_W_BAD_UNCONFIG, CHF_WARNING, unconfig_info ChfEnd;
-    ChfSignal();
-  }
-
-  else if(mod_description[mod].r_config == MOD_CONFIGURED)
-  {
-    /* The module is automatically configured after reset; it can never
-       be unconfigured.
-    */
-  }
-
-  else
-  {
-    /* Unconfiguring module 'mod': ACCESS UNCONFIG CACHE */
-    if((nxt = AccessUnconfigCache(mod)) != (struct ModMap *)NULL)
-    {
-      /* CACHE HIT; switch mod_map_ptr */
-      mod_map_ptr = nxt;
-
-      IncPerfCtr(hit_c);
-
-      debug0(DEBUG_C_MOD_CACHE, MOD_I_CACHED_UNCONFIG);
-      return;
+    /* Determine the module to unconfigure */
+    if ( ( mod = mod_map.page_table[ ModPage( unconfig_info ) ].index ) == MOD_NO_MOD_INDEX ) {
+        /* There isn't any module configured at the given address -
+           Signal a warning
+        */
+        ChfCondition MOD_W_BAD_UNCONFIG, CHF_WARNING, unconfig_info ChfEnd;
+        ChfSignal();
     }
 
-    /* CACHE MISS
-
-       A clone of the current struct ModMap is allocated and updated
-       according to the unconfig instruction being executed.
-
-       Then, CheckForLateHit() is called to check whether in the
-       module mapping cache there is a struct ModMap identical to
-       the updated one.
-
-       - If there is, the .unconfig[i] link is updated to point to
-         the cache entry just found.
-
-       - If there is not, the whole cache is flushed and all cached
-         ModMap structures allocated so far are freed, except the
-	 current one.  I hope this occurrence is rare.
-    */
-
-    /* Save pointer to the old map and switch to a temporary one */
-    old = mod_map_ptr;
-    mod_map_ptr = CopyModMap(NewModMap(), mod_map_ptr);
-
-    /* Update the mapping information table */
-    mod_map.map_info[mod].config = mod_description[mod].r_config;
-
-    /* Rebuild the page table */
-    RebuildPageTable(
-      ModPage(mod_map.map_info[mod].abs_base_addr),
-      ModPage(mod_map.map_info[mod].abs_base_addr +
-              mod_map.map_info[mod].size - 1));
-
-    /* Reset the module configuration status; the abs_base_addr of the module
-       is not reset because its old value is still needed by ModGetId()
-       The size is reset for the modules that are already MOD_SIZE_CONFIGURED
-       immediately after reset.
-    */
-    mod_map.map_info[mod].size = mod_description[mod].r_size;
-
-    if((nxt = CheckForLateHit()) != (struct ModMap *)NULL)
-    {
-	/* Update pointer from the old map to the new one, and increment
-	   reference counter of the referenced structure
-	*/
-	old->cache.unconfig[mod] = nxt;
-	nxt->cache.ref_count++;
-
-	/* Discard the temporary map and switch to the cached one */
-	FreeModMap(mod_map_ptr);
-	mod_map_ptr = nxt;
-
-	IncPerfCtr(lhit_c);
-	debug0(DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT);
+    else if ( mod_description[ mod ].r_config == MOD_CONFIGURED ) {
+        /* The module is automatically configured after reset; it can never
+           be unconfigured.
+        */
     }
 
-    else
-    {
-	/* Continue to use the new map with no caching information,
-	   and hope that further configuration activities will link it
-	   back in the immediate future.  
-	*/
+    else {
+        /* Unconfiguring module 'mod': ACCESS UNCONFIG CACHE */
+        if ( ( nxt = AccessUnconfigCache( mod ) ) != ( struct ModMap* )NULL ) {
+            /* CACHE HIT; switch mod_map_ptr */
+            mod_map_ptr = nxt;
 
-	/* Mark the current struct ModMap to be a configuration point;
-	   this flag is used by the unconfig cache code to correctly
-	   undo the last config
-	*/
-	mod_map.cache.config_point = 1;
+            IncPerfCtr( hit_c );
 
-	IncPerfCtr(miss_c);
+            debug0( DEBUG_C_MOD_CACHE, MOD_I_CACHED_UNCONFIG );
+            return;
+        }
 
-	debug0(DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS);
+        /* CACHE MISS
 
-	debug3(DEBUG_C_MODULES|DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG,
-	       mod_description[mod].name,
-	       mod_map.map_info[mod].abs_base_addr,
-	       mod_map.map_info[mod].size
-	    );
+           A clone of the current struct ModMap is allocated and updated
+           according to the unconfig instruction being executed.
+
+           Then, CheckForLateHit() is called to check whether in the
+           module mapping cache there is a struct ModMap identical to
+           the updated one.
+
+           - If there is, the .unconfig[i] link is updated to point to
+             the cache entry just found.
+
+           - If there is not, the whole cache is flushed and all cached
+             ModMap structures allocated so far are freed, except the
+             current one.  I hope this occurrence is rare.
+        */
+
+        /* Save pointer to the old map and switch to a temporary one */
+        old = mod_map_ptr;
+        mod_map_ptr = CopyModMap( NewModMap(), mod_map_ptr );
+
+        /* Update the mapping information table */
+        mod_map.map_info[ mod ].config = mod_description[ mod ].r_config;
+
+        /* Rebuild the page table */
+        RebuildPageTable( ModPage( mod_map.map_info[ mod ].abs_base_addr ),
+                          ModPage( mod_map.map_info[ mod ].abs_base_addr + mod_map.map_info[ mod ].size - 1 ) );
+
+        /* Reset the module configuration status; the abs_base_addr of the module
+           is not reset because its old value is still needed by ModGetId()
+           The size is reset for the modules that are already MOD_SIZE_CONFIGURED
+           immediately after reset.
+        */
+        mod_map.map_info[ mod ].size = mod_description[ mod ].r_size;
+
+        if ( ( nxt = CheckForLateHit() ) != ( struct ModMap* )NULL ) {
+            /* Update pointer from the old map to the new one, and increment
+               reference counter of the referenced structure
+            */
+            old->cache.unconfig[ mod ] = nxt;
+            nxt->cache.ref_count++;
+
+            /* Discard the temporary map and switch to the cached one */
+            FreeModMap( mod_map_ptr );
+            mod_map_ptr = nxt;
+
+            IncPerfCtr( lhit_c );
+            debug0( DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT );
+        }
+
+        else {
+            /* Continue to use the new map with no caching information,
+               and hope that further configuration activities will link it
+               back in the immediate future.
+            */
+
+            /* Mark the current struct ModMap to be a configuration point;
+               this flag is used by the unconfig cache code to correctly
+               undo the last config
+            */
+            mod_map.cache.config_point = 1;
+
+            IncPerfCtr( miss_c );
+
+            debug0( DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS );
+
+            debug3( DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG, mod_description[ mod ].name, mod_map.map_info[ mod ].abs_base_addr,
+                    mod_map.map_info[ mod ].size );
+        }
     }
-  }
 }
-
 
 /* .+
 
@@ -1545,26 +1459,24 @@ void ModUnconfig(Address unconfig_info)
   NOTE: This function DOES NOT update the hardware CRC register.
 
 .call	      :
-		d = FetchNibble(addr);
+                d = FetchNibble(addr);
 .input	      :
-		Address addr, address
+                Address addr, address
 .output	      :
-		Nibble *d, datum
+                Nibble *d, datum
 .status_codes :
-		NOTE: This function indirectly reports and condition generated
-		and/or signalled by the module read function.
+                NOTE: This function indirectly reports and condition generated
+                and/or signalled by the module read function.
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble FetchNibble(Address addr)
+Nibble FetchNibble( Address addr )
 {
-  register int page = ModPage(addr);
+    register int page = ModPage( addr );
 
-  return mod_map.page_table[page].read(
-    mod_map.page_table[page].rel_base_addr | ModOffset(addr));
+    return mod_map.page_table[ page ].read( mod_map.page_table[ page ].rel_base_addr | ModOffset( addr ) );
 }
-
 
 /* .+
 
@@ -1575,42 +1487,39 @@ Nibble FetchNibble(Address addr)
   This function reads a nibble from the address 'addr' and returns it.
 
   NOTE: This function updates the hardware CRC register if the target of the
-	read operation is not the HDW module. The current (1.1) implementation
-	of this feature is inefficient because the .index field of the
-	addressed page must be checked against MOD_HDW_INDEX for each
-	access.
+        read operation is not the HDW module. The current (1.1) implementation
+        of this feature is inefficient because the .index field of the
+        addressed page must be checked against MOD_HDW_INDEX for each
+        access.
 
 .call	      :
-		d = ReadNibble(addr);
+                d = ReadNibble(addr);
 .input	      :
-		Address addr, address
+                Address addr, address
 .output	      :
-		Nibble *d, datum
+                Nibble *d, datum
 .status_codes :
-		NOTE: This function indirectly reports and condition generated
-		and/or signalled by the module read function.
+                NOTE: This function indirectly reports and condition generated
+                and/or signalled by the module read function.
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble ReadNibble(Address addr)
+Nibble ReadNibble( Address addr )
 {
-  register int page = ModPage(addr);
-  register Nibble d;
+    register int page = ModPage( addr );
+    register Nibble d;
 
-  /* Read the nibble from the peripheral module */
-  d = mod_map.page_table[page].read(
-    mod_map.page_table[page].rel_base_addr | ModOffset(addr));
+    /* Read the nibble from the peripheral module */
+    d = mod_map.page_table[ page ].read( mod_map.page_table[ page ].rel_base_addr | ModOffset( addr ) );
 
-  /* Update the crc register, if appropriate */
-  if(mod_map.page_table[page].index != MOD_HDW_INDEX)
-    mod_status.hdw.crc =
-      (mod_status.hdw.crc >> 4) ^ (((mod_status.hdw.crc ^ d) & 0x0F) * 0x1081);
+    /* Update the crc register, if appropriate */
+    if ( mod_map.page_table[ page ].index != MOD_HDW_INDEX )
+        mod_status.hdw.crc = ( mod_status.hdw.crc >> 4 ) ^ ( ( ( mod_status.hdw.crc ^ d ) & 0x0F ) * 0x1081 );
 
-  /* Return to the caller */
-  return d;
+    /* Return to the caller */
+    return d;
 }
-
 
 /* .+
 
@@ -1623,32 +1532,29 @@ Nibble ReadNibble(Address addr)
   NOTE: This function DOES NOT update the hardware CRC register.
 
 .call	      :
-		WriteNibble(addr, datum);
+                WriteNibble(addr, datum);
 .input	      :
-		Address addr, destination address
-		Nibble datum, nibble to be written
+                Address addr, destination address
+                Nibble datum, nibble to be written
 .output	      :
-		void
+                void
 .status_codes :
-		NOTE: This function indirectly reports and condition generated
-		and/or signalled by the module write function.
+                NOTE: This function indirectly reports and condition generated
+                and/or signalled by the module write function.
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-void WriteNibble(Address addr, Nibble datum)
+void WriteNibble( Address addr, Nibble datum )
 {
-  register int page = ModPage(addr);
+    register int page = ModPage( addr );
 
-  mod_map.page_table[page].write(
-    mod_map.page_table[page].rel_base_addr | ModOffset(addr), datum);
+    mod_map.page_table[ page ].write( mod_map.page_table[ page ].rel_base_addr | ModOffset( addr ), datum );
 }
 
-
 /*---------------------------------------------------------------------------
-	Monitor functions
+        Monitor functions
   ---------------------------------------------------------------------------*/
-
 
 /* .+
 
@@ -1660,41 +1566,38 @@ void WriteNibble(Address addr, Nibble datum)
   for address 'addr'; it is used by the emulator monitor only.
 
 .call	      :
-		ModMapCheck(addr, char ob[MOD_MAP_CHECK_OB_SIZE]);
+                ModMapCheck(addr, char ob[MOD_MAP_CHECK_OB_SIZE]);
 .input	      :
-		Address addr;
+                Address addr;
 .output	      :
-		void
+                void
 .status_codes :
-		*
+                *
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-void ModMapCheck(Address addr, char  ob[MOD_MAP_CHECK_OB_SIZE])
+void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 {
-  int page;
-  Address offset;
-  int mod;
+    int page;
+    Address offset;
+    int mod;
 
-  page = ModPage(addr);
-  offset = ModOffset(addr);
+    page = ModPage( addr );
+    offset = ModOffset( addr );
 
-  if((mod = mod_map.page_table[page].index) == MOD_NO_MOD_INDEX)
-    sprintf(ob, ChfGetMessage(CHF_MODULE_ID, MOD_M_NOT_MAPPED, ""), addr);
+    if ( ( mod = mod_map.page_table[ page ].index ) == MOD_NO_MOD_INDEX )
+        sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_NOT_MAPPED, "" ), addr );
 
-  else
-  {
-    Address rel_addr;
-    rel_addr = mod_map.page_table[page].rel_base_addr | offset;
-    
-    sprintf(ob, ChfGetMessage(CHF_MODULE_ID, MOD_M_MAPPED, ""),
-      addr, mod_description[mod].name, rel_addr);
-  }
+    else {
+        Address rel_addr;
+        rel_addr = mod_map.page_table[ page ].rel_base_addr | offset;
 
-  ChfSignal();
+        sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_MAPPED, "" ), addr, mod_description[ mod ].name, rel_addr );
+    }
+
+    ChfSignal();
 }
-
 
 /* .+
 
@@ -1706,37 +1609,33 @@ void ModMapCheck(Address addr, char  ob[MOD_MAP_CHECK_OB_SIZE])
   all modules; it is used by the emulator monitor only.
 
 .call	      :
-		ModMapTable(char ob[MOD_MAP_TABLE_OB_SIZE]);
+                ModMapTable(char ob[MOD_MAP_TABLE_OB_SIZE]);
 .input	      :
-		Address addr;
+                Address addr;
 .output	      :
-		void
+                void
 .status_codes :
-		*
+                *
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-void ModMapTable(char  ob[MOD_MAP_TABLE_OB_SIZE])
+void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] )
 {
-  int mod;
+    int mod;
 
-  sprintf(ob, "%s\n", ChfGetMessage(CHF_MODULE_ID, MOD_M_MAP_TABLE_TITLE, ""));
-  ob += strlen(ob);
+    sprintf( ob, "%s\n", ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_TABLE_TITLE, "" ) );
+    ob += strlen( ob );
 
-  for(mod=0; mod<N_MOD; mod++)
-  {
-     sprintf(ob, ChfGetMessage(CHF_MODULE_ID, MOD_M_MAP_TABLE_ROW, ""),
-       mod_description[mod].name,
-       mod_map.map_info[mod].abs_base_addr,
-       mod_map.map_info[mod].size,
-       mod_map.map_info[mod].config == MOD_CONFIGURED ?
-         ChfGetMessage(CHF_MODULE_ID, MOD_M_MAP_CONFIGURED, "C") :
-         ( mod_map.map_info[mod].config == MOD_SIZE_CONFIGURED ?
-	   ChfGetMessage(CHF_MODULE_ID, MOD_M_MAP_SZ_CONFIGURED, "S") :
-	   ChfGetMessage(CHF_MODULE_ID, MOD_M_MAP_UNCONFIGURED, "U")));
+    for ( mod = 0; mod < N_MOD; mod++ ) {
+        sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_TABLE_ROW, "" ), mod_description[ mod ].name,
+                 mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size,
+                 mod_map.map_info[ mod ].config == MOD_CONFIGURED ? ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_CONFIGURED, "C" )
+                                                                  : ( mod_map.map_info[ mod ].config == MOD_SIZE_CONFIGURED
+                                                                          ? ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_SZ_CONFIGURED, "S" )
+                                                                          : ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_UNCONFIGURED, "U" ) ) );
 
-     strcat(ob, "\n");
-     ob += strlen(ob);
-  }
+        strcat( ob, "\n" );
+        ob += strlen( ob );
+    }
 }

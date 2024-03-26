@@ -66,28 +66,23 @@
 
 .- */
 
-
 /*---------------------------------------------------------------------------
-	Data type definitions - require config.h, machdep.h, cpu.h
+        Data type definitions - require config.h, machdep.h, cpu.h
   ---------------------------------------------------------------------------*/
 
-
 /*---------------------------------------------------------------------------
-	Macros
+        Macros
   ---------------------------------------------------------------------------*/
 
-
 /*---------------------------------------------------------------------------
-	Global variables
+        Global variables
   ---------------------------------------------------------------------------*/
 
-
 /*---------------------------------------------------------------------------
-	Function prototypes
+        Function prototypes
   ---------------------------------------------------------------------------*/
 
-void InitLcd(Display *lcd_display, Window lcd_window,
-  unsigned long lcd_fg_pixel, unsigned long lcd_bg_pixel);
+void InitLcd( Display* lcd_display, Window lcd_window, unsigned long lcd_fg_pixel, unsigned long lcd_bg_pixel );
 
-void DrawLcd(void);
-void RefreshLcd(void);
+void DrawLcd( void );
+void RefreshLcd( void );

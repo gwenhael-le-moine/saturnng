@@ -60,16 +60,15 @@
 
 .- */
 
-
 /*---------------------------------------------------------------------------
-	Data type definitions
-	All Data types must be SIGNED
+        Data type definitions
+        All Data types must be SIGNED
   ---------------------------------------------------------------------------*/
 
-typedef char	int1;
-typedef char	int4;
-typedef char	int8;
-typedef int	int12;
-typedef int	int16;
-typedef int	int20;
-typedef int	int32;
+typedef char int1;
+typedef char int4;
+typedef char int8;
+typedef int int12;
+typedef int int16;
+typedef int int20;
+typedef int int32;

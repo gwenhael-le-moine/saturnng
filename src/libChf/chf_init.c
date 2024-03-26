@@ -54,19 +54,18 @@ static char rcs_id[] = "$Id: chf_init.c,v 2.2 2001/01/25 14:05:23 cibrario Exp $
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef _WIN32
-#include <errno.h>
+#  include <errno.h>
 #endif
 #include <setjmp.h>
 #include <string.h>
 
 #ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
+#  include <windows.h>
+#  include <tchar.h>
 #endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
-
 
 /* -------------------------------------------------------------------------
    Global and static variables
@@ -82,14 +81,13 @@ ChfContext _chf_context;
 
 /* Message separator and severity names for ChfBuildMessage() */
 static const ChfChar separator[] = CHF_MESSAGE_SEPARATOR;
-static const ChfChar *severity_name[] = CHF_SEVERITY_NAMES;
-
+static const ChfChar* severity_name[] = CHF_SEVERITY_NAMES;
 
 /* -------------------------------------------------------------------------
    Multithreading support
    ------------------------------------------------------------------------- */
 #ifdef _REENTRANT
-#include <pthread.h>
+#  include <pthread.h>
 
 /* Mutex to access chf_context during initialization and exit;
    mutex to puts condition messages on stderr (DefaultHandler)
@@ -103,20 +101,18 @@ static pthread_key_t data_key;
 /* This function is called to destroy a Chf context when the owning
    thread terminated.
 */
-static void DestroyContext(void *context)
+static void DestroyContext( void* context )
 {
-  free(((ChfContext *)context)->message_buffer);
-  free(((ChfContext *)context)->handler_stack);
-  free(((ChfContext *)context)->condition_stack);
-  free(context);
+    free( ( ( ChfContext* )context )->message_buffer );
+    free( ( ( ChfContext* )context )->handler_stack );
+    free( ( ( ChfContext* )context )->condition_stack );
+    free( context );
 }
 #endif
-
 
 /* -------------------------------------------------------------------------
    Private functions
    ------------------------------------------------------------------------- */
-
 
 /* .+
 
@@ -128,21 +124,21 @@ static void DestroyContext(void *context)
   pushed into the condition handler stack by ChfInit() and performs the
   following functions:
 
-	- if called during an unwind, it returns immediately to the caller,
-	  requesting the action CHF_RESIGNAL, else
+        - if called during an unwind, it returns immediately to the caller,
+          requesting the action CHF_RESIGNAL, else
 
-	- if the severity of the condition being signalled is greater than
-	  CHF_SUCCESS, it prints the messages associated with the entire
-	  condition group on stderr using the standard function
-	  ChfBuildMessage() to build the messages.
+        - if the severity of the condition being signalled is greater than
+          CHF_SUCCESS, it prints the messages associated with the entire
+          condition group on stderr using the standard function
+          ChfBuildMessage() to build the messages.
 
-	- if the severity of the condition being signalled is less than
-	  CHF_FATAL, it returns to the caller requesting the action
-	  CHF_CONTINUE, else
+        - if the severity of the condition being signalled is less than
+          CHF_FATAL, it returns to the caller requesting the action
+          CHF_CONTINUE, else
 
-	- if the CHF_FATAL condition was NOT signalled during an unwind
-	  operation, it returns to the caller requesting the action
-	  CHF_UNWIND, otherwise it requests the action CHF_RESIGNAL.
+        - if the CHF_FATAL condition was NOT signalled during an unwind
+          operation, it returns to the caller requesting the action
+          CHF_UNWIND, otherwise it requests the action CHF_RESIGNAL.
 
   WIN32:
 
@@ -151,14 +147,14 @@ static void DestroyContext(void *context)
     anything
 
 .call	      :
-		action = DefaultHandler(desc, state, context);
+                action = DefaultHandler(desc, state, context);
 .input	      :
-		const ChfDescriptor *desc, condition descriptor
-		const ChfState state, current CHF state
+                const ChfDescriptor *desc, condition descriptor
+                const ChfState state, current CHF state
 .output	      :
-		ChfAction action, action requested by the handler
+                ChfAction action, action requested by the handler
 .status_codes :
-		none
+                none
 .notes	      :
   1.1, 16-May-1996, creation
   1.6, 15-Jan-1997, update:
@@ -170,68 +166,61 @@ static void DestroyContext(void *context)
     - added Win32 support
 
 .- */
-static ChfAction DefaultHandler(
-  const ChfDescriptor *desc,
-  const ChfState state,
-  ChfPointer handler_context
-)
+static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state, ChfPointer handler_context )
 {
-  ChfAction action;
-  const ChfDescriptor *d;
+    ChfAction action;
+    const ChfDescriptor* d;
 
-  if(state == CHF_UNWINDING)
-    /* If CHF is unwinding, do nothing */
-    action = CHF_RESIGNAL;
+    if ( state == CHF_UNWINDING )
+        /* If CHF is unwinding, do nothing */
+        action = CHF_RESIGNAL;
 
-  else
-  {
-    /* Print the condition messages, if necessary. The sequence of fputs()
-       is done atomically if multithreading support is enabled.
-       In Win32, the default handler does not print anything.
-    */
-    if(ChfGetSeverity(desc) > CHF_SUCCESS)
-    {
+    else {
+        /* Print the condition messages, if necessary. The sequence of fputs()
+           is done atomically if multithreading support is enabled.
+           In Win32, the default handler does not print anything.
+        */
+        if ( ChfGetSeverity( desc ) > CHF_SUCCESS ) {
 #ifdef _REENTRANT
-      if(pthread_mutex_lock(&fputs_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
+            if ( pthread_mutex_lock( &fputs_mutex ) )
+                ChfAbort( CHF_ABORT_PTHREAD );
 #endif
 #ifndef _WIN32
-      for(d = desc; d != CHF_NULL_DESCRIPTOR; d = ChfGetNextDescriptor(d))
-	fputs(ChfBuildMessage(d), stderr);
+            for ( d = desc; d != CHF_NULL_DESCRIPTOR; d = ChfGetNextDescriptor( d ) )
+                fputs( ChfBuildMessage( d ), stderr );
 #endif
 #ifdef _REENTRANT
-      if(pthread_mutex_unlock(&fputs_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
+            if ( pthread_mutex_unlock( &fputs_mutex ) )
+                ChfAbort( CHF_ABORT_PTHREAD );
 #endif
+        }
+
+        /* Determine the handler action */
+        switch ( ChfGetSeverity( desc ) ) {
+            case CHF_SUCCESS:
+            case CHF_INFO:
+            case CHF_WARNING:
+            case CHF_ERROR:
+                {
+                    /* Continue execution if the severity is less than CHF_FATAL */
+                    action = CHF_CONTINUE;
+                    break;
+                }
+
+            default:
+                {
+                    /* The severity of the condition is CHF_FATAL; appempt to unwind if
+                       the fatal condition wasn't signalled during another unwind.
+                    */
+                    action = ( ( state == CHF_SIGNAL_UNWINDING ) ? CHF_RESIGNAL : CHF_UNWIND );
+                    break;
+                }
+        }
     }
 
-    /* Determine the handler action */
-    switch(ChfGetSeverity(desc))
-    {
-      case CHF_SUCCESS:
-      case CHF_INFO:
-      case CHF_WARNING:
-      case CHF_ERROR:
-      {
-	/* Continue execution if the severity is less than CHF_FATAL */
-	action = CHF_CONTINUE;
-	break;
-      }
-
-      default:
-      {
-	/* The severity of the condition is CHF_FATAL; appempt to unwind if
-	   the fatal condition wasn't signalled during another unwind.
-	*/
-	action = ((state == CHF_SIGNAL_UNWINDING) ? CHF_RESIGNAL: CHF_UNWIND);
-	break;
-      }
-    }
-  }
-
-  /* Return the action code to the Chf handler dispatcher */
-  return action;
+    /* Return the action code to the Chf handler dispatcher */
+    return action;
 }
-
-
 
 /* .+
 
@@ -244,44 +233,37 @@ static ChfAction DefaultHandler(
   The function returns a pointer to the NUL-terminator just written.
 
 .call	      :
-		np = scopy(p, q, p_end);
+                np = scopy(p, q, p_end);
 .input	      :
-		char *p, starting position for the write
-		const char *q, pointer to the string to be copied
-		char *p_end, pointer to the end of the output area
+                char *p, starting position for the write
+                const char *q, pointer to the string to be copied
+                char *p_end, pointer to the end of the output area
 .output	      :
-		char *np, pointer to the NUL-terminator just written
+                char *np, pointer to the NUL-terminator just written
 .status_codes :
-		none
+                none
 .notes	      :
   1.1, 16-May-1996, creation
 
 .- */
-static ChfChar *scopy(
-  ChfChar *p,
-  const ChfChar *q,
-  ChfChar *p_end
-)
+static ChfChar* scopy( ChfChar* p, const ChfChar* q, ChfChar* p_end )
 {
-  size_t q_len = ChfStrlen(q);
-  size_t p_avail = p_end - p;
+    size_t q_len = ChfStrlen( q );
+    size_t p_avail = p_end - p;
 
-  if(q_len < p_avail)
-  {
-    ChfStrcpy(p, q);
-    p += q_len;
-  }
+    if ( q_len < p_avail ) {
+        ChfStrcpy( p, q );
+        p += q_len;
+    }
 
-  else if(p_avail > 1)
-  {
-    ChfStrncpy(p, q, p_avail-2);
-    p[p_avail-1] = '\0';
-    p = p_end;
-  }
+    else if ( p_avail > 1 ) {
+        ChfStrncpy( p, q, p_avail - 2 );
+        p[ p_avail - 1 ] = '\0';
+        p = p_end;
+    }
 
-  return p;
+    return p;
 }
-
 
 /* -------------------------------------------------------------------------
    Public functions
@@ -300,10 +282,10 @@ static ChfChar *scopy(
   necessary, to retrieve the requested message.
 
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_INIT
-	if CHF hasn't been correctly initialized.
+        if CHF hasn't been correctly initialized.
 
   NOTE: The returned pointer points to per-thread static storage, which will be
-	overwritten by subsequent calls to this function.
+        overwritten by subsequent calls to this function.
 
   WIN32:
 
@@ -311,45 +293,41 @@ static ChfChar *scopy(
     codes in CHF_ERRNO_SET is not performed
 
 .call	      :
-		message = ChfGetMessage(module_id, condition_code,
-		  default_message);
+                message = ChfGetMessage(module_id, condition_code,
+                  default_message);
 .input	      :
-		const int module_id, module identifier
-		const int condition_code, condition code
-		const char *default_message, default message
+                const int module_id, module identifier
+                const int condition_code, condition code
+                const char *default_message, default message
 .output	      :
-		const char *message, pointer to the retrieved message
+                const char *message, pointer to the retrieved message
 .status_codes :
-		none
+                none
 .notes	      :
   1.1, 17-May-1996, creation
   2.2, 22-Jan-2001, update:
     - added Win32 support
 
 .- */
-const ChfChar *ChfGetMessage(      /* Retrieve a condition message */
-  const int module_id,
-  const int condition_code,
-  const ChfChar *default_message
-)
+const ChfChar* ChfGetMessage( /* Retrieve a condition message */
+                              const int module_id, const int condition_code, const ChfChar* default_message )
 {
-  const ChfChar *message;
+    const ChfChar* message;
 
-  /* Check that CHF has been correctly initialized */
-  if(chf_context.state == CHF_UNKNOWN)  ChfAbort(CHF_ABORT_INIT);
+    /* Check that CHF has been correctly initialized */
+    if ( chf_context.state == CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_INIT );
 
-  if((message = chf_context.mrs_get(chf_context.mrs_data,
-    module_id, condition_code, default_message)) == default_message  &&
-    module_id == CHF_ERRNO_SET)
-#   ifdef _WIN32
-    message = default_message;
-#   else
-    message = strerror(condition_code);
-#   endif
+    if ( ( message = chf_context.mrs_get( chf_context.mrs_data, module_id, condition_code, default_message ) ) == default_message &&
+         module_id == CHF_ERRNO_SET )
+#ifdef _WIN32
+        message = default_message;
+#else
+        message = strerror( condition_code );
+#endif
 
-  return(message);
+    return ( message );
 }
-
 
 /* .+
 
@@ -361,10 +339,10 @@ const ChfChar *ChfGetMessage(      /* Retrieve a condition message */
   descriptor and returns a pointer to a string containing it.
 
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_INIT
-	if CHF hasn't been correctly initialized.
+        if CHF hasn't been correctly initialized.
 
   NOTE: The returned pointer points to per-thread static storage, which will be
-	overwritten by subsequent calls to this function.
+        overwritten by subsequent calls to this function.
 
   WIN32:
 
@@ -372,86 +350,80 @@ const ChfChar *ChfGetMessage(      /* Retrieve a condition message */
     included in the message
 
 .call	      :
-		msg = ChfBuildMessage(descriptor);
+                msg = ChfBuildMessage(descriptor);
 .input	      :
-		const ChfDescriptor *descriptor, condition descriptor
+                const ChfDescriptor *descriptor, condition descriptor
 .output	      :
-		char *msg, pointer to the message associated with 'descriptor'
+                char *msg, pointer to the message associated with 'descriptor'
 .status_codes :
-		none
+                none
 .notes	      :
   1.1, 16-May-1996, creation
   2.2, 22-Jan-2001, update:
     - added Win32 support
 
 .- */
-ChfChar *ChfBuildMessage(	/* Build a condition message */
-  const ChfDescriptor *descriptor
-)
+ChfChar* ChfBuildMessage( /* Build a condition message */
+                          const ChfDescriptor* descriptor )
 {
-  ChfChar *tmp_p;
-  ChfChar *tmp_end;
-  ChfChar def_message[CHF_DEF_MESSAGE_LENGTH];
-  ChfSeverity severity;
+    ChfChar* tmp_p;
+    ChfChar* tmp_end;
+    ChfChar def_message[ CHF_DEF_MESSAGE_LENGTH ];
+    ChfSeverity severity;
 
-  /* Check that CHF has been correctly initialized */
-  if(chf_context.state == CHF_UNKNOWN)  ChfAbort(CHF_ABORT_INIT);
+    /* Check that CHF has been correctly initialized */
+    if ( chf_context.state == CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_INIT );
 
-  /* Set appropriate pointers to the start/end of the message buffer */
-  tmp_p = chf_context.message_buffer;
-  tmp_end = tmp_p + CHF_MAX_MESSAGE_LENGTH;
-
-#ifndef _WIN32
-  /* The message starts with "<app_name>: " if the condition is the first of
-     its condition group, with "\t" if not.
-  */
-  if(descriptor == chf_context.condition_sp-1)
-  {
-    tmp_p = scopy(tmp_p, chf_context.app_name, tmp_end);
-    tmp_p = scopy(tmp_p, separator, tmp_end);
-  }
-
-  else
-    tmp_p = scopy(tmp_p, ChfText("\t"), tmp_end);
-#endif
-
-  /* The message continues with the module name */
-  ChfSprintf(def_message, CHF_DEF_MID_MSG_FMT, ChfGetModuleId(descriptor));
-
-  tmp_p = scopy(tmp_p,
-    ChfGetMessage(CHF_MODULE_NAMES_SET, ChfGetModuleId(descriptor),
-      def_message), tmp_end);
-
-  /* Add also the extended information, if any */
-  if(ChfGetLineNumber(descriptor) != CHF_UNKNOWN_LINE_NUMBER)
-  {
-    tmp_p = scopy(tmp_p, ChfText(" "), tmp_end);
-
-    ChfSprintf(def_message, CHF_EXTENDED_INFO_FMT,
-      ChfGetFileName(descriptor), ChfGetLineNumber(descriptor));
-      
-    tmp_p = scopy(tmp_p, def_message, tmp_end);
-  }
-
-  tmp_p = scopy(tmp_p, separator, tmp_end);
+    /* Set appropriate pointers to the start/end of the message buffer */
+    tmp_p = chf_context.message_buffer;
+    tmp_end = tmp_p + CHF_MAX_MESSAGE_LENGTH;
 
 #ifndef _WIN32
-  /* Add the severity code of the message */
-  tmp_p = scopy(tmp_p,
-    ((severity = ChfGetSeverity(descriptor)) < CHF_SUCCESS ||
-    severity > CHF_FATAL) ? CHF_UNKNOWN_SEVERITY : severity_name[severity],
-    tmp_end);
+    /* The message starts with "<app_name>: " if the condition is the first of
+       its condition group, with "\t" if not.
+    */
+    if ( descriptor == chf_context.condition_sp - 1 ) {
+        tmp_p = scopy( tmp_p, chf_context.app_name, tmp_end );
+        tmp_p = scopy( tmp_p, separator, tmp_end );
+    }
 
-  tmp_p = scopy(tmp_p, separator, tmp_end);
+    else
+        tmp_p = scopy( tmp_p, ChfText( "\t" ), tmp_end );
 #endif
 
-  /* The message ends with the partial message from the descriptor */
-  tmp_p = scopy(tmp_p, ChfGetPartialMessage(descriptor), tmp_end);
-  (void)scopy(tmp_p, CHF_MESSAGE_TERMINATOR, tmp_end);
+    /* The message continues with the module name */
+    ChfSprintf( def_message, CHF_DEF_MID_MSG_FMT, ChfGetModuleId( descriptor ) );
 
-  return chf_context.message_buffer;
+    tmp_p = scopy( tmp_p, ChfGetMessage( CHF_MODULE_NAMES_SET, ChfGetModuleId( descriptor ), def_message ), tmp_end );
+
+    /* Add also the extended information, if any */
+    if ( ChfGetLineNumber( descriptor ) != CHF_UNKNOWN_LINE_NUMBER ) {
+        tmp_p = scopy( tmp_p, ChfText( " " ), tmp_end );
+
+        ChfSprintf( def_message, CHF_EXTENDED_INFO_FMT, ChfGetFileName( descriptor ), ChfGetLineNumber( descriptor ) );
+
+        tmp_p = scopy( tmp_p, def_message, tmp_end );
+    }
+
+    tmp_p = scopy( tmp_p, separator, tmp_end );
+
+#ifndef _WIN32
+    /* Add the severity code of the message */
+    tmp_p = scopy( tmp_p,
+                   ( ( severity = ChfGetSeverity( descriptor ) ) < CHF_SUCCESS || severity > CHF_FATAL ) ? CHF_UNKNOWN_SEVERITY
+                                                                                                         : severity_name[ severity ],
+                   tmp_end );
+
+    tmp_p = scopy( tmp_p, separator, tmp_end );
+#endif
+
+    /* The message ends with the partial message from the descriptor */
+    tmp_p = scopy( tmp_p, ChfGetPartialMessage( descriptor ), tmp_end );
+    ( void )scopy( tmp_p, CHF_MESSAGE_TERMINATOR, tmp_end );
+
+    return chf_context.message_buffer;
 }
-
 
 /* .+
 
@@ -467,29 +439,29 @@ ChfChar *ChfBuildMessage(	/* Build a condition message */
   function.
 
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_DUP_INIT
-	if CHF has already been initialized before.
+        if CHF has already been initialized before.
 
   NOTE:	This function will call ChfAbort() with abort code CHF_ABORT_PTHREAD
-	if a pthread operation fails.
+        if a pthread operation fails.
 
 .call	      :
-		cc = ChfInit(app_name, options,
-			mrs_data, mrs_get, mrs_exit,
-			condition_stack_size, handler_stack_size,
-			exit_code);
+                cc = ChfInit(app_name, options,
+                        mrs_data, mrs_get, mrs_exit,
+                        condition_stack_size, handler_stack_size,
+                        exit_code);
 .input	      :
-		const char *app_name, Application's name
-		const ChfOptions options, Options
-		void *mrs_data, Message retrieval private data
-		ChfMrsGet mrs_get, 'GetMessage' function
-		ChfMrsExit mrs_exit, 'Exit' function
-		const int condition_stack_size, Size of the condition stack
-		const int handler_stack_size, Size of the handler stack
-		const int exit_code, Abnormal exit code
+                const char *app_name, Application's name
+                const ChfOptions options, Options
+                void *mrs_data, Message retrieval private data
+                ChfMrsGet mrs_get, 'GetMessage' function
+                ChfMrsExit mrs_exit, 'Exit' function
+                const int condition_stack_size, Size of the condition stack
+                const int handler_stack_size, Size of the handler stack
+                const int exit_code, Abnormal exit code
 .output	      :
-		int cc, condition code
+                int cc, condition code
 .status_codes :
-		CHF_F_MALLOC, FATAL, dynamic memory allocation failed
+                CHF_F_MALLOC, FATAL, dynamic memory allocation failed
 .notes	      :
   1.1, 13-May-1996, creation
   1.6, 15-Jan-1997, update:
@@ -500,103 +472,97 @@ ChfChar *ChfBuildMessage(	/* Build a condition message */
     - added Win32 support; a malloc() call was not portable.
 
 .- */
-int ChfInit(			/* Generic initialization */
-  const ChfChar *app_name,		/* Application's name */
-  const ChfOptions options,		/* Options */
-  void *mrs_data,			/* Message retrieval private data */
-  ChfMrsGet mrs_get,			/* 'GetMessage' function */
-  ChfMrsExit mrs_exit,			/* 'Exit' function */
-  const int condition_stack_size,	/* Size of the condition stack */
-  const int handler_stack_size,		/* Size of the handler stack */
-  const int exit_code			/* Abnormal exit code */
+int ChfInit(                                 /* Generic initialization */
+             const ChfChar* app_name,        /* Application's name */
+             const ChfOptions options,       /* Options */
+             void* mrs_data,                 /* Message retrieval private data */
+             ChfMrsGet mrs_get,              /* 'GetMessage' function */
+             ChfMrsExit mrs_exit,            /* 'Exit' function */
+             const int condition_stack_size, /* Size of the condition stack */
+             const int handler_stack_size,   /* Size of the handler stack */
+             const int exit_code             /* Abnormal exit code */
 )
 {
-  int cc;
+    int cc;
 
-  /* Check that CHF has not been initialized yet */
+    /* Check that CHF has not been initialized yet */
 #ifndef _REENTRANT
-  if(_chf_context.state != CHF_UNKNOWN)  ChfAbort(CHF_ABORT_DUP_INIT);
+    if ( _chf_context.state != CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_DUP_INIT );
 #else
-  /* Reentrant check; lock context_mutex first */
-  if(pthread_mutex_lock(&context_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
-  if(_chf_context.state != CHF_UNKNOWN)
-  {
-    if(pthread_mutex_unlock(&context_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
-    ChfAbort(CHF_ABORT_DUP_INIT);
-  }
+    /* Reentrant check; lock context_mutex first */
+    if ( pthread_mutex_lock( &context_mutex ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
+    if ( _chf_context.state != CHF_UNKNOWN ) {
+        if ( pthread_mutex_unlock( &context_mutex ) )
+            ChfAbort( CHF_ABORT_PTHREAD );
+        ChfAbort( CHF_ABORT_DUP_INIT );
+    }
 #endif
 
 #ifndef _REENTRANT
-  if((_chf_context.condition_stack =
-    (ChfDescriptor *)
-      malloc((size_t)(condition_stack_size+1)*sizeof(ChfDescriptor))) ==
-    CHF_NULL_DESCRIPTOR)
-    cc = CHF_F_MALLOC;
+    if ( ( _chf_context.condition_stack = ( ChfDescriptor* )malloc( ( size_t )( condition_stack_size + 1 ) * sizeof( ChfDescriptor ) ) ) ==
+         CHF_NULL_DESCRIPTOR )
+        cc = CHF_F_MALLOC;
 
-  else if((_chf_context.handler_stack =
-    (ChfHandlerDescriptor *)
-      malloc((size_t)handler_stack_size*sizeof(ChfHandlerDescriptor))) ==
-    (ChfHandlerDescriptor *)NULL)
-  {
-    free(_chf_context.condition_stack);
-    cc = CHF_F_MALLOC;
-  }
+    else if ( ( _chf_context.handler_stack = ( ChfHandlerDescriptor* )malloc(
+                    ( size_t )handler_stack_size * sizeof( ChfHandlerDescriptor ) ) ) == ( ChfHandlerDescriptor* )NULL ) {
+        free( _chf_context.condition_stack );
+        cc = CHF_F_MALLOC;
+    }
 
-  else if((_chf_context.message_buffer =
-    (ChfChar *)malloc(
-      (size_t)(CHF_MAX_MESSAGE_LENGTH) * sizeof(ChfChar))) == (ChfChar *)NULL)
-  {
-    free(_chf_context.condition_stack);
-    free(_chf_context.handler_stack);
-    cc = CHF_F_MALLOC;
-  }
+    else if ( ( _chf_context.message_buffer = ( ChfChar* )malloc( ( size_t )( CHF_MAX_MESSAGE_LENGTH ) * sizeof( ChfChar ) ) ) ==
+              ( ChfChar* )NULL ) {
+        free( _chf_context.condition_stack );
+        free( _chf_context.handler_stack );
+        cc = CHF_F_MALLOC;
+    }
 
-  else
+    else
 #else
-  /* Reentrant init: condition_stack, handler_stack, message_buffer
-     are not needed in the master Chf context.
-     Init the Chf data key instead.
-  */
-  _chf_context.condition_stack = CHF_NULL_DESCRIPTOR;
-  _chf_context.handler_stack = (ChfHandlerDescriptor *)NULL;
-  _chf_context.message_buffer = (char *)NULL;
-
-  if(pthread_key_create(&data_key, DestroyContext))
-    ChfAbort(CHF_ABORT_PTHREAD);
-#endif
-
-  {
-    /* Initialize the CHF context */
-    _chf_context.app_name = app_name;
-    _chf_context.options = options;
-    _chf_context.mrs_data = mrs_data;
-    _chf_context.mrs_get = mrs_get;
-    _chf_context.mrs_exit = mrs_exit;
-    _chf_context.condition_stack_size = condition_stack_size;
-    _chf_context.handler_stack_size = handler_stack_size;
-    _chf_context.exit_code = exit_code;
-    _chf_context.condition_base = _chf_context.condition_sp =
-      _chf_context.condition_stack;
-    _chf_context.handler_sp = _chf_context.handler_stack;
-    _chf_context.state = CHF_IDLE;
-
-#ifndef _REENTRANT
-    /* Push the default handler; in the reentrant case, this will be
-       done once per thread, when the thread-specific context is primed.
+    /* Reentrant init: condition_stack, handler_stack, message_buffer
+       are not needed in the master Chf context.
+       Init the Chf data key instead.
     */
-    ChfPushHandler(DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER);
+    _chf_context.condition_stack = CHF_NULL_DESCRIPTOR;
+    _chf_context.handler_stack = ( ChfHandlerDescriptor* )NULL;
+    _chf_context.message_buffer = ( char* )NULL;
+
+    if ( pthread_key_create( &data_key, DestroyContext ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
 #endif
 
-    cc = CHF_S_OK;
-  }
+    {
+        /* Initialize the CHF context */
+        _chf_context.app_name = app_name;
+        _chf_context.options = options;
+        _chf_context.mrs_data = mrs_data;
+        _chf_context.mrs_get = mrs_get;
+        _chf_context.mrs_exit = mrs_exit;
+        _chf_context.condition_stack_size = condition_stack_size;
+        _chf_context.handler_stack_size = handler_stack_size;
+        _chf_context.exit_code = exit_code;
+        _chf_context.condition_base = _chf_context.condition_sp = _chf_context.condition_stack;
+        _chf_context.handler_sp = _chf_context.handler_stack;
+        _chf_context.state = CHF_IDLE;
+
+#ifndef _REENTRANT
+        /* Push the default handler; in the reentrant case, this will be
+           done once per thread, when the thread-specific context is primed.
+        */
+        ChfPushHandler( DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
+#endif
+
+        cc = CHF_S_OK;
+    }
 
 #ifdef _REENTRANT
-  if(pthread_mutex_unlock(&context_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
+    if ( pthread_mutex_unlock( &context_mutex ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
 #endif
 
-  return cc;
+    return cc;
 }
-
 
 /* .+
 
@@ -610,81 +576,81 @@ int ChfInit(			/* Generic initialization */
   the application using ChfAbort() with abort code CHF_ABORT_INIT.
 
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_INIT
-	if CHF hasn't been initialized.
+        if CHF hasn't been initialized.
 
   NOTE:	This function will call ChfAbort() with abort code CHF_ABORT_PTHREAD
-	if a pthread operation fails.
+        if a pthread operation fails.
 
 .call	      :
-		ChfExit();
+                ChfExit();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		none
+                none
 .notes	      :
   1.1, 24-May-1996, creation
   2.1, 19-May-2000, update:
     - added multithreading support
 
 .- */
-void ChfExit(
-  void
-)
+void ChfExit( void )
 {
-  /* Check that CHF has been correctly initialized */
+    /* Check that CHF has been correctly initialized */
 #ifndef _REENTRANT
-  if(_chf_context.state == CHF_UNKNOWN)  ChfAbort(CHF_ABORT_INIT);
+    if ( _chf_context.state == CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_INIT );
 #else
-  /* Reentrant check; lock context_mutex first */
-  if(pthread_mutex_lock(&context_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
-  if(_chf_context.state == CHF_UNKNOWN)
-  {
-    if(pthread_mutex_unlock(&context_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
-    ChfAbort(CHF_ABORT_INIT);
-  }
+    /* Reentrant check; lock context_mutex first */
+    if ( pthread_mutex_lock( &context_mutex ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
+    if ( _chf_context.state == CHF_UNKNOWN ) {
+        if ( pthread_mutex_unlock( &context_mutex ) )
+            ChfAbort( CHF_ABORT_PTHREAD );
+        ChfAbort( CHF_ABORT_INIT );
+    }
 #endif
 
-  /* Destroy the context associated with this thread now; this is necessary
-     to ensure that the context is actually destroyed when a single-threaded
-     application links with the multithreaded version of Chf: in this case,
-     pthread_exit() is called *after* ChfExit(), the Chf data key no longer
-     exists when pthread_exit() is called and the destructor registered
-     with pthread_key_create() does not take place.
-     The data pointer associated with the Chf data key is set to NULL to
-     avoid any subsequent reactivation of the destructor.
-  */
+        /* Destroy the context associated with this thread now; this is necessary
+           to ensure that the context is actually destroyed when a single-threaded
+           application links with the multithreaded version of Chf: in this case,
+           pthread_exit() is called *after* ChfExit(), the Chf data key no longer
+           exists when pthread_exit() is called and the destructor registered
+           with pthread_key_create() does not take place.
+           The data pointer associated with the Chf data key is set to NULL to
+           avoid any subsequent reactivation of the destructor.
+        */
 #ifdef _REENTRANT
-  DestroyContext(&chf_context);
-  if(pthread_setspecific(data_key, (void *)NULL))
-  {
-      (void)pthread_mutex_unlock(&context_mutex);
-      ChfAbort(CHF_ABORT_PTHREAD);
-  }
+    DestroyContext( &chf_context );
+    if ( pthread_setspecific( data_key, ( void* )NULL ) ) {
+        ( void )pthread_mutex_unlock( &context_mutex );
+        ChfAbort( CHF_ABORT_PTHREAD );
+    }
 #endif
 
-  /* Shut down the message retrieval subsystem first */
-  _chf_context.mrs_exit(_chf_context.mrs_data);
+    /* Shut down the message retrieval subsystem first */
+    _chf_context.mrs_exit( _chf_context.mrs_data );
 
 #ifndef _REENTRANT
-  /* Free the dynamic memory previously allocated */
-  free(_chf_context.message_buffer);
-  free(_chf_context.handler_stack);
-  free(_chf_context.condition_stack);
+    /* Free the dynamic memory previously allocated */
+    free( _chf_context.message_buffer );
+    free( _chf_context.handler_stack );
+    free( _chf_context.condition_stack );
 #else
-  /* Destroy the Chf data key */
-  if(pthread_key_delete(data_key))  ChfAbort(CHF_ABORT_PTHREAD);
+    /* Destroy the Chf data key */
+    if ( pthread_key_delete( data_key ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
 #endif
 
-  /* Reset CHF state to prevent subsequent calls to ChfExit() itself */
-  _chf_context.state = CHF_UNKNOWN;
+    /* Reset CHF state to prevent subsequent calls to ChfExit() itself */
+    _chf_context.state = CHF_UNKNOWN;
 
 #ifdef _REENTRANT
-  if(pthread_mutex_unlock(&context_mutex))  ChfAbort(CHF_ABORT_PTHREAD);
+    if ( pthread_mutex_unlock( &context_mutex ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
 #endif
 }
-
 
 /* .+
 
@@ -701,80 +667,66 @@ void ChfExit(
   successful call to ChfInit().
 
 .call	      :
-		context = _ChfGetContext(void);
+                context = _ChfGetContext(void);
 .input	      :
 .output	      :
-		ChfContext *context, per-thread Chf context
+                ChfContext *context, per-thread Chf context
 .status_codes :
-		none
+                none
 .notes	      :
   2.1, 19-May-2000, creation
 
 .- */
-ChfContext *_ChfGetContext(
-  void
-)
+ChfContext* _ChfGetContext( void )
 {
-  ChfContext *context;
+    ChfContext* context;
 
 #ifndef _REENTRANT
-  /* This function is doomed to fail if _REENTRANT is not defined */
-  ChfAbort(CHF_ABORT_GET_CONTEXT);
-  return((ChfContext *)NULL);
+    /* This function is doomed to fail if _REENTRANT is not defined */
+    ChfAbort( CHF_ABORT_GET_CONTEXT );
+    return ( ( ChfContext* )NULL );
 #else
-  /* Get the thread-specific context pointer associated with the
-     CHF data key */
-  if((context = (ChfContext *)pthread_getspecific(data_key))
-     == (ChfContext *)NULL)
-  {
-    /* No context pointer; prime a new one, cloning the master context */
-    if((context = (ChfContext *)malloc(sizeof(ChfContext)))
-       == (ChfContext *)NULL)
-      ChfAbort(CHF_ABORT_GET_CONTEXT);
+    /* Get the thread-specific context pointer associated with the
+       CHF data key */
+    if ( ( context = ( ChfContext* )pthread_getspecific( data_key ) ) == ( ChfContext* )NULL ) {
+        /* No context pointer; prime a new one, cloning the master context */
+        if ( ( context = ( ChfContext* )malloc( sizeof( ChfContext ) ) ) == ( ChfContext* )NULL )
+            ChfAbort( CHF_ABORT_GET_CONTEXT );
 
-    memcpy(context, &_chf_context, sizeof(ChfContext));
+        memcpy( context, &_chf_context, sizeof( ChfContext ) );
 
-    /* Allocate per-thread stacks and message buffer */
-    if((context->condition_stack =
-	(ChfDescriptor *)
-	malloc((size_t)(context->condition_stack_size+1)
-	       *sizeof(ChfDescriptor))) == CHF_NULL_DESCRIPTOR)
-      ChfAbort(CHF_ABORT_GET_CONTEXT);
+        /* Allocate per-thread stacks and message buffer */
+        if ( ( context->condition_stack = ( ChfDescriptor* )malloc( ( size_t )( context->condition_stack_size + 1 ) *
+                                                                    sizeof( ChfDescriptor ) ) ) == CHF_NULL_DESCRIPTOR )
+            ChfAbort( CHF_ABORT_GET_CONTEXT );
 
-    if((context->handler_stack =
-	(ChfHandlerDescriptor *)
-	malloc((size_t)(context->handler_stack_size)
-	       *sizeof(ChfHandlerDescriptor))) == (ChfHandlerDescriptor *)NULL)
-    {
-      free(context->condition_stack);
-      ChfAbort(CHF_ABORT_GET_CONTEXT);
+        if ( ( context->handler_stack = ( ChfHandlerDescriptor* )malloc(
+                   ( size_t )( context->handler_stack_size ) * sizeof( ChfHandlerDescriptor ) ) ) == ( ChfHandlerDescriptor* )NULL ) {
+            free( context->condition_stack );
+            ChfAbort( CHF_ABORT_GET_CONTEXT );
+        }
+
+        if ( ( context->message_buffer = ( char* )malloc( ( size_t )( CHF_MAX_MESSAGE_LENGTH ) ) ) == ( char* )NULL ) {
+            free( context->condition_stack );
+            free( context->handler_stack );
+            ChfAbort( CHF_ABORT_GET_CONTEXT );
+        }
+
+        /* Initialize stack pointers */
+        context->condition_base = context->condition_sp = context->condition_stack;
+        context->handler_sp = context->handler_stack;
+
+        /* Set the thread-specific context pointer; this must be done
+           before invoking any other function using the context,
+           including ChfPushHandler() below.
+        */
+        if ( pthread_setspecific( data_key, context ) )
+            ChfAbort( CHF_ABORT_GET_CONTEXT );
+
+        /* Push the default handler */
+        ChfPushHandler( DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
     }
 
-    if((context->message_buffer =
-	(char *)
-	malloc((size_t)(CHF_MAX_MESSAGE_LENGTH))) == (char *)NULL)
-    {
-      free(context->condition_stack);
-      free(context->handler_stack);
-      ChfAbort(CHF_ABORT_GET_CONTEXT);
-    }
-
-    /* Initialize stack pointers */
-    context->condition_base = context->condition_sp =
-      context->condition_stack;
-    context->handler_sp = context->handler_stack;
-
-    /* Set the thread-specific context pointer; this must be done
-       before invoking any other function using the context,
-       including ChfPushHandler() below.
-    */
-    if(pthread_setspecific(data_key, context))
-      ChfAbort(CHF_ABORT_GET_CONTEXT);
-
-    /* Push the default handler */
-    ChfPushHandler(DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER);
-  }
-
-  return context;
+    return context;
 #endif
 }

@@ -112,17 +112,16 @@ static char rcs_id[] = "$Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
-#include "serial.h"		/* 2.5: Serial port emulation module */
+#include "serial.h" /* 2.5: Serial port emulation module */
 #include "debug.h"
 
 #include "args.h"
 
-#define	CHF_MODULE_ID	SERIAL_CHF_MODULE_ID
+#define CHF_MODULE_ID SERIAL_CHF_MODULE_ID
 #include <Chf.h>
 
-
 /*---------------------------------------------------------------------------
-	Determine pty implementation
+        Determine pty implementation
 
   Currently, the following two implementations are supported:
 
@@ -151,52 +150,50 @@ static char rcs_id[] = "$Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #endif
 
 /* 3.5: Added linux support (__linux__ cpp macro) */
-#if (defined(__osf__) || defined(__linux__)) && !defined(FORCED)
+#if ( defined( __osf__ ) || defined( __linux__ ) ) && !defined( FORCED )
 #  define USE_OPENPTY
 #endif
 
 /* 3.16: Added sgi support (__sgi cpp macro) */
-#if (defined(__sun__) || defined(__sgi)) && !defined(FORCED)
+#if ( defined( __sun__ ) || defined( __sgi ) ) && !defined( FORCED )
 #  define USE_STREAMSPTY
 #endif
 
 /* 3.16: If no appropriate pty implementation has been found,
    throw a dummy implementation in.
 */
-#if !defined(USE_OPENPTY) && !defined(USE_STREAMSPTY)
+#if !defined( USE_OPENPTY ) && !defined( USE_STREAMSPTY )
 #  define USE_NOPTY
 #endif
 
 #undef FORCED
 
-
 /*---------------------------------------------------------------------------
-	Include pty implementation-specific headers and definitions
+        Include pty implementation-specific headers and definitions
   ---------------------------------------------------------------------------*/
 
 #ifdef USE_OPENPTY
-#undef ADDRESS_MASK			/* 2.6: Avoid name clash 8-( */
-#include <fcntl.h>			/* fcntl() */
-#include <unistd.h>			/* ttyname() */
-#include <pty.h>			/* openpty() */
-#include <termios.h>			/* tcgetattr()/tcsetattr() */
-#include <sys/termios.h>
-#include <sys/ioctl.h>
+#  undef ADDRESS_MASK  /* 2.6: Avoid name clash 8-( */
+#  include <fcntl.h>   /* fcntl() */
+#  include <unistd.h>  /* ttyname() */
+#  include <pty.h>     /* openpty() */
+#  include <termios.h> /* tcgetattr()/tcsetattr() */
+#  include <sys/termios.h>
+#  include <sys/ioctl.h>
 #endif
 
 #ifdef USE_STREAMSPTY
-#undef ADDRESS_MASK			/* 2.6: Avoid name clash 8-( */
+#  undef ADDRESS_MASK /* 2.6: Avoid name clash 8-( */
 /* stdlib.h already included */
-#include <fcntl.h>			/* open(), fcntl() */
-#include <unistd.h>
-#include <termios.h>			/* tcgetattr()/tcsetattr() */
-#include <stropts.h>			/* ioctl() */
-#define PTY_MASTER	"/dev/ptmx"	/* Master cloning device */
+#  include <fcntl.h> /* open(), fcntl() */
+#  include <unistd.h>
+#  include <termios.h>           /* tcgetattr()/tcsetattr() */
+#  include <stropts.h>           /* ioctl() */
+#  define PTY_MASTER "/dev/ptmx" /* Master cloning device */
 #endif
 
-
 /*---------------------------------------------------------------------------
-	Private implementation of ring buffers
+        Private implementation of ring buffers
 
   The following data type definitions, macros, and functions together
   implement the ring buffers used to hold serial data being transmitted
@@ -206,102 +203,105 @@ static char rcs_id[] = "$Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 
   ---------------------------------------------------------------------------*/
 
-#define RB_SIZE		1024	/* Buffer size (# of characters) */
+#define RB_SIZE 1024 /* Buffer size (# of characters) */
 
 /* Hello, I am a RingBuffer... 8-} */
-struct RingBuffer
-{
-    int n;			/* Number of full slots: 0 <= n <= RB_SIZE */
-    int8 *rp, *wp;		/* Read/Write pointers */
-    int8 *ep;			/* Pointer to the end of .data[] */
-    int8 data[RB_SIZE];		/* Buffer storage */
+struct RingBuffer {
+    int n;                /* Number of full slots: 0 <= n <= RB_SIZE */
+    int8 *rp, *wp;        /* Read/Write pointers */
+    int8* ep;             /* Pointer to the end of .data[] */
+    int8 data[ RB_SIZE ]; /* Buffer storage */
 };
 
 /* Basic macros:
 
    Min(a, b)		returns the minimum (as told by '<') between a and b;
-   			warning: evaluates a and b twice.
+                        warning: evaluates a and b twice.
 
    ReadPointer(rb)	returns the read pointer of a given buffer; it
-			points to ContFullSlots() full buffer slots.
+                        points to ContFullSlots() full buffer slots.
 
    FullSlots(rb)	returns the number of full slots of a given buffer;
-   			the slots are not necessarily contiguous.
+                        the slots are not necessarily contiguous.
 
    ContFullSlots(rb)	returns the number of *contiguous* full slots of a
-   			given buffer, starting at the current ReadPointer;
-			this macro is guaranteed to return a strictly
-			positive value if the buffer is not empty.
+                        given buffer, starting at the current ReadPointer;
+                        this macro is guaranteed to return a strictly
+                        positive value if the buffer is not empty.
 
    EmptySlots(rb)	returns the number of empty slots of a given buffer;
-   			the slots are not necessarily contiguous.
+                        the slots are not necessarily contiguous.
 
    ContEmptySlots(rb)	returns the number of *contiguous* empty slots of a
-   			given buffer, starting at the current WritePointer;
-			this macro is guaranteed to return a strictly
-			positive value if the buffer is not full.
+                        given buffer, starting at the current WritePointer;
+                        this macro is guaranteed to return a strictly
+                        positive value if the buffer is not full.
 
    UpdateReadPointer(rb, n)
-   			moves the read pointer of ring buffer rb n slots
-			forward
+                        moves the read pointer of ring buffer rb n slots
+                        forward
 
    UpdateWritePointer(rb, n)
-   			moves the write pointer of ring buffer rb n slots
-			forward
+                        moves the write pointer of ring buffer rb n slots
+                        forward
 
    Push(rb, c)		pushes character c into ring buffer rb; this macro
-   			must be invoked only if EmptySlots(rb) is strictly
-			positive.
+                        must be invoked only if EmptySlots(rb) is strictly
+                        positive.
 
    Pull(rb, cp)		pulls a character from ring buffer rb and stores it
-   			into *cp; this macro must be invoked only if
-			EmptySlots(rb) is strictly positive.
+                        into *cp; this macro must be invoked only if
+                        EmptySlots(rb) is strictly positive.
 
    InitRingBuffer(rb)	initializes ring buffer rb; it must be called
-			before using the ring buffer in any way.
+                        before using the ring buffer in any way.
 */
-#define Min(a, b)	   (((a) < (b)) ? (a) : (b))
-#define ReadPointer(rb)	   ((rb).rp)
-#define FullSlots(rb)	   ((rb).n)
-#define ContFullSlots(rb)  (Min(FullSlots(rb), (rb).ep - ReadPointer(rb)))
-#define WritePointer(rb)   ((rb).wp)
-#define EmptySlots(rb)     (RB_SIZE - FullSlots(rb))
-#define ContEmptySlots(rb) (Min(EmptySlots(rb), (rb).ep - WritePointer(rb)))
+#define Min( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
+#define ReadPointer( rb ) ( ( rb ).rp )
+#define FullSlots( rb ) ( ( rb ).n )
+#define ContFullSlots( rb ) ( Min( FullSlots( rb ), ( rb ).ep - ReadPointer( rb ) ) )
+#define WritePointer( rb ) ( ( rb ).wp )
+#define EmptySlots( rb ) ( RB_SIZE - FullSlots( rb ) )
+#define ContEmptySlots( rb ) ( Min( EmptySlots( rb ), ( rb ).ep - WritePointer( rb ) ) )
 
-#define UpdateReadPointer(rb, n)				\
-{								\
-  FullSlots(rb) -= (n);						\
-  ReadPointer(rb) += (n);					\
-  if(ReadPointer(rb) >= (rb).ep)  ReadPointer(rb) -= RB_SIZE;	\
-}
+#define UpdateReadPointer( rb, n )                                                                                                         \
+    {                                                                                                                                      \
+        FullSlots( rb ) -= ( n );                                                                                                          \
+        ReadPointer( rb ) += ( n );                                                                                                        \
+        if ( ReadPointer( rb ) >= ( rb ).ep )                                                                                              \
+            ReadPointer( rb ) -= RB_SIZE;                                                                                                  \
+    }
 
-#define UpdateWritePointer(rb, n)				\
-{								\
-  FullSlots(rb) += (n);						\
-  WritePointer(rb) += (n);					\
-  if(WritePointer(rb) >= (rb).ep)  WritePointer(rb) -= RB_SIZE;	\
-}
+#define UpdateWritePointer( rb, n )                                                                                                        \
+    {                                                                                                                                      \
+        FullSlots( rb ) += ( n );                                                                                                          \
+        WritePointer( rb ) += ( n );                                                                                                       \
+        if ( WritePointer( rb ) >= ( rb ).ep )                                                                                             \
+            WritePointer( rb ) -= RB_SIZE;                                                                                                 \
+    }
 
-#define Push(rb, c)						\
-{								\
-  FullSlots(rb)++;						\
-  *(WritePointer(rb)++) = c;					\
-  if(WritePointer(rb) >= (rb).ep)  WritePointer(rb) -= RB_SIZE; \
-}
+#define Push( rb, c )                                                                                                                      \
+    {                                                                                                                                      \
+        FullSlots( rb )++;                                                                                                                 \
+        *( WritePointer( rb )++ ) = c;                                                                                                     \
+        if ( WritePointer( rb ) >= ( rb ).ep )                                                                                             \
+            WritePointer( rb ) -= RB_SIZE;                                                                                                 \
+    }
 
-#define Pull(rb, cp)						\
-{								\
-  FullSlots(rb)--;						\
-  *cp = *(ReadPointer(rb)++);					\
-  if(ReadPointer(rb) >= (rb).ep)  ReadPointer(rb) -= RB_SIZE;	\
-}
+#define Pull( rb, cp )                                                                                                                     \
+    {                                                                                                                                      \
+        FullSlots( rb )--;                                                                                                                 \
+        *cp = *( ReadPointer( rb )++ );                                                                                                    \
+        if ( ReadPointer( rb ) >= ( rb ).ep )                                                                                              \
+            ReadPointer( rb ) -= RB_SIZE;                                                                                                  \
+    }
 
-#define InitRingBuffer(rb)				\
-{							\
-  FullSlots(rb) = 0;					\
-  ReadPointer(rb) = WritePointer(rb) = (rb).data;	\
-  (rb).ep = (rb).data + RB_SIZE;			\
-}
+#define InitRingBuffer( rb )                                                                                                               \
+    {                                                                                                                                      \
+        FullSlots( rb ) = 0;                                                                                                               \
+        ReadPointer( rb ) = WritePointer( rb ) = ( rb ).data;                                                                              \
+        ( rb ).ep = ( rb ).data + RB_SIZE;                                                                                                 \
+    }
 
 /* Push/Pull functions:
 
@@ -318,187 +318,163 @@ struct RingBuffer
    read() reported an error.
 
 */
-static int PullAndWrite(struct RingBuffer *rbp, int fd)
+static int PullAndWrite( struct RingBuffer* rbp, int fd )
 {
-    int total = 0;				/* Total # of chars written */
+    int total = 0; /* Total # of chars written */
 
-    while(FullSlots(*rbp) > 0)
-    {
-	int chunk = ContFullSlots(*rbp);	/* Chunk size */
-	int result;				/* # of chars written */
+    while ( FullSlots( *rbp ) > 0 ) {
+        int chunk = ContFullSlots( *rbp ); /* Chunk size */
+        int result;                        /* # of chars written */
 
-	/* write() takes its data from ReadPointer (full slots) */
-	result = write(fd, ReadPointer(*rbp), chunk);
+        /* write() takes its data from ReadPointer (full slots) */
+        result = write( fd, ReadPointer( *rbp ), chunk );
 
-	if(result < 0  &&  errno != EAGAIN)
-	    /* write() failed; return an error indication */
-	    return -1;
+        if ( result < 0 && errno != EAGAIN )
+            /* write() failed; return an error indication */
+            return -1;
 
-	if(result > 0)
-	{
-	    /* write() wrote at least one character; update ReadPointer */
-	    total += result;
-	    UpdateReadPointer(*rbp, result);
-	}
+        if ( result > 0 ) {
+            /* write() wrote at least one character; update ReadPointer */
+            total += result;
+            UpdateReadPointer( *rbp, result );
+        }
 
-	if(result != chunk)
-	    /* Partial success of write(); break loop for now */
-	    break;
+        if ( result != chunk )
+            /* Partial success of write(); break loop for now */
+            break;
     }
 
     return total;
 }
 
-static int ReadAndPush(struct RingBuffer *rbp, int fd)
+static int ReadAndPush( struct RingBuffer* rbp, int fd )
 {
-    int total = 0;				/* Total # of chars read */
+    int total = 0; /* Total # of chars read */
 
-    while(EmptySlots(*rbp) > 0)
-    {
-	int chunk = ContEmptySlots(*rbp);	/* Chunk size */
-	int result;				/* # of chars read */
+    while ( EmptySlots( *rbp ) > 0 ) {
+        int chunk = ContEmptySlots( *rbp ); /* Chunk size */
+        int result;                         /* # of chars read */
 
-	/* read() puts its data into WritePointer (empty slots) */
-	result = read(fd, WritePointer(*rbp), chunk);
+        /* read() puts its data into WritePointer (empty slots) */
+        result = read( fd, WritePointer( *rbp ), chunk );
 
-	if(result < 0  &&  errno != EAGAIN)
-	    /* read() failed; return an error indication */
-	    return -1;
+        if ( result < 0 && errno != EAGAIN )
+            /* read() failed; return an error indication */
+            return -1;
 
-	if(result > 0)
-	{
-	    /* read() read at least one character; update WritePointer */
-	    total += result;
-	    UpdateWritePointer(*rbp, result);
-	}
+        if ( result > 0 ) {
+            /* read() read at least one character; update WritePointer */
+            total += result;
+            UpdateWritePointer( *rbp, result );
+        }
 
-	if(result != chunk)
-	    /* Partial success of read(); break loop */
-	    break;
+        if ( result != chunk )
+            /* Partial success of read(); break loop */
+            break;
     }
 
     return total;
 }
-
 
 /*---------------------------------------------------------------------------
-	Static variables, holding the status of the emulated port
+        Static variables, holding the status of the emulated port
   ---------------------------------------------------------------------------*/
 
-static Nibble ioc = 0;	/* I/O and interrupt control register */
-#define IOC_SON		0x08	/* Serial port enable */
-#define IOC_ETBE	0x04	/* Enable IRQ on TX buffer empty */
-#define IOC_ERBF	0x02	/* Enable IRQ on RX buffer full */
-#define IOC_ERBZ	0x01	/* Enable IRQ on RX buzy (sic) */
+static Nibble ioc = 0; /* I/O and interrupt control register */
+#define IOC_SON 0x08   /* Serial port enable */
+#define IOC_ETBE 0x04  /* Enable IRQ on TX buffer empty */
+#define IOC_ERBF 0x02  /* Enable IRQ on RX buffer full */
+#define IOC_ERBZ 0x01  /* Enable IRQ on RX buzy (sic) */
 
-static Nibble rcs = 0;	/* RX control & status register */
-#define RCS_UNUSED	0x08	/* Unused (?) */
-#define RCS_RER		0x04	/* RX Error */
-#define RCS_RBZ		0x02	/* RX Buzy */
-#define RCS_RBF		0x01	/* RX Buffer full */
+static Nibble rcs = 0;  /* RX control & status register */
+#define RCS_UNUSED 0x08 /* Unused (?) */
+#define RCS_RER 0x04    /* RX Error */
+#define RCS_RBZ 0x02    /* RX Buzy */
+#define RCS_RBF 0x01    /* RX Buffer full */
 
-static Nibble tcs = 0;	/* TX control & status register */
-#define TCS_BRK		0x08	/* Unknown (?) */
-#define TCS_LPB		0x04	/* Unknown (?) */
-#define TCS_TBZ		0x02	/* TX Buzy */
-#define TCS_TBF		0x01	/* TX Buffer full */
+static Nibble tcs = 0; /* TX control & status register */
+#define TCS_BRK 0x08   /* Unknown (?) */
+#define TCS_LPB 0x04   /* Unknown (?) */
+#define TCS_TBZ 0x02   /* TX Buzy */
+#define TCS_TBF 0x01   /* TX Buffer full */
 
-static struct RingBuffer rrb;	/* RX ring buffer */
-static struct RingBuffer trb;	/* TX ring buffer */
+static struct RingBuffer rrb; /* RX ring buffer */
+static struct RingBuffer trb; /* TX ring buffer */
 
-static char *pty_name;	/* Name of pty's slave side */
-static int master_pty;	/* File descriptor of pty's master side */
-static int slave_pty;	/* File descriptor of pty's slave side */
-
+static char* pty_name; /* Name of pty's slave side */
+static int master_pty; /* File descriptor of pty's master side */
+static int slave_pty;  /* File descriptor of pty's slave side */
 
 /*---------------------------------------------------------------------------
-	Helper macros
+        Helper macros
 
   CheckIRQ	This macro checks the current status of ioc, rcs, and tcs,
-  		and posts an interrupt request if appropriate.  It should be
-		called by all functions that modify the above-mentioned
-		registers, after the modification has been made.
-		Interrupt requests are posted only when IOC_SON is set.
+                and posts an interrupt request if appropriate.  It should be
+                called by all functions that modify the above-mentioned
+                registers, after the modification has been made.
+                Interrupt requests are posted only when IOC_SON is set.
 
   UpdateRCS	This macro updates the rcs register according to the
-  		current rrb FullSlots:
-		- if the receiver ring buffer holds more than 1 character,
-		  RCS_RBZ and RCS_RBF are both set
-		- if the receiver ring buffer holds exactly 1 character,
-		  RCS_RBZ is reset and RCS_RBF is set
-		- if the receiver ring buffer is empty,
-		  RCS_RBZ and RCS_RBF are both reset
+                current rrb FullSlots:
+                - if the receiver ring buffer holds more than 1 character,
+                  RCS_RBZ and RCS_RBF are both set
+                - if the receiver ring buffer holds exactly 1 character,
+                  RCS_RBZ is reset and RCS_RBF is set
+                - if the receiver ring buffer is empty,
+                  RCS_RBZ and RCS_RBF are both reset
 
-		3.2: If HP49_SUPPORT is enabled, the RCS_RBZ bit is
-		     always left clear and only RCS_RBF is updated;
-		     this is simpler and works well on the 48, too.
+                3.2: If HP49_SUPPORT is enabled, the RCS_RBZ bit is
+                     always left clear and only RCS_RBF is updated;
+                     this is simpler and works well on the 48, too.
 
   UpdateTCS	This macro updates the tcs register according to the
-  		current trb EmptySlots:
-		- if the transmitter ring buffer has more than 1 empty slot,
-		  TCS_TBZ and TCS_TBF are both reset
-		- if the transmitter ring buffer has 1 empty slot,
-		  TCS_TBZ is set and TCS_TBF is reset
-		- if the transmitter ring buffer is full,
-		  TCS_TBZ and TCS_TBF are both set.
+                current trb EmptySlots:
+                - if the transmitter ring buffer has more than 1 empty slot,
+                  TCS_TBZ and TCS_TBF are both reset
+                - if the transmitter ring buffer has 1 empty slot,
+                  TCS_TBZ is set and TCS_TBF is reset
+                - if the transmitter ring buffer is full,
+                  TCS_TBZ and TCS_TBF are both set.
 
   ---------------------------------------------------------------------------*/
 
-#define CheckIRQ						\
-if((ioc & IOC_SON)						\
-   && (								\
-       ((ioc & IOC_ETBE) && (! (tcs & TCS_TBF)))		\
-       || ((ioc & IOC_ERBF) && (rcs & RCS_RBF))	        	\
-       || ((ioc & IOC_ERBZ) && (rcs & RCS_RBZ))			\
-       ))  CpuIntRequest(INT_REQUEST_IRQ)
+#define CheckIRQ                                                                                                                           \
+    if ( ( ioc & IOC_SON ) && ( ( ( ioc & IOC_ETBE ) && ( !( tcs & TCS_TBF ) ) ) || ( ( ioc & IOC_ERBF ) && ( rcs & RCS_RBF ) ) ||         \
+                                ( ( ioc & IOC_ERBZ ) && ( rcs & RCS_RBZ ) ) ) )                                                            \
+    CpuIntRequest( INT_REQUEST_IRQ )
 
 #ifdef HP49_SUPPORT
-#define UpdateRCS				\
-if(FullSlots(rrb) > 0)				\
-{						\
-    rcs |= RCS_RBF;				\
-}						\
-else						\
-{						\
-    rcs &= ~(RCS_RBF);				\
-}
+#  define UpdateRCS                                                                                                                        \
+      if ( FullSlots( rrb ) > 0 ) {                                                                                                        \
+          rcs |= RCS_RBF;                                                                                                                  \
+      } else {                                                                                                                             \
+          rcs &= ~( RCS_RBF );                                                                                                             \
+      }
 #else
-#define UpdateRCS				\
-if(FullSlots(rrb) > 1)				\
-{						\
-    rcs |= (RCS_RBF|RCS_RBZ);			\
-}						\
-else if(FullSlots(rrb) > 0)			\
-{						\
-    rcs |= RCS_RBF;				\
-    rcs &= ~RCS_RBZ;				\
-}						\
-else						\
-{						\
-    rcs &= ~(RCS_RBF|RCS_RBZ);			\
-}
+#  define UpdateRCS                                                                                                                        \
+      if ( FullSlots( rrb ) > 1 ) {                                                                                                        \
+          rcs |= ( RCS_RBF | RCS_RBZ );                                                                                                    \
+      } else if ( FullSlots( rrb ) > 0 ) {                                                                                                 \
+          rcs |= RCS_RBF;                                                                                                                  \
+          rcs &= ~RCS_RBZ;                                                                                                                 \
+      } else {                                                                                                                             \
+          rcs &= ~( RCS_RBF | RCS_RBZ );                                                                                                   \
+      }
 #endif
 
-#define UpdateTCS				\
-if(EmptySlots(trb) > 1)				\
-{						\
-    tcs &= ~(TCS_TBF|TCS_TBZ);			\
-}						\
-else if(EmptySlots(trb) > 0)			\
-{						\
-    tcs &= ~TCS_TBF;				\
-    tcs |= TCS_TBZ;				\
-}						\
-else						\
-{						\
-    tcs |= (TCS_TBF|TCS_TBZ);			\
-}
-    
+#define UpdateTCS                                                                                                                          \
+    if ( EmptySlots( trb ) > 1 ) {                                                                                                         \
+        tcs &= ~( TCS_TBF | TCS_TBZ );                                                                                                     \
+    } else if ( EmptySlots( trb ) > 0 ) {                                                                                                  \
+        tcs &= ~TCS_TBF;                                                                                                                   \
+        tcs |= TCS_TBZ;                                                                                                                    \
+    } else {                                                                                                                               \
+        tcs |= ( TCS_TBF | TCS_TBZ );                                                                                                      \
+    }
 
 /*---------------------------------------------------------------------------
-	Public functions
+        Public functions
   ---------------------------------------------------------------------------*/
-
 
 /* .+
 
@@ -517,22 +493,22 @@ else						\
   modified in any way.
 
 .call	      :
-		slave_pty_name = SerialInit(void);
+                slave_pty_name = SerialInit(void);
 .input	      :
-		void
+                void
 .output	      :
-		const char *slave_pty_name, name of slave pty or NULL
+                const char *slave_pty_name, name of slave pty or NULL
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_PTYNAME
-		SERIAL_W_NOPTY
-		SERIAL_F_OPENPTY
-		SERIAL_F_FCNTL
-		SERIAL_F_OPEN_MASTER
-		SERIAL_F_GRANTPT
-		SERIAL_F_UNLOCKPT
-		SERIAL_F_OPEN_SLAVE
-		SERIAL_F_PUSH
+                SERIAL_I_CALLED
+                SERIAL_I_PTYNAME
+                SERIAL_W_NOPTY
+                SERIAL_F_OPENPTY
+                SERIAL_F_FCNTL
+                SERIAL_F_OPEN_MASTER
+                SERIAL_F_GRANTPT
+                SERIAL_F_UNLOCKPT
+                SERIAL_F_OPEN_SLAVE
+                SERIAL_F_PUSH
 .notes	      :
   2.5, 13-Sep-2000, creation
   2.6, 15-Sep-2000, update
@@ -547,168 +523,152 @@ else						\
     - ensure that the pty is fully transparent by default
     - slave pty must have O_NONBLOCK set
 .- */
-const char *SerialInit(void)
+const char* SerialInit( void )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialInit");
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialInit" );
 
     /* Initialize ring buffers */
-    InitRingBuffer(rrb);
-    InitRingBuffer(trb);
+    InitRingBuffer( rrb );
+    InitRingBuffer( trb );
 
 #ifndef USE_NOPTY
-#ifdef USE_OPENPTY
+#  ifdef USE_OPENPTY
     /* Open pty master/slave pair; don't specify pty name, struct termios
        and struct winsize.
     */
-    if(openpty(&master_pty, &slave_pty, NULL, NULL, NULL))
-    {
-	pty_name = (char *)NULL;
+    if ( openpty( &master_pty, &slave_pty, NULL, NULL, NULL ) ) {
+        pty_name = ( char* )NULL;
 
-	ChfErrnoCondition;
-	ChfCondition SERIAL_F_OPENPTY, CHF_FATAL ChfEnd;
-	ChfSignal();
+        ChfErrnoCondition;
+        ChfCondition SERIAL_F_OPENPTY, CHF_FATAL ChfEnd;
+        ChfSignal();
     }
 
-    else
-    {
-	int cur_flags;
+    else {
+        int cur_flags;
 
-	pty_name = ttyname(slave_pty);
+        pty_name = ttyname( slave_pty );
 
-	/* Remember: close the pty before exiting */
-	atexit(SerialClose);
+        /* Remember: close the pty before exiting */
+        atexit( SerialClose );
 
-	/* Set O_NONBLOCK on master_pty */
-	if((cur_flags = fcntl(master_pty, F_GETFL, 0)) < 0
-	   || fcntl(master_pty, F_SETFL, cur_flags|O_NONBLOCK) < 0)
-	{
-	    ChfErrnoCondition;
-	    ChfCondition SERIAL_F_FCNTL, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
+        /* Set O_NONBLOCK on master_pty */
+        if ( ( cur_flags = fcntl( master_pty, F_GETFL, 0 ) ) < 0 || fcntl( master_pty, F_SETFL, cur_flags | O_NONBLOCK ) < 0 ) {
+            ChfErrnoCondition;
+            ChfCondition SERIAL_F_FCNTL, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
     }
-#endif
+#  endif
 
-#ifdef USE_STREAMSPTY
+#  ifdef USE_STREAMSPTY
     /* Open master cloning device */
-    if((master_pty = open(PTY_MASTER, O_RDWR|O_NONBLOCK)) < 0)
-    {
-	pty_name = (char *)NULL;
+    if ( ( master_pty = open( PTY_MASTER, O_RDWR | O_NONBLOCK ) ) < 0 ) {
+        pty_name = ( char* )NULL;
 
-	ChfErrnoCondition;
-	ChfCondition SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER ChfEnd;
-	ChfSignal();
+        ChfErrnoCondition;
+        ChfCondition SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER ChfEnd;
+        ChfSignal();
     }
 
-    else
-    {
-	/* Master side opened ok; change permissions and unlock slave side */
+    else {
+        /* Master side opened ok; change permissions and unlock slave side */
 
-	if(grantpt(master_pty) < 0)
-	{
-	    /* close() may modify errno; save it first */
-	    ChfErrnoCondition;
+        if ( grantpt( master_pty ) < 0 ) {
+            /* close() may modify errno; save it first */
+            ChfErrnoCondition;
 
-	    (void)close(master_pty);
+            ( void )close( master_pty );
 
-	    ChfCondition SERIAL_F_GRANTPT, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
+            ChfCondition SERIAL_F_GRANTPT, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
 
-	if(unlockpt(master_pty) < 0)
-	{
-	    /* close() may modify errno; save it first */
-	    ChfErrnoCondition;
+        if ( unlockpt( master_pty ) < 0 ) {
+            /* close() may modify errno; save it first */
+            ChfErrnoCondition;
 
-	    (void)close(master_pty);
+            ( void )close( master_pty );
 
-	    ChfCondition SERIAL_F_UNLOCKPT, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
+            ChfCondition SERIAL_F_UNLOCKPT, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
 
-	/* Get name of slave side; this must be done on the *master* side */
-	pty_name = ptsname(master_pty);
+        /* Get name of slave side; this must be done on the *master* side */
+        pty_name = ptsname( master_pty );
 
-	/* Open slave in nonblocking mode */
-	if((slave_pty = open(pty_name, O_RDWR|O_NONBLOCK)) < 0)
-	{
-	    /* close() may modify errno; save it first */
-	    ChfErrnoCondition;
+        /* Open slave in nonblocking mode */
+        if ( ( slave_pty = open( pty_name, O_RDWR | O_NONBLOCK ) ) < 0 ) {
+            /* close() may modify errno; save it first */
+            ChfErrnoCondition;
 
-	    (void)close(master_pty);
+            ( void )close( master_pty );
 
-	    ChfCondition SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name ChfEnd;
-	    ChfSignal();
-	}
+            ChfCondition SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name ChfEnd;
+            ChfSignal();
+        }
 
-	/* Remember: close the pty before exiting */
-	atexit(SerialClose);
+        /* Remember: close the pty before exiting */
+        atexit( SerialClose );
 
-	/* Push appropriate STREAMS modules on the slave side to support
-	   terminal emulation.  This way, the slave side should be
-	   indistinguishable from a real terminal.
-	*/
-	if(ioctl(slave_pty, I_PUSH, "ptem") == -1)
-	{
-	    ChfErrnoCondition;
-	    ChfCondition SERIAL_F_PUSH, CHF_FATAL, "ptem" ChfEnd;
-	    ChfSignal();
-	}
+        /* Push appropriate STREAMS modules on the slave side to support
+           terminal emulation.  This way, the slave side should be
+           indistinguishable from a real terminal.
+        */
+        if ( ioctl( slave_pty, I_PUSH, "ptem" ) == -1 ) {
+            ChfErrnoCondition;
+            ChfCondition SERIAL_F_PUSH, CHF_FATAL, "ptem" ChfEnd;
+            ChfSignal();
+        }
 
-	if(ioctl(slave_pty, I_PUSH, "ldterm") == -1)
-	{
-	    ChfErrnoCondition;
-	    ChfCondition SERIAL_F_PUSH, CHF_FATAL, "ldterm" ChfEnd;
-	    ChfSignal();
-	}
-
+        if ( ioctl( slave_pty, I_PUSH, "ldterm" ) == -1 ) {
+            ChfErrnoCondition;
+            ChfCondition SERIAL_F_PUSH, CHF_FATAL, "ldterm" ChfEnd;
+            ChfSignal();
+        }
     }
-#endif
+#  endif
 
-#ifdef HP49_SUPPORT
+#  ifdef HP49_SUPPORT
     /* 3.17: Ensure that the pty is fully trasparent by default.
        This allows to use most non-terminal-aware applications (such as od)
        on the pty directly.
     */
     {
-	struct termios tios;
+        struct termios tios;
 
-	if(tcgetattr(slave_pty, &tios))
-	{
-	    ChfErrnoCondition;
-	    ChfCondition SERIAL_F_TCGETATTR, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
+        if ( tcgetattr( slave_pty, &tios ) ) {
+            ChfErrnoCondition;
+            ChfCondition SERIAL_F_TCGETATTR, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
 
-	tios.c_iflag &= ~(BRKINT|IGNPAR|PARMRK|INPCK|ISTRIP|INLCR
-			  |IGNCR|ICRNL|IUCLC|IXON|IXANY|IXOFF|IMAXBEL);
+        tios.c_iflag &= ~( BRKINT | IGNPAR | PARMRK | INPCK | ISTRIP | INLCR | IGNCR | ICRNL | IUCLC | IXON | IXANY | IXOFF | IMAXBEL );
 
-	tios.c_iflag |= IGNBRK;
+        tios.c_iflag |= IGNBRK;
 
-	tios.c_oflag &= ~(OPOST|OLCUC|ONLCR|OCRNL|ONOCR|ONLRET|OFILL
-			  |OFDEL|NLDLY|CRDLY|TABDLY|BSDLY|VTDLY|FFDLY);
+        tios.c_oflag &=
+            ~( OPOST | OLCUC | ONLCR | OCRNL | ONOCR | ONLRET | OFILL | OFDEL | NLDLY | CRDLY | TABDLY | BSDLY | VTDLY | FFDLY );
 
-	tios.c_cflag &= ~(CSIZE|CSTOPB|PARENB|PARODD);
+        tios.c_cflag &= ~( CSIZE | CSTOPB | PARENB | PARODD );
 
-	tios.c_cflag |= CS8|CREAD|HUPCL|CLOCAL;
+        tios.c_cflag |= CS8 | CREAD | HUPCL | CLOCAL;
 
-	tios.c_lflag &= ~(ISIG|ICANON|ECHO|ECHONL|IEXTEN);
+        tios.c_lflag &= ~( ISIG | ICANON | ECHO | ECHONL | IEXTEN );
 
-	/* read()s are satisfed when at least 1 character is available;
-	   intercharacter/read timer disabled.
-	*/
-	tios.c_cc[VMIN] = 1;
-	tios.c_cc[VTIME] = 0;
+        /* read()s are satisfed when at least 1 character is available;
+           intercharacter/read timer disabled.
+        */
+        tios.c_cc[ VMIN ] = 1;
+        tios.c_cc[ VTIME ] = 0;
 
-	if(tcsetattr(slave_pty, TCSANOW, &tios))
-	{
-	    ChfErrnoCondition;
-	    ChfCondition SERIAL_F_TCSETATTR, CHF_FATAL ChfEnd;
-	    ChfSignal();
-	}
-
+        if ( tcsetattr( slave_pty, TCSANOW, &tios ) ) {
+            ChfErrnoCondition;
+            ChfCondition SERIAL_F_TCSETATTR, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
     }
-#endif
+#  endif
 
     /* Publish pty name */
     ChfCondition SERIAL_I_PTY_NAME, CHF_INFO, pty_name ChfEnd;
@@ -725,7 +685,6 @@ const char *SerialInit(void)
     return pty_name;
 }
 
-
 /* .+
 
 .title	      : SerialClose
@@ -740,32 +699,30 @@ const char *SerialInit(void)
   successful completion.
 
 .call	      :
-		SerialClose();
+                SerialClose();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_E_PTY_CLOSE
+                SERIAL_I_CALLED
+                SERIAL_E_PTY_CLOSE
 .notes	      :
   2.5, 13-Sep-2000, creation
   2.6, 15-Sep-2000, update
     - updated documentation
 
 .- */
-void SerialClose(void)
+void SerialClose( void )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialClose");
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialClose" );
 
-    if(close(slave_pty) || close(master_pty))
-    {
-	ChfErrnoCondition;
-	ChfCondition SERIAL_E_PTY_CLOSE, CHF_ERROR ChfEnd;
-	ChfSignal();
+    if ( close( slave_pty ) || close( master_pty ) ) {
+        ChfErrnoCondition;
+        ChfCondition SERIAL_E_PTY_CLOSE, CHF_ERROR ChfEnd;
+        ChfSignal();
     }
 }
-
 
 /* .+
 
@@ -781,25 +738,24 @@ void SerialClose(void)
   modified in any way.
 
 .call	      :
-		slave_pty_name = SerialPtyName();
+                slave_pty_name = SerialPtyName();
 .input	      :
-		void
+                void
 .output	      :
-		const char *slave_pty_name, name of slave pty opened by
-		  SerialInit()
+                const char *slave_pty_name, name of slave pty opened by
+                  SerialInit()
 .status_codes :
-		SERIAL_I_CALLED
+                SERIAL_I_CALLED
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-const char *SerialPtyName(void)
+const char* SerialPtyName( void )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialPtyName");
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialPtyName" );
 
     return pty_name;
 }
-
 
 /* .+
 
@@ -814,26 +770,25 @@ const char *SerialPtyName(void)
   and does not trigger any ancillary action.
 
 .call	      :
-		n = Serial_IOC_Read();
+                n = Serial_IOC_Read();
 .input	      :
-		void
+                void
 .output	      :
-		Nibble n, current value of emulated register
+                Nibble n, current value of emulated register
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_READ
+                SERIAL_I_CALLED
+                SERIAL_I_READ
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-Nibble Serial_IOC_Read(void)
+Nibble Serial_IOC_Read( void )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_IOC_Read");
-    debug2(DEBUG_C_SERIAL, SERIAL_I_READ, "IOC", ioc);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_IOC_Read" );
+    debug2( DEBUG_C_SERIAL, SERIAL_I_READ, "IOC", ioc );
 
     return ioc;
 }
-
 
 /* .+
 
@@ -848,26 +803,25 @@ Nibble Serial_IOC_Read(void)
   and does not trigger any ancillary action.
 
 .call	      :
-		n = Serial_RCS_Read();
+                n = Serial_RCS_Read();
 .input	      :
-		void
+                void
 .output	      :
-		Nibble n, current value of emulated register
+                Nibble n, current value of emulated register
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_READ
+                SERIAL_I_CALLED
+                SERIAL_I_READ
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-Nibble Serial_RCS_Read(void)
+Nibble Serial_RCS_Read( void )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RCS_Read");
-    debug2(DEBUG_C_SERIAL, SERIAL_I_READ, "RCS", rcs);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RCS_Read" );
+    debug2( DEBUG_C_SERIAL, SERIAL_I_READ, "RCS", rcs );
 
     return rcs;
 }
-
 
 /* .+
 
@@ -882,26 +836,25 @@ Nibble Serial_RCS_Read(void)
   and does not trigger any ancillary action.
 
 .call	      :
-		n = Serial_TCS_Read();
+                n = Serial_TCS_Read();
 .input	      :
-		void
+                void
 .output	      :
-		Nibble n, current value of emulated register
+                Nibble n, current value of emulated register
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_READ
+                SERIAL_I_CALLED
+                SERIAL_I_READ
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-Nibble Serial_TCS_Read(void)
+Nibble Serial_TCS_Read( void )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TCS_Read");
-    debug2(DEBUG_C_SERIAL, SERIAL_I_READ, "TCS", tcs);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TCS_Read" );
+    debug2( DEBUG_C_SERIAL, SERIAL_I_READ, "TCS", tcs );
 
     return tcs;
 }
-
 
 /* .+
 
@@ -918,48 +871,45 @@ Nibble Serial_TCS_Read(void)
   - CheckIRQ
 
 .call	      :
-		d = Serial_RBR_Read();
+                d = Serial_RBR_Read();
 .input	      :
-		void
+                void
 .output	      :
-		int8 d, current value of emulated register
+                int8 d, current value of emulated register
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_RBR
-		SERIAL_W_EMPTY_RRB
+                SERIAL_I_CALLED
+                SERIAL_I_RBR
+                SERIAL_W_EMPTY_RRB
 .notes	      :
   2.5, 13-Sep-2000, creation
   3.2, 22-Sep-2000, update
     - conditionally (#ifdef HP49_SUPPORT) removed warning message
       when reading from an empty RRB.
 .- */
-int8 Serial_RBR_Read(void)
+int8 Serial_RBR_Read( void )
 {
     int8 rx;
 
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RBR_Read");
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RBR_Read" );
 
     /* Pull one character from rbr, if not empty */
-    if(FullSlots(rrb) > 0)
-    {
-	Pull(rrb, &rx);
+    if ( FullSlots( rrb ) > 0 ) {
+        Pull( rrb, &rx );
     }
 
-    else
-    {
-	/* rrb is empty */
+    else {
+        /* rrb is empty */
 
 #ifndef HP49_SUPPORT
-	/* 3.2: The HP49 firmware (1.19-4) can read from an empty RRB;
-	        this is not harmful, and this warning can be removed.
-	*/
-	ChfCondition SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs ChfEnd;
-	ChfSignal();
+        /* 3.2: The HP49 firmware (1.19-4) can read from an empty RRB;
+                this is not harmful, and this warning can be removed.
+        */
+        ChfCondition SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs ChfEnd;
+        ChfSignal();
 #endif
 
-	rx = (int8)0xFF;
+        rx = ( int8 )0xFF;
     }
-
 
     /* Update receiver status */
     UpdateRCS;
@@ -967,10 +917,9 @@ int8 Serial_RBR_Read(void)
     /* Post a new IRQ if necessary */
     CheckIRQ;
 
-    debug1(DEBUG_C_SERIAL, SERIAL_I_RBR, rx);
+    debug1( DEBUG_C_SERIAL, SERIAL_I_RBR, rx );
     return rx;
 }
-
 
 /* .+
 
@@ -986,28 +935,27 @@ int8 Serial_RBR_Read(void)
   - CheckIRQ is executed
 
 .call	      :
-		Serial_IOC_Write(n);
+                Serial_IOC_Write(n);
 .input	      :
-		Nibble n, value to be written into the emulated register
+                Nibble n, value to be written into the emulated register
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_WRITE
+                SERIAL_I_CALLED
+                SERIAL_I_WRITE
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-void Serial_IOC_Write(Nibble n)
+void Serial_IOC_Write( Nibble n )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_IOC_Write");
-    debug3(DEBUG_C_SERIAL, SERIAL_I_WRITE, "IOC", ioc, n);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_IOC_Write" );
+    debug3( DEBUG_C_SERIAL, SERIAL_I_WRITE, "IOC", ioc, n );
 
     ioc = n;
 
     CheckIRQ;
 }
-
 
 /* .+
 
@@ -1022,26 +970,25 @@ void Serial_IOC_Write(Nibble n)
   so clear when a direct write into RCS could be useful.
 
 .call	      :
-		Serial_RCS_Write(n);
+                Serial_RCS_Write(n);
 .input	      :
-		Nibble n, value to be written into the emulated register
+                Nibble n, value to be written into the emulated register
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_WRITE
+                SERIAL_I_CALLED
+                SERIAL_I_WRITE
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-void Serial_RCS_Write(Nibble n)
+void Serial_RCS_Write( Nibble n )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RCS_Write");
-    debug3(DEBUG_C_SERIAL, SERIAL_I_WRITE, "RCS", rcs, n);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RCS_Write" );
+    debug3( DEBUG_C_SERIAL, SERIAL_I_WRITE, "RCS", rcs, n );
 
     rcs = n;
 }
-
 
 /* .+
 
@@ -1056,26 +1003,25 @@ void Serial_RCS_Write(Nibble n)
   so clear when a direct write into TCS could be useful.
 
 .call	      :
-		Serial_TCS_Write(n);
+                Serial_TCS_Write(n);
 .input	      :
-		Nibble n, value to be written into the emulated register
+                Nibble n, value to be written into the emulated register
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_WRITE
+                SERIAL_I_CALLED
+                SERIAL_I_WRITE
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-void Serial_TCS_Write(Nibble n)
+void Serial_TCS_Write( Nibble n )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TCS_Write");
-    debug3(DEBUG_C_SERIAL, SERIAL_I_WRITE, "TCS", tcs, n);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TCS_Write" );
+    debug3( DEBUG_C_SERIAL, SERIAL_I_WRITE, "TCS", tcs, n );
 
     tcs = n;
 }
-
 
 /* .+
 
@@ -1089,26 +1035,25 @@ void Serial_TCS_Write(Nibble n)
   The value written is ignored, and the RCS_RER bit is cleared.
 
 .call	      :
-		Serial_CRER_Write(n);
+                Serial_CRER_Write(n);
 .input	      :
-		Nibble n, value to be written into the emulated register
+                Nibble n, value to be written into the emulated register
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_WRITE
+                SERIAL_I_CALLED
+                SERIAL_I_WRITE
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-void Serial_CRER_Write(Nibble n)
+void Serial_CRER_Write( Nibble n )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_CRER_Write");
-    debug3(DEBUG_C_SERIAL, SERIAL_I_WRITE, "CRER", 0, n);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_CRER_Write" );
+    debug3( DEBUG_C_SERIAL, SERIAL_I_WRITE, "CRER", 0, n );
 
     rcs &= ~RCS_RER;
 }
-
 
 /* .+
 
@@ -1125,35 +1070,33 @@ void Serial_CRER_Write(Nibble n)
   - CheckIRQ
 
 .call	      :
-		Serial_TBR_Write(d);
+                Serial_TBR_Write(d);
 .input	      :
-		int8 d, value to be written into the emulated register
+                int8 d, value to be written into the emulated register
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_I_TBR
-		SERIAL_W_FULL_TRB
+                SERIAL_I_CALLED
+                SERIAL_I_TBR
+                SERIAL_W_FULL_TRB
 .notes	      :
   2.5, 13-Sep-2000, creation
 
 .- */
-void Serial_TBR_Write(int8 d)
+void Serial_TBR_Write( int8 d )
 {
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TBR_Write");
-    debug1(DEBUG_C_SERIAL, SERIAL_I_TBR, d);
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TBR_Write" );
+    debug1( DEBUG_C_SERIAL, SERIAL_I_TBR, d );
 
     /* Pull one character from rbr, if not empty */
-    if(EmptySlots(trb) > 0)
-    {
-	Push(trb, d);
+    if ( EmptySlots( trb ) > 0 ) {
+        Push( trb, d );
     }
 
-    else
-    {
-	/* trb is full; discard character */
-	ChfCondition SERIAL_W_FULL_TRB, CHF_WARNING, tcs ChfEnd;
-	ChfSignal();
+    else {
+        /* trb is full; discard character */
+        ChfCondition SERIAL_W_FULL_TRB, CHF_WARNING, tcs ChfEnd;
+        ChfSignal();
     }
 
     /* Update transmitter status */
@@ -1162,7 +1105,6 @@ void Serial_TBR_Write(int8 d)
     /* Post a new IRQ if necessary */
     CheckIRQ;
 }
-
 
 /* .+
 
@@ -1184,15 +1126,15 @@ void Serial_TBR_Write(int8 d)
   - CheckIRQ
 
 .call	      :
-		HandleSerial();
+                HandleSerial();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		SERIAL_I_CALLED
-		SERIAL_E_TRB_DRAIN
-		SERIAL_E_RRB_CHARGE
+                SERIAL_I_CALLED
+                SERIAL_E_TRB_DRAIN
+                SERIAL_E_RRB_CHARGE
 .notes	      :
   2.5, 14-Sep-2000, creation
   2.6, 15-Sep-2000, update
@@ -1202,46 +1144,42 @@ void Serial_TBR_Write(int8 d)
   3.17, 22-Nov-2000, bug fix
     - transmit ring buffer must be emptied even when !IOC_SON
 .- */
-void HandleSerial(void)
+void HandleSerial( void )
 {
     int result;
 
-    debug1(DEBUG_C_TRACE, SERIAL_I_CALLED, "HandleSerial");
+    debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "HandleSerial" );
 
 #ifndef USE_NOPTY
     /* Attempt to drain transmitter buffer even if serial port is closed */
-    result = PullAndWrite(&trb, master_pty);
+    result = PullAndWrite( &trb, master_pty );
 
     /* Signal a condition upon failure */
-    if(result < 0)
-    {
-	ChfErrnoCondition;
-	ChfCondition SERIAL_E_TRB_DRAIN, CHF_ERROR ChfEnd;
-	ChfSignal();
+    if ( result < 0 ) {
+        ChfErrnoCondition;
+        ChfCondition SERIAL_E_TRB_DRAIN, CHF_ERROR ChfEnd;
+        ChfSignal();
     }
 
     /* Update tcs */
     UpdateTCS;
 
-    if(ioc & IOC_SON)
-    {
-	/* Attempt to charge receiver buffer */
-	result = ReadAndPush(&rrb, master_pty);
+    if ( ioc & IOC_SON ) {
+        /* Attempt to charge receiver buffer */
+        result = ReadAndPush( &rrb, master_pty );
 
-	/* Signal a condition upon failure */
-	if(result < 0)
-	{
-	    ChfErrnoCondition;
-	    ChfCondition SERIAL_E_RRB_CHARGE, CHF_ERROR ChfEnd;
-	    ChfSignal();
-	}
+        /* Signal a condition upon failure */
+        if ( result < 0 ) {
+            ChfErrnoCondition;
+            ChfCondition SERIAL_E_RRB_CHARGE, CHF_ERROR ChfEnd;
+            ChfSignal();
+        }
 
-	/* Update receiver status */
-	UpdateRCS;
+        /* Update receiver status */
+        UpdateRCS;
 
-	/* Post an IRQ if necessary */
-	CheckIRQ;
+        /* Post an IRQ if necessary */
+        CheckIRQ;
     }
 #endif
-
 }

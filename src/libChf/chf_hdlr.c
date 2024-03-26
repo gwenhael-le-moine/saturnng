@@ -44,18 +44,17 @@ static char rcs_id[] = "$Id: chf_hdlr.c,v 2.2 2001/01/25 12:12:46 cibrario Exp $
 #include <stdio.h>
 #include <stdlib.h>
 #ifndef _WIN32
-#include <errno.h>
+#  include <errno.h>
 #endif
 #include <setjmp.h>
 
 #ifdef _WIN32
-#include <windows.h>
-#include <tchar.h>
+#  include <windows.h>
+#  include <tchar.h>
 #endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
-
 
 /* .+
 
@@ -68,41 +67,35 @@ static char rcs_id[] = "$Id: chf_hdlr.c,v 2.2 2001/01/25 12:12:46 cibrario Exp $
   ChfPushHandler() when its 'new_handler' argument is CHF_NULL_HANDLER,
   and performs the following functions:
 
-	- if called during an ordinary signalling operation with a
-	  CHF_FATAL condition, it requests the action CHF_UNWIND_KEEP
+        - if called during an ordinary signalling operation with a
+          CHF_FATAL condition, it requests the action CHF_UNWIND_KEEP
 
-	- if called when Chf is in any other state, or with a
-	  severity less than CHF_FATAL, it requests the action CHF_RESIGNAL
+        - if called when Chf is in any other state, or with a
+          severity less than CHF_FATAL, it requests the action CHF_RESIGNAL
 
   The structured condition handling helper currently makes no use of
   handler_context.
 
 .call	      :
-		action = StructuredHelper(desc, state, context);
+                action = StructuredHelper(desc, state, context);
 .input	      :
-		const ChfDescriptor *desc, condition descriptor
-		const ChfState state, current CHF state
+                const ChfDescriptor *desc, condition descriptor
+                const ChfState state, current CHF state
 .output	      :
-		ChfAction action, action requested by the handler
+                ChfAction action, action requested by the handler
 .status_codes :
-		none
+                none
 .notes	      :
   2.1, 19-May-2000, creation
 
 .- */
-static ChfAction StructuredHelper(
-  const ChfDescriptor *desc,
-  const ChfState state,
-  ChfPointer handler_context
-)
+static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState state, ChfPointer handler_context )
 {
-  ChfAction action;
-  const ChfDescriptor *d;
+    ChfAction action;
+    const ChfDescriptor* d;
 
-  return((state == CHF_SIGNALING && ChfGetSeverity(desc) == CHF_FATAL)
-	 ? CHF_UNWIND_KEEP : CHF_RESIGNAL);
+    return ( ( state == CHF_SIGNALING && ChfGetSeverity( desc ) == CHF_FATAL ) ? CHF_UNWIND_KEEP : CHF_RESIGNAL );
 }
-
 
 /* .+
 
@@ -123,7 +116,7 @@ static ChfAction StructuredHelper(
   remain valid until 'new_handler' is popped from the condition stack.
   'handler_context' may be set to the special (null) value CHF_NULL_POINTER to
   indicate that the handler hasn't any private context information.
-  
+
   If, in the future, the handler will request the CHF_UNWIND action, the
   setjmp() function invocation that established 'unwind_context' will appear
   to return again.
@@ -139,19 +132,19 @@ static ChfAction StructuredHelper(
   conditions are CHF_FATAL.
 
   NOTE: This function calls ChfAbort() with abort code CHF_ABORT_INIT if
-	the CHF subsystem has not been initialized.
+        the CHF subsystem has not been initialized.
 
 .call	      :
-		ChfPushHandler(new_handler, unwind_context);
+                ChfPushHandler(new_handler, unwind_context);
 .input	      :
-		ChfHandler new_handler, new condition handler
-		void *unwind_context, handler unwind context pointer
-		ChfPointer handler_context, private handler context pointer
+                ChfHandler new_handler, new condition handler
+                void *unwind_context, handler unwind context pointer
+                ChfPointer handler_context, private handler context pointer
 .output	      :
-		void
+                void
 .status_codes :
-		(*) CHF_F_BAD_STATE, bad CHF state for requested operation
-		(*) CHF_F_HDLR_STACK_FULL, the handler stack is full
+                (*) CHF_F_BAD_STATE, bad CHF state for requested operation
+                (*) CHF_F_HDLR_STACK_FULL, the handler stack is full
 .notes	      :
   1.1, 13-May-1996, creation
   1.6, 15-Jan-1997, update:
@@ -162,43 +155,33 @@ static ChfAction StructuredHelper(
     - added StructuredHelper handling
 
 .- */
-void ChfPushHandler(		/* Push a new handler into the stack */
-  ChfHandler new_handler,
-  void *unwind_context,
-  ChfPointer handler_context
-)
+void ChfPushHandler( /* Push a new handler into the stack */
+                     ChfHandler new_handler, void* unwind_context, ChfPointer handler_context )
 {
-  /* Make sure that CHF has been correctly initialized and is idle */
-  if(chf_context.state == CHF_UNKNOWN)  ChfAbort(CHF_ABORT_INIT);
+    /* Make sure that CHF has been correctly initialized and is idle */
+    if ( chf_context.state == CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_INIT );
 
-  if(chf_context.state != CHF_IDLE)
-  {
-    ChfCondition CHF_F_BAD_STATE, CHF_FATAL
-    ChfEnd;
+    if ( chf_context.state != CHF_IDLE ) {
+        ChfCondition CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
 
-    ChfSignal();
-  }
+        ChfSignal();
+    }
 
-  /* Check if the handler stack is full */
-  else if(chf_context.handler_sp - chf_context.handler_stack >=
-    chf_context.handler_stack_size)
-  {
-    ChfCondition CHF_F_HDLR_STACK_FULL, CHF_FATAL
-    ChfEnd;
+    /* Check if the handler stack is full */
+    else if ( chf_context.handler_sp - chf_context.handler_stack >= chf_context.handler_stack_size ) {
+        ChfCondition CHF_F_HDLR_STACK_FULL, CHF_FATAL ChfEnd;
 
-    ChfSignal();
-  }
+        ChfSignal();
+    }
 
-  else
-  {
-    chf_context.handler_sp->unwind_context = unwind_context;
-    chf_context.handler_sp->handler_context = handler_context;
-    chf_context.handler_sp->handler =
-      ((new_handler == CHF_NULL_HANDLER) ? StructuredHelper : new_handler);
-    chf_context.handler_sp++;
-  }
+    else {
+        chf_context.handler_sp->unwind_context = unwind_context;
+        chf_context.handler_sp->handler_context = handler_context;
+        chf_context.handler_sp->handler = ( ( new_handler == CHF_NULL_HANDLER ) ? StructuredHelper : new_handler );
+        chf_context.handler_sp++;
+    }
 }
-
 
 /* .+
 
@@ -208,24 +191,24 @@ void ChfPushHandler(		/* Push a new handler into the stack */
 .description  :
   This function pops the topmost condition handler from the handler stack and
   returns to the caller.
-  
+
   If some error occours during the execution, the function will generate
   and immediately signal one of the conditions listed below and marked with
   (*). The function will never return directly to the caller, since all
   conditions are CHF_FATAL.
 
   NOTE: This function calls ChfAbort() with abort code CHF_ABORT_INIT if
-	the CHF subsystem has not been initialized.
+        the CHF subsystem has not been initialized.
 
 .call	      :
-		ChfPopHandler();
+                ChfPopHandler();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		CHF_F_BAD_STATE, bad CHF state for requested operation
-		CHF_F_HDLR_STACK_FULL, the handler stack is full
+                CHF_F_BAD_STATE, bad CHF state for requested operation
+                CHF_F_HDLR_STACK_FULL, the handler stack is full
 .notes	      :
   1.1, 13-May-1996, creation
   1.6, 15-Jan-1997, update:
@@ -234,31 +217,27 @@ void ChfPushHandler(		/* Push a new handler into the stack */
     - improved documentation
 
 .- */
-void ChfPopHandler(		/* Pop a handler */
-  void
-)
+void ChfPopHandler( /* Pop a handler */
+                    void )
 {
-  /* Make sure that CHF has been correctly initialized and is idle */
-  if(chf_context.state == CHF_UNKNOWN)  ChfAbort(CHF_ABORT_INIT);
+    /* Make sure that CHF has been correctly initialized and is idle */
+    if ( chf_context.state == CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_INIT );
 
-  if(chf_context.state != CHF_IDLE)
-  {
-    ChfCondition CHF_F_BAD_STATE, CHF_FATAL
-    ChfEnd;
+    if ( chf_context.state != CHF_IDLE ) {
+        ChfCondition CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
 
-    ChfSignal();
-  }
+        ChfSignal();
+    }
 
-  /* Check if the handler stack is empty */
-  else if(chf_context.handler_sp == chf_context.handler_stack)
-  {
-    ChfCondition CHF_F_HDLR_STACK_EMPTY, CHF_FATAL
-    ChfEnd;
+    /* Check if the handler stack is empty */
+    else if ( chf_context.handler_sp == chf_context.handler_stack ) {
+        ChfCondition CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ChfEnd;
 
-    ChfSignal();
-  }
+        ChfSignal();
+    }
 
-  /* Discard the topmost condition handler */
-  else
-    --chf_context.handler_sp;
+    /* Discard the topmost condition handler */
+    else
+        --chf_context.handler_sp;
 }

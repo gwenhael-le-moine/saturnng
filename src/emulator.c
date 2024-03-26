@@ -130,17 +130,16 @@ static char rcs_id[] = "$Id: emulator.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 #include "args.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	CPU_CHF_MODULE_ID
+#define CHF_MODULE_ID CPU_CHF_MODULE_ID
 #include <Chf.h>
 
-
 /*---------------------------------------------------------------------------
-	Private macros / variables / functions
+        Private macros / variables / functions
   ---------------------------------------------------------------------------*/
 
-#define T1_MULTIPLIER	(8192/16)	/* T2/T1 increment ratio */
-#define T1_INTERVAL	62500		/* us per T1 increment */
-#define T2_INTERVAL	122		/* us per T2 increment */
+#define T1_MULTIPLIER ( 8192 / 16 ) /* T2/T1 increment ratio */
+#define T1_INTERVAL 62500           /* us per T1 increment */
+#define T2_INTERVAL 122             /* us per T2 increment */
 
 /* 3.1: MAX_IDLE_X_LOOP_TIMEOUT must be low enough to prevent overflow
    of an int when computing the difference in microseconds between two
@@ -155,382 +154,352 @@ static char rcs_id[] = "$Id: emulator.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
        module will support asynchronous selection on pty fd and will
        be able to interact with the GUI's select mechanism.
 */
-#define T1_MS_MULTIPLIER	63	/* 3.1: Milliseconds per T1 tick (~) */
-#define T2_MS_DIVISOR		8	/* 3.1: T2 ticks per millisecond (~) */
-#define MAX_IDLE_X_LOOP_TIMEOUT 1000	/* 3.1: Max timeout for IdleXLoop() */
+#define T1_MS_MULTIPLIER 63          /* 3.1: Milliseconds per T1 tick (~) */
+#define T2_MS_DIVISOR 8              /* 3.1: T2 ticks per millisecond (~) */
+#define MAX_IDLE_X_LOOP_TIMEOUT 1000 /* 3.1: Max timeout for IdleXLoop() */
 
-#define T1_OVF_MASK	NIBBLE_MASK	/* 3.1: Timer overflow masks */
-#define T2_OVF_MASK	0xFFFFFFFF
+#define T1_OVF_MASK NIBBLE_MASK /* 3.1: Timer overflow masks */
+#define T2_OVF_MASK 0xFFFFFFFF
 
-#define LCD_T1_MASK	0x3		/* LCD refresh timing mask */
-#define INT_T1_MASK	0xF		/* Int. req. timing mask */
+#define LCD_T1_MASK 0x3 /* LCD refresh timing mask */
+#define INT_T1_MASK 0xF /* Int. req. timing mask */
 
-static int emulator_int_req = 0;	/* Interrupt request flag */
+static int emulator_int_req = 0; /* Interrupt request flag */
 
 /* This function contains the main emulator loop; under normal conditions,
    it never returns to the caller. The only way to exit this function is
    to signal a Chf condition that triggers an unwind operation.
 */
-static void EmulatorLoop(void)
+static void EmulatorLoop( void )
 {
-  struct timeval old_t, cur_t;
-  int ela;
-  int inner_loop = cpu_status.inner_loop;
-  int t1_count = 0;
-  int i, j;
+    struct timeval old_t, cur_t;
+    int ela;
+    int inner_loop = cpu_status.inner_loop;
+    int t1_count = 0;
+    int i, j;
 
-  debug1(DEBUG_C_TRACE, CPU_I_CALLED, "EmulatorLoop");
+    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "EmulatorLoop" );
 
-  /* Ignore past interrupt requests */
-  emulator_int_req = 0;
+    /* Ignore past interrupt requests */
+    emulator_int_req = 0;
 
-  /* Get current time of day */
-  gettimeofday(&old_t, NULL);
+    /* Get current time of day */
+    gettimeofday( &old_t, NULL );
 
-  while(1)
-  {
-    /* T1 loop */
-    for(j=0; j<T1_MULTIPLIER; j++)
-    {
-      /* Inner loop */
-      for(i=0; i<inner_loop; i++)  OneStep();
+    while ( 1 ) {
+        /* T1 loop */
+        for ( j = 0; j < T1_MULTIPLIER; j++ ) {
+            /* Inner loop */
+            for ( i = 0; i < inner_loop; i++ )
+                OneStep();
 
-      /* T2 update */
-      if(mod_status.hdw.t2_ctrl & T2_CTRL_TRUN)
-      {
-	if(--mod_status.hdw.t2_val == 0xFFFFFFFF)
-	{
-	  debug1(DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl);
+            /* T2 update */
+            if ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
+                if ( --mod_status.hdw.t2_val == 0xFFFFFFFF ) {
+                    debug1( DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
 
-	  mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
+                    mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
 
-	  if(mod_status.hdw.t2_ctrl & T2_CTRL_WAKE)
-	    CpuWake();
+                    if ( mod_status.hdw.t2_ctrl & T2_CTRL_WAKE )
+                        CpuWake();
 
-	  if(mod_status.hdw.t2_ctrl & T2_CTRL_INT)
-	    CpuIntRequest(INT_REQUEST_IRQ);
-	}
-      }
-    }
+                    if ( mod_status.hdw.t2_ctrl & T2_CTRL_INT )
+                        CpuIntRequest( INT_REQUEST_IRQ );
+                }
+            }
+        }
 
-    /* T1 update */
-    mod_status.hdw.t1_val = (mod_status.hdw.t1_val - 1) & NIBBLE_MASK;
-    if(mod_status.hdw.t1_val == 0xF)
-    {
-      debug1(DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl);
+        /* T1 update */
+        mod_status.hdw.t1_val = ( mod_status.hdw.t1_val - 1 ) & NIBBLE_MASK;
+        if ( mod_status.hdw.t1_val == 0xF ) {
+            debug1( DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl );
 
-      mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
+            mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
 
-      if(mod_status.hdw.t1_ctrl & T1_CTRL_WAKE)
-	CpuWake();
+            if ( mod_status.hdw.t1_ctrl & T1_CTRL_WAKE )
+                CpuWake();
 
-      if(mod_status.hdw.t1_ctrl & T1_CTRL_INT)
-	CpuIntRequest(INT_REQUEST_IRQ);
-    }
+            if ( mod_status.hdw.t1_ctrl & T1_CTRL_INT )
+                CpuIntRequest( INT_REQUEST_IRQ );
+        }
 
-    /* LCD update */
-    if((t1_count++ & LCD_T1_MASK) == 0)  DrawLcd();
+        /* LCD update */
+        if ( ( t1_count++ & LCD_T1_MASK ) == 0 )
+            DrawLcd();
 
-    /* Emulator Interrupt Request */
-    if((t1_count & INT_T1_MASK) == 0 && emulator_int_req)
-    {
-      ChfCondition CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
-      ChfSignal();
-    }
+        /* Emulator Interrupt Request */
+        if ( ( t1_count & INT_T1_MASK ) == 0 && emulator_int_req ) {
+            ChfCondition CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
+            ChfSignal();
+        }
 
-    /* X Events handling */
-    HandleXEvents();
+        /* X Events handling */
+        HandleXEvents();
 
-    /* Handle serial port */
-    HandleSerial();
+        /* Handle serial port */
+        HandleSerial();
 
-    /* Adjust inner_loop limit */
-    gettimeofday(&cur_t, NULL);
+        /* Adjust inner_loop limit */
+        gettimeofday( &cur_t, NULL );
 
-    ela = (cur_t.tv_sec - old_t.tv_sec) * 1000000 +
-      (cur_t.tv_usec - old_t.tv_usec);
-    
-    inner_loop = inner_loop * T1_INTERVAL / ela;
-    if(inner_loop < INNER_LOOP_MIN) inner_loop = INNER_LOOP_MIN;
+        ela = ( cur_t.tv_sec - old_t.tv_sec ) * 1000000 + ( cur_t.tv_usec - old_t.tv_usec );
+
+        inner_loop = inner_loop * T1_INTERVAL / ela;
+        if ( inner_loop < INNER_LOOP_MIN )
+            inner_loop = INNER_LOOP_MIN;
 
 #ifdef REAL_CPU_SPEED
-    /* 3.13: Force an upper limit to the CPU speed if the compile-time option
-       REAL_CPU_SPEED is defined: inner_loop is limited to
-       cpu_status.inner_loop_max
-       and the excess time, if any, is spent sleeping; usleep() is
-       BSD 4.3-specific, but most recent systems should offer it anyway,
-       well, I hope.
-       The special value cpu_status.inner_loop_max==0 gives maximum speed.
-    */
-    if(cpu_status.inner_loop_max != 0
-       && inner_loop >= cpu_status.inner_loop_max)
-    {
-      inner_loop = cpu_status.inner_loop_max;
-      if(T1_INTERVAL > ela)  usleep(T1_INTERVAL - ela);
-    }
+        /* 3.13: Force an upper limit to the CPU speed if the compile-time option
+           REAL_CPU_SPEED is defined: inner_loop is limited to
+           cpu_status.inner_loop_max
+           and the excess time, if any, is spent sleeping; usleep() is
+           BSD 4.3-specific, but most recent systems should offer it anyway,
+           well, I hope.
+           The special value cpu_status.inner_loop_max==0 gives maximum speed.
+        */
+        if ( cpu_status.inner_loop_max != 0 && inner_loop >= cpu_status.inner_loop_max ) {
+            inner_loop = cpu_status.inner_loop_max;
+            if ( T1_INTERVAL > ela )
+                usleep( T1_INTERVAL - ela );
+        }
 #endif
 
-    cpu_status.inner_loop = inner_loop;
-    old_t = cur_t;
-  }
+        cpu_status.inner_loop = inner_loop;
+        old_t = cur_t;
+    }
 }
-
 
 /* Condition handler for the EmulatorLoop */
-static ChfAction EmulatorLoopHandler(
-  const ChfDescriptor *d,
-  const ChfState s,
-  ChfPointer ctx
-)
+static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, ChfPointer ctx )
 {
-  ChfAction act;
+    ChfAction act;
 
-  /* Check Chf state */
-  switch(s)
-  {
-    /* 2.1: Chf release 2 fixed the spelling of 'SIGNALING' */
-    case CHF_SIGNALING:
-      /* ChfSignal() in progress */
-      if(ChfGetModuleId(d) == CPU_CHF_MODULE_ID)
-      {
-	/* Condition from CPU modules; check Condition Code */
-	switch(ChfGetConditionCode(d))
-	{
+    /* Check Chf state */
+    switch ( s ) {
+        /* 2.1: Chf release 2 fixed the spelling of 'SIGNALING' */
+        case CHF_SIGNALING:
+            /* ChfSignal() in progress */
+            if ( ChfGetModuleId( d ) == CPU_CHF_MODULE_ID ) {
+                /* Condition from CPU modules; check Condition Code */
+                switch ( ChfGetConditionCode( d ) ) {
 #ifdef CPU_SPIN_SHUTDN
-	  case CPU_I_SHUTDN:
-	    /* CPU shutdown signalled with CPU_SPIN_SHUTDN defined;
-	       Fatal error.
-	    */
-	    ChfCondition CPU_F_BAD_SHUTDN, CHF_FATAL ChfEnd;
-	    ChfSignal();
+                    case CPU_I_SHUTDN:
+                        /* CPU shutdown signalled with CPU_SPIN_SHUTDN defined;
+                           Fatal error.
+                        */
+                        ChfCondition CPU_F_BAD_SHUTDN, CHF_FATAL ChfEnd;
+                        ChfSignal();
 
-	    act = CHF_RESIGNAL;
-	    break;
+                        act = CHF_RESIGNAL;
+                        break;
 #else
-	case CPU_I_SHUTDN:
-	{
-	    /* 3.1: CPU_SPIN_SHUTDN is not defined, and the cpu emulator
-	       has just executed a shutdown instruction.
-	       Let's do something a little tricky here:
+                    case CPU_I_SHUTDN:
+                        {
+                            /* 3.1: CPU_SPIN_SHUTDN is not defined, and the cpu emulator
+                               has just executed a shutdown instruction.
+                               Let's do something a little tricky here:
 
-	       1- redraw the LCD
+                               1- redraw the LCD
 
-	       2- handle serial port activities
+                               2- handle serial port activities
 
-	       3- determine which timer will expire first, and
-	          compute an approximate value of the maximum duration
-		  of the shutdown --> ms
+                               3- determine which timer will expire first, and
+                                  compute an approximate value of the maximum duration
+                                  of the shutdown --> ms
 
-	       4- handle serial port activities
+                               4- handle serial port activities
 
-	       5- enter the inner idle loop; it breaks when either an
-	          X Event occurred (possibly clearing the shutdown) or
-		  the shutdown timeout elapses
+                               5- enter the inner idle loop; it breaks when either an
+                                  X Event occurred (possibly clearing the shutdown) or
+                                  the shutdown timeout elapses
 
-	       6- determine the actual time we spend in the idle loop
-	          (X timeouts are not accurate enough for this purpose)
+                               6- determine the actual time we spend in the idle loop
+                                  (X timeouts are not accurate enough for this purpose)
 
-	       7- update T1 and T2, check their state and wake/interrupt
-	          the CPU if necessary
+                               7- update T1 and T2, check their state and wake/interrupt
+                                  the CPU if necessary
 
-	       Activities 3-7 above are enclosed in an outer loop because we
-	       cannot be absolutely sure of the actual time spent
-	       in the idle loop; moreover, not all X Events actually
-	       spool up the CPU. The outer loop breaks when the CPU is
-	       actually brought out of shutdown.
+                               Activities 3-7 above are enclosed in an outer loop because we
+                               cannot be absolutely sure of the actual time spent
+                               in the idle loop; moreover, not all X Events actually
+                               spool up the CPU. The outer loop breaks when the CPU is
+                               actually brought out of shutdown.
 
-	       frac_t1 and frac_t2 contain the number of microseconds
-	       not accounted for in the last T1/T2 update, respectively;
-	       they help minimize the cumulative timing error induced
-	       by executing the outer idle loop more than once.
-	    */
-	    struct timeval start_idle, end_idle;
-	    int frac_t1=0, frac_t2=0;
+                               frac_t1 and frac_t2 contain the number of microseconds
+                               not accounted for in the last T1/T2 update, respectively;
+                               they help minimize the cumulative timing error induced
+                               by executing the outer idle loop more than once.
+                            */
+                            struct timeval start_idle, end_idle;
+                            int frac_t1 = 0, frac_t2 = 0;
 
-	    gettimeofday(&start_idle, NULL);
+                            gettimeofday( &start_idle, NULL );
 
-	    /* Redraw the LCD immediately before entering idle loop;
-	       this ensures that the latest LCD updated actually
-	       get to the screen.
-	    */
-	    DrawLcd();
+                            /* Redraw the LCD immediately before entering idle loop;
+                               this ensures that the latest LCD updated actually
+                               get to the screen.
+                            */
+                            DrawLcd();
 
-	    /* Handle serial port activity before entering the outer idle
-	       loop, because this could possibly bring the cpu out of
-	       shutdown right now.
-	    */
-	    HandleSerial();
+                            /* Handle serial port activity before entering the outer idle
+                               loop, because this could possibly bring the cpu out of
+                               shutdown right now.
+                            */
+                            HandleSerial();
 
-	    /* XXX
-	       If either timer has a pending service request,
-	       process it immediately.  It is not clear why it was
-	       not processed *before* shutdown, though.
-	    */
-	    if(mod_status.hdw.t1_ctrl & T1_CTRL_SREQ)
-	    {
-		if(mod_status.hdw.t1_ctrl & T1_CTRL_WAKE)
-		    CpuWake();
+                            /* XXX
+                               If either timer has a pending service request,
+                               process it immediately.  It is not clear why it was
+                               not processed *before* shutdown, though.
+                            */
+                            if ( mod_status.hdw.t1_ctrl & T1_CTRL_SREQ ) {
+                                if ( mod_status.hdw.t1_ctrl & T1_CTRL_WAKE )
+                                    CpuWake();
 
-		if(mod_status.hdw.t1_ctrl & T1_CTRL_INT)
-		    CpuIntRequest(INT_REQUEST_IRQ);
-	    }
+                                if ( mod_status.hdw.t1_ctrl & T1_CTRL_INT )
+                                    CpuIntRequest( INT_REQUEST_IRQ );
+                            }
 
-	    if(mod_status.hdw.t2_ctrl & T2_CTRL_SREQ)
-	    {
-		if(mod_status.hdw.t2_ctrl & T2_CTRL_WAKE)
-		    CpuWake();
+                            if ( mod_status.hdw.t2_ctrl & T2_CTRL_SREQ ) {
+                                if ( mod_status.hdw.t2_ctrl & T2_CTRL_WAKE )
+                                    CpuWake();
 
-		if(mod_status.hdw.t2_ctrl & T2_CTRL_INT)
-		    CpuIntRequest(INT_REQUEST_IRQ);
-	    }
+                                if ( mod_status.hdw.t2_ctrl & T2_CTRL_INT )
+                                    CpuIntRequest( INT_REQUEST_IRQ );
+                            }
 
-	    while(cpu_status.shutdn)
-	    {
-		unsigned long ms = MAX_IDLE_X_LOOP_TIMEOUT;
-		unsigned long mst;
-		int ela;
-		int ela_ticks;
+                            while ( cpu_status.shutdn ) {
+                                unsigned long ms = MAX_IDLE_X_LOOP_TIMEOUT;
+                                unsigned long mst;
+                                int ela;
+                                int ela_ticks;
 
-		debug3(DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)",
-		       mod_status.hdw.t1_ctrl, mod_status.hdw.t1_val);
-		debug3(DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)",
-		       mod_status.hdw.t2_ctrl, mod_status.hdw.t2_val);
+                                debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", mod_status.hdw.t1_ctrl,
+                                        mod_status.hdw.t1_val );
+                                debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", mod_status.hdw.t2_ctrl,
+                                        mod_status.hdw.t2_val );
 
-		/* Determine which timer will expire first */
-		if(mod_status.hdw.t1_ctrl & (T1_CTRL_INT|T1_CTRL_WAKE))
-		{
-		    /* T1 will do something on expiration */
-		    mst = ((unsigned long)mod_status.hdw.t1_val + 1)
-		      * T1_MS_MULTIPLIER;
+                                /* Determine which timer will expire first */
+                                if ( mod_status.hdw.t1_ctrl & ( T1_CTRL_INT | T1_CTRL_WAKE ) ) {
+                                    /* T1 will do something on expiration */
+                                    mst = ( ( unsigned long )mod_status.hdw.t1_val + 1 ) * T1_MS_MULTIPLIER;
 
-		    debug2(DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T1", mst);
+                                    debug2( DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T1", mst );
 
-		    if(mst < ms)  ms = mst;
-		}
+                                    if ( mst < ms )
+                                        ms = mst;
+                                }
 
-		if((mod_status.hdw.t2_ctrl & T2_CTRL_TRUN)
-		   && (mod_status.hdw.t2_ctrl & (T2_CTRL_INT|T2_CTRL_WAKE)))
-		{
-		    /* T2 is running and will do something on expiration */
-		    mst = ((unsigned long)mod_status.hdw.t2_val + 1)
-			/ T2_MS_DIVISOR;
+                                if ( ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) &&
+                                     ( mod_status.hdw.t2_ctrl & ( T2_CTRL_INT | T2_CTRL_WAKE ) ) ) {
+                                    /* T2 is running and will do something on expiration */
+                                    mst = ( ( unsigned long )mod_status.hdw.t2_val + 1 ) / T2_MS_DIVISOR;
 
-		    debug2(DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T2", mst);
+                                    debug2( DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T2", mst );
 
-		    if(mst < ms)  ms = mst;
-		}
+                                    if ( mst < ms )
+                                        ms = mst;
+                                }
 
-		/* Handle serial port activities at each iteration of
-		   the outer idle loop; this ensures that the serial
-		   port emulation will not starve.
-		*/
-		HandleSerial();
+                                /* Handle serial port activities at each iteration of
+                                   the outer idle loop; this ensures that the serial
+                                   port emulation will not starve.
+                                */
+                                HandleSerial();
 
-		/* Enter idle loop, possibly with timeout;
-		   The loop breaks when:
-		   - any X Event occurs (possibly clearing the shutdown)
-		   - the given timeout expires
-		*/
-		debug1(DEBUG_C_TIMERS, CPU_I_IDLE_X_LOOP, ms);
-		IdleXLoop(ms);
+                                /* Enter idle loop, possibly with timeout;
+                                   The loop breaks when:
+                                   - any X Event occurs (possibly clearing the shutdown)
+                                   - the given timeout expires
+                                */
+                                debug1( DEBUG_C_TIMERS, CPU_I_IDLE_X_LOOP, ms );
+                                IdleXLoop( ms );
 
-		/* End of idle loop; compute actual elapsed time */
-		gettimeofday(&end_idle, NULL);
+                                /* End of idle loop; compute actual elapsed time */
+                                gettimeofday( &end_idle, NULL );
 
-		ela = (end_idle.tv_sec - start_idle.tv_sec) * 1000000 +
-		    (end_idle.tv_usec - start_idle.tv_usec);
+                                ela = ( end_idle.tv_sec - start_idle.tv_sec ) * 1000000 + ( end_idle.tv_usec - start_idle.tv_usec );
 
-		/* Update start_idle here to contain lag */
-		start_idle = end_idle;
+                                /* Update start_idle here to contain lag */
+                                start_idle = end_idle;
 
-		debug1(DEBUG_C_TIMERS, CPU_I_ELAPSED, ela);
+                                debug1( DEBUG_C_TIMERS, CPU_I_ELAPSED, ela );
 
-		/* Update timers and act accordingly */
-		ela_ticks = ((ela+frac_t1) + T1_INTERVAL/2) / T1_INTERVAL;
-		frac_t1 = (ela+frac_t1) - ela_ticks * T1_INTERVAL;
+                                /* Update timers and act accordingly */
+                                ela_ticks = ( ( ela + frac_t1 ) + T1_INTERVAL / 2 ) / T1_INTERVAL;
+                                frac_t1 = ( ela + frac_t1 ) - ela_ticks * T1_INTERVAL;
 
-		if(ela_ticks > mod_status.hdw.t1_val)
-		{
-		    debug1(DEBUG_C_TIMERS, CPU_I_TIMER1_EX,
-			   mod_status.hdw.t1_ctrl);
+                                if ( ela_ticks > mod_status.hdw.t1_val ) {
+                                    debug1( DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl );
 
-		    mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
+                                    mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
 
-		    if(mod_status.hdw.t1_ctrl & T1_CTRL_WAKE)
-			CpuWake();
+                                    if ( mod_status.hdw.t1_ctrl & T1_CTRL_WAKE )
+                                        CpuWake();
 
-		    if(mod_status.hdw.t1_ctrl & T1_CTRL_INT)
-			CpuIntRequest(INT_REQUEST_IRQ);
-		}
+                                    if ( mod_status.hdw.t1_ctrl & T1_CTRL_INT )
+                                        CpuIntRequest( INT_REQUEST_IRQ );
+                                }
 
-		mod_status.hdw.t1_val =
-		    (mod_status.hdw.t1_val - ela_ticks) & T1_OVF_MASK;
+                                mod_status.hdw.t1_val = ( mod_status.hdw.t1_val - ela_ticks ) & T1_OVF_MASK;
 
-		if(mod_status.hdw.t2_ctrl & T2_CTRL_TRUN)
-		{
-		    ela_ticks = ((ela+frac_t2) + T2_INTERVAL/2) / T2_INTERVAL;
-		    frac_t2 = (ela+frac_t2) - ela_ticks * T2_INTERVAL;
+                                if ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
+                                    ela_ticks = ( ( ela + frac_t2 ) + T2_INTERVAL / 2 ) / T2_INTERVAL;
+                                    frac_t2 = ( ela + frac_t2 ) - ela_ticks * T2_INTERVAL;
 
-		    if(ela_ticks > mod_status.hdw.t2_val)
-		    {
-			debug1(DEBUG_C_TIMERS, CPU_I_TIMER2_EX,
-			       mod_status.hdw.t2_ctrl);
+                                    if ( ela_ticks > mod_status.hdw.t2_val ) {
+                                        debug1( DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
 
-			mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
+                                        mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
 
-			if(mod_status.hdw.t2_ctrl & T2_CTRL_WAKE)
-			    CpuWake();
+                                        if ( mod_status.hdw.t2_ctrl & T2_CTRL_WAKE )
+                                            CpuWake();
 
-			if(mod_status.hdw.t2_ctrl & T2_CTRL_INT)
-			    CpuIntRequest(INT_REQUEST_IRQ);
-		    }
+                                        if ( mod_status.hdw.t2_ctrl & T2_CTRL_INT )
+                                            CpuIntRequest( INT_REQUEST_IRQ );
+                                    }
 
-		    mod_status.hdw.t2_val =
-			(mod_status.hdw.t2_val - ela_ticks) & T2_OVF_MASK;
-		}
-	    }
+                                    mod_status.hdw.t2_val = ( mod_status.hdw.t2_val - ela_ticks ) & T2_OVF_MASK;
+                                }
+                            }
 
-	    debug3(DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)",
-		   mod_status.hdw.t1_ctrl, mod_status.hdw.t1_val);
-	    debug3(DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)",
-		   mod_status.hdw.t2_ctrl, mod_status.hdw.t2_val);
+                            debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", mod_status.hdw.t1_ctrl, mod_status.hdw.t1_val );
+                            debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", mod_status.hdw.t2_ctrl, mod_status.hdw.t2_val );
 
-	    act = CHF_CONTINUE;
-	}
-	break;
+                            act = CHF_CONTINUE;
+                        }
+                        break;
 #endif
 
-	  case CPU_I_EMULATOR_INT:
-	    /* Emulator interrupt; unwind */
-	    act = CHF_UNWIND;
-	    break;
+                    case CPU_I_EMULATOR_INT:
+                        /* Emulator interrupt; unwind */
+                        act = CHF_UNWIND;
+                        break;
 
-	  default:
-	    /* Condition Code not handled; resignal */
-	    act = CHF_RESIGNAL;
-	}
-      }
+                    default:
+                        /* Condition Code not handled; resignal */
+                        act = CHF_RESIGNAL;
+                }
+            }
 
-      else
-	/* Condition from other modules; resignal */
-	act = CHF_RESIGNAL;
+            else
+                /* Condition from other modules; resignal */
+                act = CHF_RESIGNAL;
 
-      break;
+            break;
 
-    default:
-      /* Other states; resignal the condition */
-      act = CHF_RESIGNAL;
-      break;
-  }
+        default:
+            /* Other states; resignal the condition */
+            act = CHF_RESIGNAL;
+            break;
+    }
 
-  return act;
+    return act;
 }
 
-
 /*---------------------------------------------------------------------------
-	Public functions
+        Public functions
   ---------------------------------------------------------------------------*/
-
 
 /* .+
 
@@ -547,42 +516,39 @@ static ChfAction EmulatorLoopHandler(
   a Chf Condition that triggers an unwind operation.
 
 .call	      :
-		Emulator();
+                Emulator();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		CPU_I_CALLED
-		CPU_I_TIMER1_EX
-		CPU_I_TIMER2_EX
-		Other conditions signalled by lower level modules
+                CPU_I_CALLED
+                CPU_I_TIMER1_EX
+                CPU_I_TIMER2_EX
+                Other conditions signalled by lower level modules
 .notes	      :
   1.1, 17-Feb-1998, creation
 
 .- */
-void Emulator(void)
+void Emulator( void )
 {
-  jmp_buf unwind_context;
+    jmp_buf unwind_context;
 
-  debug1(DEBUG_C_TRACE, CPU_I_CALLED, "Emulator");
+    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "Emulator" );
 
-  /* Setup unwind_context */
-  if(setjmp(unwind_context) == 0)
-  {
-    /* Push condition handler, with NULL context */
-    ChfPushHandler(EmulatorLoopHandler, &unwind_context, (ChfPointer)NULL);
+    /* Setup unwind_context */
+    if ( setjmp( unwind_context ) == 0 ) {
+        /* Push condition handler, with NULL context */
+        ChfPushHandler( EmulatorLoopHandler, &unwind_context, ( ChfPointer )NULL );
 
-    /* Activate emulator loop */
-    EmulatorLoop();
-  }
+        /* Activate emulator loop */
+        EmulatorLoop();
+    }
 
-  else
-  {
-    /* Unwinding after an emulator interrupt */
-  }
+    else {
+        /* Unwinding after an emulator interrupt */
+    }
 }
-
 
 /* .+
 
@@ -595,22 +561,18 @@ void Emulator(void)
   return to the caller.
 
 .call	      :
-		EmulatorIntRequest();
+                EmulatorIntRequest();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		*
+                *
 .notes	      :
   1.1, 18-Feb-1998, creation
 
 .- */
-void EmulatorIntRequest(void)
-{
-  emulator_int_req = 1;
-}
-
+void EmulatorIntRequest( void ) { emulator_int_req = 1; }
 
 /* .+
 
@@ -623,14 +585,14 @@ void EmulatorIntRequest(void)
   subsystems, too.
 
 .call	      :
-		EmulatorInit();
+                EmulatorInit();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		* Status codes signaled by CpuInit() and CpuReset()
-		* Status codes signaled by ModInit() and ModReset()
+                * Status codes signaled by CpuInit() and CpuReset()
+                * Status codes signaled by ModInit() and ModReset()
 .notes	      :
   2.1, 8-Sep-2000, creation
   2.4, 12-Sep-2000, update
@@ -642,23 +604,21 @@ void EmulatorIntRequest(void)
       args.hw option.
 
 .- */
-void EmulatorInit(void)
+void EmulatorInit( void )
 {
     /* Select a module description table */
-    ModSelectDescription(args.hw);
+    ModSelectDescription( args.hw );
 
     /* Initialize cpu and modules subsystems */
     CpuInit();
     ModInit();
 
     /* Reset if appropriate */
-    if(args.reset)
-    {
-	CpuReset();
-	ModReset();
+    if ( args.reset ) {
+        CpuReset();
+        ModReset();
     }
 }
-
 
 /* .+
 
@@ -672,30 +632,29 @@ void EmulatorInit(void)
   returns to the caller unless an unrecoverable error occurs.
 
 .call	      :
-		EmulatorExit(opt);
+                EmulatorExit(opt);
 .input	      :
-		enum ExitOption opt, emulator exit option
+                enum ExitOption opt, emulator exit option
 .output	      :
-		void
+                void
 .status_codes :
-		* Status codes signaled by CpuSave() and ModSave()
+                * Status codes signaled by CpuSave() and ModSave()
 .notes	      :
   2.1, 8-Sep-2000, creation
 
 .- */
-void EmulatorExit(enum ExitOption opt)
+void EmulatorExit( enum ExitOption opt )
 {
-    switch(opt)
-    {
+    switch ( opt ) {
 
-    case SAVE_AND_EXIT:
-	/* Save state of cpu and modules subsystems */
-	ModSave();
-	CpuSave();
-	break;
+        case SAVE_AND_EXIT:
+            /* Save state of cpu and modules subsystems */
+            ModSave();
+            CpuSave();
+            break;
 
-    default:
-	/* Default behavior; do nothing */
-	break;
+        default:
+            /* Default behavior; do nothing */
+            break;
     }
 }

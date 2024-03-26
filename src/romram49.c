@@ -98,7 +98,7 @@ static char rcs_id[] = "$Id: romram49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 #include <stdlib.h>
 #include <setjmp.h>
 #include <string.h>
-#include <unistd.h>		/* access() */
+#include <unistd.h> /* access() */
 #include <errno.h>
 
 #include "config.h"
@@ -111,28 +111,26 @@ static char rcs_id[] = "$Id: romram49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 
 #include "args.h"
 
-#define	CHF_MODULE_ID	MOD_CHF_MODULE_ID
+#define CHF_MODULE_ID MOD_CHF_MODULE_ID
 #include <Chf.h>
 
+#define FLASH_VIEW_SELECTOR 0x40000
+#define FLASH_BANK_MASK 0x3FFFF
 
-#define FLASH_VIEW_SELECTOR	0x40000
-#define FLASH_BANK_MASK		0x3FFFF
+#define CE2_RAM_OFFSET 0x80000
+#define NCE3_RAM_OFFSET 0xC0000
+#define NCE3_RAM_MASK 0x3FFFF
 
-#define CE2_RAM_OFFSET		0x80000
-#define NCE3_RAM_OFFSET		0xC0000
-#define NCE3_RAM_MASK		0x3FFFF
-
-#define HDW_LCR_OFFSET		0x1C
-#define LCR_LED			0x8
+#define HDW_LCR_OFFSET 0x1C
+#define LCR_LED 0x8
 
 /* 3.3: This is no longer static, because flash49.c needs access to
    the Flash ROM array... yes, I know this is not particularly nice,
 */
-struct ModStatus_49 *mod_status_49;
-
+struct ModStatus_49* mod_status_49;
 
 /*---------------------------------------------------------------------------
-	Rom module
+        Rom module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -145,41 +143,34 @@ struct ModStatus_49 *mod_status_49;
   module status structure, and initializes the Flash Rom module.
 
 .call	      :
-		RomInit49();
+                RomInit49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_F_ROM_INIT
-		MOD_F_MOD_STATUS_ALLOC
+                MOD_I_CALLED
+                MOD_F_ROM_INIT
+                MOD_F_MOD_STATUS_ALLOC
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void RomInit49(void)
+void RomInit49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomInit49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomInit49" );
 
-    if((mod_status_49 =
-	(struct ModStatus_49 *)malloc(sizeof(struct ModStatus_49)))
-       == (struct ModStatus_49 *)NULL)
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_F_MOD_STATUS_ALLOC, CHF_FATAL,
-	    sizeof(struct ModStatus_49) ChfEnd;
-	ChfSignal();
+    if ( ( mod_status_49 = ( struct ModStatus_49* )malloc( sizeof( struct ModStatus_49 ) ) ) == ( struct ModStatus_49* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_49 ) ChfEnd;
+        ChfSignal();
     }
 
-    if(ReadNibblesFromFile(args.rom_file_name, N_FLASH_SIZE_49,
-			   mod_status_49->flash))
-    {
-	ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
-	ChfSignal();
+    if ( ReadNibblesFromFile( args.rom_file_name, N_FLASH_SIZE_49, mod_status_49->flash ) ) {
+        ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
+        ChfSignal();
     }
 }
-
 
 /* .+
 
@@ -190,32 +181,29 @@ void RomInit49(void)
   This function saves the status of the Flash Rom.
 
 .call	      :
-		RomSave49();
+                RomSave49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_ROM_SAVE
+                MOD_I_CALLED
+                MOD_E_ROM_SAVE
 .notes	      :
   3.2, 21-Sep-2000, creation
   3.3, 25-Sep-2000, implemented
 
 .- */
-void RomSave49(void)
+void RomSave49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomSave49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomSave49" );
 
-    if(WriteNibblesToFile(mod_status_49->flash, N_FLASH_SIZE_49,
-			  args.rom_file_name))
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_E_ROM_SAVE, CHF_ERROR ChfEnd;
-	ChfSignal();
+    if ( WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, args.rom_file_name ) ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_E_ROM_SAVE, CHF_ERROR ChfEnd;
+        ChfSignal();
     }
 }
-
 
 /* .+
 
@@ -227,29 +215,27 @@ void RomSave49(void)
   'rel_address' and returns it.
 
 .call	      :
-		d = RomRead49(rel_address);
+                d = RomRead49(rel_address);
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-Nibble RomRead49(Address rel_address)
+Nibble RomRead49( Address rel_address )
 {
     register XAddress view;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomRead49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomRead49" );
 
-    view = mod_status.hdw.accel.a49.view[
-	(rel_address & FLASH_VIEW_SELECTOR) != 0];
-  
-    return mod_status_49->flash[view | (rel_address & FLASH_BANK_MASK)];
+    view = mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ];
+
+    return mod_status_49->flash[ view | ( rel_address & FLASH_BANK_MASK ) ];
 }
-
 
 /* .+
 
@@ -266,31 +252,30 @@ Nibble RomRead49(Address rel_address)
   Those cycles are silently ignored.
 
 .call	      :
-		RomWrite49(rel_address, datum);
+                RomWrite49(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
   3.3, 26-Sep-2000, implemented
 
 .- */
-void RomWrite49(Address rel_address, Nibble datum)
+void RomWrite49( Address rel_address, Nibble datum )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite49" );
 
     /* Ignore write cycles through ROM controller; HP49 ROM 1.19-4
        can do this when to ON key is pressed.
     */
 }
 
-
 /*---------------------------------------------------------------------------
-	Main Ram module
+        Main Ram module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -302,32 +287,29 @@ void RomWrite49(Address rel_address, Nibble datum)
   This function initializes the Ram module.
 
 .call	      :
-		RamInit49();
+                RamInit49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_W_RAM_INIT
+                MOD_I_CALLED
+                MOD_W_RAM_INIT
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void RamInit49(void)
+void RamInit49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamInit49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamInit49" );
 
-    if(ReadNibblesFromFile(args.ram_file_name, N_RAM_SIZE_49,
-			   mod_status_49->ram))
-    {
-	ChfCondition MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
-	ChfSignal();
+    if ( ReadNibblesFromFile( args.ram_file_name, N_RAM_SIZE_49, mod_status_49->ram ) ) {
+        ChfCondition MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
+        ChfSignal();
 
-	(void)memset(mod_status_49->ram, 0, sizeof(mod_status_49->ram));
+        ( void )memset( mod_status_49->ram, 0, sizeof( mod_status_49->ram ) );
     }
 }
-
 
 /* .+
 
@@ -338,31 +320,28 @@ void RamInit49(void)
   This function saves the status of the Ram module to disk.
 
 .call	      :
-		RamSave49();
+                RamSave49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_RAM_SAVE
+                MOD_I_CALLED
+                MOD_E_RAM_SAVE
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void RamSave49(void)
+void RamSave49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamSave49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamSave49" );
 
-    if(WriteNibblesToFile(mod_status_49->ram, N_RAM_SIZE_49,
-			  args.ram_file_name))
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
-	ChfSignal();
+    if ( WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, args.ram_file_name ) ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
+        ChfSignal();
     }
 }
-
 
 /* .+
 
@@ -374,24 +353,23 @@ void RamSave49(void)
   and returns it.
 
 .call	      :
-		d = RamRead49(rel_address);
+                d = RamRead49(rel_address);
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-Nibble RamRead49(Address rel_address)
+Nibble RamRead49( Address rel_address )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamRead49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamRead49" );
 
-  return mod_status_49->ram[rel_address];
+    return mod_status_49->ram[ rel_address ];
 }
-
 
 /* .+
 
@@ -403,28 +381,27 @@ Nibble RamRead49(Address rel_address)
   of the internal RAM.
 
 .call	      :
-		RamWrite49(rel_address, datum);
+                RamWrite49(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void RamWrite49(Address rel_address, Nibble datum)
+void RamWrite49( Address rel_address, Nibble datum )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamWrite49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamWrite49" );
 
-  mod_status_49->ram[rel_address] = datum;
+    mod_status_49->ram[ rel_address ] = datum;
 }
 
-
 /*---------------------------------------------------------------------------
-	Ce1  module
+        Ce1  module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -437,33 +414,30 @@ void RamWrite49(Address rel_address, Nibble datum)
   Back Switcher.
 
 .call	      :
-		Ce1Init49();
+                Ce1Init49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void Ce1Init49(void)
+void Ce1Init49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Init49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Init49" );
 
     /* Check if bank-switcher accelerators are valid; if not, initialize
        them to a reasonable value (that is, select Flash Rom bank 0 for
        both views).
     */
-    if(!mod_status.hdw.accel_valid)
-    {
-	mod_status.hdw.accel_valid = 1;
-	mod_status.hdw.accel.a49.view[0] =
-	    mod_status.hdw.accel.a49.view[1] = (XAddress)0;
+    if ( !mod_status.hdw.accel_valid ) {
+        mod_status.hdw.accel_valid = 1;
+        mod_status.hdw.accel.a49.view[ 0 ] = mod_status.hdw.accel.a49.view[ 1 ] = ( XAddress )0;
     }
 }
-
 
 /* .+
 
@@ -474,40 +448,36 @@ void Ce1Init49(void)
   This function saves the status of the Ce1 module.
 
 .call	      :
-		Ce1Save49();
+                Ce1Save49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void Ce1Save49(void)
+void Ce1Save49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Save49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Save49" );
 
     /* Nothing to be done here; the bank-switcher accelerators are saved
        by the hdw modules
     */
 }
 
-
 /* This fragment of code is used by both Ce1Read49() and Ce1Write49();
    the macro definition is here to allow us to write the code once and
    use it many times without incurring a function call overhead.
 */
-#define Ce1SetViews					\
-{							\
-  mod_status.hdw.accel.a49.view[0] =			\
-      ((XAddress)((rel_address >> 5) & 0x03) << 18);	\
-							\
-  mod_status.hdw.accel.a49.view[1] =			\
-      ((XAddress)((rel_address >> 1) & 0x0F) << 18);	\
-}
-
+#define Ce1SetViews                                                                                                                        \
+    {                                                                                                                                      \
+        mod_status.hdw.accel.a49.view[ 0 ] = ( ( XAddress )( ( rel_address >> 5 ) & 0x03 ) << 18 );                                        \
+                                                                                                                                           \
+        mod_status.hdw.accel.a49.view[ 1 ] = ( ( XAddress )( ( rel_address >> 1 ) & 0x0F ) << 18 );                                        \
+    }
 
 /* .+
 
@@ -522,32 +492,31 @@ void Ce1Save49(void)
   most significant bits of addresses when accessing Flash Rom.
 
 .call	      :
-		d = Ce1Read49(rel_address);
+                d = Ce1Read49(rel_address);
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_BS_ADDRESS
+                MOD_I_CALLED
+                MOD_I_BS_ADDRESS
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-Nibble Ce1Read49(Address rel_address)
+Nibble Ce1Read49( Address rel_address )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Read49");
-  debug1(DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address);
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Read49" );
+    debug1( DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address );
 
-  /* Save the ROM view base addresses address into the hdw accelerators.
-     view[] can be directly or-ed with a relative port address to
-     obtain a valid index in Flash Rom.
-  */
-  Ce1SetViews;
+    /* Save the ROM view base addresses address into the hdw accelerators.
+       view[] can be directly or-ed with a relative port address to
+       obtain a valid index in Flash Rom.
+    */
+    Ce1SetViews;
 
-  return (Nibble)0x0;
+    return ( Nibble )0x0;
 }
-
 
 /* .+
 
@@ -562,34 +531,33 @@ Nibble Ce1Read49(Address rel_address)
   most significant bits of addresses when accessing Flash Rom.
 
 .call	      :
-		Ce1Write49(rel_address, datum);
+                Ce1Write49(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory; ignored
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory; ignored
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_BS_ADDRESS
+                MOD_I_CALLED
+                MOD_I_BS_ADDRESS
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void Ce1Write49(Address rel_address, Nibble datum)
+void Ce1Write49( Address rel_address, Nibble datum )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Write49");
-  debug1(DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address);
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Write49" );
+    debug1( DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address );
 
-  /* Save the ROM view base addresses address into the hdw accelerators.
-     view[] can be directly or-ed with a relative port address to
-     obtain a valid index in Flash Rom.
-  */
-  Ce1SetViews;
+    /* Save the ROM view base addresses address into the hdw accelerators.
+       view[] can be directly or-ed with a relative port address to
+       obtain a valid index in Flash Rom.
+    */
+    Ce1SetViews;
 }
 
-
 /*---------------------------------------------------------------------------
-	Ce2  module
+        Ce2  module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -602,13 +570,13 @@ void Ce1Write49(Address rel_address, Nibble datum)
   the first bank of ERAM.
 
 .call	      :
-		Ce2Init49();
+                Ce2Init49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
   3.4, 27-Sep-2000, update:
@@ -616,15 +584,15 @@ void Ce1Write49(Address rel_address, Nibble datum)
       HP39/40 firmware.
 
 .- */
-void Ce2Init49(void)
+void Ce2Init49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init49" );
 
     /* Set base of ce2 area */
     mod_status_49->ce2 = mod_status_49->ram + CE2_RAM_OFFSET;
 
     /* CE2 always present and write enabled */
-    mod_status.hdw.card_status |= (CE2_CARD_PRESENT|CE2_CARD_WE);
+    mod_status.hdw.card_status |= ( CE2_CARD_PRESENT | CE2_CARD_WE );
 
 #if 0
     /* card_status changed; update, set MP bit in HST and post
@@ -635,7 +603,6 @@ void Ce2Init49(void)
 #endif
 }
 
-
 /* .+
 
 .title	      : Ce2Save49
@@ -645,24 +612,23 @@ void Ce2Init49(void)
   This function saves the status of the Ce2 module.
 
 .call	      :
-		Ce2Save49();
+                Ce2Save49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void Ce2Save49(void)
+void Ce2Save49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save49" );
 
     /* Do nothing; the whole RAM is saved by RamSave49() */
 }
-
 
 /* .+
 
@@ -673,24 +639,23 @@ void Ce2Save49(void)
   This function reads a nibble from the Ce2 module.
 
 .call	      :
-		d = Ce2Read49(rel_address)
+                d = Ce2Read49(rel_address)
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-Nibble Ce2Read49(Address rel_address)
+Nibble Ce2Read49( Address rel_address )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Read49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Read49" );
 
-    return mod_status_49->ce2[rel_address];
+    return mod_status_49->ce2[ rel_address ];
 }
-
 
 /* .+
 
@@ -701,28 +666,27 @@ Nibble Ce2Read49(Address rel_address)
   This function writes a nibble to the Ce2 module.
 
 .call	      :
-		Ce2Write49(rel_address, datum);
+                Ce2Write49(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
 
 .- */
-void Ce2Write49(Address rel_address, Nibble datum)
+void Ce2Write49( Address rel_address, Nibble datum )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Write49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Write49" );
 
-    mod_status_49->ce2[rel_address] = datum;
+    mod_status_49->ce2[ rel_address ] = datum;
 }
 
-
 /*---------------------------------------------------------------------------
-	NCe3  module
+        NCe3  module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -735,13 +699,13 @@ void Ce2Write49(Address rel_address, Nibble datum)
   the first bank of ERAM.
 
 .call	      :
-		NCe3Init49();
+                NCe3Init49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
   3.4, 27-Sep-2000, update:
@@ -749,15 +713,15 @@ void Ce2Write49(Address rel_address, Nibble datum)
       HP39/40 firmware.
 
 .- */
-void NCe3Init49(void)
+void NCe3Init49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init49" );
 
     /* Set base of nce3 area */
     mod_status_49->nce3 = mod_status_49->ram + NCE3_RAM_OFFSET;
 
     /* NCE3 always present and write enabled */
-    mod_status.hdw.card_status |= (NCE3_CARD_PRESENT|NCE3_CARD_WE);
+    mod_status.hdw.card_status |= ( NCE3_CARD_PRESENT | NCE3_CARD_WE );
 
 #if 0
     /* card_status changed; update, set MP bit in HST and post
@@ -768,7 +732,6 @@ void NCe3Init49(void)
 #endif
 }
 
-
 /* .+
 
 .title	      : NCe3Save49
@@ -778,24 +741,23 @@ void NCe3Init49(void)
   This function saves the status of the NCe3 module.
 
 .call	      :
-		NCe3Save49();
+                NCe3Save49();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
- 
+
 .- */
-void NCe3Save49(void)
+void NCe3Save49( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Save49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Save49" );
 
     /* Do nothing; the whole RAM is saved by RamSave49() */
 }
-
 
 /* .+
 
@@ -814,32 +776,28 @@ void NCe3Save49(void)
   the ABSOLUTE address of the memory access.
 
 .call	      :
-		d = NCe3Read49(rel_address)
+                d = NCe3Read49(rel_address)
 .input	      :
-		Address rel_address, memory address (ABSOLUTE)
+                Address rel_address, memory address (ABSOLUTE)
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
   3.3, 25-Sep-2000, update
     - added vectors into flash49 for FlashROM read ops
 
 .- */
-Nibble NCe3Read49(Address rel_address)
+Nibble NCe3Read49( Address rel_address )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Read49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Read49" );
 
-    return
-	(mod_status.hdw.hdw[HDW_LCR_OFFSET] & LCR_LED)
-	? FlashRead49(
-	    mod_status.hdw.accel.a49.view[
-		(rel_address & FLASH_VIEW_SELECTOR) != 0]
-	    | (rel_address & FLASH_BANK_MASK))
-	: mod_status_49->nce3[rel_address & NCE3_RAM_MASK];
+    return ( mod_status.hdw.hdw[ HDW_LCR_OFFSET ] & LCR_LED )
+               ? FlashRead49( mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] |
+                              ( rel_address & FLASH_BANK_MASK ) )
+               : mod_status_49->nce3[ rel_address & NCE3_RAM_MASK ];
 }
-
 
 /* .+
 
@@ -859,29 +817,27 @@ Nibble NCe3Read49(Address rel_address)
 
 
 .call	      :
-		NCe3Write49(rel_address, datum);
+                NCe3Write49(rel_address, datum);
 .input	      :
-		Address rel_address, memory address (ABSOLUTE)
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address (ABSOLUTE)
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   3.2, 21-Sep-2000, creation
   3.3, 25-Sep-2000, update
     - added vectors into flash49 for FlashROM write ops
 
 .- */
-void NCe3Write49(Address rel_address, Nibble datum)
+void NCe3Write49( Address rel_address, Nibble datum )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Write49");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Write49" );
 
-    if(mod_status.hdw.hdw[HDW_LCR_OFFSET] & LCR_LED)
-	FlashWrite49(mod_status.hdw.accel.a49.view[
-	    (rel_address & FLASH_VIEW_SELECTOR) != 0]
-		     | (rel_address & FLASH_BANK_MASK),
-		     datum);
+    if ( mod_status.hdw.hdw[ HDW_LCR_OFFSET ] & LCR_LED )
+        FlashWrite49( mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] | ( rel_address & FLASH_BANK_MASK ),
+                      datum );
     else
-	mod_status_49->nce3[rel_address & NCE3_RAM_MASK] = datum;
+        mod_status_49->nce3[ rel_address & NCE3_RAM_MASK ] = datum;
 }

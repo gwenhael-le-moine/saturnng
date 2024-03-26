@@ -86,7 +86,7 @@ static char rcs_id[] = "$Id: romram.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include <stdlib.h>
 #include <setjmp.h>
 #include <string.h>
-#include <unistd.h>		/* access() */
+#include <unistd.h> /* access() */
 #include <errno.h>
 
 #include "config.h"
@@ -98,26 +98,24 @@ static char rcs_id[] = "$Id: romram.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 
 #include "args.h"
 
-#define	CHF_MODULE_ID	MOD_CHF_MODULE_ID
+#define CHF_MODULE_ID MOD_CHF_MODULE_ID
 #include <Chf.h>
-
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
    a private struct ModStatus_48. The dynamic allocation is performed during
    Rom initialization, and the following macro allows us to reuse the
    existing code with minimal updates.
 */
-static struct ModStatus_48 *mod_status_48;
+static struct ModStatus_48* mod_status_48;
 
-#define mod_status_hdw		mod_status.hdw
-#define mod_status_rom		mod_status_48->rom
-#define mod_status_ram		mod_status_48->ram
-#define mod_status_port_1	mod_status_48->port_1
-#define mod_status_port_2	mod_status_48->port_2
-
+#define mod_status_hdw mod_status.hdw
+#define mod_status_rom mod_status_48->rom
+#define mod_status_ram mod_status_48->ram
+#define mod_status_port_1 mod_status_48->port_1
+#define mod_status_port_2 mod_status_48->port_2
 
 /*---------------------------------------------------------------------------
-	Rom module
+        Rom module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -130,40 +128,34 @@ static struct ModStatus_48 *mod_status_48;
   module status structure, and initializes the Rom module.
 
 .call	      :
-		RomInit();
+                RomInit();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_F_ROM_INIT
-		MOD_F_MOD_STATUS_ALLOC
+                MOD_I_CALLED
+                MOD_F_ROM_INIT
+                MOD_F_MOD_STATUS_ALLOC
 .notes	      :
   1.1, 23-Jan-1998, creation
 
 .- */
-void RomInit(void)
+void RomInit( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomInit");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomInit" );
 
-    if((mod_status_48 =
-	(struct ModStatus_48 *)malloc(sizeof(struct ModStatus_48)))
-       == (struct ModStatus_48 *)NULL)
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_F_MOD_STATUS_ALLOC, CHF_FATAL,
-	    sizeof(struct ModStatus_48) ChfEnd;
-	ChfSignal();
+    if ( ( mod_status_48 = ( struct ModStatus_48* )malloc( sizeof( struct ModStatus_48 ) ) ) == ( struct ModStatus_48* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_48 ) ChfEnd;
+        ChfSignal();
     }
 
-    if(ReadNibblesFromFile(args.rom_file_name, N_ROM_SIZE, mod_status_rom))
-    {
-	ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
-	ChfSignal();
+    if ( ReadNibblesFromFile( args.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
+        ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
+        ChfSignal();
     }
 }
-
 
 /* .+
 
@@ -175,22 +167,18 @@ void RomInit(void)
   nothing.
 
 .call	      :
-		RomSave();
+                RomSave();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 11-Feb-1998, creation
 
 .- */
-void RomSave(void)
-{
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomSave");
-}
-
+void RomSave( void ) { debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomSave" ); }
 
 /* .+
 
@@ -202,24 +190,23 @@ void RomSave(void)
   and returns it.
 
 .call	      :
-		d = RomRead(rel_address);
+                d = RomRead(rel_address);
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RomRead(Address rel_address)
+Nibble RomRead( Address rel_address )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomRead");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomRead" );
 
-  return mod_status_rom[rel_address];
+    return mod_status_rom[ rel_address ];
 }
-
 
 /* .+
 
@@ -231,30 +218,29 @@ Nibble RomRead(Address rel_address)
   ROM location. It signals an error condition and does nothing.
 
 .call	      :
-		RomWrite(rel_address, datum);
+                RomWrite(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_ROM_WRITE
+                MOD_I_CALLED
+                MOD_E_ROM_WRITE
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-void RomWrite(Address rel_address, Nibble datum)
+void RomWrite( Address rel_address, Nibble datum )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite" );
 
-  ChfCondition MOD_E_ROM_WRITE, CHF_ERROR, rel_address, datum ChfEnd;
-  ChfSignal();
+    ChfCondition MOD_E_ROM_WRITE, CHF_ERROR, rel_address, datum ChfEnd;
+    ChfSignal();
 }
 
-
 /*---------------------------------------------------------------------------
-	Main Ram module
+        Main Ram module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -266,31 +252,29 @@ void RomWrite(Address rel_address, Nibble datum)
   This function initializes the Ram module.
 
 .call	      :
-		RamInit();
+                RamInit();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_W_RAM_INIT
+                MOD_I_CALLED
+                MOD_W_RAM_INIT
 .notes	      :
   1.1, 23-Jan-1998, creation
 
 .- */
-void RamInit(void)
+void RamInit( void )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamInit");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamInit" );
 
-  if(ReadNibblesFromFile(args.ram_file_name, N_RAM_SIZE, mod_status_ram))
-  {
-    ChfCondition MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
-    ChfSignal();
+    if ( ReadNibblesFromFile( args.ram_file_name, N_RAM_SIZE, mod_status_ram ) ) {
+        ChfCondition MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
+        ChfSignal();
 
-    (void)memset(mod_status_ram, 0, sizeof(mod_status_ram));
-  }
+        ( void )memset( mod_status_ram, 0, sizeof( mod_status_ram ) );
+    }
 }
-
 
 /* .+
 
@@ -301,32 +285,30 @@ void RamInit(void)
   This function saves the status of the Ram module to disk.
 
 .call	      :
-		RamSave();
+                RamSave();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_RAM_SAVE
+                MOD_I_CALLED
+                MOD_E_RAM_SAVE
 .notes	      :
   1.1, 11-Feb-1998, creation
   2.4, 12-Sep-2000, update
     - upon failure, added push of ChfErrnoCondition to condition stack.
 
 .- */
-void RamSave(void)
+void RamSave( void )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamSave");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamSave" );
 
-  if(WriteNibblesToFile(mod_status_ram, N_RAM_SIZE, args.ram_file_name))
-  {
-    ChfErrnoCondition;
-    ChfCondition MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
-    ChfSignal();
-  }
+    if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, args.ram_file_name ) ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
+        ChfSignal();
+    }
 }
-
 
 /* .+
 
@@ -338,24 +320,23 @@ void RamSave(void)
   and returns it.
 
 .call	      :
-		d = RamRead(rel_address);
+                d = RamRead(rel_address);
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RamRead(Address rel_address)
+Nibble RamRead( Address rel_address )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamRead");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamRead" );
 
-  return mod_status_ram[rel_address];
+    return mod_status_ram[ rel_address ];
 }
-
 
 /* .+
 
@@ -367,28 +348,27 @@ Nibble RamRead(Address rel_address)
   of the internal RAM.
 
 .call	      :
-		RamWrite(rel_address, datum);
+                RamWrite(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 26-Jan-1998, creation
 
 .- */
-void RamWrite(Address rel_address, Nibble datum)
+void RamWrite( Address rel_address, Nibble datum )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "RamWrite");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamWrite" );
 
-  mod_status_ram[rel_address] = datum;
+    mod_status_ram[ rel_address ] = datum;
 }
 
-
 /*---------------------------------------------------------------------------
-	Ce1  module
+        Ce1  module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -401,32 +381,30 @@ void RamWrite(Address rel_address, Nibble datum)
   Back Switcher.
 
 .call	      :
-		Ce1Init();
+                Ce1Init();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Init(void)
+void Ce1Init( void )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Init");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Init" );
 
-  /* Check if bank-switcher accelerators are valid; if not, initialize
-     them to a reasonable value (that is, select Port_2 bank 0).
-  */
-  if(!mod_status_hdw.accel_valid)
-  {
-      mod_status_hdw.accel_valid = 1;
-      mod_status_hdw.accel.a48.bs_address = (XAddress)0;
-  }
+    /* Check if bank-switcher accelerators are valid; if not, initialize
+       them to a reasonable value (that is, select Port_2 bank 0).
+    */
+    if ( !mod_status_hdw.accel_valid ) {
+        mod_status_hdw.accel_valid = 1;
+        mod_status_hdw.accel.a48.bs_address = ( XAddress )0;
+    }
 }
-
 
 /* .+
 
@@ -437,27 +415,26 @@ void Ce1Init(void)
   This function saves the status of the Ce1 module.
 
 .call	      :
-		Ce1Save();
+                Ce1Save();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Save(void)
+void Ce1Save( void )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Save");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Save" );
 
-  /* Nothing to be done herel the bank-switcher accelerators are saved
-     by the hdw modules
-  */
+    /* Nothing to be done herel the bank-switcher accelerators are saved
+       by the hdw modules
+    */
 }
-
 
 /* .+
 
@@ -471,36 +448,34 @@ void Ce1Save(void)
   most significant bits of Port_2 addresses when accessing that port.
 
 .call	      :
-		d = Ce1Read(rel_address);
+                d = Ce1Read(rel_address);
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
-		MOD_I_BS_ADDRESS
+                MOD_I_CALLED
+                MOD_I_BS_ADDRESS
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble Ce1Read(Address rel_address)
+Nibble Ce1Read( Address rel_address )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Read");
-  debug1(DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address);
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Read" );
+    debug1( DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address );
 
-  /* Save the read address into the hdw accelerators.
-     bs_address can be directly or-ed with a relative port address to
-     obtain a valid index in Port_2
-  */
+    /* Save the read address into the hdw accelerators.
+       bs_address can be directly or-ed with a relative port address to
+       obtain a valid index in Port_2
+    */
 #ifdef N_PORT_2_BANK
-  mod_status_hdw.accel.a48.bs_address =
-    ((XAddress)((rel_address >> 1) & 0x1F) << 18) & (N_PORT_2_SIZE-1);
+    mod_status_hdw.accel.a48.bs_address = ( ( XAddress )( ( rel_address >> 1 ) & 0x1F ) << 18 ) & ( N_PORT_2_SIZE - 1 );
 #endif
 
-  return (Nibble)0x0;
+    return ( Nibble )0x0;
 }
-
 
 /* .+
 
@@ -513,31 +488,30 @@ Nibble Ce1Read(Address rel_address)
   state of mod_status_hdw.accel.a48.bs_address is *not* changed.
 
 .call	      :
-		Ce1Write(rel_address, datum);
+                Ce1Write(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_CE1_WRITE
+                MOD_I_CALLED
+                MOD_E_CE1_WRITE
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Write(Address rel_address, Nibble datum)
+void Ce1Write( Address rel_address, Nibble datum )
 {
-  debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Write");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Write" );
 
-  ChfCondition MOD_E_CE1_WRITE, CHF_ERROR, rel_address, datum ChfEnd;
-  ChfSignal();
+    ChfCondition MOD_E_CE1_WRITE, CHF_ERROR, rel_address, datum ChfEnd;
+    ChfSignal();
 }
 
-
 /*---------------------------------------------------------------------------
-	Ce2  module
+        Ce2  module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -549,67 +523,60 @@ void Ce1Write(Address rel_address, Nibble datum)
   This function initializes the Ce2 module, corresponding to Port 1.
 
 .call	      :
-		Ce2Init();
+                Ce2Init();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_W_PORT_1_INIT
-		MOD_I_PORT_1_WP
+                MOD_I_CALLED
+                MOD_W_PORT_1_INIT
+                MOD_I_PORT_1_WP
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Init(void)
+void Ce2Init( void )
 {
     Nibble new_status;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init" );
 
-    if(ReadNibblesFromFile(args.port_1_file_name, N_PORT_1_SIZE,
-			   mod_status_port_1))
-    {
-	ChfCondition MOD_W_PORT_1_INIT, CHF_WARNING ChfEnd;
-	ChfSignal();
+    if ( ReadNibblesFromFile( args.port_1_file_name, N_PORT_1_SIZE, mod_status_port_1 ) ) {
+        ChfCondition MOD_W_PORT_1_INIT, CHF_WARNING ChfEnd;
+        ChfSignal();
 
-	(void)memset(mod_status_port_1, 0, sizeof(mod_status_port_1));
+        ( void )memset( mod_status_port_1, 0, sizeof( mod_status_port_1 ) );
 
-	new_status =
-	    mod_status_hdw.card_status & ~(CE2_CARD_PRESENT|CE2_CARD_WE);
+        new_status = mod_status_hdw.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
     }
 
-    else
-    {
-	/* Card present; check write protection */
-	new_status = mod_status_hdw.card_status | CE2_CARD_PRESENT;
+    else {
+        /* Card present; check write protection */
+        new_status = mod_status_hdw.card_status | CE2_CARD_PRESENT;
 
-	if(access(args.port_1_file_name, W_OK) == 0)
-	   new_status |= CE2_CARD_WE;
+        if ( access( args.port_1_file_name, W_OK ) == 0 )
+            new_status |= CE2_CARD_WE;
 
-	else
-	{
-	    new_status &= ~CE2_CARD_WE;
+        else {
+            new_status &= ~CE2_CARD_WE;
 
-	    ChfErrnoCondition;
-	    ChfCondition MOD_I_PORT_1_WP, CHF_INFO ChfEnd;
-	    ChfSignal();
-	}
+            ChfErrnoCondition;
+            ChfCondition MOD_I_PORT_1_WP, CHF_INFO ChfEnd;
+            ChfSignal();
+        }
     }
 
-    if(new_status != mod_status_hdw.card_status)
-    {
-	/* card_status changed; update, set MP bit in HST and post
-	   interrupt request.
-	*/
-	mod_status_hdw.card_status = new_status;
-	cpu_status.HST |= HST_MP_MASK;
-	CpuIntRequest(INT_REQUEST_IRQ);
+    if ( new_status != mod_status_hdw.card_status ) {
+        /* card_status changed; update, set MP bit in HST and post
+           interrupt request.
+        */
+        mod_status_hdw.card_status = new_status;
+        cpu_status.HST |= HST_MP_MASK;
+        CpuIntRequest( INT_REQUEST_IRQ );
     }
 }
-
 
 /* .+
 
@@ -621,34 +588,30 @@ void Ce2Init(void)
   not write-protected.
 
 .call	      :
-		Ce2Save();
+                Ce2Save();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_PORT_1_SAVE
+                MOD_I_CALLED
+                MOD_E_PORT_1_SAVE
 .notes	      :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Save(void)
+void Ce2Save( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save" );
 
     /* Attempt to save only if port is write-enabled */
-    if((mod_status_hdw.card_status & CE2_CARD_WE) &&
-       WriteNibblesToFile(mod_status_port_1, N_PORT_1_SIZE,
-			  args.port_1_file_name))
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_E_PORT_1_SAVE, CHF_ERROR ChfEnd;
-	ChfSignal();
+    if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, args.port_1_file_name ) ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_E_PORT_1_SAVE, CHF_ERROR ChfEnd;
+        ChfSignal();
     }
 }
-
 
 /* .+
 
@@ -659,25 +622,24 @@ void Ce2Save(void)
   This function reads a nibble from the Ce2 module.
 
 .call	      :
-		d = Ce2Read(rel_address)
+                d = Ce2Read(rel_address)
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble Ce2Read(Address rel_address)
+Nibble Ce2Read( Address rel_address )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Read");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Read" );
 
-    return mod_status_port_1[rel_address];
+    return mod_status_port_1[ rel_address ];
 }
-
 
 /* .+
 
@@ -688,29 +650,28 @@ Nibble Ce2Read(Address rel_address)
   This function writes a nibble to the Ce2 module.
 
 .call	      :
-		Ce2Write(rel_address, datum);
+                Ce2Write(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
+                MOD_I_CALLED
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Write(Address rel_address, Nibble datum)
+void Ce2Write( Address rel_address, Nibble datum )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Write");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Write" );
 
-    mod_status_port_1[rel_address] = datum;
+    mod_status_port_1[ rel_address ] = datum;
 }
 
-
 /*---------------------------------------------------------------------------
-	NCe3  module
+        NCe3  module
   ---------------------------------------------------------------------------*/
 
 /* .+
@@ -723,75 +684,67 @@ void Ce2Write(Address rel_address, Nibble datum)
   (bank switched) port 2.
 
 .call	      :
-		NCe3Init();
+                NCe3Init();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_W_PORT_2_INIT
-		MOD_I_PORT_2_WP
+                MOD_I_CALLED
+                MOD_W_PORT_2_INIT
+                MOD_I_PORT_2_WP
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void NCe3Init(void)
+void NCe3Init( void )
 {
     Nibble new_status;
 
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init" );
 
 #ifdef N_PORT_2_BANK
-    if(ReadNibblesFromFile(args.port_2_file_name, N_PORT_2_SIZE,
-			   mod_status_port_2))
-    {
-	ChfCondition MOD_W_PORT_2_INIT, CHF_WARNING ChfEnd;
-	ChfSignal();
+    if ( ReadNibblesFromFile( args.port_2_file_name, N_PORT_2_SIZE, mod_status_port_2 ) ) {
+        ChfCondition MOD_W_PORT_2_INIT, CHF_WARNING ChfEnd;
+        ChfSignal();
 
-	(void)memset(mod_status_port_2, 0, sizeof(mod_status_port_2));
+        ( void )memset( mod_status_port_2, 0, sizeof( mod_status_port_2 ) );
 
-	new_status =
-	    mod_status_hdw.card_status & ~(NCE3_CARD_PRESENT|NCE3_CARD_WE);
+        new_status = mod_status_hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
     }
 
-    else
-    {
-	/* Card present; check write protection */
-	new_status = mod_status_hdw.card_status | NCE3_CARD_PRESENT;
+    else {
+        /* Card present; check write protection */
+        new_status = mod_status_hdw.card_status | NCE3_CARD_PRESENT;
 
-	if(access(args.port_2_file_name, W_OK) == 0)
-	    new_status |= NCE3_CARD_WE;
+        if ( access( args.port_2_file_name, W_OK ) == 0 )
+            new_status |= NCE3_CARD_WE;
 
-	else
-	{
-	    new_status &= ~NCE3_CARD_WE;
+        else {
+            new_status &= ~NCE3_CARD_WE;
 
-	    ChfErrnoCondition;
-	    ChfCondition MOD_I_PORT_2_WP, CHF_INFO ChfEnd;
-	    ChfSignal();
-	}
+            ChfErrnoCondition;
+            ChfCondition MOD_I_PORT_2_WP, CHF_INFO ChfEnd;
+            ChfSignal();
+        }
     }
 
 #else
     /* If N_PORT_2_BANK is undefined, Port 2 is not emulated */
-    new_status =
-	mod_status_hdw.card_status & ~(NCE3_CARD_PRESENT|NCE3_CARD_WE);
+    new_status = mod_status_hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
 
 #endif
 
-    if(new_status != mod_status_hdw.card_status)
-    {
-	/* card_status changed; update, set MP bit in HST and post
-	   interrupt request.
-	*/
-	mod_status_hdw.card_status = new_status;
-	cpu_status.HST |= HST_MP_MASK;
-	CpuIntRequest(INT_REQUEST_IRQ);
+    if ( new_status != mod_status_hdw.card_status ) {
+        /* card_status changed; update, set MP bit in HST and post
+           interrupt request.
+        */
+        mod_status_hdw.card_status = new_status;
+        cpu_status.HST |= HST_MP_MASK;
+        CpuIntRequest( INT_REQUEST_IRQ );
     }
 }
-
 
 /* .+
 
@@ -802,36 +755,32 @@ void NCe3Init(void)
   This function saves the status of the NCe3 module.
 
 .call	      :
-		NCe3Save();
+                NCe3Save();
 .input	      :
-		void
+                void
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_PORT_2_SAVE
+                MOD_I_CALLED
+                MOD_E_PORT_2_SAVE
 .notes	      :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
- 
+
 .- */
-void NCe3Save(void)
+void NCe3Save( void )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Save");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Save" );
 
 #ifdef N_PORT_2_BANK
     /* Attempt to save only if port is write-enabled */
-    if((mod_status_hdw.card_status & NCE3_CARD_WE) &&
-       WriteNibblesToFile(mod_status_port_2, N_PORT_2_SIZE,
-			  args.port_2_file_name))
-    {
-	ChfErrnoCondition;
-	ChfCondition MOD_E_PORT_2_SAVE, CHF_ERROR ChfEnd;
-	ChfSignal();
+    if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) && WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, args.port_2_file_name ) ) {
+        ChfErrnoCondition;
+        ChfCondition MOD_E_PORT_2_SAVE, CHF_ERROR ChfEnd;
+        ChfSignal();
     }
 #endif
 }
-
 
 /* .+
 
@@ -842,36 +791,34 @@ void NCe3Save(void)
   This function reads a nibble from the NCe3 module.
 
 .call	      :
-		d = NCe3Read(rel_address)
+                d = NCe3Read(rel_address)
 .input	      :
-		Address rel_address, memory address
+                Address rel_address, memory address
 .output	      :
-		Nibble *d, datum read from memory
+                Nibble *d, datum read from memory
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_NCE3_READ
+                MOD_I_CALLED
+                MOD_E_NCE3_READ
 
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble NCe3Read(Address rel_address)
+Nibble NCe3Read( Address rel_address )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Read");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Read" );
 
 #ifdef N_PORT_2_BANK
-    return
-	mod_status_port_2[rel_address | mod_status_hdw.accel.a48.bs_address];
+    return mod_status_port_2[ rel_address | mod_status_hdw.accel.a48.bs_address ];
 
 #else
     ChfCondition MOD_E_NCE3_READ, CHF_ERROR, rel_address ChfEnd;
     ChfSignal();
-    return (Nibble)0;
+    return ( Nibble )0;
 
 #endif
 }
-
 
 /* .+
 
@@ -883,28 +830,27 @@ Nibble NCe3Read(Address rel_address)
   it is not currently implemented.
 
 .call	      :
-		NCe3Write(rel_address, datum);
+                NCe3Write(rel_address, datum);
 .input	      :
-		Address rel_address, memory address
-		Nibble datum, datum to be written into memory
+                Address rel_address, memory address
+                Nibble datum, datum to be written into memory
 .output	      :
-		void
+                void
 .status_codes :
-		MOD_I_CALLED
-		MOD_E_NCE3_WRITE
+                MOD_I_CALLED
+                MOD_E_NCE3_WRITE
 
 .notes	      :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void NCe3Write(Address rel_address, Nibble datum)
+void NCe3Write( Address rel_address, Nibble datum )
 {
-    debug1(DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Write");
+    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Write" );
 
 #ifdef N_PORT_2_BANK
-    mod_status_port_2[rel_address | mod_status_hdw.accel.a48.bs_address]
-	= datum;
+    mod_status_port_2[ rel_address | mod_status_hdw.accel.a48.bs_address ] = datum;
 
 #else
     ChfCondition MOD_E_NCE3_WRITE, CHF_ERROR, rel_address, datum ChfEnd;

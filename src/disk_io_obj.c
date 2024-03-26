@@ -75,9 +75,8 @@ static char rcs_id[] = "$Id: disk_io_obj.c,v 4.1 2000/12/11 09:54:19 cibrario Re
 #include "disk_io.h"
 #include "debug.h"
 
-#define	CHF_MODULE_ID	DISK_IO_CHF_MODULE_ID
+#define CHF_MODULE_ID DISK_IO_CHF_MODULE_ID
 #include <Chf.h>
-
 
 /* .+
 
@@ -104,110 +103,99 @@ static char rcs_id[] = "$Id: disk_io_obj.c,v 4.1 2000/12/11 09:54:19 cibrario Re
   This function returns to the caller a status code.
 
 .call	      :
-		st = ReadObjectFromFile(name, hdr, start, end);
+                st = ReadObjectFromFile(name, hdr, start, end);
 
 .input	      :
-		const char *name, input file name
-		const char *hdr, file header
-		Address start, start address (inclusive)
-		Address end, end address (exclusive)
+                const char *name, input file name
+                const char *hdr, file header
+                Address start, start address (inclusive)
+                Address end, end address (exclusive)
 .output	      :
-		int st, status code
+                int st, status code
 .status_codes :
-		DISK_IO_I_CALLED	(signalled)
-		DISK_IO_E_OPEN
-		DISK_IO_E_GETC
-		DISK_IO_E_BAD_HDR
-		DISK_IO_E_SIZE
+                DISK_IO_I_CALLED	(signalled)
+                DISK_IO_E_OPEN
+                DISK_IO_E_GETC
+                DISK_IO_E_BAD_HDR
+                DISK_IO_E_SIZE
 .notes	      :
   3.14, 10-Nov-2000, creation
 
 .- */
-int ReadObjectFromFile(
-    const char *name, const char *hdr, Address start, Address end)
+int ReadObjectFromFile( const char* name, const char* hdr, Address start, Address end )
 {
-    size_t hdr_len = strlen(hdr);
-    FILE *f;
+    size_t hdr_len = strlen( hdr );
+    FILE* f;
     int i;
     int by;
     Address cur;
 
-#define N_SAVE_AREA	10
-    Nibble save_area[N_SAVE_AREA];
+#define N_SAVE_AREA 10
+    Nibble save_area[ N_SAVE_AREA ];
 
     int st = DISK_IO_S_OK;
 
-    debug1(DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadObjectFromFile");
+    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadObjectFromFile" );
 
     /* Save first nibbles of target space into save_area */
-    for(cur=start, i=0; cur < end  &&  i<N_SAVE_AREA; cur++, i++)
-	save_area[i] = ReadNibble(cur);
+    for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
+        save_area[ i ] = ReadNibble( cur );
 
-    if((f = fopen(name, "rb")) == (FILE *)NULL)
-    {
-	ChfErrnoCondition;
-	ChfCondition st=DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
+    if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     }
 
-    else
-    {
-	/* Check and skip header */
-	for(i=0; i<hdr_len; i++)
-	{
-	    by = getc(f);
+    else {
+        /* Check and skip header */
+        for ( i = 0; i < hdr_len; i++ ) {
+            by = getc( f );
 
-	    if(by == EOF)
-	    {
-		ChfErrnoCondition;
-		ChfCondition st=DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
-		break;
-	    }
+            if ( by == EOF ) {
+                ChfErrnoCondition;
+                ChfCondition st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
+                break;
+            }
 
-	    else if(hdr[i] != '?'  &&  by != hdr[i])
-	    {
-		ChfCondition st=DISK_IO_E_BAD_HDR, CHF_ERROR, name ChfEnd;
-		break;
-	    }
-	}
+            else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
+                ChfCondition st = DISK_IO_E_BAD_HDR, CHF_ERROR, name ChfEnd;
+                break;
+            }
+        }
 
-	if(st == DISK_IO_S_OK)
-	{
-	    cur = start;
+        if ( st == DISK_IO_S_OK ) {
+            cur = start;
 
-	    /* Header check/skip OK; transfer */
-	    while((by = getc(f)) != EOF)
-	    {
-		/* Next byte available in by; check available space */
-		if(cur >= end-1)
-		{
-		    ChfCondition st=DISK_IO_E_SIZE, CHF_ERROR, name ChfEnd;
-		    break;
-		}
+            /* Header check/skip OK; transfer */
+            while ( ( by = getc( f ) ) != EOF ) {
+                /* Next byte available in by; check available space */
+                if ( cur >= end - 1 ) {
+                    ChfCondition st = DISK_IO_E_SIZE, CHF_ERROR, name ChfEnd;
+                    break;
+                }
 
-		/* Store it */
-		WriteNibble(cur++, (Nibble)(by & 0x0F));
-		WriteNibble(cur++, (Nibble)((by & 0xF0) >> 4));
-	    }
+                /* Store it */
+                WriteNibble( cur++, ( Nibble )( by & 0x0F ) );
+                WriteNibble( cur++, ( Nibble )( ( by & 0xF0 ) >> 4 ) );
+            }
 
-	    /* Check why getc() failed */
-	    if(ferror(f) && !feof(f))
-	    {
-		ChfErrnoCondition;
-		ChfCondition st=DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
-	    }
+            /* Check why getc() failed */
+            if ( ferror( f ) && !feof( f ) ) {
+                ChfErrnoCondition;
+                ChfCondition st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
+            }
 
-	    /* Recover from save_area if transfer failed */
-	    if(st)
-		for(cur=start, i=0; cur < end  &&  i<N_SAVE_AREA; cur++, i++)
-		    WriteNibble(cur, save_area[i]);
-	}
+            /* Recover from save_area if transfer failed */
+            if ( st )
+                for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
+                    WriteNibble( cur, save_area[ i ] );
+        }
 
-	(void)fclose(f);
+        ( void )fclose( f );
     }
 
     return st;
 }
-
 
 /* .+
 
@@ -225,92 +213,81 @@ int ReadObjectFromFile(
   This function returns to the caller a status code.
 
 .call	      :
-		st = WriteObjectToFile(start, end, hdr, name);
+                st = WriteObjectToFile(start, end, hdr, name);
 .input	      :
-		Address start, start address (inclusive)
-		Address end, end address (exclusive)
-		const char *hdr, file header
-		const char *name, output file name
+                Address start, start address (inclusive)
+                Address end, end address (exclusive)
+                const char *hdr, file header
+                const char *name, output file name
 .output	      :
-		int st, status code
+                int st, status code
 .status_codes :
-		DISK_IO_I_CALLED	(signalled)
-		DISK_IO_E_OPEN
-		DISK_IO_E_PUTC
-		DISK_IO_E_CLOSE
+                DISK_IO_I_CALLED	(signalled)
+                DISK_IO_E_OPEN
+                DISK_IO_E_PUTC
+                DISK_IO_E_CLOSE
 .notes	      :
   3.14, 10-Nov-2000, creation
 
 .- */
-int WriteObjectToFile(
-    Address start, Address end, const char *hdr, const char *name)
+int WriteObjectToFile( Address start, Address end, const char* hdr, const char* name )
 {
-    size_t hdr_len = strlen(hdr);
-    FILE *f;
+    size_t hdr_len = strlen( hdr );
+    FILE* f;
     int i;
     int by;
     Address cur;
 
     int st = DISK_IO_S_OK;
 
-    debug1(DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile");
+    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile" );
 
-    if((f = fopen(name, "wb")) == (FILE *)NULL)
-    {
-	ChfErrnoCondition;
-	ChfCondition st=DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
+    if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
+        ChfErrnoCondition;
+        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     }
 
-    else
-    {
-	/* Write header; replace wildcard character '?' with 'S' */
-	for(i=0; i<hdr_len; i++)
-	{
-	    if(putc(hdr[i] == '?' ? 'S' : hdr[i], f) == EOF)
-	    {
-		ChfErrnoCondition;
-		ChfCondition st=DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
-		break;
-	    }
-	}
+    else {
+        /* Write header; replace wildcard character '?' with 'S' */
+        for ( i = 0; i < hdr_len; i++ ) {
+            if ( putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f ) == EOF ) {
+                ChfErrnoCondition;
+                ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                break;
+            }
+        }
 
-	if(st == DISK_IO_S_OK)
-	{
-	    cur = start;
+        if ( st == DISK_IO_S_OK ) {
+            cur = start;
 
-	    while(cur < end-1)
-	    {
-		/* Make a byte with two nibbles */
-		by  = (int)ReadNibble(cur++);
-		by |= (int)ReadNibble(cur++) << 4;
+            while ( cur < end - 1 ) {
+                /* Make a byte with two nibbles */
+                by = ( int )ReadNibble( cur++ );
+                by |= ( int )ReadNibble( cur++ ) << 4;
 
-		if(putc(by, f) == EOF)
-		{
-		    ChfErrnoCondition;
-		    ChfCondition st=DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
-		    break;
-		}
-	    }
+                if ( putc( by, f ) == EOF ) {
+                    ChfErrnoCondition;
+                    ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                    break;
+                }
+            }
 
-	    /* Write the last odd nibble, if necessary */
-	    if(st == DISK_IO_S_OK  &&  cur == end-1)
-	    {
-		by  = (int)ReadNibble(cur++);
+            /* Write the last odd nibble, if necessary */
+            if ( st == DISK_IO_S_OK && cur == end - 1 ) {
+                by = ( int )ReadNibble( cur++ );
 
-		if(putc(by, f) == EOF)
-		{
-		    ChfErrnoCondition;
-		    ChfCondition st=DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
-		}
-	    }
-	}
+                if ( putc( by, f ) == EOF ) {
+                    ChfErrnoCondition;
+                    ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                }
+            }
+        }
 
-	/* Close the output file anyway */
-	if(fclose(f) == EOF)
-	{
-	    ChfErrnoCondition;
-	    ChfCondition st=DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
-	}
+        /* Close the output file anyway */
+        if ( fclose( f ) == EOF ) {
+            ChfErrnoCondition;
+            ChfCondition st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
+        }
     }
 
     return st;
