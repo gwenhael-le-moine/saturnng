@@ -248,6 +248,3 @@
 #define UTIL_CHF_MODULE_ID 17   /* 3.6 */
 #define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
 #define DEBUG_CHF_MODULE_ID 30
-
-/* 3.16: Include automatic exceptions to user configuration */
-#include "config_x.h"
