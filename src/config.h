@@ -236,7 +236,7 @@
    default.  Currently, the value cannot be set at runtime for performance
    reasons.
 */
-#define LCD_MAG		1
+#define LCD_MAG		2
 
 
 /* 4.1.1.1: When defined, this symbol represents the threshold of the long
