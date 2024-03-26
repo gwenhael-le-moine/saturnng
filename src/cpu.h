@@ -112,6 +112,7 @@
   is larger than necessary to avoid additional checks on the validity of
   the R register index fields during emulation
   ---------------------------------------------------------------------------*/
+#include "machdep.h"
 
 /* General */
 #define NIBBLE_PER_REGISTER 16
