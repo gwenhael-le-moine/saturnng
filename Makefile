@@ -147,8 +147,8 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn40g
 
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat #FIXME
-	# install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
-	# install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
 	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
