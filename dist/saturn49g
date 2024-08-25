@@ -10,9 +10,11 @@ if [ ! -e "$STATEDIR"/rom.49g ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
     fi
-    cp -R @PREFIX@/share/saturn/ROMs/ "$STATEDIR"/ROMs
-    make -C "$STATEDIR"/ROMs get-roms
-    cp "$STATEDIR"/ROMs/rom.49g "$STATEDIR"/rom.49g
+    if [ ! -d "$STATEDIR"/../ROMs ]; then
+        cp -R @PREFIX@/share/saturn/ROMs/ "$STATEDIR"/../ROMs
+    fi
+    make -C "$STATEDIR"/../ROMs get-roms
+    cp "$STATEDIR"/../ROMs/rom.49g "$STATEDIR"/rom.49g
 fi
 
 RAM=''
