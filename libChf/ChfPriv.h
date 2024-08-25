@@ -47,10 +47,7 @@
 #define CHF_DEF_PARTIAL_MSG_FMT ChfText( "Code <%d>d" )
 #define CHF_DEF_MID_MSG_FMT ChfText( "Mid <%d>d" )
 #define CHF_EXTENDED_INFO_FMT ChfText( "(%s,%d)" )
-#define CHF_SEVERITY_NAMES                                                                                                                 \
-    {                                                                                                                                      \
-        ChfText( "S" ), ChfText( "I" ), ChfText( "W" ), ChfText( "E" ), ChfText( "F" )                                                     \
-    }
+#define CHF_SEVERITY_NAMES { ChfText( "S" ), ChfText( "I" ), ChfText( "W" ), ChfText( "E" ), ChfText( "F" ) }
 #define CHF_UNKNOWN_SEVERITY ChfText( "?" )
 #define CHF_MESSAGE_SEPARATOR ChfText( "-" )
 #define CHF_MESSAGE_TERMINATOR ChfText( "\n" )
