@@ -17,3 +17,5 @@ dist/pack
 dist/saturn
 dist/saturn.cat
 dist/stateDir.*
+
+dist/ROMs/*rom-*

@@ -2,9 +2,9 @@ $ .+
 $ .identifier   : $Id: serial.msf,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 $ .context      : SATURN, Saturn CPU / HP48 emulator
 $ .title        : $RCSfile: serial.msf,v $
-$ .kind	        : Message catalog source
+$ .kind         : Message catalog source
 $ .author       : Ivan Cibrario B.
-$ .site	        : CSTV-CNR
+$ .site         : CSTV-CNR
 $ .creation     : 13-Sep-2000
 $ .keywords     : *
 $ .description  :
@@ -44,7 +44,7 @@ $set 15
 104 Write [%s]; value [%01X](old) -> [%01X](new)
 105 Read RBR; value [%02X]
 106 Write TBR; value [%02X]
-107 Slave pseudo-terminal name is [%s]
+107 Pseudo-terminal name is [%s]
 201 Read from empty receiver buffer, rcs [%01X]
 202 Write into full transmitter buffer, tcs [%01X]
 203 Pseudo-terminals not supported

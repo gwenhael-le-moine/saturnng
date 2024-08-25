@@ -3,9 +3,9 @@
 ! .identifier   : $Id: Saturn.ad,v 4.1.1.1 2002/11/11 16:13:56 cibrario Exp $
 ! .context      : SATURN, Saturn CPU / HP48 emulator
 ! .title        : $RCSfile: Saturn.ad,v $
-! .kind	        : Application's resource file
+! .kind         : Application's resource file
 ! .author       : Ivan Cibrario B.
-! .site	        : CSTV-CNR
+! .site         : CSTV-CNR
 ! .creation     : 7-Sep-2000
 ! .keywords     : *
 ! .description  :
@@ -99,7 +99,7 @@
 ! Error Dialog resources
 
 *error_popup*deleteResponse: XmDO_NOTHING
-*error*fontList: *helvetica-medium-r-*-*-8-*,*symbol-*-*-*-*-8-*=S
+*error*fontList: *helvetica-medium-r-*-*-12-*,*symbol-*-*-*-*-8-*=S
 *error*dialogTitle: Attention, please...
 *error*okLabelString: Continue
 
@@ -107,7 +107,7 @@
 
 *msg*foreground: red
 *msg*cursorPositionVisible: False
-*msg*fontList: *helvetica-medium-r-*-*-8-*,*symbol-*-*-*-*-8-*=S
+*msg*fontList: *helvetica-medium-r-*-*-12-*,*symbol-*-*-*-*-8-*=S
 
 ! Destroy application when 'Close' is selected from mwm menu.
 
@@ -151,8 +151,8 @@
 
 *hp48.nKeys: 49
 *hp48.kbd.fractionBase: 1440
-*hp48.kbd*fontList: *helvetica-*-r-*-*-10-*,*symbol-*-*-*-*-10-*=S
-*hp48.kbd*btn.fontList: *helvetica-*-r-*-*-12-*,*symbol-*-*-*-*-12-*=S
+*hp48.kbd*fontList: *helvetica-*-r-*-*-16-*,*symbol-*-*-*-*-10-*=S
+*hp48.kbd*btn.fontList: *helvetica-*-r-*-*-18-*,*symbol-*-*-*-*-12-*=S
 *hp48.kbd*ul.foreground: dark violet
 *hp48.kbd*ur.foreground: dark green
 *hp48.kbd*ll.foreground: gray90
@@ -899,8 +899,8 @@
 
 *hp49.nKeys: 51
 *hp49.kbd.fractionBase: 1124
-*hp49.kbd*fontList: *helvetica-medium-r-*-*-8-*,*symbol-*-*-*-*-8-*=S
-*hp49.kbd*btn.fontList: *helvetica-medium-r-*-*-8-*,*symbol-*-*-*-*-8-*=S
+*hp49.kbd*fontList: *helvetica-medium-r-*-*-12-*,*symbol-*-*-*-*-8-*=S
+*hp49.kbd*btn.fontList: *helvetica-medium-r-*-*-12-*,*symbol-*-*-*-*-8-*=S
 *hp49.kbd*ul.foreground: midnight blue
 *hp49.kbd*ur.foreground: red
 *hp49.kbd*lr.foreground: sea green
@@ -1680,8 +1680,8 @@
 
 *hp40.nKeys: 51
 *hp40.kbd.fractionBase: 1440
-*hp40.kbd*fontList: *helvetica-*-r-*-*-12-*,*symbol-*-*-*-*-12-*=S
-*hp40.kbd*btn.fontList: *helvetica-*-r-*-*-14-*,*symbol-*-*-*-*-14-*=S
+*hp40.kbd*fontList: *helvetica-*-r-*-*-16-*,*symbol-*-*-*-*-12-*=S
+*hp40.kbd*btn.fontList: *helvetica-*-r-*-*-18-*,*symbol-*-*-*-*-14-*=S
 *hp40.kbd*ul.foreground: light sky blue
 *hp40.kbd*ur.foreground: red
 *hp40.kbd*lr.foreground: orange

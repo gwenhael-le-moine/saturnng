@@ -96,7 +96,7 @@
 #define SERIAL_I_WRITE 104       /* Write %s %x -> %x */
 #define SERIAL_I_RBR 105         /* Read RBR -> %x */
 #define SERIAL_I_TBR 106         /* Write TBR <- %x */
-#define SERIAL_I_PTY_NAME 107    /* Slave pty name is %s */
+#define SERIAL_I_PTY_NAME 107    /* pty name is %s */
 #define SERIAL_W_EMPTY_RRB 201   /* Read from empty RX buffer, rcs=%x */
 #define SERIAL_W_FULL_TRB 202    /* Write into full TX buffer, tcs=%x */
 #define SERIAL_W_NOPTY 203       /* 3.16: Pty support not available */

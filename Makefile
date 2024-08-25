@@ -6,6 +6,10 @@
 # The governing license can be found in the LICENSE file or at
 # https://opensource.org/license/MIT.
 
+PREFIX = /usr
+DOCDIR = $(PREFIX)/doc/x48ng
+MANDIR = $(PREFIX)/man
+
 OPTIM ?= 2
 
 CFLAGS ?= -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/st_build -lutil
@@ -94,7 +98,7 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 	-DPATCHLEVEL=$(PATCHLEVEL) \
 	$(CPPFLAGS)
 
-.PHONY: all clean clean-all pretty-code install mrproper get-roms
+.PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
 all: libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
 
@@ -124,6 +128,7 @@ clean:
 
 mrproper: clean
 	rm -f dist/pack dist/saturn dist/saturn.cat
+	make -C dist/ROMs mrproper
 
 clean-all: mrproper
 
@@ -133,4 +138,37 @@ pretty-code:
 
 # Dependencies
 get-roms:
-	make -C ROMs get-roms
+	make -C dist/ROMs get-roms
+
+# Installation
+install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
+	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
+	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
+
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
+	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
+	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/saturn/
+
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
+
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/etc/X11/app-defaults
+	install -c -m 644 dist/Saturn.ad $(DESTDIR)$(PREFIX)/etc/X11/app-defaults/Saturn
+
+	# install -c -m 755 dist/mkcard $(DESTDIR)$(PREFIX)/share/x48ng/mkcard
+	# install -c -m 755 dist/dump2rom $(DESTDIR)$(PREFIX)/share/x48ng/dump2rom
+	# install -c -m 755 dist/checkrom $(DESTDIR)$(PREFIX)/share/x48ng/checkrom
+	# install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/x48ng/hplogo.png
+	# cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/x48ng/
+	# sed "s|@PREFIX@|$(PREFIX)|g" dist/setup-x48ng-home.sh > $(DESTDIR)$(PREFIX)/share/x48ng/setup-x48ng-home.sh
+	# chmod 755 $(DESTDIR)$(PREFIX)/share/x48ng/setup-x48ng-home.sh
+
+	# install -m 755 -d -- $(DESTDIR)$(MANDIR)/man1
+	# sed "s|@VERSION@|$(VERSION_MAJOR).$(VERSION_MINOR).$(PATCHLEVEL)|g" dist/x48ng.man.1 > $(DESTDIR)$(MANDIR)/man1/x48ng.1
+
+	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
+	cp -R COPYING LICENSE README* docs* manual/ $(DESTDIR)$(DOCDIR)
+
+	# install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
+	# sed "s|@PREFIX@|$(PREFIX)|g" dist/x48ng.desktop > $(DESTDIR)$(PREFIX)/share/applications/x48ng.desktop
