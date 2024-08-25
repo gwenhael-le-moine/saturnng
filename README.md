@@ -6,20 +6,30 @@
 make
 ```
 
+## Installing
+``` shell
+make install DESTDIR=/
+```
+
 ## Using
+
+### locally
 ``` shell
 ./dist/run48.sh
 ```
 
-## Installing
-// TODO
+### when installed
+``` shell
+saturn48gx
+```
+
 
 ## Post-fork changelog
 - replaced the build system with a basic Makefile
 - updated license from GPL2-or-later to GPL3-or-later
 - moved binaries and their dependencies under ./dist/
 - new helper scripts run48.sh and run49.sh
-- embed ROMs
+- ROMs helper Makefile
 
 ## Known bugs
 - I could get neither the 49 nor the 40 ROM running yet.
