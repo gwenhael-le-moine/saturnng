@@ -23,6 +23,6 @@ fi
 [ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
 [ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
 
-export XAPPLRESDIR=/usr/etc/X11/app-defaults/
-export NLSPATH=/usr/share/locale/C/LC_MESSAGES/
+# export XAPPLRESDIR=/etc/X11/app-defaults/
+# export NLSPATH=/usr/share/locale/C/LC_MESSAGES/
 /usr/bin/saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2

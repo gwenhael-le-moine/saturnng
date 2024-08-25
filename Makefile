@@ -145,13 +145,14 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/saturn.cat
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
 	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
 	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/saturn/
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
-	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
 
 	install -m 755 -d -- $(DESTDIR)/etc/X11/app-defaults
 	install -c -m 644 dist/Saturn.ad $(DESTDIR)/etc/X11/app-defaults/Saturn
