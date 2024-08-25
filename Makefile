@@ -1,12 +1,14 @@
 # Simple Makefile to build saturn_bertolotti
-
-MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
-
-CC ?= gcc
+#
+# The cc-option function and the C{,PP}FLAGS logic were copied from the
+# fsverity-utils project.
+# https://git.kernel.org/pub/scm/fs/fsverity/fsverity-utils.git/
+# The governing license can be found in the LICENSE file or at
+# https://opensource.org/license/MIT.
 
 OPTIM ?= 2
 
-CFLAGS = -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/st_build -lutil
+CFLAGS ?= -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/st_build -lutil
 LIBS = -lm -lChf -lXm
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext) -D_GNU_SOURCE=1
@@ -14,11 +16,7 @@ X11LIBS = $(shell pkg-config --libs x11 xext xt)
 
 CFLAGS += $(X11CFLAGS)
 LIBS += $(X11LIBS)
-
 FULL_WARNINGS = no
-ifeq ($(FULL_WARNINGS), yes)
-	CFLAGS += -Wall -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-function -Wconversion -Wdouble-promotion -Wno-sign-conversion -fsanitize=undefined -fsanitize-trap
-endif
 
 DOTOS = src/cpu.o \
 	src/debug.o \
@@ -51,6 +49,50 @@ MSFS=	src/MSFs/debug.msf \
 	src/MSFs/saturn.msf \
 	src/MSFs/util.msf \
 	libChf/chf.msf
+
+MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
+
+cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
+	      then echo $(1); fi)
+
+ifeq ($(FULL_WARNINGS), no)
+EXTRA_WARNING_FLAGS := -Wno-unused-function \
+	-Wno-redundant-decls \
+	$(call cc-option,-Wno-maybe-uninitialized) \
+	$(call cc-option,-Wno-discarded-qualifiers) \
+	$(call cc-option,-Wno-uninitialized) \
+	$(call cc-option,-Wno-ignored-qualifiers)
+endif
+
+ifeq ($(FULL_WARNINGS), yes)
+EXTRA_WARNING_FLAGS := -Wunused-function \
+	-Wredundant-decls \
+	-fsanitize-trap \
+	$(call cc-option,-Wunused-variable)
+endif
+
+override CFLAGS := -std=c11 \
+	-Wall -Wextra -Wpedantic \
+	-Wformat=2 -Wshadow \
+	-Wwrite-strings -Wstrict-prototypes -Wold-style-definition \
+	-Wnested-externs -Wmissing-include-dirs \
+	-Wdouble-promotion \
+	-Wno-sign-conversion \
+	-Wno-unused-variable \
+	-Wno-unused-parameter \
+	-Wno-conversion \
+	-Wno-format-nonliteral \
+	$(call cc-option,-Wjump-misses-init) \
+	$(call cc-option,-Wlogical-op) \
+	$(call cc-option,-Wno-unknown-warning-option) \
+	$(EXTRA_WARNING_FLAGS) \
+	$(CFLAGS)
+
+override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
+	-DVERSION_MAJOR=$(VERSION_MAJOR) \
+	-DVERSION_MINOR=$(VERSION_MINOR) \
+	-DPATCHLEVEL=$(PATCHLEVEL) \
+	$(CPPFLAGS)
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms
 
