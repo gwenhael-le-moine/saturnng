@@ -1,9 +1,9 @@
 .PHONY: get-roms mrproper
 
-get-roms: gxrom-l gxrom-m gxrom-p gxrom-r
+get-roms: gxrom-l gxrom-m gxrom-p gxrom-r rom.49g
 
 mrproper:
-	rm -f gxrom-l gxrom-m gxrom-p gxrom-r
+	rm -f gxrom-l gxrom-m gxrom-p gxrom-r rom.49g
 
 # HP 48Gx
 gxrom-l:
