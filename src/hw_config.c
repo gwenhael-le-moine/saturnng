@@ -166,11 +166,11 @@ table[] =
         {"hp48",
 
          { /* name,				id,		access_prio,
-                  init,				save,
-                  read,				write,
-                  r_config,			r_abs_base_addr, 	r_size,
-                  map_flags
-               */
+                    init,				save,
+                    read,				write,
+                    r_config,			r_abs_base_addr, 	r_size,
+                    map_flags
+                 */
 
             {
                 "ROM              (ROM)",
@@ -257,11 +257,11 @@ table[] =
         {"hp49",
 
          { /* name,				id,		access_prio,
-                  init,				save,
-                  read,				write,
-                  r_config,			r_abs_base_addr,	r_size,
-                  map_flags
-               */
+                    init,				save,
+                    read,				write,
+                    r_config,			r_abs_base_addr,	r_size,
+                    map_flags
+                 */
 
             {
                 "ROM              (ROM)",

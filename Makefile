@@ -7,19 +7,16 @@
 # https://opensource.org/license/MIT.
 
 PREFIX = /usr
-DOCDIR = $(PREFIX)/doc/x48ng
-MANDIR = $(PREFIX)/man
+DOCDIR = $(PREFIX)/doc/saturn
 
 OPTIM ?= 2
 
 CFLAGS ?= -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/st_build -lutil
 LIBS = -lm -lChf -lXm
 
-X11CFLAGS = $(shell pkg-config --cflags x11 xext) -D_GNU_SOURCE=1
+X11CFLAGS = $(shell pkg-config --cflags x11 xext)
 X11LIBS = $(shell pkg-config --libs x11 xext xt)
 
-CFLAGS += $(X11CFLAGS)
-LIBS += $(X11LIBS)
 FULL_WARNINGS = no
 
 DOTOS = src/cpu.o \
@@ -90,12 +87,10 @@ override CFLAGS := -std=c11 \
 	$(call cc-option,-Wlogical-op) \
 	$(call cc-option,-Wno-unknown-warning-option) \
 	$(EXTRA_WARNING_FLAGS) \
+	$(X11CFLAGS) \
 	$(CFLAGS)
 
 override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
-	-DVERSION_MAJOR=$(VERSION_MAJOR) \
-	-DVERSION_MINOR=$(VERSION_MINOR) \
-	-DPATCHLEVEL=$(PATCHLEVEL) \
 	$(CPPFLAGS)
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
@@ -107,7 +102,7 @@ libChf/st_build/libChf.a:
 	make -C libChf
 
 dist/saturn: $(DOTOS) libChf/st_build/libChf.a
-	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
+	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(X11LIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/st_build/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
