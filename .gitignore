@@ -19,3 +19,4 @@ dist/saturn.cat
 dist/stateDir.*
 
 dist/ROMs/*rom-*
+/manual/saturn.log
