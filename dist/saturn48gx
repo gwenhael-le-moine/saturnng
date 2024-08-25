@@ -25,4 +25,4 @@ fi
 
 # export XAPPLRESDIR=/etc/X11/app-defaults/
 # export NLSPATH=@PREFIX@/share/locale/C/LC_MESSAGES/
-@PREFIX@/bin/saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2
+@PREFIX@/bin/saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2 "$@"
