@@ -13,7 +13,7 @@ if [ ! -e "$STATEDIR"/gxrom-r ]; then
     if [ ! -d "$STATEDIR"/../ROMs ]; then
         cp -R @PREFIX@/share/saturn/ROMs/ "$STATEDIR"/../ROMs
     fi
-    make -C "$STATEDIR"/../ROMs get-roms
+    make -C "$STATEDIR"/../ROMs gxrom-r
     cp "$STATEDIR"/../ROMs/gxrom-r "$STATEDIR"/gxrom-r
 fi
 

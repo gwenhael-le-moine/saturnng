@@ -148,6 +148,8 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn48gx
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g > $(DESTDIR)$(PREFIX)/bin/saturn49g
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn49g
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g > $(DESTDIR)$(PREFIX)/bin/saturn40g
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn40g
 
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat #FIXME
 	# install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
@@ -167,3 +169,4 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn49g.desktop
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
