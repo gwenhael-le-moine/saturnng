@@ -11,4 +11,4 @@ doc:
 	@echo "*** Install saturn.info manually, please"
 
 clean:
-	-rm saturn.aux saturn.cp saturn.cps saturn.dvi saturn.info saturn.log saturn.ps saturn.toc
+	rm -f saturn.aux saturn.cp saturn.cps saturn.dvi saturn.info saturn.log saturn.ps saturn.toc
