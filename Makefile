@@ -146,8 +146,6 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx > $(DESTDIR)$(PREFIX)/bin/saturn48gx
 	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48sx > $(DESTDIR)$(PREFIX)/bin/saturn48sx
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn48sx
 
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat #FIXME
 	# install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
