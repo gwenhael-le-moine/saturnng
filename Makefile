@@ -152,6 +152,7 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
 	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/saturn.cat #FIXME
 	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/saturn/hplogo.png
 	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/saturn/
 
