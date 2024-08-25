@@ -36,5 +36,5 @@ rom.49g:
 	rm rom-49g.zip
 
 # HP 39g/40g
-rom.40g:
-	curl "https://www.hpcalc.org/hp40/pc/rom3940.zip" --output - | funzip > "rom.40g"
+rom.39g:
+	curl "https://www.hpcalc.org/hp39/pc/rom3940.zip" --output - | funzip > "rom.39g"
