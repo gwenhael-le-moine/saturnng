@@ -144,22 +144,22 @@ get-roms:
 install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
-	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx > $(DESTDIR)$(PREFIX)/bin/saturn48gx
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn48gx
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48sx > $(DESTDIR)$(PREFIX)/bin/saturn48sx
+	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn48sx
+
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat #FIXME
+	# install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
+	# install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
 	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
 	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/saturn/hplogo.png
 	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/saturn/
 
-	# install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
-	# install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
-
 	install -m 755 -d -- $(DESTDIR)/etc/X11/app-defaults
 	install -c -m 644 dist/Saturn.ad $(DESTDIR)/etc/X11/app-defaults/Saturn
-
-	# install -m 755 -d -- $(DESTDIR)$(MANDIR)/man1
-	# sed "s|@VERSION@|$(VERSION_MAJOR).$(VERSION_MINOR).$(PATCHLEVEL)|g" dist/x48ng.man.1 > $(DESTDIR)$(MANDIR)/man1/x48ng.1
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
 	cp -R COPYING LICENSE README* docs* manual/ $(DESTDIR)$(DOCDIR)

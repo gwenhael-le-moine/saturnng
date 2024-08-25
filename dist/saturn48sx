@@ -2,17 +2,17 @@
 
 STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
-STATEDIR=$STATE_HOME/saturn/48gx
+STATEDIR=$STATE_HOME/saturn/48sx
 mkdir -p "$STATEDIR"
 
-if [ ! -e "$STATEDIR"/gxrom-r ]; then
+if [ ! -e "$STATEDIR"/sxrom-j ]; then
     if [ ! -d @PREFIX@/share/saturn/ROMs/ ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
     fi
     cp -R @PREFIX@/share/saturn/ROMs/ "$STATEDIR"/ROMs
     make -C "$STATEDIR"/ROMs get-roms
-    cp "$STATEDIR"/ROMs/gxrom-r "$STATEDIR"/gxrom-r
+    cp "$STATEDIR"/ROMs/sxrom-j "$STATEDIR"/sxrom-j
 fi
 
 RAM=''
@@ -25,4 +25,4 @@ fi
 
 # export XAPPLRESDIR=/etc/X11/app-defaults/
 # export NLSPATH=@PREFIX@/share/locale/C/LC_MESSAGES/
-@PREFIX@/bin/saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2
+@PREFIX@/bin/saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom sxrom-j $RAM -port1 port1 -port2 port2
