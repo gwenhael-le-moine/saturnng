@@ -145,7 +145,7 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/saturn.cat
+	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
 	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
