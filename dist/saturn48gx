@@ -6,8 +6,13 @@ STATEDIR=$STATE_HOME/saturn/48gx
 mkdir -p "$STATEDIR"
 
 if [ ! -e "$STATEDIR"/gxrom-r ]; then
-    make -C /usr/share/saturn/ROMs get-roms
-    cp /usr/share/saturn/ROMs/gxrom-r "$STATEDIR"/gxrom-r
+    if [ ! -d /usr/share/saturn/ROMs/ ]; then
+        echo "Error: No ROMs/ dir found"
+        exit 1
+    fi
+    cp -R /usr/share/saturn/ROMs/ "$STATEDIR"/ROMs
+    make -C "$STATEDIR"/ROMs get-roms
+    cp "$STATEDIR"/ROMs/gxrom-r "$STATEDIR"/gxrom-r
 fi
 
 RAM=''
@@ -18,4 +23,6 @@ fi
 [ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
 [ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
 
+export XAPPLRESDIR=/usr/etc/X11/app-defaults/
+export NLSPATH=/usr/share/locale/C/LC_MESSAGES/
 /usr/bin/saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2

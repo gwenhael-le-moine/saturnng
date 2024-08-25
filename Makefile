@@ -153,8 +153,8 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES
 
-	install -m 755 -d -- $(DESTDIR)$(PREFIX)/etc/X11/app-defaults
-	install -c -m 644 dist/Saturn.ad $(DESTDIR)$(PREFIX)/etc/X11/app-defaults/Saturn
+	install -m 755 -d -- $(DESTDIR)/etc/X11/app-defaults
+	install -c -m 644 dist/Saturn.ad $(DESTDIR)/etc/X11/app-defaults/Saturn
 
 	# install -c -m 755 dist/mkcard $(DESTDIR)$(PREFIX)/share/x48ng/mkcard
 	# install -c -m 755 dist/dump2rom $(DESTDIR)$(PREFIX)/share/x48ng/dump2rom
