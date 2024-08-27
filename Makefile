@@ -30,25 +30,25 @@ DOTOS = src/cpu.o \
 	src/hdw.o \
 	src/hw_config.o \
 	src/keyb.o \
+	src/main.o \
 	src/modules.o \
 	src/monitor.o \
 	src/romram.o \
 	src/romram49.o \
-	src/main.o \
 	src/serial.o \
 	src/x11.o \
 	src/x_func.o
 
-MSFS=	src/MSFs/debug.msf \
-	src/MSFs/cpu.msf \
-	src/MSFs/modules.msf \
+MSFS =	src/MSFs/cpu.msf \
+	src/MSFs/debug.msf \
 	src/MSFs/disk_io.msf \
-	src/MSFs/x11.msf \
-	src/MSFs/serial.msf \
 	src/MSFs/flash49.msf \
-	src/MSFs/x_func.msf \
+	src/MSFs/modules.msf \
 	src/MSFs/saturn.msf \
+	src/MSFs/serial.msf \
 	src/MSFs/util.msf \
+	src/MSFs/x11.msf \
+	src/MSFs/x_func.msf \
 	libChf/chf.msf
 
 MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
