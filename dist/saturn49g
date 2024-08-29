@@ -1,17 +1,19 @@
 #!/bin/bash -eu
 
+cd "$(dirname "$0")" ; CWD=$(pwd)
+
 STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
 STATEDIR=$STATE_HOME/saturn/49g
 mkdir -p "$STATEDIR"
 
 if [ ! -e "$STATEDIR"/rom.49g ]; then
-    if [ ! -d @PREFIX@/share/saturn/ROMs/ ]; then
+    if [ ! -d ../share/saturn/ROMs/ ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
     fi
     if [ ! -d "$STATEDIR"/../ROMs ]; then
-        cp -R @PREFIX@/share/saturn/ROMs/ "$STATEDIR"/../ROMs
+        cp -R ../share/saturn/ROMs/ "$STATEDIR"/../ROMs
     fi
     make -C "$STATEDIR"/../ROMs rom.49g
     cp "$STATEDIR"/../ROMs/rom.49g "$STATEDIR"/rom.49g
@@ -22,4 +24,4 @@ if [ ! -e "$STATEDIR"/ram ]; then
     RAM=-reset
 fi
 
-@PREFIX@/bin/saturn -face hp49 -hw hp49 -stateDir "$STATEDIR" -rom rom.49g $RAM "$@"
+./saturn -face hp49 -hw hp49 -stateDir "$STATEDIR" -rom rom.49g $RAM "$@"
