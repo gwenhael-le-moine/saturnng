@@ -1,3 +1,6 @@
+#ifndef _FLASH49_H
+#define _FLASH49_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -153,3 +156,5 @@ enum FlashState {
 /* Read/Write operations, nibble-by-nibble */
 Nibble FlashRead49( XAddress address );
 void FlashWrite49( XAddress address, Nibble datum );
+
+#endif /*!_FLASH49_H*/

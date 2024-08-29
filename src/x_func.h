@@ -1,3 +1,6 @@
+#ifndef _X_FUNC_H
+#define _X_FUNC_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -104,3 +107,5 @@
   ---------------------------------------------------------------------------*/
 
 void ExtendedFunction( Nibble function_code );
+
+#endif /*!_X_FUNC_H*/

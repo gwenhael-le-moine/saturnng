@@ -1,3 +1,6 @@
+#ifndef _CONFIG_H
+#define _CONFIG_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -248,3 +251,5 @@
 #define UTIL_CHF_MODULE_ID 17   /* 3.6 */
 #define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
 #define DEBUG_CHF_MODULE_ID 30
+
+#endif /*!_CONFIG_H*/

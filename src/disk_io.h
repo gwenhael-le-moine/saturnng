@@ -1,3 +1,6 @@
+#ifndef _DISK_IO_H
+#define _DISK_IO_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -94,3 +97,5 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name );
 
 int ReadObjectFromFile( const char* name, const char* hdr, Address start, Address end );
 int WriteObjectToFile( Address start, Address end, const char* hdr, const char* name );
+
+#endif /*!_DISK_IO_H*/

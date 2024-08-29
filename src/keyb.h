@@ -1,3 +1,6 @@
+#ifndef _KEYB_H
+#define _KEYB_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -85,3 +88,5 @@ InputRegister KeybIN( OutputRegister out );
 void KeybPress( const char* key );
 void KeybRelease( const char* key );
 void KeybReset( void );
+
+#endif /*!_KEYB_H*/

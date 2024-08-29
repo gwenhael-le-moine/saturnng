@@ -1,3 +1,6 @@
+#ifndef _ARGS_H
+#define _ARGS_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -96,3 +99,5 @@ struct Args {
   ---------------------------------------------------------------------------*/
 
 extern struct Args args;
+
+#endif /*!_ARGS_H*/

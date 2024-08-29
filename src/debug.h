@@ -1,3 +1,6 @@
+#ifndef _DEBUG_H
+#define _DEBUG_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -160,3 +163,5 @@
   ---------------------------------------------------------------------------*/
 
 void SetDebugLevel( int new_level );
+
+#endif /*!_DEBUG_H*/
