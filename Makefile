@@ -30,25 +30,25 @@ DOTOS = src/cpu.o \
 	src/hdw.o \
 	src/hw_config.o \
 	src/keyb.o \
+	src/main.o \
 	src/modules.o \
 	src/monitor.o \
 	src/romram.o \
 	src/romram49.o \
-	src/main.o \
 	src/serial.o \
 	src/x11.o \
 	src/x_func.o
 
-MSFS=	src/MSFs/debug.msf \
-	src/MSFs/cpu.msf \
-	src/MSFs/modules.msf \
+MSFS =	src/MSFs/cpu.msf \
+	src/MSFs/debug.msf \
 	src/MSFs/disk_io.msf \
-	src/MSFs/x11.msf \
-	src/MSFs/serial.msf \
 	src/MSFs/flash49.msf \
-	src/MSFs/x_func.msf \
+	src/MSFs/modules.msf \
 	src/MSFs/saturn.msf \
+	src/MSFs/serial.msf \
 	src/MSFs/util.msf \
+	src/MSFs/x11.msf \
+	src/MSFs/x_func.msf \
 	libChf/chf.msf
 
 MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
@@ -139,12 +139,9 @@ get-roms:
 install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx > $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g > $(DESTDIR)$(PREFIX)/bin/saturn49g
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn49g
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g > $(DESTDIR)$(PREFIX)/bin/saturn40g
-	chmod 755 $(DESTDIR)$(PREFIX)/bin/saturn40g
+	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
+	install -c -m 755 dist/saturn40g $(DESTDIR)$(PREFIX)/bin/saturn40g
+	install -c -m 755 dist/saturn49g $(DESTDIR)$(PREFIX)/bin/saturn49g
 
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/bin/saturn.cat #FIXME
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES

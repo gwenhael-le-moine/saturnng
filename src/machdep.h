@@ -1,3 +1,6 @@
+#ifndef _MACHDEP_H
+#define _MACHDEP_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -72,3 +75,5 @@ typedef int int12;
 typedef int int16;
 typedef int int20;
 typedef int int32;
+
+#endif /*!_MACHDEP_H*/

@@ -1,3 +1,6 @@
+#ifndef _MODULES_H
+#define _MODULES_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -584,3 +587,5 @@ void WriteNibble( Address addr, Nibble datum );
 /* Monitor */
 void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] );
 void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] );
+
+#endif /*!_MODULES_H*/

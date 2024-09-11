@@ -1,3 +1,6 @@
+#ifndef _DISPLAY_H
+#define _DISPLAY_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -86,3 +89,5 @@ void InitLcd( Display* lcd_display, Window lcd_window, unsigned long lcd_fg_pixe
 
 void DrawLcd( void );
 void RefreshLcd( void );
+
+#endif /*!_DISPLAY_H*/

@@ -1,3 +1,6 @@
+#ifndef _CPU_H
+#define _CPU_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -336,3 +339,5 @@ int CpuHaltAllowed( void );               /* 3.13 */
 
 Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] );
 void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] );
+
+#endif /*!_CPU_H*/

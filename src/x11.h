@@ -1,3 +1,6 @@
+#ifndef _X11_H
+#define _X11_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -150,3 +153,5 @@ void IdleXLoop( unsigned long max_wait );
 void InitializeGui( int argc, char* argv[] );
 
 void ActivateFSB( char* title, char* file_name, FsbContinuation continuation );
+
+#endif /*!_X11_H*/

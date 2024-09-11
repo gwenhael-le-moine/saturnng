@@ -1,3 +1,6 @@
+#ifndef _SERIAL_H
+#define _SERIAL_H 1
+
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -139,3 +142,5 @@ void Serial_TBR_Write( int8 d );
 
 /* Event handling */
 void HandleSerial( void );
+
+#endif /*!_SERIAL_H*/
