@@ -113,6 +113,7 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "serial.h"
 #include "args.h"
 #include "debug.h"
+#include "monitor.h"
 
 /* Chf condition codes (main program only) */
 
@@ -277,11 +278,10 @@ int main( int argc, char* argv[] )
         ChfSignal();
     }
 
-    if ( args.monitor ) {
+    if ( args.monitor )
         /* Invoke Monitor */
-        void Monitor( void );
         Monitor();
-    } else
+    else
         /* Call Emulator directly */
         Emulator();
 
