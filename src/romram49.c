@@ -57,7 +57,7 @@
 
     Guide to the Saturn Processor Rev. 1.0b by Matthew Mastracci
     HP49 Memory Explained, USENET post, by Steve Sousa.
-    Emu48 Service Pack 20, by Christoph GieÅﬂelink.
+    Emu48 Service Pack 20, by Christoph Giesselink.
     28F160S5/28F320S5 Data Sheet, by Intel Corp.
 
 .include      : config.h, machdep.h, cpu.h, modules.h
