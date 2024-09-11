@@ -144,9 +144,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-    }
-
-    else {
+    } else {
         /* Check and skip header */
         for ( i = 0; i < hdr_len; i++ ) {
             by = getc( f );
@@ -155,9 +153,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
                 ChfErrnoCondition;
                 ChfCondition st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
                 break;
-            }
-
-            else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
+            } else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
                 ChfCondition st = DISK_IO_E_BAD_HDR, CHF_ERROR, name ChfEnd;
                 break;
             }
@@ -245,9 +241,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-    }
-
-    else {
+    } else {
         /* Write header; replace wildcard character '?' with 'S' */
         for ( i = 0; i < hdr_len; i++ ) {
             if ( putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f ) == EOF ) {

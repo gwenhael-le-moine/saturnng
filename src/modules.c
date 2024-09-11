@@ -334,9 +334,7 @@ static void RebuildPageTable( int lo, int hi )
             mod_map.page_table[ page ].rel_base_addr = 0x00000;
             mod_map.page_table[ page ].read = BadRead;
             mod_map.page_table[ page ].write = BadWrite;
-        }
-
-        else {
+        } else {
             /* The page is mapped
                3.3: If the MOD_MAP_FLAGS_ABS is set in the winner's module
                     description, the base address of the page is set to its
@@ -524,7 +522,6 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
     if ( *d == ( struct ModMap* )NULL )
         /* Allocation needed; cache cleared after allocation */
         *d = CopyModMap( NewModMap(), s );
-
     else {
         CopyModMap( *d, s );
         IncPerfCtr( repl_c );
@@ -732,16 +729,12 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
             FlushCache( mod_map_ptr );
 
             victim = SelectConfigVictim( 0 );
-        }
-
-        else {
+        } else {
             /* Unable to find a victim; retry is not an option; give up */
             ChfCondition MOD_F_NO_VICTIM, CHF_FATAL ChfEnd;
             ChfSignal();
         }
-    }
-
-    else
+    } else
         /* Found a victim; update next-victim index */
         mod_map.cache.victim = v;
 
@@ -852,9 +845,7 @@ static void FreeModMap( struct ModMap* p )
         cache_head = p->cache.link;
         free( p );
         DecPerfCtr( alloc_c );
-    }
-
-    else {
+    } else {
         /* Scan the cache; at end, n is either null (!) or points to the
            cache entry that immediately precedes p
         */
@@ -990,9 +981,7 @@ void ModInit( void )
 
         /* Reset all modules */
         ModReset();
-    }
-
-    else {
+    } else {
         /* Rebuild page table (not saved on disk) */
         RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
     }
@@ -1099,7 +1088,6 @@ Address ModGetID( void )
     if ( mod == N_MOD )
         /* All modules are configured */
         id = ( Address )0x00000;
-
     else
         /* Build the module id */
         id = ( mod_map.map_info[ mod ].abs_base_addr & 0xFFF00 ) |
@@ -1273,16 +1261,12 @@ void ModConfig( Address config_info )
         /* All modules are configured - Signal a warning */
         ChfCondition MOD_W_BAD_CONFIG, CHF_WARNING, config_info ChfEnd;
         ChfSignal();
-    }
-
-    else {
+    } else {
         if ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ) {
             /* The module was unconfigured; configure its size */
             mod_map.map_info[ mod ].size = 0x100000 - config_info;
             mod_map.map_info[ mod ].config = MOD_SIZE_CONFIGURED;
-        }
-
-        else {
+        } else {
             /* The module size was already configured; configure its base address */
             mod_map.map_info[ mod ].abs_base_addr = config_info;
             mod_map.map_info[ mod ].config = MOD_CONFIGURED;
@@ -1356,15 +1340,11 @@ void ModUnconfig( Address unconfig_info )
         */
         ChfCondition MOD_W_BAD_UNCONFIG, CHF_WARNING, unconfig_info ChfEnd;
         ChfSignal();
-    }
-
-    else if ( mod_description[ mod ].r_config == MOD_CONFIGURED ) {
+    } else if ( mod_description[ mod ].r_config == MOD_CONFIGURED ) {
         /* The module is automatically configured after reset; it can never
            be unconfigured.
         */
-    }
-
-    else {
+    } else {
         /* Unconfiguring module 'mod': ACCESS UNCONFIG CACHE */
         if ( ( nxt = AccessUnconfigCache( mod ) ) != ( struct ModMap* )NULL ) {
             /* CACHE HIT; switch mod_map_ptr */
@@ -1424,9 +1404,7 @@ void ModUnconfig( Address unconfig_info )
 
             IncPerfCtr( lhit_c );
             debug0( DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT );
-        }
-
-        else {
+        } else {
             /* Continue to use the new map with no caching information,
                and hope that further configuration activities will link it
                back in the immediate future.
@@ -1588,7 +1566,6 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 
     if ( ( mod = mod_map.page_table[ page ].index ) == MOD_NO_MOD_INDEX )
         sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_NOT_MAPPED, "" ), addr );
-
     else {
         Address rel_addr;
         rel_addr = mod_map.page_table[ page ].rel_base_addr | offset;

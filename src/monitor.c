@@ -355,9 +355,7 @@ void Monitor( void )
                 if ( InvokeCommand( tk ) )
                     ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
             ChfSignal();
-        }
-
-        else {
+        } else {
             /* Save command */
             strcpy( old_cmd, cmd );
 

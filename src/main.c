@@ -210,7 +210,6 @@ int main( int argc, char* argv[] )
                                    ) ) != CHF_S_OK ||
              ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL )
             fprintf( stderr, "saturn-E-Primary Chf initialization failed (%d)\n", st );
-
         else
             break;
 
@@ -232,7 +231,6 @@ int main( int argc, char* argv[] )
                                    ) ) != CHF_S_OK ||
              ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL )
             fprintf( stderr, "saturn-E-Alternate Chf initialization failed (%d)\n", st );
-
         else
             break;
 
@@ -283,9 +281,7 @@ int main( int argc, char* argv[] )
         /* Invoke Monitor */
         void Monitor( void );
         Monitor();
-    }
-
-    else
+    } else
         /* Call Emulator directly */
         Emulator();
 

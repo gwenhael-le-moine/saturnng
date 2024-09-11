@@ -1,4 +1,3 @@
-
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
    Copyright (C) 1998-2000 Ivan Cibrario Bertolotti
@@ -219,9 +218,7 @@ static void ExecRTI( void )
         cpu_status.int_service = 1;
         cpu_status.int_pending = INT_REQUEST_NONE;
         cpu_status.PC = INT_HANDLER_PC;
-    }
-
-    else {
+    } else {
         /* Reenable interrupts and return */
         debug0( DEBUG_C_INT, CPU_I_RTI_END );
 
@@ -795,9 +792,7 @@ static void AddRR( register Nibble* d, register const Nibble* a, register const 
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         }
-    }
-
-    else {
+    } else {
         for ( n = lo; n <= hi; n++ ) {
             s = a[ n ] + b[ n ] + carry;
             d[ n ] = dec_sum[ s ];
@@ -827,9 +822,7 @@ static void IncrR( register Nibble* d, int fs )
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         }
-    }
-
-    else {
+    } else {
         for ( n = lo; n <= hi; n++ ) {
             s = d[ n ] + carry;
             d[ n ] = dec_sum[ s ];
@@ -859,9 +852,7 @@ static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, i
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         }
-    }
-
-    else {
+    } else {
         for ( n = lo; n <= hi; n++ ) {
             s = a[ n ] - b[ n ] - carry;
             d[ n ] = dec_sub[ s ];
@@ -891,9 +882,7 @@ static void DecrR( register Nibble* d, int fs )
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         }
-    }
-
-    else {
+    } else {
         for ( n = lo; n <= hi; n++ ) {
             s = d[ n ] - carry;
             d[ n ] = dec_sub[ s ];
@@ -1053,9 +1042,7 @@ static void TwoComplR( register Nibble* d, int fs )
 
             nz = nz || ( d[ n ] != ( Nibble )0 );
         }
-    }
-
-    else {
+    } else {
         for ( n = lo; n <= hi; n++ ) {
             s = -d[ n ] - carry;
             d[ n ] = dec_sub[ s ];
@@ -1079,9 +1066,7 @@ static void OneComplR( register Nibble* d, int fs )
     if ( cpu_status.hexmode ) {
         for ( n = lo; n <= hi; n++ )
             d[ n ] = ( 0xF - d[ n ] ) & NIBBLE_MASK;
-    }
-
-    else {
+    } else {
         for ( n = lo; n <= hi; n++ )
             d[ n ] = dec_one_c[ ( int )d[ n ] ];
     }
@@ -1189,9 +1174,7 @@ static void ExecGOYES_RTNYES( void )
             cpu_status.PC = PopRSTK();
         else
             cpu_status.PC += offset;
-    }
-
-    else
+    } else
         /* Not taken */
         cpu_status.PC += 2;
 }
@@ -1668,9 +1651,7 @@ static void ExecGroup_0( void )
                 if ( cpu_status.P == NIBBLE_MASK ) {
                     SetP( 0 );
                     cpu_status.carry = 1;
-                }
-
-                else {
+                } else {
                     SetP( cpu_status.P + 1 );
                     cpu_status.carry = 0;
                 }
@@ -1682,9 +1663,7 @@ static void ExecGroup_0( void )
                 if ( cpu_status.P == ( Nibble )0 ) {
                     SetP( NIBBLE_MASK );
                     cpu_status.carry = 1;
-                }
-
-                else {
+                } else {
                     SetP( cpu_status.P - 1 );
                     cpu_status.carry = 0;
                 }
@@ -2674,9 +2653,7 @@ void CpuIntRequest( enum IntRequest ireq )
             cpu_status.PC = INT_HANDLER_PC;
 
             debug1( DEBUG_C_INT, CPU_I_INT, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
-        }
-
-        else {
+        } else {
             /* int_service is set; save the request for later processing */
             cpu_status.int_pending = ireq;
 
@@ -3020,9 +2997,7 @@ void OneStep( void )
                     cpu_status.PC = PopRSTK();
                 else
                     cpu_status.PC += offset;
-            }
-
-            else
+            } else
                 cpu_status.PC += 2;
 
             break;
@@ -3034,9 +3009,7 @@ void OneStep( void )
                     cpu_status.PC = PopRSTK();
                 else
                     cpu_status.PC += offset;
-            }
-
-            else
+            } else
                 cpu_status.PC += 2;
 
             break;

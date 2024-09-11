@@ -412,7 +412,6 @@ Nibble FlashRead49( XAddress address )
     if ( IsOdd( address ) )
         /* Odd address, return buffered data from previous read */
         result = HighNibble( r_buffer );
-
     else {
         /* Even address, invoke FSM */
         r_buffer = FSM( FLASH_CYCLE_READ, ByteAddress( address ), 0 );
@@ -458,7 +457,6 @@ void FlashWrite49( XAddress address, Nibble datum )
     if ( IsOdd( address ) )
         /* Odd address, invoke FSM; ignore result */
         FSM( FLASH_CYCLE_WRITE, ByteAddress( address ), w_buffer | ShiftHigh( datum ) );
-
     else
         /* Even address, buffer datum */
         w_buffer = datum;

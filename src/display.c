@@ -496,9 +496,7 @@ void DrawLcd( void )
                 XCopyArea( display, ann_pixmap[ y ], window, gc, 0, 0, /* src_x, src_y */
                            ann_data[ y ].w, ann_data[ y ].h,           /* width, height */
                            ann_data[ y ].x, ann_data[ y ].y );
-            }
-
-            else {
+            } else {
                 XClearArea( display, window, ann_data[ y ].x, ann_data[ y ].y, ann_data[ y ].w, ann_data[ y ].h, False /* No exposures */
                 );
             }

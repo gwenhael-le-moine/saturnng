@@ -181,7 +181,6 @@ static void SetSpeed( Nibble function_code )
         /* Notify the user about the speed change */
         if ( cpu_status.inner_loop_max )
             ChfCondition X_FUNC_I_SET_SPEED, CHF_INFO, new_speed ChfEnd;
-
         else
             ChfCondition X_FUNC_I_MAX_SPEED, CHF_INFO ChfEnd;
 
@@ -235,9 +234,7 @@ static void KgetContinuation( int proceed, char* file_name )
     if ( !proceed ) {
         ChfCondition X_FUNC_W_ABORTED, CHF_WARNING ChfEnd;
         ChfSignal();
-    }
-
-    else {
+    } else {
         /* Ok to proceed; read:
            - target start address from A[A]
            - target end address from C[A]
@@ -267,9 +264,7 @@ static void SendContinuation( int proceed, char* file_name )
     if ( !proceed ) {
         ChfCondition X_FUNC_W_ABORTED, CHF_WARNING ChfEnd;
         ChfSignal();
-    }
-
-    else {
+    } else {
         /* Ok to proceed; read:
            - source start address from A[A]
            - source end address from C[A]
@@ -319,9 +314,7 @@ static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
         XtFree( fsb_file );
 
         ( void )CpuHaltRequest();
-    }
-
-    else {
+    } else {
         ChfCondition X_FUNC_E_NO_HALT, CHF_ERROR ChfEnd;
         ChfSignal();
     }
@@ -337,7 +330,6 @@ static void Kget( Nibble function_code )
     /* Setup File Selection Box if transfers are *not* in batch mode */
     if ( !args.batchXfer )
         SetupXfer( X_FUNC_M_KGET, "Kget", KgetContinuation );
-
     else {
         /* Ok to proceed; read:
            - file name from @D1
@@ -370,7 +362,6 @@ static void Send( Nibble function_code )
     /* Setup File Selection Box if transfers are *not* in batch mode */
     if ( !args.batchXfer )
         SetupXfer( X_FUNC_M_SEND, "Send", SendContinuation );
-
     else {
         /* Ok to proceed; read:
            - file name from @D1
@@ -449,7 +440,6 @@ void ExtendedFunction( Nibble function_code )
         ChfCondition X_FUNC_W_BAD_CODE, CHF_WARNING, function_code ChfEnd;
         ChfSignal();
     }
-
     /* Dispatch */
     else
         function[ ( int )function_code ]( function_code );

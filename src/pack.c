@@ -173,9 +173,7 @@ int main( int argc, char* argv[] )
         if ( st != CHF_S_OK && st != CHF_F_CATOPEN ) {
             fprintf( stderr, "Chf initialization failed\n" );
             exit( ABNORMAL_EXIT_CODE );
-        }
-
-        else {
+        } else {
             fprintf( stderr, "Default message catalog open failed; trying alternate\n" );
 
             /* Bring down Chf before initializing it again */

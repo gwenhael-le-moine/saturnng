@@ -429,9 +429,7 @@ static void kbdButtonDisarmed( Widget w, XtPointer client_data, XtPointer call_d
     if ( TimeDiff( event->xbutton.time, arm_time ) > LONG_PRESS_THR ) {
         /* Button pressed for more than LONG_PRESS_THR; keep it pressed */
         XmToggleButtonSetState( w, True, False );
-    }
-
-    else
+    } else
 #endif
 
         if ( event->type == ButtonRelease && event->xbutton.button == 3 ) {
@@ -564,9 +562,7 @@ static void fsbButtonPressed( Widget w, XtPointer client_data, XtPointer call_da
         if ( proceed && !XmStringGetLtoR( fsb_data->value, XmFONTLIST_DEFAULT_TAG, &value ) ) {
             ChfCondition X11_E_NO_FSB_TSEG, CHF_ERROR ChfEnd;
             ChfSignal();
-        }
-
-        else {
+        } else {
             /* Invoke continuation; value is meaningful only when
                proceed is true.
             */
@@ -577,9 +573,7 @@ static void fsbButtonPressed( Widget w, XtPointer client_data, XtPointer call_da
             */
             XtFree( value );
         }
-    }
-
-    else {
+    } else {
         /* Continuation not set; do nothing */
         ChfCondition X11_W_NO_FSB_CONT, CHF_WARNING ChfEnd;
         ChfSignal();
@@ -630,9 +624,7 @@ static XmString XmStringFromString( char* s, XmString sep, XmString spc )
             /* Skip current segment and start a new one */
             p++;
             s = p;
-        }
-
-        else
+        } else
             /* Current segment continues */
             p++;
     }
@@ -673,9 +665,7 @@ static ChfAction ErrorDialogHandler( const ChfDescriptor* d, const ChfState s, C
                    No point to use a message window; resignal now.
                 */
                 act = CHF_RESIGNAL;
-            }
-
-            else if ( ChfGetModuleId( d ) == SERIAL_CHF_MODULE_ID && ChfGetConditionCode( d ) == SERIAL_I_PTY_NAME ) {
+            } else if ( ChfGetModuleId( d ) == SERIAL_CHF_MODULE_ID && ChfGetConditionCode( d ) == SERIAL_I_PTY_NAME ) {
                 /* Pseudo-terminal message; this is very important.
                    Put it into the message display area.
 
@@ -693,9 +683,7 @@ static ChfAction ErrorDialogHandler( const ChfDescriptor* d, const ChfState s, C
                 XtSetValues( msg_text_field, xt_args, n );
 
                 act = CHF_CONTINUE;
-            }
-
-            else {
+            } else {
                 /* If maximum value of error_dialog_count has been reached,
                    resignal.
                 */
@@ -704,11 +692,8 @@ static ChfAction ErrorDialogHandler( const ChfDescriptor* d, const ChfState s, C
                     ChfSignal();
 
                     act = CHF_RESIGNAL;
-                }
-
-                else if ( error_dialog_count > MAX_ERROR_DIALOG_COUNT )
+                } else if ( error_dialog_count > MAX_ERROR_DIALOG_COUNT )
                     act = CHF_RESIGNAL;
-
                 else {
                     unsigned char dialog_type = XmDIALOG_INFORMATION;
                     XmString sep = XmStringSeparatorCreate();
@@ -1403,9 +1388,7 @@ static void ResetToggleButtons( Widget w )
 
         /* Disarm the ToggleButton */
         XtCallActionProc( w, "Disarm", &xe, NULL, 0 );
-    }
-
-    else if ( XtIsComposite( w ) ) {
+    } else if ( XtIsComposite( w ) ) {
         WidgetList children;
         Cardinal num_children;
         int c;

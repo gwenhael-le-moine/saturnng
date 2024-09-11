@@ -480,9 +480,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                         /* Condition Code not handled; resignal */
                         act = CHF_RESIGNAL;
                 }
-            }
-
-            else
+            } else
                 /* Condition from other modules; resignal */
                 act = CHF_RESIGNAL;
 
@@ -543,9 +541,7 @@ void Emulator( void )
 
         /* Activate emulator loop */
         EmulatorLoop();
-    }
-
-    else {
+    } else {
         /* Unwinding after an emulator interrupt */
     }
 }

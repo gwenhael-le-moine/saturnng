@@ -188,7 +188,6 @@ static Address DisGOYES_RTNYES( Address pc, char* ob )
 
     if ( offset == 0 )
         sprintf( ob, "\n\tRTNYES" );
-
     else
         sprintf( ob, "\n\tGOYES\tA_%05X\t* Offset [%d]d", pc + offset, offset );
 
@@ -234,11 +233,9 @@ static Address DisRTNC_GOC( Address pc, char* ob )
     if ( offset == 0 )
         /* RTNC */
         sprintf( ob, "RTNC" );
-
     else if ( offset == 2 )
         /* NOP3 */
         sprintf( ob, "NOP3" );
-
     else
         /* GOC */
         sprintf( ob, "GOC\tA_%05X\t* Offset [%d]d", pc + offset, offset );
@@ -255,7 +252,6 @@ static Address DisRTNNC_GONC( Address pc, char* ob )
     if ( offset == 0 )
         /* RTNNC */
         sprintf( ob, "RTNNC" );
-
     else
         /* GONC */
         sprintf( ob, "GONC\tA_%05X\t* Offset [%d]d", pc + offset, offset );
@@ -273,15 +269,11 @@ static Address DisGOTO( Address pc, char* ob )
         /* NOP4 */
         sprintf( ob, "NOP4" );
         pc += 3;
-    }
-
-    else if ( offset == 4 ) {
+    } else if ( offset == 4 ) {
         /* NOP5 */
         sprintf( ob, "NOP5" );
         pc += 4;
-    }
-
-    else {
+    } else {
         sprintf( ob, "GOTO\tA_%05X\t* Offset [%d]d", pc + offset, offset );
         pc += 3;
     }
@@ -1357,7 +1349,6 @@ static Address DisGroup_1( Address pc, char* ob )
             if ( is )
                 /* Immediate field selector */
                 DisIMM_FIELD_SEL( f, ob );
-
             else
                 /* Regular field selector */
                 DisFIELD_SEL( f, ob );

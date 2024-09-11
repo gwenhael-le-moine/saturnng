@@ -542,9 +542,7 @@ const char* SerialInit( void )
         ChfErrnoCondition;
         ChfCondition SERIAL_F_OPENPTY, CHF_FATAL ChfEnd;
         ChfSignal();
-    }
-
-    else {
+    } else {
         int cur_flags;
 
         pty_name = ttyname( slave_pty );
@@ -569,9 +567,7 @@ const char* SerialInit( void )
         ChfErrnoCondition;
         ChfCondition SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER ChfEnd;
         ChfSignal();
-    }
-
-    else {
+    } else {
         /* Master side opened ok; change permissions and unlock slave side */
 
         if ( grantpt( master_pty ) < 0 ) {
@@ -895,9 +891,7 @@ int8 Serial_RBR_Read( void )
     /* Pull one character from rbr, if not empty */
     if ( FullSlots( rrb ) > 0 ) {
         Pull( rrb, &rx );
-    }
-
-    else {
+    } else {
         /* rrb is empty */
 
 #ifndef HP49_SUPPORT
@@ -1091,9 +1085,7 @@ void Serial_TBR_Write( int8 d )
     /* Pull one character from rbr, if not empty */
     if ( EmptySlots( trb ) > 0 ) {
         Push( trb, d );
-    }
-
-    else {
+    } else {
         /* trb is full; discard character */
         ChfCondition SERIAL_W_FULL_TRB, CHF_WARNING, tcs ChfEnd;
         ChfSignal();

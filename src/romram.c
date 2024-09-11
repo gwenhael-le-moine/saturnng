@@ -550,15 +550,12 @@ void Ce2Init( void )
         ( void )memset( mod_status_port_1, 0, sizeof( mod_status_port_1 ) );
 
         new_status = mod_status_hdw.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
-    }
-
-    else {
+    } else {
         /* Card present; check write protection */
         new_status = mod_status_hdw.card_status | CE2_CARD_PRESENT;
 
         if ( access( args.port_1_file_name, W_OK ) == 0 )
             new_status |= CE2_CARD_WE;
-
         else {
             new_status &= ~CE2_CARD_WE;
 
@@ -712,15 +709,12 @@ void NCe3Init( void )
         ( void )memset( mod_status_port_2, 0, sizeof( mod_status_port_2 ) );
 
         new_status = mod_status_hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
-    }
-
-    else {
+    } else {
         /* Card present; check write protection */
         new_status = mod_status_hdw.card_status | NCE3_CARD_PRESENT;
 
         if ( access( args.port_2_file_name, W_OK ) == 0 )
             new_status |= NCE3_CARD_WE;
-
         else {
             new_status &= ~NCE3_CARD_WE;
 

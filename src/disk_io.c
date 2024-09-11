@@ -117,9 +117,7 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-    }
-
-    else {
+    } else {
         for ( i = 0; i < size; ) {
             by = getc( f );
 
@@ -177,9 +175,7 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-    }
-
-    else {
+    } else {
         for ( i = 0; i < size; ) {
             by = ( int )src[ i++ ];
             by |= ( int )src[ i++ ] << 4;
@@ -234,9 +230,7 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-    }
-
-    else {
+    } else {
         if ( fread( s, s_size, ( size_t )1, f ) != 1 ) {
             ChfErrnoCondition;
             ChfCondition st = DISK_IO_E_READ, CHF_ERROR, name ChfEnd;
@@ -284,9 +278,7 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
-    }
-
-    else {
+    } else {
         if ( fwrite( s, s_size, ( size_t )1, f ) != 1 ) {
             ChfErrnoCondition;
             ChfCondition st = DISK_IO_E_WRITE, CHF_ERROR, name ChfEnd;
