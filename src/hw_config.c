@@ -153,25 +153,9 @@ extern void NCe3Write49( Address, Nibble );
 static const struct {
     const char* hw;
     ModDescription description;
-}
-
-table[] =
-
-    {
-
-        /*---------------------------------------------------------------------------
-          HP48
-          ---------------------------------------------------------------------------*/
-
+} table[] = {
         {"hp48",
-
-         { /* name,				id,		access_prio,
-                     init,				save,
-                     read,				write,
-                     r_config,			r_abs_base_addr, 	r_size,
-                     map_flags
-                  */
-
+         {
             {
                 "ROM              (ROM)",
                 0x00,
@@ -184,7 +168,6 @@ table[] =
                 0x00000,
                 0xFFFFF,
             },
-
             {
                 "Hardware Regs.   (HDW)",
                 0x19,
@@ -197,7 +180,6 @@ table[] =
                 0x00000,
                 0x00040,
             },
-
             {
                 "Internal RAM     (RAM)",
                 0x03,
@@ -210,7 +192,6 @@ table[] =
                 0,
                 0,
             },
-
             {
                 "Bank Select      (CE1)",
                 0x05,
@@ -223,7 +204,6 @@ table[] =
                 0,
                 0,
             },
-
             {
                 "Port 1 Control   (CE2)",
                 0x07,
@@ -236,7 +216,6 @@ table[] =
                 0,
                 0,
             },
-
             {
                 "Port 2 Control   (NCE3)",
                 0x01,
@@ -250,19 +229,8 @@ table[] =
                 0,
             } }                    },
 
-        /*---------------------------------------------------------------------------
-          HP49
-          ---------------------------------------------------------------------------*/
-
         {"hp49",
-
-         { /* name,				id,		access_prio,
-                     init,				save,
-                     read,				write,
-                     r_config,			r_abs_base_addr,	r_size,
-                     map_flags
-                  */
-
+         {
             {
                 "ROM              (ROM)",
                 0x00,
@@ -275,7 +243,6 @@ table[] =
                 0x00000,
                 0xFFFFF,
             },
-
             {
                 "Hardware Regs.   (HDW)",
                 0x19,
@@ -288,7 +255,6 @@ table[] =
                 0x00000,
                 0x00040,
             },
-
             {
                 "IRAM             (RAM)",
                 0x03,
@@ -301,7 +267,6 @@ table[] =
                 0,
                 0,
             },
-
             {
                 "Bank Select      (CE1)",
                 0x05,
@@ -314,7 +279,6 @@ table[] =
                 0,
                 0,
             },
-
             {
                 "ERAM Bank 0      (CE2)",
                 0x07,
@@ -327,7 +291,6 @@ table[] =
                 0,
                 0,
             },
-
             { "ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, MOD_UNCONFIGURED, 0, 0,
               MOD_MAP_FLAGS_ABS } }}
 };
