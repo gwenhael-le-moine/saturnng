@@ -209,7 +209,7 @@ static char rcs_id[] = "$Id: x11.c,v 4.1.1.1 2002/11/11 16:11:47 cibrario Exp $"
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"     /* EmulatorExit(); required by keyb.h, too */
-#include "display.h" /* LcdInit() */
+#include "x11_lcd.h" /* LcdInit() */
 #include "keyb.h"
 #include "serial.h"
 #include "x11.h"

@@ -24,7 +24,7 @@ DOTOS = src/cpu.o \
 	src/dis.o \
 	src/disk_io.o \
 	src/disk_io_obj.o \
-	src/display.o \
+	src/x11_lcd.o \
 	src/emulator.o \
 	src/flash49.o \
 	src/hdw.o \

@@ -105,7 +105,7 @@ static char rcs_id[] = "$Id: display.c,v 4.1.1.1 2002/11/11 16:12:46 cibrario Ex
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
-#include "display.h"
+#include "x11_lcd.h"
 #include "x11.h"
 #include "debug.h"
 
