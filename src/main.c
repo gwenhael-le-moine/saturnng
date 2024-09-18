@@ -125,12 +125,10 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 
 /*---------------------------------------------------------------------------
    Chf parameters - Do not change.
-   The ABNORMAL_EXIT_CODE is taken from stdlib.h (EXIT_FAILURE)
   ---------------------------------------------------------------------------*/
 
 #define CONDITION_STACK_SIZE 16
 #define HANDLER_STACK_SIZE 8
-#define ABNORMAL_EXIT_CODE EXIT_FAILURE
 
 /* Conditional prefix and mandatory suffix to make a message catalog
    name from argv[0]
@@ -185,7 +183,7 @@ int main( int argc, char* argv[] )
 
     if ( ( cat_name = malloc( strlen( argv[ 0 ] ) + CAT_PREFIX_LEN + CAT_SUFFIX_LEN + 1 ) ) == NULL ) {
         fprintf( stderr, "saturn-E-cat_name initialization failed\n" );
-        exit( ABNORMAL_EXIT_CODE );
+        exit( EXIT_FAILURE );
     }
 
     /* Generate catalog name, without optional prefix */
@@ -207,7 +205,7 @@ int main( int argc, char* argv[] )
                                    cat_name,             /* Name of the message catalog */
                                    CONDITION_STACK_SIZE, /* Size of the condition stack */
                                    HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                                   ABNORMAL_EXIT_CODE    /* Abnormal exit code */
+                                   EXIT_FAILURE          /* Abnormal exit code */
                                    ) ) != CHF_S_OK ||
              ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL )
             fprintf( stderr, "saturn-E-Primary Chf initialization failed (%d)\n", st );
@@ -228,7 +226,7 @@ int main( int argc, char* argv[] )
                                    cat_name,             /* Name of the message catalog */
                                    CONDITION_STACK_SIZE, /* Size of the condition stack */
                                    HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                                   ABNORMAL_EXIT_CODE    /* Abnormal exit code */
+                                   EXIT_FAILURE          /* Abnormal exit code */
                                    ) ) != CHF_S_OK ||
              ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL )
             fprintf( stderr, "saturn-E-Alternate Chf initialization failed (%d)\n", st );
@@ -246,7 +244,7 @@ int main( int argc, char* argv[] )
 
     if ( retry == 2 ) {
         fprintf( stderr, "saturn-F-Application aborted\n" );
-        exit( ABNORMAL_EXIT_CODE );
+        exit( EXIT_FAILURE );
     }
 
     /* cat_name no longer needed */

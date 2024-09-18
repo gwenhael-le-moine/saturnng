@@ -93,12 +93,10 @@ static char rcs_id[] = "$Id";
 
 /*---------------------------------------------------------------------------
    Chf parameters - Do not change.
-   The ABNORMAL_EXIT_CODE is taken from stdlib.h (EXIT_FAILURE)
   ---------------------------------------------------------------------------*/
 
 #define CONDITION_STACK_SIZE 16
 #define HANDLER_STACK_SIZE 8
-#define ABNORMAL_EXIT_CODE EXIT_FAILURE
 
 /* Conditional prefix and mandatory suffix to make a message catalog
    name from cat_base_name.
@@ -150,7 +148,7 @@ int main( int argc, char* argv[] )
 
     if ( ( cat_name = malloc( sizeof( cat_base_name ) + CAT_PREFIX_LEN + CAT_SUFFIX_LEN + 1 ) ) == NULL ) {
         fprintf( stderr, "Cat_name initialization failed\n" );
-        exit( ABNORMAL_EXIT_CODE );
+        exit( EXIT_FAILURE );
     }
 
     /* Generate catalog name, without optional prefix */
@@ -167,12 +165,12 @@ int main( int argc, char* argv[] )
                                cat_name,             /* Name of the message catalog */
                                CONDITION_STACK_SIZE, /* Size of the condition stack */
                                HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                               ABNORMAL_EXIT_CODE    /* Abnormal exit code */
+                               EXIT_FAILURE          /* Abnormal exit code */
                                ) ) != CHF_S_OK ||
          ChfGetMessage( CHF_MODULE_ID, UTIL_I_PACK_USAGE, NULL ) == NULL ) {
         if ( st != CHF_S_OK && st != CHF_F_CATOPEN ) {
             fprintf( stderr, "Chf initialization failed\n" );
-            exit( ABNORMAL_EXIT_CODE );
+            exit( EXIT_FAILURE );
         } else {
             fprintf( stderr, "Default message catalog open failed; trying alternate\n" );
 
@@ -190,11 +188,11 @@ int main( int argc, char* argv[] )
                                        cat_name,             /* Name of the message catalog */
                                        CONDITION_STACK_SIZE, /* Size of the condition stack */
                                        HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                                       ABNORMAL_EXIT_CODE    /* Abnormal exit code */
+                                       EXIT_FAILURE          /* Abnormal exit code */
                                        ) ) != CHF_S_OK ||
                  ChfGetMessage( CHF_MODULE_ID, UTIL_I_PACK_USAGE, NULL ) == NULL ) {
                 fprintf( stderr, "Alternate Chf initialization failed\n" );
-                exit( ABNORMAL_EXIT_CODE );
+                exit( EXIT_FAILURE );
             }
         }
     }
