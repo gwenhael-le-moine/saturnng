@@ -76,8 +76,6 @@ static char rcs_id[] = "$Id: monitor.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include <signal.h>
 #include <errno.h>
 
-#include <X11/Xlib.h>
-
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"

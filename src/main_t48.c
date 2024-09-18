@@ -86,6 +86,7 @@ static char rcs_id[] = "$Id: t48.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "x11.h"
 #include "args.h"
 #include "debug.h"
+#include "monitor.h"
 
 #define CHF_MODULE_ID X11_CHF_MODULE_ID
 #include <Chf.h>
@@ -579,15 +580,12 @@ int main( int argc, char* argv[] )
         CpuReset();
     }
 
-    if ( opt.monitor ) {
+    if ( opt.monitor )
         /* Call Monitor */
         Monitor();
-    }
-
-    else {
+    else
         /* Call Emulator directly */
         Emulator();
-    }
 
     return EXIT_SUCCESS;
 }

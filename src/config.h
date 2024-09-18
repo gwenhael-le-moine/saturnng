@@ -235,7 +235,7 @@
    for more than LONG_PRESS_THR milliseconds, the key stays pressed after
    release.
 */
-#define LONG_PRESS_THR 1000
+#define LONG_PRESS_THR 750
 
 /* Chf Module Identifiers:
    Each main module of the emulator has its own Chf Module Identifier; the
