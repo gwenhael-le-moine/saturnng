@@ -118,12 +118,13 @@ manual:
 # Cleaning
 clean:
 	rm -f src/*.o
-	make -C libChf clean
-	make -C manual clean
+	rm -f libChf/*_build/*.o
 
 mrproper: clean
 	rm -f dist/pack dist/saturn dist/saturn.cat
 	make -C dist/ROMs mrproper
+	make -C libChf clean
+	make -C manual clean
 
 clean-all: mrproper
 
