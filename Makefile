@@ -11,8 +11,8 @@ DOCDIR = $(PREFIX)/doc/saturn
 
 OPTIM ?= 2
 
-CFLAGS ?= -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/st_build -lutil
-LIBS = -lm -lChf -lXm
+CFLAGS ?= -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/mt_build -lutil
+LIBS = -lm -lChf_r -lXm
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext)
 X11LIBS = $(shell pkg-config --libs x11 xext xt)
@@ -95,16 +95,19 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
-all: libChf/st_build/libChf.a dist/saturn dist/pack dist/saturn.cat manual
+all: libChf/mt_build/libChf_r.a dist/saturn dist/pack dist/saturn.cat manual
 
 # Building
-libChf/st_build/libChf.a:
-	make -C libChf
+# libChf/st_build/libChf.a:
+#	make -C libChf ./st_build/libChf.a CC=$(CC)
 
-dist/saturn: $(DOTOS) libChf/st_build/libChf.a
+libChf/mt_build/libChf_r.a:
+	make -C libChf ./mt_build/libChf_r.a CC=$(CC)
+
+dist/saturn: $(DOTOS) libChf/mt_build/libChf_r.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(X11LIBS)
 
-dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/st_build/libChf.a
+dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/mt_build/libChf_r.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 dist/saturn.cat: $(MSFS)
