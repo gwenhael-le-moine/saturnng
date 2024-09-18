@@ -250,19 +250,19 @@ static FsbContinuation fsb_cont = ( FsbContinuation )NULL;
 */
 static XrmOptionDescRec options[] = {
     /* option, specifier, argKind, value */
-    { "-reset", "*reset", XrmoptionNoArg, "True" },
-    { "-monitor", "*monitor", XrmoptionNoArg, "True" },
-    { "-batchXfer", "*batchXfer", XrmoptionNoArg, "True" },
-    { "-stateDir", "*stateDir", XrmoptionSepArg },
-    { "-cpu", "*cpu", XrmoptionSepArg },
-    { "-mod", "*mod", XrmoptionSepArg },
-    { "-hdw", "*hdw", XrmoptionSepArg },
-    { "-rom", "*rom", XrmoptionSepArg },
-    { "-ram", "*ram", XrmoptionSepArg },
-    { "-port1", "*port1", XrmoptionSepArg },
-    { "-port2", "*port2", XrmoptionSepArg },
-    { "-face", "*face", XrmoptionSepArg },
-    { "-hw", "*hw", XrmoptionSepArg }
+    {"-reset",     "*reset",     XrmoptionNoArg,  "True"},
+    {"-monitor",   "*monitor",   XrmoptionNoArg,  "True"},
+    {"-batchXfer", "*batchXfer", XrmoptionNoArg,  "True"},
+    {"-stateDir",  "*stateDir",  XrmoptionSepArg, 0     },
+    {"-cpu",       "*cpu",       XrmoptionSepArg, 0     },
+    {"-mod",       "*mod",       XrmoptionSepArg, 0     },
+    {"-hdw",       "*hdw",       XrmoptionSepArg, 0     },
+    {"-rom",       "*rom",       XrmoptionSepArg, 0     },
+    {"-ram",       "*ram",       XrmoptionSepArg, 0     },
+    {"-port1",     "*port1",     XrmoptionSepArg, 0     },
+    {"-port2",     "*port2",     XrmoptionSepArg, 0     },
+    {"-face",      "*face",      XrmoptionSepArg, 0     },
+    {"-hw",        "*hw",        XrmoptionSepArg, 0     }
 };
 
 #define NUM_OPTIONS XtNumber( options )
@@ -1060,7 +1060,7 @@ static void CheckCompoundString( Widget w )
 */
 static Widget CreateKey( int k, Widget parent )
 {
-    char container_name[ 8 ];
+    char container_name[ 12 ];
     Widget w, l, b;
     XtTranslations t;
     struct btn_opt opt;
@@ -1409,7 +1409,7 @@ static void ResetToggleButtons( Widget w )
 
         debug1( DEBUG_C_TRACE | DEBUG_C_X11, X11_I_HIER_NC, num_children );
 
-        for ( c = 0; c < num_children; c++ )
+        for ( c = 0; c < ( int )num_children; c++ )
             ResetToggleButtons( children[ c ] );
     }
 }

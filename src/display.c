@@ -144,7 +144,7 @@ static char rcs_id[] = "$Id: display.c,v 4.1.1.1 2002/11/11 16:12:46 cibrario Ex
         Static/Global variables
   ---------------------------------------------------------------------------*/
 
-static /*const*/ char nibble_bitmap_data[ NIBBLE_VALUES ][ LCD_MAG ] = {
+static /*const*/ unsigned char nibble_bitmap_data[ NIBBLE_VALUES ][ LCD_MAG ] = {
 #if LCD_MAG == 1
     { 0x00 }, /* ---- */
     { 0x01 }, /* *--- */
@@ -184,17 +184,14 @@ static /*const*/ char nibble_bitmap_data[ NIBBLE_VALUES ][ LCD_MAG ] = {
 #endif
 };
 
-static /*const*/ struct {
-    int mask;               /* Bit mask */
-    int x, y;               /* Position */
-    int w, h;               /* Width, Height */
-    char bitmap_data[ 24 ]; /* Bitmap data */
-}
-
 #define ANN_X( i ) ( 8 * LCD_MAG + ( 22 * LCD_MAG + 1 ) * i )
 #define ANN_Y( i ) ( 1 + 3 * ( LCD_MAG - 1 ) )
-
-ann_data[ N_ANN ] = {
+static /*const*/ struct {
+    int mask;                        /* Bit mask */
+    int x, y;                        /* Position */
+    int w, h;                        /* Width, Height */
+    unsigned char bitmap_data[ 24 ]; /* Bitmap data */
+} ann_data[ N_ANN ] = {
     {MASK_ANN_LEFT,    ANN_X( 0 ), ANN_Y( 0 ), 15, 12, { 0xfe, 0x3f, 0xff, 0x7f, 0x9f, 0x7f, 0xcf, 0x7f, 0xe7, 0x7f, 0x03, 0x78,
                                                        0x03, 0x70, 0xe7, 0x73, 0xcf, 0x73, 0x9f, 0x73, 0xff, 0x73, 0xfe, 0x33 }   },
     {MASK_ANN_RIGHT,   ANN_X( 1 ), ANN_Y( 1 ), 15, 12, { 0xfe, 0x3f, 0xff, 0x7f, 0xff, 0x7c, 0xff, 0x79, 0xff, 0x73, 0x0f, 0x60,
@@ -256,8 +253,8 @@ static void InitPixmaps( void )
 
     /* Initialize nibble_pixmap */
     for ( i = 0; i < NIBBLE_VALUES; i++ ) {
-        if ( ( nibble_pixmap[ i ] = XCreatePixmapFromBitmapData( display, window, nibble_bitmap_data[ i ], 4 * LCD_MAG, LCD_MAG, fg_pixel,
-                                                                 bg_pixel, depth ) ) == None ) {
+        if ( ( nibble_pixmap[ i ] = XCreatePixmapFromBitmapData( display, window, ( char* )nibble_bitmap_data[ i ], 4 * LCD_MAG, LCD_MAG,
+                                                                 fg_pixel, bg_pixel, depth ) ) == None ) {
             ChfCondition X11_F_X_ERROR, CHF_FATAL ChfEnd;
             ChfSignal();
         }
@@ -265,8 +262,8 @@ static void InitPixmaps( void )
 
     /* Initialize ann_pixmap */
     for ( i = 0; i < N_ANN; i++ ) {
-        if ( ( ann_pixmap[ i ] = XCreatePixmapFromBitmapData( display, window, ann_data[ i ].bitmap_data, ann_data[ i ].w, ann_data[ i ].h,
-                                                              fg_pixel, bg_pixel, depth ) ) == None ) {
+        if ( ( ann_pixmap[ i ] = XCreatePixmapFromBitmapData( display, window, ( char* )ann_data[ i ].bitmap_data, ann_data[ i ].w,
+                                                              ann_data[ i ].h, fg_pixel, bg_pixel, depth ) ) == None ) {
             ChfCondition X11_F_X_ERROR, CHF_FATAL ChfEnd;
             ChfSignal();
         }
@@ -480,6 +477,7 @@ void DrawLcd( void )
             v = FetchNibble( addr++ );
             if ( v != lcd_buffer[ y ][ x ] ) {
                 lcd_buffer[ y ][ x ] = v;
+
                 XCopyArea( display, nibble_pixmap[ ( int )v ], window, gc, 0, 0, /* src_x, src_y */
                            4 * LCD_MAG, LCD_MAG,                                 /* width, height */
                            x * 4 * LCD_MAG + LCD_X_ORIGIN, y * LCD_MAG + LCD_Y_ORIGIN );

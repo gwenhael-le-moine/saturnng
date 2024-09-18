@@ -505,6 +505,7 @@ void HdwWrite( Address rel_address, Nibble data )
         case 0x29: /* LCD vertical line count (higher 2 bits), others (TBD) */
             mod_status.hdw.lcd_vlc &= 0x0F;
             mod_status.hdw.lcd_vlc |= ( ( ( int )data & 0x03 ) << 4 );
+            break;
 
         case 0x2E: /* Timer 1 Control */
             mod_status.hdw.t1_ctrl = data;

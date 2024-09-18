@@ -207,7 +207,7 @@ static const struct BinHdrMapping bin_hdr_mapping[] = {
     {"hp49", "HPHP49-?"}
 };
 
-#define N_BIN_HDR_MAPPING ( sizeof( bin_hdr_mapping ) / sizeof( bin_hdr_mapping[ 0 ] ) )
+#define N_BIN_HDR_MAPPING ( int )( sizeof( bin_hdr_mapping ) / sizeof( bin_hdr_mapping[ 0 ] ) )
 
 /* Return the header of binary files for current hw configuration;
    return NULL if the header cannot be determined.  In the latter case,
@@ -399,7 +399,7 @@ static const XFunc function[] = {
     Send      /* 2 */
 };
 
-#define N_X_FUNC ( sizeof( function ) / sizeof( function[ 0 ] ) )
+#define N_X_FUNC ( int )( sizeof( function ) / sizeof( function[ 0 ] ) )
 
 /*---------------------------------------------------------------------------
         Public functions

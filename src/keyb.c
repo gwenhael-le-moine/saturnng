@@ -219,14 +219,14 @@ void KeybPress( const char* key )
         /* Post an interrupt request to the CPU */
         CpuIntRequest( INT_REQUEST_NMI );
     } else {
-        int in_val, out_bit;
+        unsigned int in_val, out_bit;
 
         if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
             ChfCondition MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
             ChfSignal();
-        } else if ( out_bit < 0 || out_bit >= OUT_BITS ) {
-            ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd;
-            ChfSignal();
+            /* } else if ( out_bit < 0 || out_bit >= OUT_BITS ) { */
+            /*     ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd; */
+            /*     ChfSignal(); */
         } else {
             /* Update the cur_in array */
             cur_in[ out_bit ] |= in_val;
@@ -271,14 +271,14 @@ void KeybRelease( const char* key )
         for ( i = 0; i < OUT_BITS; i++ )
             cur_in[ i ] &= 0x7FFF;
     } else {
-        int in_val, out_bit;
+        unsigned int in_val, out_bit;
 
         if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
             ChfCondition MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
             ChfSignal();
-        } else if ( out_bit < 0 || out_bit >= OUT_BITS ) {
-            ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd;
-            ChfSignal();
+            /* } else if ( out_bit < 0 || out_bit >= OUT_BITS ) { */
+            /*     ChfCondition MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd; */
+            /*     ChfSignal(); */
         } else {
             /* Update the cur_in array */
             cur_in[ out_bit ] &= ~in_val;

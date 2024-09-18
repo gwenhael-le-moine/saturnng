@@ -113,6 +113,7 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "serial.h"
 #include "args.h"
 #include "debug.h"
+#include "monitor.h"
 
 /* Chf condition codes (main program only) */
 
@@ -253,7 +254,7 @@ int main( int argc, char* argv[] )
 
     /* 3.9: Print out MAIN_M_COPYRIGHT and MAIN_M_LICENSE on stdout now */
     fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, "" ), "$Revision: 4.1 $" );
-    fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_LICENSE, "" ) );
+    /* fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_LICENSE, "" ) ); */
 
     /* Initialize GUI and associated lcd display emulation module */
     InitializeGui( argc, argv );
@@ -277,11 +278,10 @@ int main( int argc, char* argv[] )
         ChfSignal();
     }
 
-    if ( args.monitor ) {
+    if ( args.monitor )
         /* Invoke Monitor */
-        void Monitor( void );
         Monitor();
-    } else
+    else
         /* Call Emulator directly */
         Emulator();
 

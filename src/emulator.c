@@ -195,7 +195,7 @@ static void EmulatorLoop( void )
 
             /* T2 update */
             if ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
-                if ( --mod_status.hdw.t2_val == 0xFFFFFFFF ) {
+                if ( --mod_status.hdw.t2_val == ( int )0xFFFFFFFF ) {
                     debug1( DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
 
                     mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;

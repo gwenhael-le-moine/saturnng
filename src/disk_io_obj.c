@@ -146,7 +146,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         /* Check and skip header */
-        for ( i = 0; i < hdr_len; i++ ) {
+        for ( i = 0; i < ( int )hdr_len; i++ ) {
             by = getc( f );
 
             if ( by == EOF ) {
@@ -243,7 +243,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
         ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         /* Write header; replace wildcard character '?' with 'S' */
-        for ( i = 0; i < hdr_len; i++ ) {
+        for ( i = 0; i < ( int )hdr_len; i++ ) {
             if ( putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f ) == EOF ) {
                 ChfErrnoCondition;
                 ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;

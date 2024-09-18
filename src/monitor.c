@@ -108,7 +108,7 @@ static char rcs_id[] = "$Id: monitor.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 static int ReadHexAddress( Address* addr )
 {
     char* p = strtok( ( char* )NULL, TOK_DELIMITERS );
-    return ( p == ( char* )NULL || sscanf( p, ADDRESS_FMT, addr ) != 1 ) ? FAILED : OK;
+    return ( p == ( char* )NULL || sscanf( p, ADDRESS_FMT, ( unsigned int* )addr ) != 1 ) ? FAILED : OK;
 }
 
 /* Read a Nibble from the command line */
@@ -288,7 +288,7 @@ static const struct TEntry table[] = {
 static int InvokeCommand( char* tk )
 {
     int i;
-    for ( i = 0; i < TableSize( table ) && strcmp( tk, table[ i ].name ); i++ )
+    for ( i = 0; i < ( int )TableSize( table ) && strcmp( tk, table[ i ].name ); i++ )
         ;
     return i == TableSize( table ) ? FAILED : table[ i ].function();
 }
@@ -297,7 +297,7 @@ static int InvokeCommand( char* tk )
 static int Help( void )
 {
     int i;
-    for ( i = 0; i < TableSize( table ); i++ )
+    for ( i = 0; i < ( int )TableSize( table ); i++ )
         printf( "%s\t\t%s\n", table[ i ].name, table[ i ].desc );
 
     return OK;
