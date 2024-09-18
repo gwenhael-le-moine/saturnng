@@ -69,7 +69,7 @@
 
 .- */
 
-#include <X11/Xlib.h>
+#include <X11/Xlib.h> /* for InitLcd ( Display* ; Window ) */
 
 /*---------------------------------------------------------------------------
         Data type definitions - require config.h, machdep.h, cpu.h
