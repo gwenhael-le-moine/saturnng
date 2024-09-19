@@ -280,8 +280,8 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
             if ( ChfGetModuleId( d ) == CPU_CHF_MODULE_ID ) {
                 /* Condition from CPU modules; check Condition Code */
                 switch ( ChfGetConditionCode( d ) ) {
-#ifdef CPU_SPIN_SHUTDN
                     case CPU_I_SHUTDN:
+#ifdef CPU_SPIN_SHUTDN
                         /* CPU shutdown signalled with CPU_SPIN_SHUTDN defined;
                            Fatal error.
                         */
@@ -289,9 +289,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                         ChfSignal();
 
                         act = CHF_RESIGNAL;
-                        break;
 #else
-                    case CPU_I_SHUTDN:
                         {
                             /* 3.1: CPU_SPIN_SHUTDN is not defined, and the cpu emulator
                                has just executed a shutdown instruction.
@@ -466,8 +464,8 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
 
                             act = CHF_CONTINUE;
                         }
-                        break;
 #endif
+                        break;
 
                     case CPU_I_EMULATOR_INT:
                         /* Emulator interrupt; unwind */
@@ -539,9 +537,9 @@ void Emulator( void )
 
         /* Activate emulator loop */
         EmulatorLoop();
-    } else {
-        /* Unwinding after an emulator interrupt */
-    }
+    } /*  else { */
+    /*     /\* Unwinding after an emulator interrupt *\/ */
+    /* } */
 }
 
 /* .+
@@ -640,7 +638,6 @@ void EmulatorInit( void )
 void EmulatorExit( enum ExitOption opt )
 {
     switch ( opt ) {
-
         case SAVE_AND_EXIT:
             /* Save state of cpu and modules subsystems */
             ModSave();
