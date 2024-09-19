@@ -166,3 +166,17 @@ install: dist/saturn dist/saturn.cat dist/Saturn.ad doc
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn49g.desktop
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
+
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/saturn
+	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48gx
+	rm -f $(DESTDIR)$(PREFIX)/bin/saturn40g
+	rm -f $(DESTDIR)$(PREFIX)/bin/saturn49g
+	rm -f $(DESTDIR)$(PREFIX)/bin/saturn.cat
+	rm -f $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
+	rm -fr $(DESTDIR)$(PREFIX)/share/saturn
+	rm -f $(DESTDIR)/etc/X11/app-defaults/Saturn
+	rm -fr $(DESTDIR)$(DOCDIR)
+	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
+	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn49g.desktop
+	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
