@@ -147,11 +147,11 @@ typedef void ( *FsbContinuation )( int proceed, char* file_name );
         Function prototypes
   ---------------------------------------------------------------------------*/
 
-void HandleXEvents( void );
-void IdleXLoop( unsigned long max_wait );
+void HandleXEvents( void );               /* used in emulator.c */
+void IdleXLoop( unsigned long max_wait ); /* used in emulator.c */
 
-void InitializeGui( int argc, char* argv[] );
+void InitializeGui( int argc, char* argv[] ); /* used in main.c */
 
-void ActivateFSB( char* title, char* file_name, FsbContinuation continuation );
+void ActivateFSB( char* title, char* file_name, FsbContinuation continuation ); /* used in x_func.c */
 
 #endif /*!_X11_H*/

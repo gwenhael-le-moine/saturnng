@@ -87,9 +87,9 @@
         Function prototypes
   ---------------------------------------------------------------------------*/
 
-void InitLcd( Display* lcd_display, Window lcd_window, unsigned long lcd_fg_pixel, unsigned long lcd_bg_pixel );
+void InitLcd( Display* lcd_display, Window lcd_window, unsigned long lcd_fg_pixel, unsigned long lcd_bg_pixel ); /* used in x11.c */
 
-void DrawLcd( void );
-void RefreshLcd( void );
+void DrawLcd( void );    /* used in emulator.c */
+void RefreshLcd( void ); /* used in x11.c */
 
 #endif /*!_DISPLAY_H*/

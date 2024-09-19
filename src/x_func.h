@@ -108,6 +108,6 @@
         Function prototypes
   ---------------------------------------------------------------------------*/
 
-void ExtendedFunction( Nibble function_code );
+void ExtendedFunction( Nibble function_code ); /* used in hdw.c */
 
 #endif /*!_X_FUNC_H*/
