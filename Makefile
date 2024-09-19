@@ -11,8 +11,8 @@ DOCDIR = $(PREFIX)/doc/saturn
 
 OPTIM ?= 2
 
-CFLAGS ?= -g -O$(OPTIM) -I./src/ -D_GNU_SOURCE=1 -I./libChf -L./libChf/mt_build -lutil
-LIBS = -lm -lChf_r -lXm
+CFLAGS ?= -g -O$(OPTIM) -D_GNU_SOURCE=1 -I./src/ -I./libChf -L./libChf/mt_build
+LIBS = -lm -lChf_r -lXm -lutil
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext)
 X11LIBS = $(shell pkg-config --libs x11 xext xt)
@@ -95,19 +95,21 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
-all: libChf/mt_build/libChf_r.a dist/saturn dist/pack dist/saturn.cat manual
+all: libChf/mt_build/libChf_r.a dist/saturn dist/saturn.cat manual
 
 # Building
-# libChf/st_build/libChf.a:
-#	make -C libChf ./st_build/libChf.a CC=$(CC)
-
 libChf/mt_build/libChf_r.a:
 	make -C libChf ./mt_build/libChf_r.a CC=$(CC)
 
 dist/saturn: $(DOTOS) libChf/mt_build/libChf_r.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(X11LIBS)
 
+libChf/st_build/libChf.a:
+	# UNUSED
+	make -C libChf ./st_build/libChf.a CC=$(CC)
+
 dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/mt_build/libChf_r.a
+	# UNUSED
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 dist/saturn.cat: $(MSFS)
@@ -124,7 +126,7 @@ clean:
 	rm -f libChf/*_build/*.o
 
 mrproper: clean
-	rm -f dist/pack dist/saturn dist/saturn.cat
+	rm -f dist/saturn dist/saturn.cat dist/pack
 	make -C dist/ROMs mrproper
 	make -C libChf clean
 	make -C manual clean
@@ -140,7 +142,7 @@ get-roms:
 	make -C dist/ROMs get-roms
 
 # Installation
-install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
+install: dist/saturn dist/saturn.cat dist/Saturn.ad manual
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
@@ -152,7 +154,6 @@ install: dist/saturn dist/pack dist/saturn.cat dist/Saturn.ad manual
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/locale/C/LC_MESSAGES/saturn.cat
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
-	install -c -m 755 dist/pack $(DESTDIR)$(PREFIX)/share/saturn/pack
 	install -c -m 644 dist/saturn.cat $(DESTDIR)$(PREFIX)/share/saturn.cat #FIXME
 	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/saturn/hplogo.png
 	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/saturn/
