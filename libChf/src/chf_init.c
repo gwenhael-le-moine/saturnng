@@ -53,16 +53,9 @@ static char rcs_id[] = "$Id: chf_init.c,v 2.2 2001/01/25 14:05:23 cibrario Exp $
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef _WIN32
-#  include <errno.h>
-#endif
+#include <errno.h>
 #include <setjmp.h>
 #include <string.h>
-
-#ifdef _WIN32
-#  include <windows.h>
-#  include <tchar.h>
-#endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
@@ -185,10 +178,8 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
             if ( pthread_mutex_lock( &fputs_mutex ) )
                 ChfAbort( CHF_ABORT_PTHREAD );
 #endif
-#ifndef _WIN32
             for ( d = desc; d != CHF_NULL_DESCRIPTOR; d = ChfGetNextDescriptor( d ) )
                 fputs( ChfBuildMessage( d ), stderr );
-#endif
 #ifdef _REENTRANT
             if ( pthread_mutex_unlock( &fputs_mutex ) )
                 ChfAbort( CHF_ABORT_PTHREAD );
@@ -320,11 +311,7 @@ const ChfChar* ChfGetMessage( /* Retrieve a condition message */
 
     if ( ( message = chf_context.mrs_get( chf_context.mrs_data, module_id, condition_code, default_message ) ) == default_message &&
          module_id == CHF_ERRNO_SET )
-#ifdef _WIN32
-        message = default_message;
-#else
         message = strerror( condition_code );
-#endif
 
     return ( message );
 }
@@ -379,7 +366,6 @@ ChfChar* ChfBuildMessage( /* Build a condition message */
     tmp_p = chf_context.message_buffer;
     tmp_end = tmp_p + CHF_MAX_MESSAGE_LENGTH;
 
-#ifndef _WIN32
     /* The message starts with "<app_name>: " if the condition is the first of
        its condition group, with "\t" if not.
     */
@@ -390,7 +376,6 @@ ChfChar* ChfBuildMessage( /* Build a condition message */
 
     else
         tmp_p = scopy( tmp_p, ChfText( "\t" ), tmp_end );
-#endif
 
     /* The message continues with the module name */
     ChfSprintf( def_message, CHF_DEF_MID_MSG_FMT, ChfGetModuleId( descriptor ) );
@@ -408,7 +393,6 @@ ChfChar* ChfBuildMessage( /* Build a condition message */
 
     tmp_p = scopy( tmp_p, separator, tmp_end );
 
-#ifndef _WIN32
     /* Add the severity code of the message */
     tmp_p = scopy( tmp_p,
                    ( ( severity = ChfGetSeverity( descriptor ) ) < CHF_SUCCESS || severity > CHF_FATAL ) ? CHF_UNKNOWN_SEVERITY
@@ -416,7 +400,6 @@ ChfChar* ChfBuildMessage( /* Build a condition message */
                    tmp_end );
 
     tmp_p = scopy( tmp_p, separator, tmp_end );
-#endif
 
     /* The message ends with the partial message from the descriptor */
     tmp_p = scopy( tmp_p, ChfGetPartialMessage( descriptor ), tmp_end );

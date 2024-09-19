@@ -30,16 +30,9 @@ static char rcs_id[] = "$Id: chf_st.c,v 2.2 2001/01/25 14:08:45 cibrario Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef _WIN32
-#  include <errno.h>
-#endif
+#include <errno.h>
 #include <setjmp.h>
 #include <string.h>
-
-#ifdef _WIN32
-#  include <windows.h>
-#  include <tchar.h>
-#endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
@@ -60,34 +53,6 @@ typedef struct {
 /* -------------------------------------------------------------------------
    Private functions
    ------------------------------------------------------------------------- */
-
-#ifdef _WIN32
-/* Win32 does not have bsearch();
-   provide a simple one from glibc here.
-*/
-static void* bsearch( const void* key, const void* base, size_t nmemb, size_t size, int ( *compar )( const void*, const void* ) )
-{
-    size_t l, u, idx;
-    const void* p;
-    int comparison;
-
-    l = 0;
-    u = nmemb;
-    while ( l < u ) {
-        idx = ( l + u ) / 2;
-        p = ( void* )( ( ( const char* )base ) + ( idx * size ) );
-        comparison = ( *compar )( key, p );
-        if ( comparison < 0 )
-            u = idx;
-        else if ( comparison > 0 )
-            l = idx + 1;
-        else
-            return ( void* )p;
-    }
-
-    return NULL;
-}
-#endif
 
 #define GT 1
 #define LT -1
@@ -183,11 +148,9 @@ int ChfStaticInit(                                 /* Initialization with static
 
     if ( ( private_context = ( ChfStaticContext* )malloc( sizeof( ChfStaticContext ) ) ) == ( ChfStaticContext* )NULL )
         cc = CHF_F_MALLOC;
-
     else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, StGetMessage, ExitMessage, condition_stack_size,
                               handler_stack_size, exit_code ) ) != CHF_S_OK )
         free( private_context );
-
     else {
         private_context->table = table;
         private_context->size = table_size;

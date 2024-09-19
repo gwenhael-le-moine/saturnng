@@ -1,0 +1,40 @@
+$ .+
+$ .
+$ .identifier   : $Id: chf.msf,v 2.2 2001/01/25 12:00:19 cibrario Exp $
+$ .context      : 
+$ .title        : $RCSfile: chf.msf,v $
+$ .kind	        : Makefile
+$ .author       : Ivan Cibrario B.
+$ .site	        : CSTV-CNR
+$ .creation     : 27-May-1996
+$ .keywords     : *
+$ .description  :
+$ . Message source file for the CHF conditions
+$ .notes        :
+$ . $Log: chf.msf,v $
+$ . Revision 2.2  2001/01/25 12:00:19  cibrario
+$ . Added partial Win32 support (Windows CE only).
+$ .
+$ . Revision 2.1  2000/05/26  14:17:21  cibrario
+$ . Updated documentation block and RCS log message header to prevent
+$ . gencat warnings on Linux boxes
+$ .
+$ . Revision 1.1  1996/05/28  12:57:06  cibrario
+$ . Initial revision
+$ .
+$ .-
+
+$set 1
+2 Chf
+3 Errno
+
+$set 2
+1	Condition stack is full
+2	Handler stack is full
+3	Handler stack is empty
+4	Wrong Chf state for requested operation
+5	Invalid action code from handler (code=<%d>d)
+6	Dynamic memory allocation failed
+7	Function not implemented
+10	setlocale() failed
+11	catopen() failed

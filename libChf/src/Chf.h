@@ -55,19 +55,11 @@
    Win32 & UNICODE support
    ------------------------------------------------------------------------- */
 
-#ifdef _WIN32
-#  define ChfChar TCHAR
-#  define ChfText( x ) _T( x )
-#  define ChfSigjmp_buf jmp_buf
-#  define ChfSigsetjmp( x, y ) setjmp( x )
-#  define ChfSiglongjmp( x, y ) longjmp( x, y )
-#else
-#  define ChfChar char
-#  define ChfText( x ) x
-#  define ChfSigjmp_buf sigjmp_buf
-#  define ChfSigsetjmp( x, y ) sigsetjmp( x, y )
-#  define ChfSiglongjmp( x, y ) siglongjmp( x, y )
-#endif
+#define ChfChar char
+#define ChfText( x ) x
+#define ChfSigjmp_buf sigjmp_buf
+#define ChfSigsetjmp( x, y ) sigsetjmp( x, y )
+#define ChfSiglongjmp( x, y ) siglongjmp( x, y )
 
 /* -------------------------------------------------------------------------
    CHF implementation limits and other symbolic constants
@@ -175,11 +167,7 @@ typedef /* Message retrieval 'exit' function */
     CHF_MODULE_ID,							\
     ChfText(__FILE__), __LINE__,
 
-#  ifdef _WIN32
-#    define ChfErrnoCondition
-#  else
-#    define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, ChfText( __FILE__ ), __LINE__, errno, CHF_ERROR )
-#  endif
+#  define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, ChfText( __FILE__ ), __LINE__, errno, CHF_ERROR )
 
 #else
 #  define ChfCondition                                                                                                                     \
@@ -187,11 +175,7 @@ typedef /* Message retrieval 'exit' function */
     CHF_MODULE_ID,							\
     CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER,
 
-#  ifdef _WIN32
-#    define ChfErrnoCondition
-#  else
-#    define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER, errno, CHF_ERROR )
-#  endif
+#  define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER, errno, CHF_ERROR )
 
 #endif
 
@@ -234,9 +218,8 @@ typedef /* Message retrieval 'exit' function */
 /* -------------------------------------------------------------------------
    Function prototypes
    ------------------------------------------------------------------------- */
-
-int ChfInit(                                 /* Generic initialization */
-             const ChfChar* app_name,        /* Application's name */
+/* Generic initialization */
+int ChfInit( const ChfChar* app_name,        /* Application's name */
              const ChfOptions options,       /* Options */
              void* mrs_data,                 /* Message retrieval private data */
              ChfMrsGet mrs_get,              /* 'GetMessage' function */
@@ -245,18 +228,16 @@ int ChfInit(                                 /* Generic initialization */
              const int handler_stack_size,   /* Size of the handler stack */
              const int exit_code             /* Abnormal exit code */
 );
-
-int ChfMsgcatInit(                                 /* Initialization with msgcat subsystem */
-                   const ChfChar* app_name,        /* Application's name */
+/* Initialization with msgcat subsystem */
+int ChfMsgcatInit( const ChfChar* app_name,        /* Application's name */
                    const ChfOptions options,       /* Options */
                    const ChfChar* msgcat_name,     /* Name of the message catalog */
                    const int condition_stack_size, /* Size of the condition stack */
                    const int handler_stack_size,   /* Size of the handler stack */
                    const int exit_code             /* Abnormal exit code */
 );
-
-int ChfStaticInit(                                 /* Initialization with static message tables */
-                   const ChfChar* app_name,        /* Application's name */
+/* Initialization with static message tables */
+int ChfStaticInit( const ChfChar* app_name,        /* Application's name */
                    const ChfOptions options,       /* Options */
                    const ChfTable* table,          /* Static message table */
                    const size_t table_size,        /* Size of the message table */
@@ -264,50 +245,27 @@ int ChfStaticInit(                                 /* Initialization with static
                    const int handler_stack_size,   /* Size of the handler stack */
                    const int exit_code             /* Abnormal exit code */
 );
-
-int ChfWin32Init(                           /* Initialization within _WIN32 */
-                  const ChfChar* app_name,  /* Application's name */
-                  const ChfOptions options, /* Options */
-#ifndef _WIN32
-                  void* instance, /* Fake arguments */
-#else
-                  HINSTANCE instance, /* App. instance handle */
-#endif
-                  const int condition_stack_size, /* Size of the condition stack */
-                  const int handler_stack_size,   /* Size of the handler stack */
-                  const int exit_code             /* Abnormal exit code */
-);
-
-void ChfExit( /* Exit */
-              void );
-
-void ChfAbort( /* Abort application */
-               const int abort_code );
-
-void ChfPushHandler(                            /* Push a new handler into the stack */
-                     ChfHandler new_handler,    /* Handler to be added */
+/* Exit */
+void ChfExit( void );
+/* Abort application */
+void ChfAbort( const int abort_code );
+/* Push a new handler into the stack */
+void ChfPushHandler( ChfHandler new_handler,    /* Handler to be added */
                      void* unwind_context,      /* Unwind context */
                      ChfPointer handler_context /* Private handler context */
 );
-
-void ChfPopHandler( /* Pop a handler */
-                    void );
-
-ChfChar* ChfBuildMessage( /* Build a condition message */
-                          const ChfDescriptor* descriptor );
-
-void ChfSignal( /* Signal the current conditions */
-                void );
-
-void ChfDiscard( /* Discard the current conditions */
-                 void );
-
-void ChfGenerate( /* Generate a condition into the stack */
-                  const int module_id, const ChfChar* file_name, const int line_number, const int condition_code,
+/* Pop a handler */
+void ChfPopHandler( void );
+/* Build a condition message */
+ChfChar* ChfBuildMessage( const ChfDescriptor* descriptor );
+/* Signal the current conditions */
+void ChfSignal( void );
+/* Discard the current conditions */
+void ChfDiscard( void );
+/* Generate a condition into the stack */
+void ChfGenerate( const int module_id, const ChfChar* file_name, const int line_number, const int condition_code,
                   const ChfSeverity severity, ... );
-
-const ChfChar* ChfGetMessage( /* Retrieve a condition message */
-                              const int module_id, const int condition_code, const ChfChar* default_message );
-
-const ChfDescriptor* ChfGetTopCondition( /* Retrieve top condition */
-                                         void );
+/* Retrieve a condition message */
+const ChfChar* ChfGetMessage( const int module_id, const int condition_code, const ChfChar* default_message );
+/* Retrieve top condition */
+const ChfDescriptor* ChfGetTopCondition( void );

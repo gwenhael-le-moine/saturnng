@@ -126,18 +126,9 @@ ChfContext* _ChfGetContext( void );
    Private redirection of stdlib functions needed by Win32
  ------------------------------------------------------------------------- */
 
-#ifdef _WIN32
-#  define ChfStrlen _tcslen
-#  define ChfStrcpy _tcscpy
-#  define ChfStrcat _tcscat
-#  define ChfStrncpy _tcsncpy
-#  define ChfSprintf _stprintf
-#  define ChfVsprintf _vstprintf
-#else
-#  define ChfStrlen strlen
-#  define ChfStrcpy strcpy
-#  define ChfStrcat strcat
-#  define ChfStrncpy strncpy
-#  define ChfSprintf sprintf
-#  define ChfVsprintf vsprintf
-#endif
+#define ChfStrlen strlen
+#define ChfStrcpy strcpy
+#define ChfStrcat strcat
+#define ChfStrncpy strncpy
+#define ChfSprintf sprintf
+#define ChfVsprintf vsprintf

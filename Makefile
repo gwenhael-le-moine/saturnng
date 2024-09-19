@@ -11,8 +11,8 @@ DOCDIR = $(PREFIX)/doc/saturn
 
 OPTIM ?= 2
 
-CFLAGS ?= -g -O$(OPTIM) -D_GNU_SOURCE=1 -I./src/ -I./libChf -L./libChf/mt_build
-LIBS = -lm -lChf_r -lXm -lutil
+CFLAGS ?= -O$(OPTIM) -D_GNU_SOURCE=1 -I./src/ -I./libChf/src/ -L./libChf
+LIBS = -lm -lChf -lXm -lutil
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext)
 X11LIBS = $(shell pkg-config --libs x11 xext xt)
@@ -49,7 +49,7 @@ MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/util.msf \
 	src/MSFs/x11.msf \
 	src/MSFs/x_func.msf \
-	libChf/chf.msf
+	libChf/src/chf.msf
 
 MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
 
@@ -95,20 +95,16 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
-all: libChf/mt_build/libChf_r.a dist/saturn dist/saturn.cat manual
+all: libChf/libChf.a dist/saturn dist/saturn.cat docs
 
 # Building
-libChf/mt_build/libChf_r.a:
-	make -C libChf ./mt_build/libChf_r.a CC=$(CC)
+libChf/libChf.a:
+	make -C libChf
 
-dist/saturn: $(DOTOS) libChf/mt_build/libChf_r.a
+dist/saturn: $(DOTOS) libChf/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(X11LIBS)
 
-libChf/st_build/libChf.a:
-	# UNUSED
-	make -C libChf ./st_build/libChf.a CC=$(CC)
-
-dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/mt_build/libChf_r.a
+dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/libChf.a
 	# UNUSED
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
@@ -117,19 +113,20 @@ dist/saturn.cat: $(MSFS)
 	  do gencat $@ $$msf ; \
 	done
 
-manual:
-	make -C manual
+doc:
+	make -C docs
 
 # Cleaning
 clean:
 	rm -f src/*.o
-	rm -f libChf/*_build/*.o
+	make -C libChf clean
+	make -C docs clean
 
 mrproper: clean
 	rm -f dist/saturn dist/saturn.cat dist/pack
 	make -C dist/ROMs mrproper
-	make -C libChf clean
-	make -C manual clean
+	make -C libChf mrproper
+	make -C docs mrproper
 
 clean-all: mrproper
 
@@ -142,7 +139,7 @@ get-roms:
 	make -C dist/ROMs get-roms
 
 # Installation
-install: dist/saturn dist/saturn.cat dist/Saturn.ad manual
+install: dist/saturn dist/saturn.cat dist/Saturn.ad doc
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
@@ -162,7 +159,7 @@ install: dist/saturn dist/saturn.cat dist/Saturn.ad manual
 	install -c -m 644 dist/Saturn.ad $(DESTDIR)/etc/X11/app-defaults/Saturn
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
-	cp -R COPYING LICENSE README* docs* manual/ $(DESTDIR)$(DOCDIR)
+	cp -R COPYING LICENSE README* docs* docs/ $(DESTDIR)$(DOCDIR)
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop

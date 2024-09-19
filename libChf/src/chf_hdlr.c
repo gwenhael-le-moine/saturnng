@@ -43,15 +43,8 @@ static char rcs_id[] = "$Id: chf_hdlr.c,v 2.2 2001/01/25 12:12:46 cibrario Exp $
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef _WIN32
-#  include <errno.h>
-#endif
+#include <errno.h>
 #include <setjmp.h>
-
-#ifdef _WIN32
-#  include <windows.h>
-#  include <tchar.h>
-#endif
 
 #include "Chf.h"
 #include "ChfPriv.h"

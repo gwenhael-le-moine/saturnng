@@ -36,15 +36,8 @@ static char rcs_id[] = "$Id: chf_abrt.c,v 2.2 2001/01/25 12:08:24 cibrario Exp $
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef _WIN32
-#  include <errno.h>
-#endif
+#include <errno.h>
 #include <setjmp.h>
-
-#ifdef _WIN32
-#  include <windows.h>
-#  include <tchar.h>
-#endif
 
 #include "Chf.h"
 #include "ChfPriv.h"
@@ -120,49 +113,10 @@ static const ChfChar* message_table[] = { ( const ChfChar* )NULL,
 void ChfAbort( /* Abort application */
                const int abort_code )
 {
-#ifdef _WIN32
-    if ( abort_code != CHF_ABORT_SILENT ) {
-        TCHAR abort_msg[ CHF_MAX_MESSAGE_LENGTH ];
-        HWND active_window;
-
-        /* stderr not available;
-           put complaint in a message box and display it
-        */
-        if ( abort_code < 0 || abort_code >= MESSAGE_TABLE_SIZE )
-            _stprintf( abort_msg, CHF_ABORT_BAD_CODE_FMT, abort_code );
-
-        else
-            _stprintf( abort_msg, CHF_ABORT_GOOD_CODE_FMT, message_table[ abort_code ] );
-
-        /* Return value of MessageBox() ignored, because there is only
-           one available choice (abort) here.  Avoid using a NULL handle.
-        */
-        if ( chf_context.state != CHF_UNKNOWN && ( active_window = GetActiveWindow() ) != ( HWND )NULL )
-            ( void )MessageBox( active_window, abort_msg, chf_context.app_name, MB_OK | MB_ICONERROR | MB_APPLMODAL | MB_SETFOREGROUND );
-    }
-
-    /* Immediately exit the application with exit code EXIT_FAILURE
-       if CHF_ABORT option is set or if something is wrong with Chf state.
-    */
-    if ( chf_context.state == CHF_UNKNOWN || chf_context.options & CHF_ABORT )
-        exit( EXIT_FAILURE );
-
-    else
-    /* Else, exit the application anyway, but with the exit code
-       registered by the application.  Don't use PostQuitMessage(),
-       because the contract is that ChfAbort() never returns to the caller.
-    */
-#  ifndef _REENTRANT
-        exit( chf_context.exit_code );
-#  else
-#    error "_REENTRANT not supported yet"
-#  endif
-
-#else
     if ( abort_code != CHF_ABORT_SILENT ) {
         fputs( CHF_ABORT_HEADER, stderr );
 
-        if ( abort_code < 0 || abort_code >= MESSAGE_TABLE_SIZE )
+        if ( abort_code < 0 || abort_code >= ( int )MESSAGE_TABLE_SIZE )
             fprintf( stderr, CHF_ABORT_BAD_CODE_FMT, abort_code );
 
         else
@@ -173,10 +127,9 @@ void ChfAbort( /* Abort application */
         abort();
 
     else
-#  ifndef _REENTRANT
+#ifndef _REENTRANT
         exit( chf_context.exit_code );
-#  else
+#else
         pthread_exit( ( void* )( chf_context.exit_code ) );
-#  endif
 #endif
 }

@@ -34,20 +34,11 @@ static char rcs_id[] = "$Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $
 
 #include <stdio.h>
 #include <stdlib.h>
-#ifndef _WIN32
-#  include <errno.h>
-#endif
+#include <errno.h>
 #include <setjmp.h>
 #include <string.h>
-#ifndef _WIN32
-#  include <locale.h>
-#  include <nl_types.h>
-#endif
-
-#ifdef _WIN32
-#  include <windows.h>
-#  include <tchar.h>
-#endif
+#include <locale.h>
+#include <nl_types.h>
 
 #include "Chf.h"
 #include "ChfPriv.h"
@@ -60,17 +51,14 @@ static char rcs_id[] = "$Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $
    Private type definitions
    ------------------------------------------------------------------------- */
 
-#ifndef _WIN32
 typedef struct {
     nl_catd catalog; /* Message catalog descriptor */
 } ChfMsgcatContext;
-#endif
 
 /* -------------------------------------------------------------------------
    Private functions
    ------------------------------------------------------------------------- */
 
-#ifndef _WIN32
 static const char* GetMessage( void* private_context, const int module_id, const int condition_code, const char* default_message )
 {
     return ( catgets( ( ( ChfMsgcatContext* )private_context )->catalog, module_id, condition_code, default_message ) );
@@ -81,7 +69,6 @@ static void ExitMessage( void* private_context )
     ( void )catclose( ( ( ChfMsgcatContext* )private_context )->catalog );
     free( private_context );
 }
-#endif
 
 /* -------------------------------------------------------------------------
    Public functions
@@ -142,39 +129,23 @@ int ChfMsgcatInit(                                 /* Initialization with msgcat
                    const int exit_code             /* Abnormal exit code */
 )
 {
-#ifdef _WIN32
-    /* This function always fails in _WIN32, because message catalogs
-       are not supported.
-    */
-    return CHF_F_NOT_AVAILABLE;
-
-#else
     ChfMsgcatContext* private_context;
     int cc;
 
     if ( ( private_context = ( ChfMsgcatContext* )malloc( sizeof( ChfMsgcatContext ) ) ) == ( ChfMsgcatContext* )NULL )
         cc = CHF_F_MALLOC;
-
     else if ( setlocale( LC_ALL, "" ) == ( char* )NULL ) {
         free( private_context );
         cc = CHF_F_SETLOCALE;
-    }
-
-    else if ( ( private_context->catalog = catopen( msgcat_name, 0 ) ) == ( nl_catd )( -1 ) ) {
+    } else if ( ( private_context->catalog = catopen( msgcat_name, 0 ) ) == ( nl_catd )( -1 ) ) {
         free( private_context );
         cc = CHF_F_CATOPEN;
-    }
-
-    else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, GetMessage, ExitMessage, condition_stack_size,
+    } else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, GetMessage, ExitMessage, condition_stack_size,
                               handler_stack_size, exit_code ) ) != CHF_S_OK ) {
         ( void )catclose( private_context->catalog );
         free( private_context );
-    }
-
-    else
+    } else
         cc = CHF_S_OK;
 
     return cc;
-
-#endif
 }
