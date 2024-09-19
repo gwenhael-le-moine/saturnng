@@ -17,6 +17,12 @@ LIBS = -lm -lChf -lXm -lutil
 X11CFLAGS = $(shell pkg-config --cflags x11 xext)
 X11LIBS = $(shell pkg-config --libs x11 xext xt)
 
+SDLCFLAGS = $(shell pkg-config --cflags sdl2)
+SDLLIBS = $(shell pkg-config --libs sdl2)
+
+NCURSESCFLAGS = $(shell pkg-config --cflags ncursesw)
+NCURSESDLLIBS = $(shell pkg-config --libs ncursesw)
+
 FULL_WARNINGS = no
 
 DOTOS = src/cpu.o \
@@ -88,6 +94,8 @@ override CFLAGS := -std=c11 \
 	$(call cc-option,-Wno-unknown-warning-option) \
 	$(EXTRA_WARNING_FLAGS) \
 	$(X11CFLAGS) \
+	$(SDLCFLAGS) \
+	$(NCURSESCFLAGS) \
 	$(CFLAGS)
 
 override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
@@ -102,7 +110,7 @@ libChf/libChf.a:
 	make -C libChf
 
 dist/saturn: $(DOTOS) libChf/libChf.a
-	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(X11LIBS)
+	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(X11LIBS) $(SDLLIBS) $(NCURSESLIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/libChf.a
 	# UNUSED
