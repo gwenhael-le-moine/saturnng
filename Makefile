@@ -24,20 +24,20 @@ DOTOS = src/cpu.o \
 	src/dis.o \
 	src/disk_io.o \
 	src/disk_io_obj.o \
-	src/x11_lcd.o \
 	src/emulator.o \
 	src/flash49.o \
 	src/hdw.o \
 	src/hw_config.o \
 	src/keyb.o \
-	src/main.o \
 	src/modules.o \
 	src/monitor.o \
 	src/romram.o \
 	src/romram49.o \
 	src/serial.o \
+	src/x11_lcd.o \
 	src/x11.o \
-	src/x_func.o
+	src/x_func.o \
+	src/main.o
 
 MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/debug.msf \
