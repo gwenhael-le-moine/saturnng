@@ -141,7 +141,7 @@ int ChfMsgcatInit(                                 /* Initialization with msgcat
         free( private_context );
         cc = CHF_F_CATOPEN;
     } else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, GetMessage, ExitMessage, condition_stack_size,
-                              handler_stack_size, exit_code ) ) != CHF_S_OK ) {
+                                handler_stack_size, exit_code ) ) != CHF_S_OK ) {
         ( void )catclose( private_context->catalog );
         free( private_context );
     } else

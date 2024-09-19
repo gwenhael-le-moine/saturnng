@@ -48,3 +48,7 @@ mrproper: clean
 
 $(TARGET): $(OBJS)
 	$(AR) $(ARFLAGS) $@ $?
+
+# Formatting
+pretty-code:
+	clang-format -i src/*.c src/*.h

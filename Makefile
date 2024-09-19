@@ -132,7 +132,8 @@ clean-all: mrproper
 
 # Formatting
 pretty-code:
-	clang-format -i src/*.c src/*.h libChf/*.c libChf/*.h
+	clang-format -i src/*.c src/*.h
+	make -C libChf pretty-code
 
 # Dependencies
 get-roms:
