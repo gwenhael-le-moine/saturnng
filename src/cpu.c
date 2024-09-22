@@ -362,24 +362,12 @@ static void ExecSHUTDN( void )
 {
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "SHUTDN" );
 
-#ifdef CPU_SPIN_SHUTDN
-    /* If the CPU_SPIN_SHUTDN symbol is defined, the CPU module implements
-       SHUTDN as a spin loop; the program counter is reset to the starting
-       nibble of the SHUTDN opcode.
-    */
-    cpu_status.PC -= 3;
-#endif
-
     /* Set shutdown flag */
     cpu_status.shutdn = 1;
 
-#ifndef CPU_SPIN_SHUTDN
-    /* If the CPU_SPIN_SHUTDN symbol is not defined, the CPU module implements
-       SHUTDN signalling the condition CPU_I_SHUTDN
-    */
+    /* the CPU module implements SHUTDN signalling the condition CPU_I_SHUTDN */
     ChfCondition CPU_I_SHUTDN, CHF_INFO ChfEnd;
     ChfSignal();
-#endif
 }
 
 /*---------------------------------------------------------------------------
@@ -2700,11 +2688,6 @@ void CpuWake( void )
             /* Clear SHUTDN flag */
             cpu_status.shutdn = 0;
 
-#ifdef CPU_SPIN_SHUTDN
-            /* Adjust PC if SHUTDN is implemented using a spin loop */
-            cpu_status.PC += 3;
-#endif
-
             /* Clear PC if necessary */
             /* if(cpu_status.OUT == (OutputRegister)0)
                  cpu_status.PC = (Address)0;
@@ -2768,12 +2751,6 @@ int CpuHaltRequest( void )
 {
     debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuHaltRequest" );
 
-#ifdef CPU_SPIN_SHUTDN
-    ChfCondition CPU_E_NO_HALT, CHF_ERROR ChfEnd;
-    ChfSignal();
-    return -1;
-
-#else
     if ( cpu_status.halt++ == 0 ) {
         debug0( DEBUG_C_INT, CPU_I_HALT );
 
@@ -2786,8 +2763,6 @@ int CpuHaltRequest( void )
     }
 
     return cpu_status.halt;
-
-#endif
 }
 
 /* .+
@@ -2822,12 +2797,6 @@ int CpuRunRequest( void )
 {
     debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuRunRequest" );
 
-#ifdef CPU_SPIN_SHUTDN
-    ChfCondition CPU_E_NO_HALT, CHF_ERROR ChfEnd;
-    ChfSignal();
-    return -1;
-
-#else
     if ( cpu_status.halt > 0 )
         if ( --cpu_status.halt == 0 ) {
             debug0( DEBUG_C_INT, CPU_I_RUN );
@@ -2837,8 +2806,6 @@ int CpuRunRequest( void )
         }
 
     return cpu_status.halt;
-
-#endif
 }
 
 /* .+
@@ -2866,13 +2833,7 @@ int CpuHaltAllowed( void )
 {
     debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuHaltAllowed" );
 
-#ifdef CPU_SPIN_SHUTDN
-    return 0;
-
-#else
     return 1;
-
-#endif
 }
 
 /* .+

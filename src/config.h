@@ -151,30 +151,6 @@
 */
 #define DEBUG_LEVEL DEBUG_C_REVISION
 
-/* CPU_SPIN_SHUTDN
-   If this symbol is defined, the cpu module implements the SHUTDN
-   instruction as a spin loop; when the instruction is encountered in the
-   run stream, the program counter is reset to the starting nibble of its
-   opcode.
-
-   If this symbol is not defined, the cpu module implements the SHUTDN
-   instruction signaling a Chf condition; the main emulator loop
-   condition handler works in concert with the GUI module to implement
-   an idle loop when this condition is handled.
-
-   This option MUST be defined if the revision of either the cpu emulation
-   module (cpu.c) or the GUI module (x11.c) is less than 3.1.
-
-   Starting from release 3.1, this option is disabled by default, to
-   waste as little (real) cpu time as possible; however, expect a
-   loss of timing accuracy.
-
-   Notice also that when this function is defined the CpuHaltRequest()
-   and CpuRunRequest() functions are disabled; as a consequence, all
-   interactive emulator's extended functions will be disabled as well.
-*/
-/* #define CPU_SPIN_SHUTDN */
-
 /* 2.1: FORCE_NONMODAL
    If this symbol is defined, nonmodal navigation is forced in the
    OSF/Motif GUI, by setting navigationType to XmNONE and traversalOn
