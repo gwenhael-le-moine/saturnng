@@ -270,10 +270,6 @@ struct CpuStatus {
 #define INNER_LOOP_MAX 26
 #define INNER_LOOP_MED 13
 #define INNER_LOOP_MIN 2
-
-#ifdef CPU_SPIN_LOOP
-    int reset_req; /* Reset req. after shutdn */
-#endif
 };
 
 enum ExitOption /* 2.1: EmulatorExit() option */

@@ -2515,11 +2515,6 @@ void CpuReset( void )
     /* Set inner_loop and inner_loop_max to default values */
     cpu_status.inner_loop = INNER_LOOP_MED;
     cpu_status.inner_loop_max = 0;
-
-    /* Reset reset_req if necessary */
-#ifdef CPU_SPIN_LOOP
-    cpu_status.reset_req = 0;
-#endif
 }
 
 /* .+
