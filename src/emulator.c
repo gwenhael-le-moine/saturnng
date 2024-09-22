@@ -125,7 +125,6 @@ static char rcs_id[] = "$Id: emulator.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 #include "x11_lcd.h"
 #include "x11.h"
 #include "serial.h"
-#include "args.h"
 #include "debug.h"
 
 #define CHF_MODULE_ID CPU_CHF_MODULE_ID

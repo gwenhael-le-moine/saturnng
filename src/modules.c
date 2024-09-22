@@ -125,7 +125,6 @@ static char rcs_id[] = "$Id: modules.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
-#include "args.h"
 #include "debug.h"
 
 #define CHF_MODULE_ID MOD_CHF_MODULE_ID

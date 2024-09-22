@@ -213,7 +213,6 @@ static char rcs_id[] = "$Id: x11.c,v 4.1.1.1 2002/11/11 16:11:47 cibrario Exp $"
 #include "keyb.h"
 #include "serial.h"
 #include "x11.h"
-#include "args.h"
 #include "debug.h"
 
 #define CHF_MODULE_ID X11_CHF_MODULE_ID

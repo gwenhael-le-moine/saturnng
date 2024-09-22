@@ -104,7 +104,6 @@ static char rcs_id[] = "$Id: x_func.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "disk_io.h"
 #include "x11.h" /* ActivateFSB() */
 #include "x_func.h"
-#include "args.h"
 #include "debug.h"
 
 #define CHF_MODULE_ID X_FUNC_CHF_MODULE_ID

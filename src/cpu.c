@@ -113,7 +113,6 @@ static char rcs_id[] = "$Id: cpu.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "modules.h"
 #include "keyb.h"
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
-#include "args.h"
 #include "debug.h"
 
 #define CHF_MODULE_ID CPU_CHF_MODULE_ID

@@ -118,8 +118,6 @@ static char rcs_id[] = "$Id: hdw.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "x_func.h" /* 3.13: Extended emulator functions */
 #include "debug.h"
 
-#include "args.h"
-
 #define CHF_MODULE_ID MOD_CHF_MODULE_ID
 #include <Chf.h>
 

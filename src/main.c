@@ -111,7 +111,6 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "cpu.h"
 #include "x11.h"
 #include "serial.h"
-#include "args.h"
 #include "debug.h"
 #include "monitor.h"
 

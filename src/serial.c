@@ -115,8 +115,6 @@ static char rcs_id[] = "$Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "serial.h" /* 2.5: Serial port emulation module */
 #include "debug.h"
 
-#include "args.h"
-
 #define CHF_MODULE_ID SERIAL_CHF_MODULE_ID
 #include <Chf.h>
 
