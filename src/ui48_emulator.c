@@ -86,8 +86,6 @@ void press_key( int hpkey )
 
     keyboard48[ hpkey ].pressed = true;
 
-    fprintf( stderr, "KeybPress( %s );\n", keyboard48[ hpkey ].inOut );
-
     KeybPress( keyboard48[ hpkey ].inOut );
 }
 

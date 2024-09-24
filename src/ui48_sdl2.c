@@ -21,8 +21,8 @@
 
 #define DISPLAY_WIDTH ( 264 + 8 )
 #define DISPLAY_HEIGHT ( 128 + 16 + 8 )
-#define DISPLAY_OFFSET_X ( SIDE_SKIP + ( 286 - DISPLAY_WIDTH ) / 2 )
-#define DISPLAY_OFFSET_Y TOP_SKIP
+#define DISPLAY_OFFSET_X ( config.chromeless ? 0 : ( SIDE_SKIP + ( 286 - DISPLAY_WIDTH ) / 2 ) )
+#define DISPLAY_OFFSET_Y ( config.chromeless ? 0 : TOP_SKIP )
 
 #define DISP_FRAME 8
 
@@ -59,7 +59,6 @@ static annunciators_ui_t annunciators_ui[ NB_ANNUNCIATORS ] = {
 
 static config_t config;
 
-static int display_offset_x, display_offset_y;
 static int lcd_pixels_buffer[ LCD_WIDTH * LCD_HEIGHT ];
 static int last_annunciators = -1;
 static int last_contrast = -1;
@@ -510,7 +509,7 @@ static void _draw_bezel( unsigned int cut, unsigned int offset_y, int keypad_wid
 
 static void _draw_header( void )
 {
-    int x = display_offset_x;
+    int x = DISPLAY_OFFSET_X;
     int y;
 
     // insert the HP Logo
@@ -520,36 +519,36 @@ static void _draw_header( void )
     __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, LOGO, LOGO_BACK );
 
     if ( config.model == MODEL_48SX ) {
-        __draw_line( display_offset_x, 9, display_offset_x + hp_width - 1, 9, FRAME );
-        __draw_line( display_offset_x - 1, 10, display_offset_x - 1, 10 + hp_height - 1, FRAME );
-        __draw_line( display_offset_x, 10 + hp_height, display_offset_x + hp_width - 1, 10 + hp_height, FRAME );
-        __draw_line( display_offset_x + hp_width, 10, display_offset_x + hp_width, 10 + hp_height - 1, FRAME );
+        __draw_line( DISPLAY_OFFSET_X, 9, DISPLAY_OFFSET_X + hp_width - 1, 9, FRAME );
+        __draw_line( DISPLAY_OFFSET_X - 1, 10, DISPLAY_OFFSET_X - 1, 10 + hp_height - 1, FRAME );
+        __draw_line( DISPLAY_OFFSET_X, 10 + hp_height, DISPLAY_OFFSET_X + hp_width - 1, 10 + hp_height, FRAME );
+        __draw_line( DISPLAY_OFFSET_X + hp_width, 10, DISPLAY_OFFSET_X + hp_width, 10 + hp_height - 1, FRAME );
     }
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
-        x = display_offset_x + DISPLAY_WIDTH - gx_128K_ram_width + gx_128K_ram_x_hot + 2;
+        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_128K_ram_x_hot + 2;
         y = 10 + gx_128K_ram_y_hot;
         __draw_bitmap( x, y, gx_128K_ram_width, gx_128K_ram_height, gx_128K_ram_bitmap, LABEL, DISP_PAD );
 
-        x = display_offset_x + hp_width;
+        x = DISPLAY_OFFSET_X + hp_width;
         y = hp_height + 8 - hp48gx_height;
         __draw_bitmap( x, y, hp48gx_width, hp48gx_height, hp48gx_bitmap, LOGO, DISP_PAD );
 
-        x = display_offset_x + DISPLAY_WIDTH - gx_128K_ram_width + gx_green_x_hot + 2;
+        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_green_x_hot + 2;
         y = 10 + gx_green_y_hot;
         __draw_bitmap( x, y, gx_green_width, gx_green_height, gx_green_bitmap, RIGHT, DISP_PAD );
 
-        x = display_offset_x + DISPLAY_WIDTH - gx_128K_ram_width + gx_silver_x_hot + 2;
+        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_silver_x_hot + 2;
         y = 10 + gx_silver_y_hot;
         __draw_bitmap( x, y, gx_silver_width, gx_silver_height, gx_silver_bitmap, LOGO,
                        0 ); // Background transparent: draw only silver line
     } else {
-        x = display_offset_x;
+        x = DISPLAY_OFFSET_X;
         y = TOP_SKIP - DISP_FRAME - hp48sx_height - 3;
         __draw_bitmap( x, y, hp48sx_width, hp48sx_height, hp48sx_bitmap, LOGO, DISP_PAD );
 
-        x = display_offset_x + DISPLAY_WIDTH - 1 - science_width;
+        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - 1 - science_width;
         y = TOP_SKIP - DISP_FRAME - science_height - 4;
         __draw_bitmap( x, y, science_width, science_height, science_bitmap, LOGO, DISP_PAD );
     }
@@ -768,51 +767,51 @@ static void _draw_keypad( void )
 static void _draw_bezel_LCD( void )
 {
     for ( int i = 0; i < DISP_FRAME; i++ ) {
-        __draw_line( display_offset_x - i, display_offset_y + DISPLAY_HEIGHT + 2 * i, display_offset_x + DISPLAY_WIDTH + i,
-                     display_offset_y + DISPLAY_HEIGHT + 2 * i, DISP_PAD_TOP );
-        __draw_line( display_offset_x - i, display_offset_y + DISPLAY_HEIGHT + 2 * i + 1, display_offset_x + DISPLAY_WIDTH + i,
-                     display_offset_y + DISPLAY_HEIGHT + 2 * i + 1, DISP_PAD_TOP );
-        __draw_line( display_offset_x + DISPLAY_WIDTH + i, display_offset_y - i, display_offset_x + DISPLAY_WIDTH + i,
-                     display_offset_y + DISPLAY_HEIGHT + 2 * i, DISP_PAD_TOP );
+        __draw_line( DISPLAY_OFFSET_X - i, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISP_PAD_TOP );
+        __draw_line( DISPLAY_OFFSET_X - i, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, DISP_PAD_TOP );
+        __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + i, DISPLAY_OFFSET_Y - i, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISP_PAD_TOP );
 
-        __draw_line( display_offset_x - i - 1, display_offset_y - i - 1, display_offset_x + DISPLAY_WIDTH + i - 1, display_offset_y - i - 1,
+        __draw_line( DISPLAY_OFFSET_X - i - 1, DISPLAY_OFFSET_Y - i - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i - 1, DISPLAY_OFFSET_Y - i - 1,
                      DISP_PAD_BOT );
-        __draw_line( display_offset_x - i - 1, display_offset_y - i - 1, display_offset_x - i - 1,
-                     display_offset_y + DISPLAY_HEIGHT + 2 * i - 1, DISP_PAD_BOT );
+        __draw_line( DISPLAY_OFFSET_X - i - 1, DISPLAY_OFFSET_Y - i - 1, DISPLAY_OFFSET_X - i - 1,
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i - 1, DISP_PAD_BOT );
     }
 
     // round off corners
-    __draw_line( display_offset_x - DISP_FRAME, display_offset_y - DISP_FRAME, display_offset_x - DISP_FRAME + 3,
-                 display_offset_y - DISP_FRAME, DISP_PAD );
-    __draw_line( display_offset_x - DISP_FRAME, display_offset_y - DISP_FRAME, display_offset_x - DISP_FRAME,
-                 display_offset_y - DISP_FRAME + 3, DISP_PAD );
-    __draw_pixel( display_offset_x - DISP_FRAME + 1, display_offset_y - DISP_FRAME + 1, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y - DISP_FRAME, DISPLAY_OFFSET_X - DISP_FRAME + 3,
+                 DISPLAY_OFFSET_Y - DISP_FRAME, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y - DISP_FRAME, DISPLAY_OFFSET_X - DISP_FRAME,
+                 DISPLAY_OFFSET_Y - DISP_FRAME + 3, DISP_PAD );
+    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y - DISP_FRAME + 1, DISP_PAD );
 
-    __draw_line( display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 4, display_offset_y - DISP_FRAME,
-                 display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 1, display_offset_y - DISP_FRAME, DISP_PAD );
-    __draw_line( display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 1, display_offset_y - DISP_FRAME,
-                 display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 1, display_offset_y - DISP_FRAME + 3, DISP_PAD );
-    __draw_pixel( display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 2, display_offset_y - DISP_FRAME + 1, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 4, DISPLAY_OFFSET_Y - DISP_FRAME,
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME,
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME + 3, DISP_PAD );
+    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y - DISP_FRAME + 1, DISP_PAD );
 
-    __draw_line( display_offset_x - DISP_FRAME, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4, display_offset_x - DISP_FRAME,
-                 display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
-    __draw_line( display_offset_x - DISP_FRAME, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, display_offset_x - DISP_FRAME + 3,
-                 display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
-    __draw_pixel( display_offset_x - DISP_FRAME + 1, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4, DISPLAY_OFFSET_X - DISP_FRAME,
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISPLAY_OFFSET_X - DISP_FRAME + 3,
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
+    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, DISP_PAD );
 
-    __draw_line( display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 1, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4,
-                 display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 1, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
-    __draw_line( display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 4, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1,
-                 display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 1, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
-    __draw_pixel( display_offset_x + DISPLAY_WIDTH + DISP_FRAME - 2, display_offset_y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4,
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
+    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 4, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1,
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
+    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, DISP_PAD );
 
     // simulate rounded lcd corners
-    __draw_line( display_offset_x - 1, display_offset_y + 1, display_offset_x - 1, display_offset_y + DISPLAY_HEIGHT - 2, LCD );
-    __draw_line( display_offset_x + 1, display_offset_y - 1, display_offset_x + DISPLAY_WIDTH - 2, display_offset_y - 1, LCD );
-    __draw_line( display_offset_x + 1, display_offset_y + DISPLAY_HEIGHT, display_offset_x + DISPLAY_WIDTH - 2,
-                 display_offset_y + DISPLAY_HEIGHT, LCD );
-    __draw_line( display_offset_x + DISPLAY_WIDTH, display_offset_y + 1, display_offset_x + DISPLAY_WIDTH,
-                 display_offset_y + DISPLAY_HEIGHT - 2, LCD );
+    __draw_line( DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, LCD );
+    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2, DISPLAY_OFFSET_Y - 1, LCD );
+    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2,
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, LCD );
+    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH,
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, LCD );
 }
 
 static void _draw_background( int width, int height, int w_top, int h_top )
@@ -821,7 +820,7 @@ static void _draw_background( int width, int height, int w_top, int h_top )
     __draw_rect( 0, 0, width, height, DISP_PAD );
 }
 
-static void _draw_background_LCD( void ) { __draw_rect( display_offset_x, display_offset_y, DISPLAY_WIDTH, DISPLAY_HEIGHT, LCD ); }
+static void _draw_background_LCD( void ) { __draw_rect( DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_WIDTH, DISPLAY_HEIGHT, LCD ); }
 
 // Show the hp key which is being pressed
 static void _show_key( int hpkey )
@@ -904,7 +903,7 @@ static void sdl_update_annunciators( void )
     SDL_SetRenderTarget( renderer, main_texture );
 
     for ( int i = 0; i < NB_ANNUNCIATORS; i++ )
-        __draw_texture( display_offset_x + annunciators_ui[ i ].x, display_offset_y + annunciators_ui[ i ].y, annunciators_ui[ i ].width,
+        __draw_texture( DISPLAY_OFFSET_X + annunciators_ui[ i ].x, DISPLAY_OFFSET_Y + annunciators_ui[ i ].y, annunciators_ui[ i ].width,
                         annunciators_ui[ i ].height,
                         ( ( ( annunciators_bits[ i ] & annunciators ) == annunciators_bits[ i ] ) ) ? annunciators_textures[ i ].up
                                                                                                     : annunciators_textures[ i ].down );
@@ -1013,7 +1012,7 @@ void ui_update_display_sdl( void )
 
         for ( int y = 0; y < LCD_HEIGHT; ++y )
             for ( int x = 0; x < LCD_WIDTH; ++x )
-                sdl_draw_pixel( display_offset_x + 5 + ( 2 * x ), display_offset_y + 20 + ( 2 * y ),
+                sdl_draw_pixel( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ),
                                 lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] );
 
         SDL_SetRenderTarget( renderer, NULL );
@@ -1043,18 +1042,11 @@ void ui_start_sdl( config_t* conf )
     // On exit: clean SDL
     atexit( SDL_Quit );
 
-    unsigned int width, height;
-    display_offset_x = DISPLAY_OFFSET_X;
-    display_offset_y = DISPLAY_OFFSET_Y;
-    width = ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w ) + 2 * SIDE_SKIP;
-    height = display_offset_y + DISPLAY_HEIGHT + DISP_KBD_SKIP + BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h + BOTTOM_SKIP;
-
-    if ( config.chromeless ) {
-        display_offset_x = 0;
-        display_offset_y = 0;
-        width = DISPLAY_WIDTH;
-        height = DISPLAY_HEIGHT;
-    }
+    unsigned int width = config.chromeless ? DISPLAY_WIDTH : ( ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w ) + 2 * SIDE_SKIP );
+    unsigned int height =
+        config.chromeless
+            ? DISPLAY_HEIGHT
+            : ( DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + DISP_KBD_SKIP + BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h + BOTTOM_SKIP );
 
     uint32_t window_flags = SDL_WINDOW_ALLOW_HIGHDPI;
     if ( config.fullscreen )

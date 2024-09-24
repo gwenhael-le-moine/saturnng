@@ -218,27 +218,27 @@ config_t* config_init( int argc, char* argv[] )
     /* 2. treat command-line params which have priority */
     /****************************************************/
     if ( clopt_verbose != -1 )
-        config.verbose = clopt_verbose;
+        config.verbose = clopt_verbose == true;
     if ( clopt_model != -1 )
         config.model = clopt_model;
     if ( clopt_frontend != -1 )
         config.frontend = clopt_frontend;
     if ( clopt_chromeless != -1 )
-        config.chromeless = clopt_chromeless;
+        config.chromeless = clopt_chromeless == true;
     if ( clopt_fullscreen != -1 )
-        config.fullscreen = clopt_fullscreen;
+        config.fullscreen = clopt_fullscreen == true;
     if ( clopt_scale > 0.0 )
         config.scale = clopt_scale;
     if ( clopt_mono != -1 )
-        config.mono = clopt_mono;
+        config.mono = clopt_mono == true;
     if ( clopt_small != -1 )
-        config.small = clopt_small;
+        config.small = clopt_small == true;
     if ( clopt_tiny != -1 )
-        config.tiny = clopt_tiny;
+        config.tiny = clopt_tiny == true;
     if ( clopt_gray != -1 )
-        config.gray = clopt_gray;
+        config.gray = clopt_gray == true;
     if ( clopt_shiftless != -1 )
-        config.shiftless = clopt_shiftless;
+        config.shiftless = clopt_shiftless == true;
 
     if ( clopt_reset != -1 )
         config.reset = clopt_reset;
@@ -264,6 +264,8 @@ config_t* config_init( int argc, char* argv[] )
         config.port_2_file_name = strdup( clopt_port_2_file_name );
     if ( clopt_hw != NULL )
         config.hw = strdup( clopt_hw );
+
+    fprintf( stderr, "config.chromeless = %s\n\n", config.chromeless ? "true" : "false" );
 
     return &config;
 }
