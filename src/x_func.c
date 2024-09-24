@@ -102,7 +102,7 @@ static char rcs_id[] = "$Id: x_func.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
-#include "x11.h" /* ActivateFSB() */
+/* #include "x11.h" /\* ActivateFSB() *\/ */
 #include "x_func.h"
 #include "debug.h"
 
@@ -294,7 +294,8 @@ static void SendContinuation( int proceed, char* file_name )
    - Invokes ActivateFSB() to pop the FSB up; continuation 'cont' will
      be invoked when the user interaction ends
    - Halts the CPU
-*/
+ */
+typedef void ( *FsbContinuation )( int proceed, char* file_name );
 static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
 {
     debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetupXfer" );
