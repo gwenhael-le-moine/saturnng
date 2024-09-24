@@ -21,10 +21,14 @@ fi
 
 RAM=''
 if [ ! -e "$STATEDIR"/ram ]; then
-    RAM=-reset
+    RAM=--reset
+else
+    RAM="--ram ram"
 fi
 
 [ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
 [ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
 
-./saturn -face hp48 -hw hp48 -stateDir "$STATEDIR" -rom gxrom-r $RAM -port1 port1 -port2 port2 "$@"
+#./saturn --hw hp48 --48gx --state-dir "$STATEDIR" --rom gxrom-r $RAM --port1 port1 --port2 port2 --mod mod --cpu cpu --hdw hdw "$@"
+
+./saturn --hw hp48 --48gx --state-dir $STATEDIR --rom gxrom-r $RAM --port1 port1 --port2 port2 --mod mod --cpu cpu --hdw hdw "$@"

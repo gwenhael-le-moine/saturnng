@@ -304,7 +304,7 @@ static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
 
         char* fsb_file = NameFromD1();
 
-        ActivateFSB( fsb_title, fsb_file, cont );
+        // ActivateFSB( fsb_title, fsb_file, cont );
 
         /* Free *before* CpuHaltRequest() because it does not return, and
            ActivateFSB() copied its argument when necessary.

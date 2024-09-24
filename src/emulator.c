@@ -221,8 +221,8 @@ static void EmulatorLoop( void )
         }
 
         /* LCD update */
-        if ( ( t1_count++ & LCD_T1_MASK ) == 0 )
-            DrawLcd();
+        /* if ( ( t1_count++ & LCD_T1_MASK ) == 0 ) */
+        /*     DrawLcd(); */
 
         /* Emulator Interrupt Request */
         if ( ( t1_count & INT_T1_MASK ) == 0 && emulator_int_req ) {
@@ -231,7 +231,7 @@ static void EmulatorLoop( void )
         }
 
         /* X Events handling */
-        HandleXEvents();
+        /* HandleXEvents(); */
 
         /* Handle serial port */
         HandleSerial();
@@ -325,7 +325,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                this ensures that the latest LCD updated actually
                                get to the screen.
                             */
-                            DrawLcd();
+                            // DrawLcd();
 
                             /* Handle serial port activity before entering the outer idle
                                loop, because this could possibly bring the cpu out of
@@ -399,7 +399,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                    - the given timeout expires
                                 */
                                 debug1( DEBUG_C_TIMERS, CPU_I_IDLE_X_LOOP, ms );
-                                IdleXLoop( ms );
+                                // IdleXLoop( ms );
 
                                 /* End of idle loop; compute actual elapsed time */
                                 gettimeofday( &end_idle, NULL );

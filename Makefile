@@ -9,9 +9,21 @@
 PREFIX = /usr
 DOCDIR = $(PREFIX)/doc/saturn
 
+VERSION_MAJOR = 0
+VERSION_MINOR = 0
+PATCHLEVEL = 0
+
 OPTIM ?= 2
 
-CFLAGS ?= -O$(OPTIM) -D_GNU_SOURCE=1 -I./src/ -I./libChf/src/ -L./libChf
+CFLAGS ?= -O$(OPTIM) \
+	-D_GNU_SOURCE=1 \
+	-I./src/ \
+	-I./libChf/src/ \
+	-L./libChf \
+	-DVERSION_MAJOR=$(VERSION_MAJOR) \
+	-DVERSION_MINOR=$(VERSION_MINOR) \
+	-DPATCHLEVEL=$(PATCHLEVEL)
+
 LIBS = -lm -lChf -lXm -lutil
 
 X11CFLAGS = $(shell pkg-config --cflags x11 xext)
@@ -21,7 +33,7 @@ SDLCFLAGS = $(shell pkg-config --cflags sdl2)
 SDLLIBS = $(shell pkg-config --libs sdl2)
 
 NCURSESCFLAGS = $(shell pkg-config --cflags ncursesw)
-NCURSESDLLIBS = $(shell pkg-config --libs ncursesw)
+NCURSESLIBS = $(shell pkg-config --libs ncursesw)
 
 FULL_WARNINGS = no
 
@@ -41,10 +53,15 @@ DOTOS = src/ui48_config.o \
 	src/romram.o \
 	src/romram49.o \
 	src/serial.o \
-	src/x11_lcd.o \
-	src/x11.o \
 	src/x_func.o \
-	src/x11_main.o
+	src/ui48_common.o \
+	src/ui48_sdl2.o \
+	src/ui48_ncurses.o \
+	src/ui48_emulator.o \
+	src/ui48_main.o #  \
+	# src/x11_lcd.o \
+	# src/x11.o \
+	# src/x11_main.o
 
 MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/debug.msf \
