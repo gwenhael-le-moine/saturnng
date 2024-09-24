@@ -275,27 +275,8 @@
 .- */
 
 /*---------------------------------------------------------------------------
-        Data type definitions - require config.h
-  ---------------------------------------------------------------------------*/
-
-struct Args {
-    bool reset;     /* 2.1: Force emulator reset */
-    bool monitor;   /* 2.1: Call monitor() on startup */
-    bool batchXfer; /* 3.15: Non-interactive file transfers */
-    char* mod_file_name;
-    char* cpu_file_name;
-    char* hdw_file_name;
-    char* rom_file_name;
-    char* ram_file_name;
-    char* port_1_file_name;
-    char* port_2_file_name;
-    char* hw; /* 2.1: Hardware configuration (unused) */
-};
-
-/*---------------------------------------------------------------------------
         Global variables
   ---------------------------------------------------------------------------*/
-
-extern struct Args args;
+extern config_t config;
 
 #endif /*!_CONFIG_H*/

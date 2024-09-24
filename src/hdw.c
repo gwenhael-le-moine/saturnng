@@ -153,7 +153,7 @@ void HdwInit( void )
 {
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "HdwInit" );
 
-    if ( ReadStructFromFile( args.hdw_file_name, sizeof( mod_status.hdw ), &mod_status.hdw ) ) {
+    if ( ReadStructFromFile( config.hdw_file_name, sizeof( mod_status.hdw ), &mod_status.hdw ) ) {
         ChfCondition MOD_W_HDW_INIT, CHF_WARNING ChfEnd;
         ChfSignal();
 
@@ -187,7 +187,7 @@ void HdwSave( void )
 {
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "HdwSave" );
 
-    if ( WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), args.hdw_file_name ) ) {
+    if ( WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_file_name ) ) {
         ChfCondition MOD_E_HDW_SAVE, CHF_ERROR ChfEnd;
         ChfSignal();
     }

@@ -588,14 +588,14 @@ void EmulatorIntRequest( void ) { emulator_int_req = 1; }
 void EmulatorInit( void )
 {
     /* Select a module description table */
-    ModSelectDescription( args.hw );
+    ModSelectDescription( config.hw );
 
     /* Initialize cpu and modules subsystems */
     CpuInit();
     ModInit();
 
     /* Reset if appropriate */
-    if ( args.reset ) {
+    if ( config.reset ) {
         CpuReset();
         ModReset();
     }

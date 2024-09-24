@@ -2546,7 +2546,7 @@ void CpuInit( void )
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "CpuInit" );
     debug1( DEBUG_C_REVISION, CPU_I_REVISION, CPU_RCS_INFO );
 
-    if ( ReadStructFromFile( args.cpu_file_name, sizeof( cpu_status ), &cpu_status ) ) {
+    if ( ReadStructFromFile( config.cpu_file_name, sizeof( cpu_status ), &cpu_status ) ) {
         ChfCondition CPU_W_RESETTING, CHF_WARNING ChfEnd;
         ChfSignal();
 
@@ -2582,7 +2582,7 @@ void CpuSave( void )
 {
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "CpuSave" );
 
-    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), args.cpu_file_name ) ) {
+    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_file_name ) ) {
         ChfCondition CPU_E_SAVE, CHF_ERROR ChfEnd;
         ChfSignal();
     }

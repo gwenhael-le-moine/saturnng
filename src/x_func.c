@@ -217,10 +217,10 @@ static const char* BinaryHeader( void )
     int i;
 
     for ( i = 0; i < N_BIN_HDR_MAPPING; i++ )
-        if ( strcmp( args.hw, bin_hdr_mapping[ i ].hw ) == 0 )
+        if ( strcmp( config.hw, bin_hdr_mapping[ i ].hw ) == 0 )
             return bin_hdr_mapping[ i ].hdr;
 
-    ChfCondition X_FUNC_E_NO_BIN_HDR, CHF_ERROR, args.hw ChfEnd;
+    ChfCondition X_FUNC_E_NO_BIN_HDR, CHF_ERROR, config.hw ChfEnd;
     return ( char* )NULL;
 }
 
@@ -328,7 +328,7 @@ static void Kget( Nibble function_code )
     debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "Kget" );
 
     /* Setup File Selection Box if transfers are *not* in batch mode */
-    if ( !args.batchXfer )
+    if ( !config.batchXfer )
         SetupXfer( X_FUNC_M_KGET, "Kget", KgetContinuation );
     else {
         /* Ok to proceed; read:
@@ -360,7 +360,7 @@ static void Send( Nibble function_code )
     debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "Send" );
 
     /* Setup File Selection Box if transfers are *not* in batch mode */
-    if ( !args.batchXfer )
+    if ( !config.batchXfer )
         SetupXfer( X_FUNC_M_SEND, "Send", SendContinuation );
     else {
         /* Ok to proceed; read:

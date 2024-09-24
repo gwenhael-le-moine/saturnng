@@ -38,68 +38,67 @@ static config_t config = {
     .reset = false,
     .monitor = false,
     .batchXfer = false,
-    .state_dir_path = ( char* )".",
-    .mod_file_name = ( char* )"mod",
-    .cpu_file_name = ( char* )"cpu",
-    .hdw_file_name = ( char* )"hdw",
-    .rom_file_name = ( char* )"rom",
-    .ram_file_name = ( char* )"ram",
-    .port_1_file_name = ( char* )"port1",
-    .port_2_file_name = ( char* )"port2",
-    .hw = ( char* )"hp48", /* 2.1: Hardware configuration (unused) */
-
+    .state_dir_path = ".",
+    /* .mod_file_name, */
+    /* .cpu_file_name, */
+    /* .hdw_file_name, */
+    /* .rom_file_name, */
+    /* .ram_file_name, */
+    /* .port_1_file_name, */
+    /* .port_2_file_name, */
+    /* .hw = ( char* )"hp48", /\* 2.1: Hardware configuration (unused) *\/ */
 };
 
 static void print_config( void )
 {
     fprintf( stderr, " *** config\n" );
-    fprintf( stderr, "config.progname = %s\n", config.progname );
+    fprintf( stderr, ".progname = %s\n", config.progname );
 
-    fprintf( stderr, "config.model = %i\n", config.model );
-    fprintf( stderr, "config.verbose = %s\n", config.verbose ? "true" : "false" );
-    fprintf( stderr, "config.shiftless = %s\n", config.shiftless ? "true" : "false" );
+    fprintf( stderr, ".model = %i\n", config.model );
+    fprintf( stderr, ".verbose = %s\n", config.verbose ? "true" : "false" );
+    fprintf( stderr, ".shiftless = %s\n", config.shiftless ? "true" : "false" );
 
-    fprintf( stderr, "config.frontend = %i\n", config.frontend );
+    fprintf( stderr, ".frontend = %i\n", config.frontend );
 
-    fprintf( stderr, "config.mono = %s\n", config.mono ? "true" : "false" );
-    fprintf( stderr, "config.gray = %s\n", config.gray ? "true" : "false" );
+    fprintf( stderr, ".mono = %s\n", config.mono ? "true" : "false" );
+    fprintf( stderr, ".gray = %s\n", config.gray ? "true" : "false" );
 
-    fprintf( stderr, "config.chromeless = %s\n", config.chromeless ? "true" : "false" );
-    fprintf( stderr, "config.fullscreen = %s\n", config.fullscreen ? "true" : "false" );
-    fprintf( stderr, "config.scale = %f\n", config.scale );
+    fprintf( stderr, ".chromeless = %s\n", config.chromeless ? "true" : "false" );
+    fprintf( stderr, ".fullscreen = %s\n", config.fullscreen ? "true" : "false" );
+    fprintf( stderr, ".scale = %f\n", config.scale );
 
-    fprintf( stderr, "config.tiny = %s\n", config.tiny ? "true" : "false" );
-    fprintf( stderr, "config.small = %s\n", config.small ? "true" : "false" );
+    fprintf( stderr, ".tiny = %s\n", config.tiny ? "true" : "false" );
+    fprintf( stderr, ".small = %s\n", config.small ? "true" : "false" );
 
-    fprintf( stderr, "config.wire_name = %s\n", config.wire_name );
-    fprintf( stderr, "config.ir_name = %s\n", config.ir_name );
+    fprintf( stderr, ".wire_name = %s\n", config.wire_name );
+    fprintf( stderr, ".ir_name = %s\n", config.ir_name );
 
-    fprintf( stderr, "config.reset = %s\n", config.reset ? "true" : "false" );
-    fprintf( stderr, "config.monitor = %s\n", config.monitor ? "true" : "false" );
-    fprintf( stderr, "config.batchXfer = %s\n", config.batchXfer ? "true" : "false" );
-    fprintf( stderr, "config.state_dir_path = %s\n", config.state_dir_path );
-    fprintf( stderr, "config.mod_file_name = %s\n", config.mod_file_name );
-    fprintf( stderr, "config.cpu_file_name = %s\n", config.cpu_file_name );
-    fprintf( stderr, "config.hdw_file_name = %s\n", config.hdw_file_name );
-    fprintf( stderr, "config.rom_file_name = %s\n", config.rom_file_name );
-    fprintf( stderr, "config.ram_file_name = %s\n", config.ram_file_name );
-    fprintf( stderr, "config.port_1_file_name = %s\n", config.port_1_file_name );
-    fprintf( stderr, "config.port_2_file_name = %s\n", config.port_2_file_name );
-    fprintf( stderr, "config.hw = %s\n", config.hw );
+    fprintf( stderr, ".reset = %s\n", config.reset ? "true" : "false" );
+    fprintf( stderr, ".monitor = %s\n", config.monitor ? "true" : "false" );
+    fprintf( stderr, ".batchXfer = %s\n", config.batchXfer ? "true" : "false" );
+    fprintf( stderr, ".state_dir_path = %s\n", config.state_dir_path );
+    fprintf( stderr, ".mod_file_name = %s\n", config.mod_file_name );
+    fprintf( stderr, ".cpu_file_name = %s\n", config.cpu_file_name );
+    fprintf( stderr, ".hdw_file_name = %s\n", config.hdw_file_name );
+    fprintf( stderr, ".rom_file_name = %s\n", config.rom_file_name );
+    fprintf( stderr, ".ram_file_name = %s\n", config.ram_file_name );
+    fprintf( stderr, ".port_1_file_name = %s\n", config.port_1_file_name );
+    fprintf( stderr, ".port_2_file_name = %s\n", config.port_2_file_name );
+    fprintf( stderr, ".hw = %s\n", config.hw );
     fprintf( stderr, " *** /config\n" );
 }
 
 /* Path/name dynamic allocator */
-/* static char* GetPathname( char* path, char* name ) */
-/* { */
-/*     char* s = malloc( strlen( path ) + strlen( name ) + 2 ); */
+static char* normalize_filename( char* path, char* name )
+{
+    char* s = malloc( strlen( path ) + strlen( name ) + 2 );
 
-/*     strcpy( s, path ); */
-/*     strcat( s, "/" ); */
-/*     strcat( s, name ); */
+    strcpy( s, path );
+    strcat( s, "/" );
+    strcat( s, name );
 
-/*     return s; */
-/* } */
+    return s;
+}
 
 config_t* config_init( int argc, char* argv[] )
 {
@@ -123,13 +122,13 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_monitor = -1;
     /* int clopt_batchXfer = -1; */
     char* clopt_state_dir_path = ".";
-    /* char* clopt_mod_file_name = "mod"; */
-    /* char* clopt_cpu_file_name = "cpu"; */
-    /* char* clopt_hdw_file_name = "hdw"; */
-    /* char* clopt_rom_file_name = "gxrom-r"; */
-    /* char* clopt_ram_file_name = "ram"; */
-    /* char* clopt_port_1_file_name = "port1"; */
-    /* char* clopt_port_2_file_name = "port2"; */
+    char* clopt_mod_file_name = "mod";
+    char* clopt_cpu_file_name = "cpu";
+    char* clopt_hdw_file_name = "hdw";
+    char* clopt_rom_file_name = "rom";
+    char* clopt_ram_file_name = "ram";
+    char* clopt_port_1_file_name = "port1";
+    char* clopt_port_2_file_name = "port2";
     /* char* clopt_hw = "hp48"; */
 
     const char* optstring = "h";
@@ -303,6 +302,14 @@ config_t* config_init( int argc, char* argv[] )
     /*     config.port_2_file_name = strdup( clopt_port_2_file_name ); */
     /* if ( clopt_hw != NULL ) */
     /*     config.hw = strdup( clopt_hw ); */
+
+    config.mod_file_name = normalize_filename( config.state_dir_path, clopt_mod_file_name );
+    config.cpu_file_name = normalize_filename( config.state_dir_path, clopt_cpu_file_name );
+    config.hdw_file_name = normalize_filename( config.state_dir_path, clopt_hdw_file_name );
+    config.rom_file_name = normalize_filename( config.state_dir_path, clopt_rom_file_name );
+    config.ram_file_name = normalize_filename( config.state_dir_path, clopt_ram_file_name );
+    config.port_1_file_name = normalize_filename( config.state_dir_path, clopt_port_1_file_name );
+    config.port_2_file_name = normalize_filename( config.state_dir_path, clopt_port_2_file_name );
 
     switch ( clopt_model ) {
         case MODEL_40G:

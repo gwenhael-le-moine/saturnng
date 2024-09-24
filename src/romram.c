@@ -149,7 +149,7 @@ void RomInit( void )
         ChfSignal();
     }
 
-    if ( ReadNibblesFromFile( args.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
+    if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
         ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
         ChfSignal();
     }
@@ -266,7 +266,7 @@ void RamInit( void )
 {
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamInit" );
 
-    if ( ReadNibblesFromFile( args.ram_file_name, N_RAM_SIZE, mod_status_ram ) ) {
+    if ( ReadNibblesFromFile( config.ram_file_name, N_RAM_SIZE, mod_status_ram ) ) {
         ChfCondition MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
         ChfSignal();
 
@@ -301,7 +301,7 @@ void RamSave( void )
 {
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamSave" );
 
-    if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, args.ram_file_name ) ) {
+    if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, config.ram_file_name ) ) {
         ChfErrnoCondition;
         ChfCondition MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
         ChfSignal();
@@ -541,7 +541,7 @@ void Ce2Init( void )
 
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init" );
 
-    if ( ReadNibblesFromFile( args.port_1_file_name, N_PORT_1_SIZE, mod_status_port_1 ) ) {
+    if ( ReadNibblesFromFile( config.port_1_file_name, N_PORT_1_SIZE, mod_status_port_1 ) ) {
         ChfCondition MOD_W_PORT_1_INIT, CHF_WARNING ChfEnd;
         ChfSignal();
 
@@ -552,7 +552,7 @@ void Ce2Init( void )
         /* Card present; check write protection */
         new_status = mod_status_hdw.card_status | CE2_CARD_PRESENT;
 
-        if ( access( args.port_1_file_name, W_OK ) == 0 )
+        if ( access( config.port_1_file_name, W_OK ) == 0 )
             new_status |= CE2_CARD_WE;
         else {
             new_status &= ~CE2_CARD_WE;
@@ -601,7 +601,7 @@ void Ce2Save( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save" );
 
     /* Attempt to save only if port is write-enabled */
-    if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, args.port_1_file_name ) ) {
+    if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, config.port_1_file_name ) ) {
         ChfErrnoCondition;
         ChfCondition MOD_E_PORT_1_SAVE, CHF_ERROR ChfEnd;
         ChfSignal();
@@ -700,7 +700,7 @@ void NCe3Init( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init" );
 
 #ifdef N_PORT_2_BANK
-    if ( ReadNibblesFromFile( args.port_2_file_name, N_PORT_2_SIZE, mod_status_port_2 ) ) {
+    if ( ReadNibblesFromFile( config.port_2_file_name, N_PORT_2_SIZE, mod_status_port_2 ) ) {
         ChfCondition MOD_W_PORT_2_INIT, CHF_WARNING ChfEnd;
         ChfSignal();
 
@@ -711,7 +711,7 @@ void NCe3Init( void )
         /* Card present; check write protection */
         new_status = mod_status_hdw.card_status | NCE3_CARD_PRESENT;
 
-        if ( access( args.port_2_file_name, W_OK ) == 0 )
+        if ( access( config.port_2_file_name, W_OK ) == 0 )
             new_status |= NCE3_CARD_WE;
         else {
             new_status &= ~NCE3_CARD_WE;
@@ -766,7 +766,8 @@ void NCe3Save( void )
 
 #ifdef N_PORT_2_BANK
     /* Attempt to save only if port is write-enabled */
-    if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) && WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, args.port_2_file_name ) ) {
+    if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) &&
+         WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port_2_file_name ) ) {
         ChfErrnoCondition;
         ChfCondition MOD_E_PORT_2_SAVE, CHF_ERROR ChfEnd;
         ChfSignal();

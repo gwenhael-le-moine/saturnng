@@ -75,7 +75,7 @@ void signal_handler( int sig )
 
 int main( int argc, char** argv )
 {
-    config_t* config = config_init( argc, argv );
+    config = *config_init( argc, argv );
     char* cat_name;
     int st;
     int retry = 0;
@@ -153,11 +153,11 @@ int main( int argc, char** argv )
     fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, "" ), "$Revision: 4.1 $" );
     /* fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_LICENSE, "" ) ); */
 
-    init_emulator( config );
+    init_emulator( &config );
 
     /* (G)UI */
-    setup_ui( config );
-    ui_start( config );
+    setup_ui( &config );
+    ui_start( &config );
 
     sigset_t set;
     struct sigaction sa;
@@ -184,7 +184,7 @@ int main( int argc, char** argv )
     it.it_value.tv_usec = 1000000 / SPEED_HZ_UI;
     setitimer( ITIMER_REAL, &it, ( struct itimerval* )0 );
 
-    if ( config->monitor )
+    if ( config.monitor )
         /* Invoke Monitor */
         Monitor();
     else

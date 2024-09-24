@@ -9,7 +9,7 @@
 #include "keyb.h"
 #include "modules.h"
 
-static config_t config;
+config_t config;
 
 typedef struct hpkey_t {
     int code;
@@ -141,36 +141,9 @@ void get_lcd_buffer( int* target )
 
 int get_contrast( void ) { return mod_status.hdw.lcd_contrast; }
 
-struct Args args;
-
-/* Path/name dynamic allocator */
-static char* GetPathname( char* path, char* name )
-{
-    char* s = malloc( strlen( path ) + strlen( name ) + 2 );
-
-    strcpy( s, path );
-    strcat( s, "/" );
-    strcat( s, name );
-
-    return s;
-}
-
 void init_emulator( config_t* conf )
 {
     config = *conf;
-
-    /* Fill the emulator options data structure. */
-    args.reset = config.reset;
-    args.monitor = config.monitor;
-    args.batchXfer = config.batchXfer;
-    args.mod_file_name = GetPathname( config.state_dir_path, config.mod_file_name );
-    args.cpu_file_name = GetPathname( config.state_dir_path, config.cpu_file_name );
-    args.hdw_file_name = GetPathname( config.state_dir_path, config.hdw_file_name );
-    args.rom_file_name = GetPathname( config.state_dir_path, config.rom_file_name );
-    args.ram_file_name = GetPathname( config.state_dir_path, config.ram_file_name );
-    args.port_1_file_name = GetPathname( config.state_dir_path, config.port_1_file_name );
-    args.port_2_file_name = GetPathname( config.state_dir_path, config.port_2_file_name );
-    args.hw = config.hw;
 
     EmulatorInit();
 }
