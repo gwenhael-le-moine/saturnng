@@ -94,8 +94,8 @@ static char rcs_id[] = "$Id: x_func.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include <ctype.h>
 #include <string.h>
 
-#include <X11/Xlib.h>      /* Main X header */
-#include <X11/Intrinsic.h> /* Main Xt header */
+/* #include <X11/Xlib.h>      /\* Main X header *\/ */
+/* #include <X11/Intrinsic.h> /\* Main Xt header *\/ */
 
 #include "config.h"
 #include "machdep.h"
@@ -133,7 +133,7 @@ static char* NameFromD1( void )
 {
     Address addr = cpu_status.D1;      /* Points to the IDNT body */
     int len = ByteFromAddress( addr ); /* IDNT length */
-    char* name = XtMalloc( len + 1 );  /* IDNT name buffer */
+    char* name = malloc( len + 1 );    /* IDNT name buffer */
     int c;
 
     /* Read the name; toascii() is there to avoid 'strange' characters */
@@ -300,19 +300,19 @@ static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
     debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetupXfer" );
 
     if ( CpuHaltAllowed() ) {
-        char* fsb_title = XtNewString( ChfGetMessage( CHF_MODULE_ID, msg, def_msg ) );
+        /* char* fsb_title = XtNewString( ChfGetMessage( CHF_MODULE_ID, msg, def_msg ) ); */
 
-        char* fsb_file = NameFromD1();
+        /* char* fsb_file = NameFromD1(); */
 
-        // ActivateFSB( fsb_title, fsb_file, cont );
+        /* // ActivateFSB( fsb_title, fsb_file, cont ); */
 
-        /* Free *before* CpuHaltRequest() because it does not return, and
-           ActivateFSB() copied its argument when necessary.
-        */
-        XtFree( fsb_title );
-        XtFree( fsb_file );
+        /* /\* Free *before* CpuHaltRequest() because it does not return, and */
+        /*    ActivateFSB() copied its argument when necessary. */
+        /* *\/ */
+        /* XtFree( fsb_title ); */
+        /* XtFree( fsb_file ); */
 
-        ( void )CpuHaltRequest();
+        /* ( void )CpuHaltRequest(); */
     } else {
         ChfCondition X_FUNC_E_NO_HALT, CHF_ERROR ChfEnd;
         ChfSignal();

@@ -26,8 +26,8 @@ CFLAGS ?= -O$(OPTIM) \
 
 LIBS = -lm -lChf -lXm -lutil
 
-X11CFLAGS = $(shell pkg-config --cflags x11 xext)
-X11LIBS = $(shell pkg-config --libs x11 xext xt)
+# X11CFLAGS = $(shell pkg-config --cflags x11 xext)
+# X11LIBS = $(shell pkg-config --libs x11 xext xt)
 
 SDLCFLAGS = $(shell pkg-config --cflags sdl2)
 SDLLIBS = $(shell pkg-config --libs sdl2)
@@ -58,10 +58,11 @@ DOTOS = src/ui48_config.o \
 	src/ui48_sdl2.o \
 	src/ui48_ncurses.o \
 	src/ui48_emulator.o \
-	src/ui48_main.o #  \
-	# src/x11_lcd.o \
-	# src/x11.o \
-	# src/x11_main.o
+	src/ui48_main.o
+#  \
+#	 src/x11_lcd.o \
+#	 src/x11.o \
+#	 src/x11_main.o
 
 MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/debug.msf \
@@ -111,10 +112,10 @@ override CFLAGS := -std=c11 \
 	$(call cc-option,-Wlogical-op) \
 	$(call cc-option,-Wno-unknown-warning-option) \
 	$(EXTRA_WARNING_FLAGS) \
-	$(X11CFLAGS) \
 	$(SDLCFLAGS) \
 	$(NCURSESCFLAGS) \
 	$(CFLAGS)
+#	 $(X11CFLAGS) \
 
 override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 	$(CPPFLAGS)
