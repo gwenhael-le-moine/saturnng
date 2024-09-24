@@ -12,6 +12,7 @@
 
 #include "config.h"
 #include "cpu.h"
+#include "monitor.h"
 
 #define SPEED_HZ_UI 64
 
@@ -183,7 +184,12 @@ int main( int argc, char** argv )
     it.it_value.tv_usec = 1000000 / SPEED_HZ_UI;
     setitimer( ITIMER_REAL, &it, ( struct itimerval* )0 );
 
-    Emulator();
+    if ( config->monitor )
+        /* Invoke Monitor */
+        Monitor();
+    else
+        /* Call Emulator directly */
+        Emulator();
 
     /* never reached */
     return EXIT_SUCCESS;
