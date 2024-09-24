@@ -25,7 +25,8 @@ NCURSESDLLIBS = $(shell pkg-config --libs ncursesw)
 
 FULL_WARNINGS = no
 
-DOTOS = src/cpu.o \
+DOTOS = src/ui48_config.o \
+	src/cpu.o \
 	src/debug.o \
 	src/dis.o \
 	src/disk_io.o \
@@ -43,7 +44,7 @@ DOTOS = src/cpu.o \
 	src/x11_lcd.o \
 	src/x11.o \
 	src/x_func.o \
-	src/main.o
+	src/x11_main.o
 
 MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/debug.msf \

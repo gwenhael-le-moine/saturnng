@@ -124,6 +124,10 @@
 
 .- */
 
+#include <stdbool.h>
+
+#include "ui48_config.h"
+
 /* CHF_EXTENDED_INFO:
    Define this symbol if extended information is desired during condition
    handling; this is usually useful only for debugging purposes.
@@ -275,9 +279,9 @@
   ---------------------------------------------------------------------------*/
 
 struct Args {
-    int reset;     /* 2.1: Force emulator reset */
-    int monitor;   /* 2.1: Call monitor() on startup */
-    int batchXfer; /* 3.15: Non-interactive file transfers */
+    bool reset;     /* 2.1: Force emulator reset */
+    bool monitor;   /* 2.1: Call monitor() on startup */
+    bool batchXfer; /* 3.15: Non-interactive file transfers */
     char* mod_file_name;
     char* cpu_file_name;
     char* hdw_file_name;
