@@ -51,41 +51,41 @@ static config_t config = {
 
 static void print_config( void )
 {
-    fprintf( stderr, " *** config\n" );
-    fprintf( stderr, ".progname = %s\n", config.progname );
+    fprintf( stderr, "*** config\n" );
+    fprintf( stderr, "  .progname = %s\n", config.progname );
 
-    fprintf( stderr, ".model = %i\n", config.model );
-    fprintf( stderr, ".verbose = %s\n", config.verbose ? "true" : "false" );
-    fprintf( stderr, ".shiftless = %s\n", config.shiftless ? "true" : "false" );
+    fprintf( stderr, "  .model = %i\n", config.model );
+    fprintf( stderr, "  .verbose = %s\n", config.verbose ? "true" : "false" );
+    fprintf( stderr, "  .shiftless = %s\n", config.shiftless ? "true" : "false" );
 
-    fprintf( stderr, ".frontend = %i\n", config.frontend );
+    fprintf( stderr, "  .frontend = %i\n", config.frontend );
 
-    fprintf( stderr, ".mono = %s\n", config.mono ? "true" : "false" );
-    fprintf( stderr, ".gray = %s\n", config.gray ? "true" : "false" );
+    fprintf( stderr, "  .mono = %s\n", config.mono ? "true" : "false" );
+    fprintf( stderr, "  .gray = %s\n", config.gray ? "true" : "false" );
 
-    fprintf( stderr, ".chromeless = %s\n", config.chromeless ? "true" : "false" );
-    fprintf( stderr, ".fullscreen = %s\n", config.fullscreen ? "true" : "false" );
-    fprintf( stderr, ".scale = %f\n", config.scale );
+    fprintf( stderr, "  .chromeless = %s\n", config.chromeless ? "true" : "false" );
+    fprintf( stderr, "  .fullscreen = %s\n", config.fullscreen ? "true" : "false" );
+    fprintf( stderr, "  .scale = %f\n", config.scale );
 
-    fprintf( stderr, ".tiny = %s\n", config.tiny ? "true" : "false" );
-    fprintf( stderr, ".small = %s\n", config.small ? "true" : "false" );
+    fprintf( stderr, "  .tiny = %s\n", config.tiny ? "true" : "false" );
+    fprintf( stderr, "  .small = %s\n", config.small ? "true" : "false" );
 
-    fprintf( stderr, ".wire_name = %s\n", config.wire_name );
-    fprintf( stderr, ".ir_name = %s\n", config.ir_name );
+    fprintf( stderr, "  .wire_name = %s\n", config.wire_name );
+    fprintf( stderr, "  .ir_name = %s\n", config.ir_name );
 
-    fprintf( stderr, ".reset = %s\n", config.reset ? "true" : "false" );
-    fprintf( stderr, ".monitor = %s\n", config.monitor ? "true" : "false" );
-    fprintf( stderr, ".batchXfer = %s\n", config.batchXfer ? "true" : "false" );
-    fprintf( stderr, ".state_dir_path = %s\n", config.state_dir_path );
-    fprintf( stderr, ".mod_file_name = %s\n", config.mod_file_name );
-    fprintf( stderr, ".cpu_file_name = %s\n", config.cpu_file_name );
-    fprintf( stderr, ".hdw_file_name = %s\n", config.hdw_file_name );
-    fprintf( stderr, ".rom_file_name = %s\n", config.rom_file_name );
-    fprintf( stderr, ".ram_file_name = %s\n", config.ram_file_name );
-    fprintf( stderr, ".port_1_file_name = %s\n", config.port_1_file_name );
-    fprintf( stderr, ".port_2_file_name = %s\n", config.port_2_file_name );
-    fprintf( stderr, ".hw = %s\n", config.hw );
-    fprintf( stderr, " *** /config\n" );
+    fprintf( stderr, "  .reset = %s\n", config.reset ? "true" : "false" );
+    fprintf( stderr, "  .monitor = %s\n", config.monitor ? "true" : "false" );
+    fprintf( stderr, "  .batchXfer = %s\n", config.batchXfer ? "true" : "false" );
+    fprintf( stderr, "  .state_dir_path = %s\n", config.state_dir_path );
+    fprintf( stderr, "  .mod_file_name = %s\n", config.mod_file_name );
+    fprintf( stderr, "  .cpu_file_name = %s\n", config.cpu_file_name );
+    fprintf( stderr, "  .hdw_file_name = %s\n", config.hdw_file_name );
+    fprintf( stderr, "  .rom_file_name = %s\n", config.rom_file_name );
+    fprintf( stderr, "  .ram_file_name = %s\n", config.ram_file_name );
+    fprintf( stderr, "  .port_1_file_name = %s\n", config.port_1_file_name );
+    fprintf( stderr, "  .port_2_file_name = %s\n", config.port_2_file_name );
+    fprintf( stderr, "  .hw = %s\n", config.hw );
+    fprintf( stderr, "*** /config\n" );
 }
 
 /* Path/name dynamic allocator */
