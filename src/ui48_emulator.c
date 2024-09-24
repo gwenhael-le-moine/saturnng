@@ -120,8 +120,8 @@ void get_lcd_buffer( int* target )
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
             v = FetchNibble( addr++ );
 
-            for ( int i = 0; i < 4; i++ )
-                target[ ( y * 131 ) + ( x * 4 ) + i ] = v & ( 1 << ( i & 3 ) );
+            for ( int nx = 0; nx < 4; nx++ )
+                target[ ( y * 131 ) + ( x * 4 ) + nx ] = v & ( 1 << ( nx & 3 ) );
         }
 
         addr += mod_status.hdw.lcd_line_offset;
@@ -135,8 +135,8 @@ void get_lcd_buffer( int* target )
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
             v = FetchNibble( addr++ );
 
-            for ( int i = 0; i < 4; i++ )
-                target[ ( y * 131 ) + ( x * 4 ) + i ] = v & ( 1 << ( i & 3 ) );
+            for ( int nx = 0; nx < 4; nx++ )
+                target[ ( y * 131 ) + ( x * 4 ) + nx ] = v & ( 1 << ( nx & 3 ) );
         }
     }
 }
