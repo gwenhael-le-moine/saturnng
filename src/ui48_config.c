@@ -31,8 +31,8 @@ static config_t config = {
     .tiny = false,
     .small = false,
 
-    .wire_name = ( char* )"/dev/wire",
-    .ir_name = ( char* )"/dev/ir",
+    /* .wire_name = ( char* )"/dev/wire", */
+    /* .ir_name = ( char* )"/dev/ir", */
 
     /* from args.h */
     .reset = false,

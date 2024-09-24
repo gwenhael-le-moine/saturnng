@@ -8,6 +8,7 @@
 #include "config.h"
 #include "keyb.h"
 #include "modules.h"
+#include "serial.h"
 
 config_t config;
 
@@ -146,6 +147,8 @@ void init_emulator( config_t* conf )
     config = *conf;
 
     EmulatorInit();
+
+    conf->wire_name = ( char* )SerialInit();
 }
 
 void exit_emulator( void ) { EmulatorExit( SAVE_AND_EXIT ); }
