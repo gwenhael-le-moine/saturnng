@@ -129,7 +129,6 @@ config_t* config_init( int argc, char* argv[] )
     char* clopt_ram_file_name = "ram";
     char* clopt_port_1_file_name = "port1";
     char* clopt_port_2_file_name = "port2";
-    /* char* clopt_hw = "hp48"; */
 
     const char* optstring = "h";
     struct option long_options[] = {
@@ -162,7 +161,6 @@ config_t* config_init( int argc, char* argv[] )
         /* {"ram",        required_argument, NULL,              8040            }, */
         /* {"port1",      required_argument, NULL,              8050            }, */
         /* {"port2",      required_argument, NULL,              8060            }, */
-        /* {"hw",         required_argument, NULL,              8070            }, */
 
         {0,            0,                 0,                 0               }
     };
@@ -236,9 +234,6 @@ config_t* config_init( int argc, char* argv[] )
                 /* case 8060: */
                 /*     clopt_port_2_file_name = optarg; */
                 /*     break; */
-                /* case 8070: */
-                /*     clopt_hw = optarg; */
-                /*     break; */
 
             default:
                 break;
@@ -300,8 +295,6 @@ config_t* config_init( int argc, char* argv[] )
     /*     config.port_1_file_name = strdup( clopt_port_1_file_name ); */
     /* if ( clopt_port_2_file_name != NULL ) */
     /*     config.port_2_file_name = strdup( clopt_port_2_file_name ); */
-    /* if ( clopt_hw != NULL ) */
-    /*     config.hw = strdup( clopt_hw ); */
 
     config.mod_file_name = normalize_filename( config.state_dir_path, clopt_mod_file_name );
     config.cpu_file_name = normalize_filename( config.state_dir_path, clopt_cpu_file_name );

@@ -111,6 +111,18 @@ int main( int argc, char** argv )
         else
             break;
 
+        /* if ( ( st = ChfStaticInit( argv[ 0 ],            /\* Application's name *\/ */
+        /*                            CHF_DEFAULT,          /\* Options *\/ */
+        /*                            [],             /\* Name of the message catalog *\/ */
+        /*                            CONDITION_STACK_SIZE, /\* Size of the condition stack *\/ */
+        /*                            HANDLER_STACK_SIZE,   /\* Size of the handler stack *\/ */
+        /*                            EXIT_FAILURE          /\* Abnormal exit code *\/ */
+        /*                            ) ) != CHF_S_OK || */
+        /*      ChfGetMessage( CHF_MODULE_ID, MAIN_M_COPYRIGHT, NULL ) == NULL ) */
+        /*     fprintf( stderr, "saturn-E-Primary Chf initialization failed (%d)\n", st ); */
+        /* else */
+        /*     break; */
+
         /* Bring down Chf before initializing it again */
         if ( st == CHF_S_OK )
             ChfExit();

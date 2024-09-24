@@ -155,13 +155,6 @@
 */
 #define DEBUG_LEVEL DEBUG_C_REVISION
 
-/* 2.1: FORCE_NONMODAL
-   If this symbol is defined, nonmodal navigation is forced in the
-   OSF/Motif GUI, by setting navigationType to XmNONE and traversalOn
-   to False at the source code level.
-*/
-/* #define FORCE_NONMODAL */
-
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the
    number of 128 Kbyte banks the port must have and must be a power of 2
@@ -202,14 +195,6 @@
 */
 #define CPU_SLOW_IN 16
 
-/* 4.1.1.1: LCD_MAG
-   This symbol represents the magnification ratio of the emulated LCD pixels
-   when drawn on the emulated display; supported values are 1 and 2; 2 is the
-   default.  Currently, the value cannot be set at runtime for performance
-   reasons.
-*/
-#define LCD_MAG 2
-
 /* 4.1.1.1: When defined, this symbol represents the threshold of the long
    key pression.  When the mouse button is kept pressed on a calculator's key
    for more than LONG_PRESS_THR milliseconds, the key stays pressed after
@@ -231,48 +216,6 @@
 #define UTIL_CHF_MODULE_ID 17   /* 3.6 */
 #define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
 #define DEBUG_CHF_MODULE_ID 30
-
-/* .+
-
-.identifier   : $Id: args.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: args.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
-.creation     :	19-Jan-1998
-.keywords     : *
-.description  :
-  This header declares a global data structure containing the emulator
-  invocation arguments; this data structure is initialized before startup,
-  either by means of argc/argv or in other ways.
-
-.include      : config.h
-
-.notes	      :
-  $Log: args.h,v $
-  Revision 4.1  2000/12/11 09:54:19  cibrario
-  Public release.
-
-  Revision 3.15  2000/11/15 14:03:06  cibrario
-  GUI enhancements and assorted bug fixes:
-  - added .batchXfer boolean (corresponding to command-line option
-    -batchXfer) to struct Args
-
-  Revision 3.10  2000/10/24 16:14:25  cibrario
-  Added/Replaced GPL header
-
-  Revision 2.1  2000/09/08 14:45:06  cibrario
-  Added the following fields to 'struct Args': reset, monitor, hw.
-  The latter mimes the setting of the -hw command line option and
-  of the *hw top-level application resource; the former two have
-  been added to export them cleanly from the GUI modules.
-
- * Revision 1.1  1998/02/17  11:58:37  cibrario
- * Initial revision
- *
-
-.- */
 
 /*---------------------------------------------------------------------------
         Global variables

@@ -16,7 +16,7 @@
 
 #define CHF_MODULE_ID 255
 #define CHF_EXTENDED_INFO
-#include "Chf.h"
+#include "../src/Chf.h"
 
 void* task( void* arg )
 {
