@@ -50,6 +50,45 @@ static config_t config = {
 
 };
 
+static void print_config( void )
+{
+    fprintf( stderr, " *** config\n" );
+    fprintf( stderr, "config.progname = %s\n", config.progname );
+
+    fprintf( stderr, "config.model = %i\n", config.model );
+    fprintf( stderr, "config.verbose = %s\n", config.verbose ? "true" : "false" );
+    fprintf( stderr, "config.shiftless = %s\n", config.shiftless ? "true" : "false" );
+
+    fprintf( stderr, "config.frontend = %i\n", config.frontend );
+
+    fprintf( stderr, "config.mono = %s\n", config.mono ? "true" : "false" );
+    fprintf( stderr, "config.gray = %s\n", config.gray ? "true" : "false" );
+
+    fprintf( stderr, "config.chromeless = %s\n", config.chromeless ? "true" : "false" );
+    fprintf( stderr, "config.fullscreen = %s\n", config.fullscreen ? "true" : "false" );
+    fprintf( stderr, "config.scale = %f\n", config.scale );
+
+    fprintf( stderr, "config.tiny = %s\n", config.tiny ? "true" : "false" );
+    fprintf( stderr, "config.small = %s\n", config.small ? "true" : "false" );
+
+    fprintf( stderr, "config.wire_name = %s\n", config.wire_name );
+    fprintf( stderr, "config.ir_name = %s\n", config.ir_name );
+
+    fprintf( stderr, "config.reset = %s\n", config.reset ? "true" : "false" );
+    fprintf( stderr, "config.monitor = %s\n", config.monitor ? "true" : "false" );
+    fprintf( stderr, "config.batchXfer = %s\n", config.batchXfer ? "true" : "false" );
+    fprintf( stderr, "config.state_dir_path = %s\n", config.state_dir_path );
+    fprintf( stderr, "config.mod_file_name = %s\n", config.mod_file_name );
+    fprintf( stderr, "config.cpu_file_name = %s\n", config.cpu_file_name );
+    fprintf( stderr, "config.hdw_file_name = %s\n", config.hdw_file_name );
+    fprintf( stderr, "config.rom_file_name = %s\n", config.rom_file_name );
+    fprintf( stderr, "config.ram_file_name = %s\n", config.ram_file_name );
+    fprintf( stderr, "config.port_1_file_name = %s\n", config.port_1_file_name );
+    fprintf( stderr, "config.port_2_file_name = %s\n", config.port_2_file_name );
+    fprintf( stderr, "config.hw = %s\n", config.hw );
+    fprintf( stderr, " *** /config\n" );
+}
+
 /* Path/name dynamic allocator */
 /* static char* GetPathname( char* path, char* name ) */
 /* { */
@@ -278,6 +317,8 @@ config_t* config_init( int argc, char* argv[] )
             config.hw = "hp48";
             break;
     }
+
+    print_config();
 
     return &config;
 }
