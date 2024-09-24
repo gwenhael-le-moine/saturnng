@@ -82,16 +82,16 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_reset = -1;
     int clopt_monitor = -1;
-    int clopt_batchXfer = -1;
-    char* clopt_state_dir_path;
-    char* clopt_mod_file_name;
-    char* clopt_cpu_file_name;
-    char* clopt_hdw_file_name;
-    char* clopt_rom_file_name;
-    char* clopt_ram_file_name;
-    char* clopt_port_1_file_name;
-    char* clopt_port_2_file_name;
-    char* clopt_hw;
+    /* int clopt_batchXfer = -1; */
+    char* clopt_state_dir_path = ".";
+    /* char* clopt_mod_file_name = "mod"; */
+    /* char* clopt_cpu_file_name = "cpu"; */
+    /* char* clopt_hdw_file_name = "hdw"; */
+    /* char* clopt_rom_file_name = "gxrom-r"; */
+    /* char* clopt_ram_file_name = "ram"; */
+    /* char* clopt_port_1_file_name = "port1"; */
+    /* char* clopt_port_2_file_name = "port2"; */
+    /* char* clopt_hw = "hp48"; */
 
     const char* optstring = "h";
     struct option long_options[] = {
@@ -115,16 +115,16 @@ config_t* config_init( int argc, char* argv[] )
 
         {"reset",      no_argument,       &clopt_reset,      true            },
         {"monitor",    no_argument,       &clopt_monitor,    true            },
-        {"batchXfer",  no_argument,       &clopt_batchXfer,  true            },
+        /* {"batchXfer",  no_argument,       &clopt_batchXfer,  true            }, */
         {"state-dir",  required_argument, NULL,              8999            },
-        {"mod",        required_argument, NULL,              8000            },
-        {"cpu",        required_argument, NULL,              8010            },
-        {"hdw",        required_argument, NULL,              8020            },
-        {"rom",        required_argument, NULL,              8030            },
-        {"ram",        required_argument, NULL,              8040            },
-        {"port1",      required_argument, NULL,              8050            },
-        {"port2",      required_argument, NULL,              8060            },
-        {"hw",         required_argument, NULL,              8070            },
+        /* {"mod",        required_argument, NULL,              8000            }, */
+        /* {"cpu",        required_argument, NULL,              8010            }, */
+        /* {"hdw",        required_argument, NULL,              8020            }, */
+        /* {"rom",        required_argument, NULL,              8030            }, */
+        /* {"ram",        required_argument, NULL,              8040            }, */
+        /* {"port1",      required_argument, NULL,              8050            }, */
+        /* {"port2",      required_argument, NULL,              8060            }, */
+        /* {"hw",         required_argument, NULL,              8070            }, */
 
         {0,            0,                 0,                 0               }
     };
@@ -177,30 +177,30 @@ config_t* config_init( int argc, char* argv[] )
             case 8999:
                 clopt_state_dir_path = optarg;
                 break;
-            case 8000:
-                clopt_mod_file_name = optarg;
-                break;
-            case 8010:
-                clopt_cpu_file_name = optarg;
-                break;
-            case 8020:
-                clopt_hdw_file_name = optarg;
-                break;
-            case 8030:
-                clopt_rom_file_name = optarg;
-                break;
-            case 8040:
-                clopt_ram_file_name = optarg;
-                break;
-            case 8050:
-                clopt_port_1_file_name = optarg;
-                break;
-            case 8060:
-                clopt_port_2_file_name = optarg;
-                break;
-            case 8070:
-                clopt_hw = optarg;
-                break;
+                /* case 8000: */
+                /*     clopt_mod_file_name = optarg; */
+                /*     break; */
+                /* case 8010: */
+                /*     clopt_cpu_file_name = optarg; */
+                /*     break; */
+                /* case 8020: */
+                /*     clopt_hdw_file_name = optarg; */
+                /*     break; */
+                /* case 8030: */
+                /*     clopt_rom_file_name = optarg; */
+                /*     break; */
+                /* case 8040: */
+                /*     clopt_ram_file_name = optarg; */
+                /*     break; */
+                /* case 8050: */
+                /*     clopt_port_1_file_name = optarg; */
+                /*     break; */
+                /* case 8060: */
+                /*     clopt_port_2_file_name = optarg; */
+                /*     break; */
+                /* case 8070: */
+                /*     clopt_hw = optarg; */
+                /*     break; */
 
             default:
                 break;
@@ -244,28 +244,40 @@ config_t* config_init( int argc, char* argv[] )
         config.reset = clopt_reset;
     if ( clopt_monitor != -1 )
         config.monitor = clopt_monitor;
-    if ( clopt_batchXfer != -1 )
-        config.batchXfer = clopt_batchXfer;
+    /* if ( clopt_batchXfer != -1 ) */
+    /*     config.batchXfer = clopt_batchXfer; */
     if ( clopt_state_dir_path != NULL )
         config.state_dir_path = strdup( clopt_state_dir_path );
-    if ( clopt_mod_file_name != NULL )
-        config.mod_file_name = strdup( clopt_mod_file_name );
-    if ( clopt_cpu_file_name != NULL )
-        config.cpu_file_name = strdup( clopt_cpu_file_name );
-    if ( clopt_hdw_file_name != NULL )
-        config.hdw_file_name = strdup( clopt_hdw_file_name );
-    if ( clopt_rom_file_name != NULL )
-        config.rom_file_name = strdup( clopt_rom_file_name );
-    if ( clopt_ram_file_name != NULL )
-        config.ram_file_name = strdup( clopt_ram_file_name );
-    if ( clopt_port_1_file_name != NULL )
-        config.port_1_file_name = strdup( clopt_port_1_file_name );
-    if ( clopt_port_2_file_name != NULL )
-        config.port_2_file_name = strdup( clopt_port_2_file_name );
-    if ( clopt_hw != NULL )
-        config.hw = strdup( clopt_hw );
+    /* if ( clopt_mod_file_name != NULL ) */
+    /*     config.mod_file_name = strdup( clopt_mod_file_name ); */
+    /* if ( clopt_cpu_file_name != NULL ) */
+    /*     config.cpu_file_name = strdup( clopt_cpu_file_name ); */
+    /* if ( clopt_hdw_file_name != NULL ) */
+    /*     config.hdw_file_name = strdup( clopt_hdw_file_name ); */
+    /* if ( clopt_rom_file_name != NULL ) */
+    /*     config.rom_file_name = strdup( clopt_rom_file_name ); */
+    /* if ( clopt_ram_file_name != NULL ) */
+    /*     config.ram_file_name = strdup( clopt_ram_file_name ); */
+    /* if ( clopt_port_1_file_name != NULL ) */
+    /*     config.port_1_file_name = strdup( clopt_port_1_file_name ); */
+    /* if ( clopt_port_2_file_name != NULL ) */
+    /*     config.port_2_file_name = strdup( clopt_port_2_file_name ); */
+    /* if ( clopt_hw != NULL ) */
+    /*     config.hw = strdup( clopt_hw ); */
 
-    fprintf( stderr, "config.chromeless = %s\n\n", config.chromeless ? "true" : "false" );
+    switch ( clopt_model ) {
+        case MODEL_40G:
+            config.hw = "hp40";
+            break;
+        case MODEL_49G:
+            config.hw = "hp49";
+            break;
+        case MODEL_48SX:
+        case MODEL_48GX:
+        default:
+            config.hw = "hp48";
+            break;
+    }
 
     return &config;
 }

@@ -8,7 +8,7 @@ STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 STATEDIR=$STATE_HOME/saturn/48gx
 mkdir -p "$STATEDIR"
 
-if [ ! -e "$STATEDIR"/gxrom-r ]; then
+if [ ! -e "$STATEDIR"/rom ]; then
     if [ ! -d ../share/saturn/ROMs/ ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
@@ -17,17 +17,15 @@ if [ ! -e "$STATEDIR"/gxrom-r ]; then
         cp -R ../share/saturn/ROMs/ "$STATEDIR"/../ROMs
     fi
     make -C "$STATEDIR"/../ROMs gxrom-r
-    cp "$STATEDIR"/../ROMs/gxrom-r "$STATEDIR"/gxrom-r
-fi
-
-RAM=''
-if [ ! -e "$STATEDIR"/ram ]; then
-    RAM=--reset
-else
-    RAM="--ram ram"
+    cp "$STATEDIR"/../ROMs/gxrom-r "$STATEDIR"/rom
 fi
 
 [ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
 [ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
 
-./saturn --hw hp48 --48gx --state-dir "$STATEDIR" --rom gxrom-r "$RAM" --port1 port1 --port2 port2 --mod mod --cpu cpu --hdw hdw "$@"
+RESET=''
+if [ ! -e "$STATEDIR"/ram ]; then
+    RESET=--reset
+fi
+
+./saturn --48gx --state-dir "$STATEDIR" "$RESET" "$@"

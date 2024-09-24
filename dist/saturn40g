@@ -8,7 +8,7 @@ STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 STATEDIR=$STATE_HOME/saturn/40g
 mkdir -p "$STATEDIR"
 
-if [ ! -e "$STATEDIR"/rom.39g ]; then
+if [ ! -e "$STATEDIR"/rom ]; then
     if [ ! -d ../share/saturn/ROMs/ ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
@@ -17,12 +17,12 @@ if [ ! -e "$STATEDIR"/rom.39g ]; then
         cp -R ../share/saturn/ROMs/ "$STATEDIR"/../ROMs
     fi
     make -C "$STATEDIR"/../ROMs rom.39g
-    cp "$STATEDIR"/../ROMs/rom.39g "$STATEDIR"/rom.39g
+    cp "$STATEDIR"/../ROMs/rom.39g "$STATEDIR"/rom
 fi
 
-RAM=''
+RESET=''
 if [ ! -e "$STATEDIR"/ram ]; then
-    RAM=-reset
+    RESET=-reset
 fi
 
-./saturn --hw hp40 --40g --state-dir "$STATEDIR" --rom rom.39g "$RAM" --mod mod --cpu cpu --hdw hdw "$@"
+./saturn --40g --state-dir "$STATEDIR" "$RESET" "$@"
