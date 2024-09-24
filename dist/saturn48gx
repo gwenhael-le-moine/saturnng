@@ -1,6 +1,7 @@
 #!/bin/bash -eu
 
-cd "$(dirname "$0")" ; CWD=$(pwd)
+cd "$(dirname "$0")" || exit 1
+#CWD=$(pwd)
 
 STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
@@ -29,6 +30,4 @@ fi
 [ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
 [ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
 
-#./saturn --hw hp48 --48gx --state-dir "$STATEDIR" --rom gxrom-r $RAM --port1 port1 --port2 port2 --mod mod --cpu cpu --hdw hdw "$@"
-
-./saturn --hw hp48 --48gx --state-dir $STATEDIR --rom gxrom-r $RAM --port1 port1 --port2 port2 --mod mod --cpu cpu --hdw hdw "$@"
+./saturn --hw hp48 --48gx --state-dir "$STATEDIR" --rom gxrom-r "$RAM" --port1 port1 --port2 port2 --mod mod --cpu cpu --hdw hdw "$@"

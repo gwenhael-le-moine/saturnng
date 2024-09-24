@@ -1,6 +1,7 @@
 #!/bin/bash -eu
 
-cd "$(dirname "$0")" ; CWD=$(pwd)
+cd "$(dirname "$0")" || exit 1
+#CWD=$(pwd)
 
 STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
@@ -24,4 +25,4 @@ if [ ! -e "$STATEDIR"/ram ]; then
     RAM=-reset
 fi
 
-./saturn -face hp49 -hw hp49 -stateDir "$STATEDIR" -rom rom.49g $RAM "$@"
+./saturn --hw hp49 --49g --state-dir "$STATEDIR" --rom rom.49g "$RAM" --mod mod --cpu cpu --hdw hdw "$@"
