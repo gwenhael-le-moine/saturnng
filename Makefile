@@ -134,7 +134,7 @@ dist/saturn.cat: $(MSFS)
 
 doc:
 	make -C docs
-	make -C libChf docs
+	make -C libChf doc
 
 # Cleaning
 clean:
