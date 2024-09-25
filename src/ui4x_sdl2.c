@@ -7,8 +7,8 @@
 #include "ui4x_common.h"
 #include "ui4x_inner.h"
 
-#define COLORS ( config.model == MODEL_48GX ? colors_48gx : colors_48sx )
-#define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : buttons_48sx )
+#define COLORS ( config.model == MODEL_48GX ? colors_48gx : ( config.model == MODEL_49G ? colors_49g : colors_48sx ) )
+#define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : ( config.model == MODEL_49G ? buttons_49g : buttons_48sx ) )
 
 #define KEYBOARD_HEIGHT ( BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h )
 #define KEYBOARD_WIDTH ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w )
