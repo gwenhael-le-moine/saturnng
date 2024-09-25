@@ -14,13 +14,13 @@
 
 #include <curses.h>
 
-#include "ui48_config.h"
-#include "ui48_emulator.h"
-#include "ui48_common.h"
-#include "ui48_inner.h"
+#include "ui4x_config.h"
+#include "ui4x_emulator.h"
+#include "ui4x_common.h"
+#include "ui4x_inner.h"
 
-#define COLORS ( config.model == MODEL_48GX ? colors_gx : colors_sx )
-#define BUTTONS ( config.model == MODEL_48GX ? buttons_gx : buttons_sx )
+#define COLORS ( config.model == MODEL_48GX ? colors_48gx : colors_48sx )
+#define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : buttons_48sx )
 
 #define LCD_OFFSET_X 1
 #define LCD_OFFSET_Y 1

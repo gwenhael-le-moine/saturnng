@@ -10,10 +10,10 @@
 
 #include <getopt.h>
 
-#include "ui48_config.h"
+#include "ui4x_config.h"
 
 static config_t config = {
-    .progname = ( char* )"ui48",
+    .progname = ( char* )"ui4x",
 
     .model = MODEL_48GX,
     .verbose = false,

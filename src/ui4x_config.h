@@ -1,5 +1,5 @@
-#ifndef _UI48_CONFIG_H
-#define _UI48_CONFIG_H 1
+#ifndef _UI4x_CONFIG_H
+#define _UI4x_CONFIG_H 1
 
 #include <stdbool.h>
 
@@ -52,4 +52,4 @@ typedef struct {
 /*************/
 extern config_t* config_init( int argc, char* argv[] );
 
-#endif /* !_UI48_CONFIG_H */
+#endif /* !_UI4x_CONFIG_H */

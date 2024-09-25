@@ -50,12 +50,12 @@ DOTOS = src/cpu.o \
 	src/serial.o \
 	src/x_func.o
 
-DOTOS_UI48 = src/ui48_config.o \
-	src/ui48_common.o \
-	src/ui48_sdl2.o \
-	src/ui48_ncurses.o \
-	src/ui48_emulator.o \
-	src/ui48_main.o
+DOTOS_UI4x = src/ui4x_config.o \
+	src/ui4x_common.o \
+	src/ui4x_sdl2.o \
+	src/ui4x_ncurses.o \
+	src/ui4x_emulator.o \
+	src/ui4x_main.o
 
 MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/debug.msf \
@@ -120,7 +120,7 @@ all: libChf/libChf.a dist/saturn dist/saturn.cat docs
 libChf/libChf.a:
 	make -C libChf
 
-dist/saturn: $(DOTOS) $(DOTOS_UI48) libChf/libChf.a
+dist/saturn: $(DOTOS) $(DOTOS_UI4x) libChf/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/libChf.a

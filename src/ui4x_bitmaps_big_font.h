@@ -1,5 +1,5 @@
-#ifndef _UI48_BITMAPS_BIG_FONT_H
-#define _UI48_BITMAPS_BIG_FONT_H 1
+#ifndef _UI4x_BITMAPS_BIG_FONT_H
+#define _UI4x_BITMAPS_BIG_FONT_H 1
 
 #define big_font_dot_width 8
 #define big_font_dot_height 13
@@ -169,4 +169,4 @@ static unsigned char big_font_X_bits[] = {
     51, 51, 30, 30, 12, 12, 30, 30, 51, 51,
 };
 
-#endif /* _UI48_BITMAPS_BIG_FONT_H 1 */
+#endif /* _UI4x_BITMAPS_BIG_FONT_H 1 */

@@ -1,17 +1,17 @@
 #include <stdlib.h>
 
-#include "ui48_common.h"
-#include "ui48_inner.h"
-#include "ui48_sdl2.h"
-#include "ui48_ncurses.h"
+#include "ui4x_common.h"
+#include "ui4x_inner.h"
+#include "ui4x_sdl2.h"
+#include "ui4x_ncurses.h"
 
 letter_t small_font[ 128 ] = {
     {0,                 0,                  0               },
-    {nl_gx_width,       nl_gx_height,       nl_gx_bits      }, /* \x01 == \n gx */
-    {comma_gx_width,    comma_gx_height,    comma_gx_bits   }, /* \x02 == comma gx */
-    {arrow_gx_width,    arrow_gx_height,    arrow_gx_bits   }, /* \x03 == \-> gx */
-    {equal_gx_width,    equal_gx_height,    equal_gx_bits   }, /* \x04 == equal gx */
-    {pi_gx_width,       pi_gx_height,       pi_gx_bits      }, /* \x05 == pi gx */
+    {nl_48gx_width,       nl_48gx_height,       nl_48gx_bits      }, /* \x01 == \n gx */
+    {comma_48gx_width,    comma_48gx_height,    comma_48gx_bits   }, /* \x02 == comma gx */
+    {arrow_48gx_width,    arrow_48gx_height,    arrow_48gx_bits   }, /* \x03 == \-> gx */
+    {equal_48gx_width,    equal_48gx_height,    equal_48gx_bits   }, /* \x04 == equal gx */
+    {pi_48gx_width,       pi_48gx_height,       pi_48gx_bits      }, /* \x05 == pi gx */
     {arrow_width,       arrow_height,       arrow_bits      }, /* \x06 == left arrow   */
     {diff_width,        diff_height,        diff_bits       }, /* \x07 == differential */
     {integral_width,    integral_height,    integral_bits   }, /* \x08 == integral */
@@ -25,19 +25,19 @@ letter_t small_font[ 128 ] = {
     {nl_width,          nl_height,          nl_bits         }, /* \x10 == New Line # 16 */
     {pi_width,          pi_height,          pi_bits         }, /* \x11 == pi */
     {angle_width,       angle_height,       angle_bits      }, /* \x12 == angle */
-    {sqr_gx_width,      sqr_gx_height,      sqr_gx_bits     }, /* \x13 == sqr gx */
-    {root_gx_width,     root_gx_height,     root_gx_bits    }, /* \x14 == root gx */
-    {pow10_gx_width,    pow10_gx_height,    pow10_gx_bits   }, /* \x15 == pow10 gx */
-    {exp_gx_width,      exp_gx_height,      exp_gx_bits     }, /* \x16 == exp gx */
-    {parens_gx_width,   parens_gx_height,   parens_gx_bits  }, /* \x17 == ( ) gx */
-    {hash_gx_width,     hash_gx_height,     hash_gx_bits    }, /* \x18 == # gx */
-    {bracket_gx_width,  bracket_gx_height,  bracket_gx_bits }, /* \x19 == [] gx */
-    {under_gx_width,    under_gx_height,    under_gx_bits   }, /* \x1a == _ gx */
-    {prog_gx_width,     prog_gx_height,     prog_gx_bits    }, /* \x1b == << >> gx */
-    {quote_gx_width,    quote_gx_height,    quote_gx_bits   }, /* \x1c == " " gx */
-    {curly_gx_width,    curly_gx_height,    curly_gx_bits   }, /* \x1d == {} gx */
-    {colon_gx_width,    colon_gx_height,    colon_gx_bits   }, /* \x1e == :: gx */
-    {angle_gx_width,    angle_gx_height,    angle_gx_bits   }, /* \x1f == angle gx */
+    {sqr_48gx_width,      sqr_48gx_height,      sqr_48gx_bits     }, /* \x13 == sqr gx */
+    {root_48gx_width,     root_48gx_height,     root_48gx_bits    }, /* \x14 == root gx */
+    {pow10_48gx_width,    pow10_48gx_height,    pow10_48gx_bits   }, /* \x15 == pow10 gx */
+    {exp_48gx_width,      exp_48gx_height,      exp_48gx_bits     }, /* \x16 == exp gx */
+    {parens_48gx_width,   parens_48gx_height,   parens_48gx_bits  }, /* \x17 == ( ) gx */
+    {hash_48gx_width,     hash_48gx_height,     hash_48gx_bits    }, /* \x18 == # gx */
+    {bracket_48gx_width,  bracket_48gx_height,  bracket_48gx_bits }, /* \x19 == [] gx */
+    {under_48gx_width,    under_48gx_height,    under_48gx_bits   }, /* \x1a == _ gx */
+    {prog_48gx_width,     prog_48gx_height,     prog_48gx_bits    }, /* \x1b == << >> gx */
+    {quote_48gx_width,    quote_48gx_height,    quote_48gx_bits   }, /* \x1c == " " gx */
+    {curly_48gx_width,    curly_48gx_height,    curly_48gx_bits   }, /* \x1d == {} gx */
+    {colon_48gx_width,    colon_48gx_height,    colon_48gx_bits   }, /* \x1e == :: gx */
+    {angle_48gx_width,    angle_48gx_height,    angle_48gx_bits   }, /* \x1f == angle gx */
     {blank_width,       blank_height,       blank_bits      }, /* # 32 */
     {0,                 0,                  0               },
     {0,                 0,                  0               },
@@ -267,7 +267,7 @@ letter_t big_font[ 128 ] = {
     {0,                  0,                   0                }
 };
 
-color_t colors_sx[ NB_COLORS ] = {
+color_t colors_48sx[ NB_COLORS ] = {
     {
      /* #ffffff */
         .name = "white",
@@ -470,7 +470,7 @@ color_t colors_sx[ NB_COLORS ] = {
      },
 };
 
-color_t colors_gx[ NB_COLORS ] = {
+color_t colors_48gx[ NB_COLORS ] = {
     {
      /* #FFFFFF */
         .name = "white",
@@ -673,7 +673,7 @@ color_t colors_gx[ NB_COLORS ] = {
      },
 };
 
-button_t buttons_sx[ NB_KEYS ] = {
+button_t buttons_48sx[ NB_KEYS ] = {
     {.name = "A",
      .x = 0,
      .y = 0,
@@ -1468,7 +1468,7 @@ button_t buttons_sx[ NB_KEYS ] = {
      .sub = 0     },
 };
 
-button_t buttons_gx[ NB_KEYS ] = {
+button_t buttons_48gx[ NB_KEYS ] = {
     {.name = "A",
      .x = 0,
      .y = 0,

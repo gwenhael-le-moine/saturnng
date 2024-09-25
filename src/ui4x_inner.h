@@ -1,11 +1,11 @@
-#ifndef _UI48_INNER_H
-#define _UI48_INNER_H 1
+#ifndef _UI4x_INNER_H
+#define _UI4x_INNER_H 1
 
-#include "ui48_emulator.h"
+#include "ui4x_emulator.h"
 
-#include "ui48_bitmaps_misc.h"
-#include "ui48_bitmaps_small_font.h"
-#include "ui48_bitmaps_big_font.h"
+#include "ui4x_bitmaps_misc.h"
+#include "ui4x_bitmaps_small_font.h"
+#include "ui4x_bitmaps_big_font.h"
 
 // Colors
 /*                          SX      GX     */
@@ -75,11 +75,11 @@ typedef struct button_t {
 extern letter_t small_font[ 128 ];
 extern letter_t big_font[ 128 ];
 
-extern color_t colors_sx[ NB_COLORS ];
-extern color_t colors_gx[ NB_COLORS ];
+extern color_t colors_48sx[ NB_COLORS ];
+extern color_t colors_48gx[ NB_COLORS ];
 
-extern button_t buttons_sx[ NB_KEYS ];
-extern button_t buttons_gx[ NB_KEYS ];
+extern button_t buttons_48sx[ NB_KEYS ];
+extern button_t buttons_48gx[ NB_KEYS ];
 
 #define small_ascent 8
 #define small_descent 4
@@ -90,4 +90,4 @@ extern button_t buttons_gx[ NB_KEYS ];
 extern int SmallTextWidth( const char* string, unsigned int length );
 extern int BigTextWidth( const char* string, unsigned int length );
 
-#endif /* _UI48_INNER_H */
+#endif /* _UI4x_INNER_H */

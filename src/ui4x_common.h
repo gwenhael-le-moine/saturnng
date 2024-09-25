@@ -1,7 +1,7 @@
-#ifndef _UI48_COMMON_H
-#define _UI48_COMMON_H 1
+#ifndef _UI4x_COMMON_H
+#define _UI4x_COMMON_H 1
 
-#include "ui48_config.h"
+#include "ui4x_config.h"
 
 /*************************************************/
 /* public API: if it's there it's used elsewhere */
@@ -15,4 +15,4 @@ extern void ( *ui_stop )( void );
 extern void setup_ui( config_t* config );
 extern void close_and_exit( void );
 
-#endif /* !_UI48_COMMON_H */
+#endif /* !_UI4x_COMMON_H */

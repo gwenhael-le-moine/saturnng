@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ui48_config.h"
-#include "ui48_emulator.h"
+#include "ui4x_config.h"
+#include "ui4x_emulator.h"
 
 #include "config.h"
 #include "keyb.h"

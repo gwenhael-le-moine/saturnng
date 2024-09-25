@@ -126,7 +126,7 @@
 
 #include <stdbool.h>
 
-#include "ui48_config.h"
+#include "ui4x_config.h"
 
 /* CHF_EXTENDED_INFO:
    Define this symbol if extended information is desired during condition

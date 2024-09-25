@@ -1,9 +1,9 @@
-#ifndef _UI48_EMULATOR_H
-#define _UI48_EMULATOR_H 1
+#ifndef _UI4x_EMULATOR_H
+#define _UI4x_EMULATOR_H 1
 
 #include <stdbool.h>
 
-#include "ui48_config.h"
+#include "ui4x_config.h"
 
 // Keys
 #define HPKEY_A 0
@@ -100,4 +100,4 @@ extern bool get_display_state( void );
 extern void get_lcd_buffer( int* target );
 extern int get_contrast( void );
 
-#endif /* !_UI48_EMULATOR_H */
+#endif /* !_UI4x_EMULATOR_H */

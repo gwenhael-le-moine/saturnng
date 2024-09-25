@@ -6,15 +6,15 @@
 #include <time.h>
 #include <sys/time.h>
 
-#include "ui48_config.h"
-#include "ui48_emulator.h"
-#include "ui48_common.h"
+#include "ui4x_config.h"
+#include "ui4x_emulator.h"
+#include "ui4x_common.h"
 
 #include "config.h"
 #include "cpu.h"
 #include "monitor.h"
 
-#define SPEED_HZ_UI 64
+#define UI_REFRESH_RATE_Hz 64
 
 /* Chf condition codes (main program only) */
 
@@ -191,9 +191,9 @@ int main( int argc, char** argv )
      */
     struct itimerval it;
     it.it_interval.tv_sec = 0;
-    it.it_interval.tv_usec = 1000000 / SPEED_HZ_UI;
-    it.it_value.tv_sec = 0;
-    it.it_value.tv_usec = 1000000 / SPEED_HZ_UI;
+    it.it_interval.tv_usec = 1000000 / UI_REFRESH_RATE_Hz;
+    it.it_value.tv_sec = it.it_interval.tv_sec;
+    it.it_value.tv_usec = it.it_interval.tv_usec;
     setitimer( ITIMER_REAL, &it, ( struct itimerval* )0 );
 
     if ( config.monitor )
