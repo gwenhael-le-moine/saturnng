@@ -134,6 +134,7 @@ dist/saturn.cat: $(MSFS)
 
 doc:
 	make -C docs
+	make -C libChf docs
 
 # Cleaning
 clean:
@@ -180,7 +181,7 @@ install: dist/saturn dist/saturn.cat dist/Saturn.ad doc
 	install -c -m 644 dist/Saturn.ad $(DESTDIR)/etc/X11/app-defaults/Saturn
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
-	cp -R COPYING LICENSE README* docs* docs/ $(DESTDIR)$(DOCDIR)
+	cp -R COPYING LICENSE README* docs-4.1.1.1 docs/*.{info,dvi,ps,pdf} libChf/docs/*.{info,dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
