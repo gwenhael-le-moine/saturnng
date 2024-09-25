@@ -5,7 +5,7 @@ cd "$(dirname "$0")" || exit 1
 
 STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
-STATEDIR=$STATE_HOME/saturn/49g
+STATEDIR=${STATEDIR:-$STATE_HOME/saturn/49g}
 mkdir -p "$STATEDIR"
 
 if [ ! -e "$STATEDIR"/rom ]; then
