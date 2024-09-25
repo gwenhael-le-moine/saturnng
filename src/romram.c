@@ -150,8 +150,13 @@ void RomInit( void )
     }
 
     if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
-        ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
-        ChfSignal();
+        /* ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd; */
+        /* ChfSignal(); */
+        // HACK: To load 48SX ROM, try again with half the size this time.
+        if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE / 2, mod_status_rom ) ) {
+            ChfCondition MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
+            ChfSignal();
+        }
     }
 }
 

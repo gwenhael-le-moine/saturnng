@@ -1,0 +1,31 @@
+#!/bin/bash -eu
+
+cd "$(dirname "$0")" || exit 1
+#CWD=$(pwd)
+
+STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+
+STATEDIR=${STATEDIR:-$STATE_HOME/saturn/48sx}
+mkdir -p "$STATEDIR"
+
+if [ ! -e "$STATEDIR"/rom ]; then
+    if [ ! -d ../share/saturn/ROMs/ ]; then
+        echo "Error: No ROMs/ dir found"
+        exit 1
+    fi
+    if [ ! -d "$STATEDIR"/../ROMs ]; then
+        cp -R ../share/saturn/ROMs/ "$STATEDIR"/../ROMs
+    fi
+    make -C "$STATEDIR"/../ROMs sxrom-j
+    cp "$STATEDIR"/../ROMs/sxrom-j "$STATEDIR"/rom
+fi
+
+[ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
+[ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=128
+
+RESET=''
+if [ ! -e "$STATEDIR"/ram ]; then
+    RESET=--reset
+fi
+
+./saturn --48sx --state-dir "$STATEDIR" "$RESET" "$@"
