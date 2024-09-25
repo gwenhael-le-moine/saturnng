@@ -164,7 +164,7 @@ install: dist/saturn dist/saturn.cat dist/Saturn.ad doc
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
 	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48sx
+	install -c -m 755 dist/saturn48sx $(DESTDIR)$(PREFIX)/bin/saturn48sx
 	install -c -m 755 dist/saturn40g $(DESTDIR)$(PREFIX)/bin/saturn40g
 	install -c -m 755 dist/saturn49g $(DESTDIR)$(PREFIX)/bin/saturn49g
 
@@ -185,7 +185,7 @@ install: dist/saturn dist/saturn.cat dist/Saturn.ad doc
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48sx.desktop
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48sx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48sx.desktop
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn49g.desktop
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
 
