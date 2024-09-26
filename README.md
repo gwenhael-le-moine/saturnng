@@ -33,12 +33,13 @@ Use the wrappers scripts.
 
 The local data are stored under $XDG_CONFIG_HOME/saturn<model>/
 
-## Post-fork changelog
-- replaced the build system with a basic Makefile
-- updated license from GPL2-or-later to GPL3-or-later
-- moved binaries and their dependencies under ./dist/
-- new helper scripts run48.sh and run49.sh
-- ROMs helper Makefile
-
 ## Known bugs
 - I could get neither the 49 nor the 40 ROM running yet.
+- some bugs in emulation
+
+## Todo
+- sdl2 UI: draw LCD on a distinct texture and then draw that texture on the main one
+- sdl2 UI: finish 49g and 40g faces
+- fix emulation bugs
+- make 49g emulation work
+- make 40g emulation work
