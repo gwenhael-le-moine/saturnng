@@ -864,8 +864,6 @@ static void _draw_serial_devices_path( void )
         write_with_small_font( SIDE_SKIP, KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ), text, WHITE, DISP_PAD );
 }
 
-static void sdl_draw_pixel( int x, int y, int pixel ) { __draw_rect( x, y, 2, 2, pixel ? PIXEL : LCD ); }
-
 static int sdl_press_key( int hpkey )
 {
     if ( hpkey == -1 || is_key_pressed( hpkey ) )
@@ -1012,8 +1010,8 @@ void ui_update_display_sdl( void )
 
         for ( int y = 0; y < LCD_HEIGHT; ++y )
             for ( int x = 0; x < LCD_WIDTH; ++x )
-                sdl_draw_pixel( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ),
-                                lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] );
+                __draw_rect( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ), 2, 2,
+                             lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? PIXEL : LCD );
 
         SDL_SetRenderTarget( renderer, NULL );
         SDL_RenderCopy( renderer, main_texture, NULL, NULL );
