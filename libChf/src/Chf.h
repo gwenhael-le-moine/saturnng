@@ -1,3 +1,6 @@
+#ifndef _CHF_H
+#define _CHF_H 1
+
 /* .+
 
 .identifier   : $Id: Chf.h,v 2.2 2001/01/25 11:56:44 cibrario Exp $
@@ -50,6 +53,8 @@
 
 
 .- */
+
+#include <stdlib.h>
 
 /* -------------------------------------------------------------------------
    Win32 & UNICODE support
@@ -269,3 +274,5 @@ void ChfGenerate( const int module_id, const ChfChar* file_name, const int line_
 const ChfChar* ChfGetMessage( const int module_id, const int condition_code, const ChfChar* default_message );
 /* Retrieve top condition */
 const ChfDescriptor* ChfGetTopCondition( void );
+
+#endif /*!_CHF_H*/

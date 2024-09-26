@@ -1,3 +1,6 @@
+#ifndef _CHF_PRIV_H
+#define _CHF_PRIV_H 1
+
 /* .+
 
 .identifier   : $Id: ChfPriv.h,v 2.2 2001/01/25 11:57:57 cibrario Exp $
@@ -36,6 +39,8 @@
 
 
 .- */
+
+#include "Chf.h"
 
 /* -------------------------------------------------------------------------
    Macros
@@ -132,3 +137,5 @@ ChfContext* _ChfGetContext( void );
 #define ChfStrncpy strncpy
 #define ChfSprintf sprintf
 #define ChfVsprintf vsprintf
+
+#endif /*!_CHF_PRIV_H*/

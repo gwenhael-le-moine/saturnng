@@ -113,16 +113,17 @@ static char rcs_id[] = "$Id";
 /* Conditional prefix and mandatory suffix to make a message catalog
    name from cat_base_name.
 */
-static const char cat_prefix[] = "./";
-static const char cat_suffix[] = ".cat";
-
-#define CAT_PREFIX_LEN ( sizeof( cat_prefix ) + 1 )
-#define CAT_SUFFIX_LEN ( sizeof( cat_suffix ) + 1 )
-
-/* Message catalog base_name */
+/* Message catalog */
 static const char cat_base_name[] = "saturn";
 ChfTable message_table[] = {
-    { UTIL_CHF_MODULE_ID, UTIL_I_PACK_USAGE, "Usage:\n	pack <emu48_source_rom> <saturn_dest_rom>" },
+    {UTIL_CHF_MODULE_ID, UTIL_I_PACK_USAGE,         "Usage:\n	pack <emu48_source_rom> <saturn_dest_rom>"},
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_CMD_LINE,      "Command line syntax error"                         },
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_STAT,          "stat(%s) failed"                                   },
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_SRC_SIZE,      "Invalid source file size: %d"                      },
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_MALLOC,        "malloc(%d) failed"                                 },
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_OPEN,          "open(%s) failed"                                   },
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_READ,          "read(%s) failed"                                   },
+    {UTIL_CHF_MODULE_ID, UTIL_F_PACK_WRITE_NIBBLES, "WriteNibblesToFile() failed"                       },
 };
 
 size_t message_table_size = sizeof( message_table ) / sizeof( message_table[ 0 ] );
@@ -163,8 +164,7 @@ int main( int argc, char* argv[] )
                         CONDITION_STACK_SIZE, /* Size of the condition stack */
                         HANDLER_STACK_SIZE,   /* Size of the handler stack */
                         EXIT_FAILURE          /* Abnormal exit code */
-                        ) != CHF_S_OK ||
-         ChfGetMessage( CHF_MODULE_ID, UTIL_I_PACK_USAGE, NULL ) == NULL ) {
+                        ) != CHF_S_OK ) {
         fprintf( stderr, "Chf initialization failed\n" );
         exit( EXIT_FAILURE );
     }
