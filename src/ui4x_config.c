@@ -133,22 +133,12 @@ config_t* config_init( int argc, char* argv[] )
     const char* optstring = "h";
     struct option long_options[] = {
         {"help",       no_argument,       NULL,              'h'             },
+        {"verbose",    no_argument,       &clopt_verbose,    true            },
 
         {"48sx",       no_argument,       &clopt_model,      MODEL_48SX      },
         {"48gx",       no_argument,       &clopt_model,      MODEL_48GX      },
         {"40g",        no_argument,       &clopt_model,      MODEL_40G       },
         {"49g",        no_argument,       &clopt_model,      MODEL_49G       },
-        {"verbose",    no_argument,       &clopt_verbose,    true            },
-        {"shiftless",  no_argument,       &clopt_shiftless,  true            },
-        {"gui",        no_argument,       &clopt_frontend,   FRONTEND_SDL    },
-        {"tui",        no_argument,       &clopt_frontend,   FRONTEND_NCURSES},
-        {"tui-small",  no_argument,       NULL,              6110            },
-        {"tui-tiny",   no_argument,       NULL,              6120            },
-        {"mono",       no_argument,       &clopt_mono,       true            },
-        {"gray",       no_argument,       &clopt_gray,       true            },
-        {"chromeless", no_argument,       &clopt_chromeless, true            },
-        {"fullscreen", no_argument,       &clopt_fullscreen, true            },
-        {"scale",      required_argument, NULL,              7110            },
 
         {"reset",      no_argument,       &clopt_reset,      true            },
         {"monitor",    no_argument,       &clopt_monitor,    true            },
@@ -161,6 +151,20 @@ config_t* config_init( int argc, char* argv[] )
         /* {"ram",        required_argument, NULL,              8040            }, */
         /* {"port1",      required_argument, NULL,              8050            }, */
         /* {"port2",      required_argument, NULL,              8060            }, */
+
+        {"shiftless",  no_argument,       &clopt_shiftless,  true            },
+
+        {"gui",        no_argument,       &clopt_frontend,   FRONTEND_SDL    },
+        {"chromeless", no_argument,       &clopt_chromeless, true            },
+        {"fullscreen", no_argument,       &clopt_fullscreen, true            },
+        {"scale",      required_argument, NULL,              7110            },
+
+        {"tui",        no_argument,       &clopt_frontend,   FRONTEND_NCURSES},
+        {"tui-small",  no_argument,       NULL,              6110            },
+        {"tui-tiny",   no_argument,       NULL,              6120            },
+
+        {"mono",       no_argument,       &clopt_mono,       true            },
+        {"gray",       no_argument,       &clopt_gray,       true            },
 
         {0,            0,                 0,                 0               }
     };
@@ -317,6 +321,8 @@ config_t* config_init( int argc, char* argv[] )
             config.hw = "hp48";
             break;
     }
+
+    config.progname = strdup( argv[ 0 ] );
 
     print_config();
 
