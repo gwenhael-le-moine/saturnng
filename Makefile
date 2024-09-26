@@ -55,7 +55,7 @@ DOTOS_UI4x = src/ui4x_config.o \
 	src/ui4x_sdl2.o \
 	src/ui4x_ncurses.o \
 	src/ui4x_emulator.o \
-	src/ui4x_main.o
+	src/main.o
 
 MSFS =	src/MSFs/cpu.msf \
 	src/MSFs/debug.msf \
