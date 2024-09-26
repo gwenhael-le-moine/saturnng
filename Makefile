@@ -7,7 +7,7 @@
 # https://opensource.org/license/MIT.
 
 PREFIX = /usr
-DOCDIR = $(PREFIX)/doc/saturn
+DOCDIR = $(PREFIX)/doc/sb4xng
 
 VERSION_MAJOR = 0
 VERSION_MINOR = 0
@@ -103,13 +103,13 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
-all: libChf/libChf.a dist/saturn docs
+all: libChf/libChf.a dist/sb4xng docs
 
 # Building
 libChf/libChf.a:
 	make -C libChf
 
-dist/saturn: $(DOTOS) $(DOTOS_UI4x) libChf/libChf.a
+dist/sb4xng: $(DOTOS) $(DOTOS_UI4x) libChf/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/libChf.a
@@ -127,7 +127,7 @@ clean:
 	make -C docs clean
 
 mrproper: clean
-	rm -f dist/saturn dist/pack
+	rm -f dist/sb4xng dist/pack
 	make -C dist/ROMs mrproper
 	make -C libChf mrproper
 	make -C docs mrproper
@@ -144,17 +144,17 @@ get-roms:
 	make -C dist/ROMs get-roms
 
 # Installation
-install: dist/saturn doc
+install: dist/sb4xng doc
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
-	install -c -m 755 dist/saturn $(DESTDIR)$(PREFIX)/bin/saturn
+	install -c -m 755 dist/sb4xng $(DESTDIR)$(PREFIX)/bin/sb4xng
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
 	install -c -m 755 dist/saturn48sx $(DESTDIR)$(PREFIX)/bin/saturn48sx
 	install -c -m 755 dist/saturn40g $(DESTDIR)$(PREFIX)/bin/saturn40g
 	install -c -m 755 dist/saturn49g $(DESTDIR)$(PREFIX)/bin/saturn49g
 
-	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/saturn
-	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/saturn/hplogo.png
-	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/saturn/
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/sb4xng
+	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/sb4xng/hplogo.png
+	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/sb4xng/
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
 	cp -R COPYING LICENSE README* docs-4.1.1.1 docs/*.{info,dvi,ps,pdf} libChf/docs/*.{info,dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
@@ -166,12 +166,12 @@ install: dist/saturn doc
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/saturn
+	rm -f $(DESTDIR)$(PREFIX)/bin/sb4xng
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48gx
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48sx
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn40g
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn49g
-	rm -fr $(DESTDIR)$(PREFIX)/share/saturn
+	rm -fr $(DESTDIR)$(PREFIX)/share/sb4xng
 	rm -fr $(DESTDIR)$(DOCDIR)
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48sx.desktop

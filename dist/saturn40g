@@ -5,16 +5,16 @@ cd "$(dirname "$0")" || exit 1
 
 STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
 
-STATEDIR=${STATEDIR:-$STATE_HOME/saturn/40g}
+STATEDIR=${STATEDIR:-$STATE_HOME/sb4xng/40g}
 mkdir -p "$STATEDIR"
 
 if [ ! -e "$STATEDIR"/rom ]; then
-    if [ ! -d ../share/saturn/ROMs/ ]; then
+    if [ ! -d ../share/sb4xng/ROMs/ ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
     fi
     if [ ! -d "$STATEDIR"/../ROMs ]; then
-        cp -R ../share/saturn/ROMs/ "$STATEDIR"/../ROMs
+        cp -R ../share/sb4xng/ROMs/ "$STATEDIR"/../ROMs
     fi
     make -C "$STATEDIR"/../ROMs rom.39g
     cp "$STATEDIR"/../ROMs/rom.39g "$STATEDIR"/rom
@@ -25,4 +25,4 @@ if [ ! -e "$STATEDIR"/ram ]; then
     RESET=-reset
 fi
 
-./saturn --40g --state-dir "$STATEDIR" "$RESET" "$@"
+sb4xng --40g --state-dir "$STATEDIR" "$RESET" "$@"
