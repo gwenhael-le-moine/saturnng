@@ -110,11 +110,6 @@ ChfTable message_table[] = {
     {MOD_CHF_MODULE_ID,     MOD_M_MAP_SZ_CONFIGURED, "Size_configured"                                                                       },
     {MOD_CHF_MODULE_ID,     MOD_M_MAP_UNCONFIGURED,  "*Unconfigured*"                                                                        },
 
-    {MAIN_CHF_MODULE_ID,    MAIN_M_COPYRIGHT,
-     "saturn %s - A poor-man's emulator of HP48GX, HP49, HP39/40\nCopyright (C) 1998-2000 Ivan Cibrario Bertolotti\n"                        },
-    {MAIN_CHF_MODULE_ID,    MAIN_M_LICENSE,
-     "This program is free software, and comes with ABSOLUTELY NO WARRANTY;\nfor details see the accompanying documentation.\n\n"            },
-
     {SERIAL_CHF_MODULE_ID,  SERIAL_I_CALLED,         "Function [%s] called"                                                                  },
     {SERIAL_CHF_MODULE_ID,  SERIAL_I_REVISION,       "Serial port emulator: [%s]"                                                            },
     {SERIAL_CHF_MODULE_ID,  SERIAL_I_READ,           "Read [%s]; value [%01X]"                                                               },

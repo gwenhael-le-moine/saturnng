@@ -2,6 +2,8 @@
 
 #include <SDL2/SDL.h>
 
+#include "config.h"
+
 #include "ui4x_config.h"
 #include "ui4x_emulator.h"
 #include "ui4x_common.h"
@@ -56,8 +58,6 @@ static annunciators_ui_t annunciators_ui[ NB_ANNUNCIATORS ] = {
     {.x = 196, .y = 4, .width = ann_busy_width,    .height = ann_busy_height,    .bits = ann_busy_bitmap   },
     {.x = 241, .y = 4, .width = ann_io_width,      .height = ann_io_height,      .bits = ann_io_bitmap     },
 };
-
-static config_t config;
 
 static int lcd_pixels_buffer[ LCD_WIDTH * LCD_HEIGHT ];
 static int last_annunciators = -1;
@@ -985,7 +985,7 @@ void ui_get_event_sdl( void )
                 break;
             case SDL_MOUSEBUTTONUP:
                 hpkey = mouse_click_to_hpkey( event.button.x, event.button.y );
-                if ( lasthpkey != hpkey || lastticks == -1 || ( SDL_GetTicks() - lastticks < 750 ) )
+                if ( lasthpkey != hpkey || lastticks == -1 || ( SDL_GetTicks() - lastticks < LONG_PRESS_THR ) )
                     sdl_release_key( hpkey );
 
                 lasthpkey = lastticks = -1;

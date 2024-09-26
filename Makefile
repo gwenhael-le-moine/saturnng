@@ -8,22 +8,23 @@
 
 NAME = saturn
 
-PREFIX = /usr
-DOCDIR = $(PREFIX)/doc/$(NAME)
+PREFIX ?= /usr
+DOCDIR ?= $(PREFIX)/doc/$(NAME)
 
-VERSION_MAJOR = 0
-VERSION_MINOR = 1
+VERSION_MAJOR = 5
+VERSION_MINOR = 0
 PATCHLEVEL = 0
 
 OPTIM ?= 2
 
-CFLAGS ?= -O$(OPTIM) \
+override CFLAGS := -O$(OPTIM) \
 	-D_GNU_SOURCE=1 \
 	-DVERSION_MAJOR=$(VERSION_MAJOR) \
 	-DVERSION_MINOR=$(VERSION_MINOR) \
 	-DPATCHLEVEL=$(PATCHLEVEL) \
 	-I./src/ \
-	-I./libChf/src/
+	-I./libChf/src/ \
+	$(CFLAGS)
 
 LIBS = -L./libChf -lChf
 

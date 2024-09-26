@@ -245,7 +245,6 @@ static void EmulatorLoop( void )
         if ( inner_loop < INNER_LOOP_MIN )
             inner_loop = INNER_LOOP_MIN;
 
-#ifdef REAL_CPU_SPEED
         /* 3.13: Force an upper limit to the CPU speed if the compile-time option
            REAL_CPU_SPEED is defined: inner_loop is limited to
            cpu_status.inner_loop_max
@@ -254,12 +253,12 @@ static void EmulatorLoop( void )
            well, I hope.
            The special value cpu_status.inner_loop_max==0 gives maximum speed.
         */
-        if ( cpu_status.inner_loop_max != 0 && inner_loop >= cpu_status.inner_loop_max ) {
-            inner_loop = cpu_status.inner_loop_max;
-            if ( T1_INTERVAL > ela )
-                usleep( T1_INTERVAL - ela );
-        }
-#endif
+        if ( config.throttle )
+            if ( cpu_status.inner_loop_max != 0 && inner_loop >= cpu_status.inner_loop_max ) {
+                inner_loop = cpu_status.inner_loop_max;
+                if ( T1_INTERVAL > ela )
+                    usleep( T1_INTERVAL - ela );
+            }
 
         cpu_status.inner_loop = inner_loop;
         old_t = cur_t;

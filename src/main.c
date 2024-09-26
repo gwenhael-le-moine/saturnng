@@ -2,8 +2,6 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 #include <sys/time.h>
 
 #include "ui4x_config.h"
@@ -61,8 +59,12 @@ int main( int argc, char** argv )
     }
 
     /* 3.9: Print out MAIN_M_COPYRIGHT and MAIN_M_LICENSE on stdout now */
-    fprintf( stdout, ChfGetMessage( MAIN_CHF_MODULE_ID, MAIN_M_COPYRIGHT, "" ), "$Revision: 4.1 $" );
-    /* fprintf( stdout, ChfGetMessage( CHF_MODULE_ID, MAIN_M_LICENSE, "" ) ); */
+    fprintf( stdout,
+             "saturn %i.%i.%i - A poor-man's emulator of HP48GX, HP49, HP39/40\nCopyright (C) 1998-2000 Ivan Cibrario "
+             "Bertolotti\nCopyright (C) Gwenhael Le Moine\n",
+             VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL );
+    fprintf( stdout,
+             "This program is free software, and comes with ABSOLUTELY NO WARRANTY;\nfor details see the accompanying documentation.\n\n" );
 
     init_emulator( &config );
 

@@ -161,6 +161,7 @@
    between 1 and 32, inclusive.  When undefined, Port_2 is not emulated at all.
    The default value is 8, that is, Port_2 is emulated and its size is 1Mbyte.
 */
+// #define N_PORT_2_BANK ( config.model == MODEL_48GX ? 32 : 1 )
 #define N_PORT_2_BANK 32
 
 /* 2.5: SERIAL_FORCE_OPENPTY, SERIAL_FORCE_STREAMSPTY
@@ -178,13 +179,6 @@
    a HP48, too, since all changed should be backward-compatible.
 */
 #define HP49_SUPPORT
-
-/* 3.13: REAL_CPU_SPEED
-   Define this symbol (recommended) to force the emulated CPU to run
-   no faster than a software-controlled limit; by default, the limit
-   is close to the real CPU speed.
-*/
-#define REAL_CPU_SPEED
 
 /* 3.14: CPU_SLOW_IN
    Define this symbol (recommended) to slow down the A=IN and C=IN

@@ -16,6 +16,7 @@ static config_t config = {
     .progname = ( char* )"ui4x",
 
     .model = MODEL_48GX,
+    .throttle = false,
     .verbose = false,
     .shiftless = false,
 
@@ -51,41 +52,42 @@ static config_t config = {
 
 static void print_config( void )
 {
-    fprintf( stderr, "*** config\n" );
-    fprintf( stderr, "  .progname = %s\n", config.progname );
+    fprintf( stderr, "--- config\n" );
+    fprintf( stderr, "-- progname = %s\n", config.progname );
+    fprintf( stderr, "state_dir_path = %s\n", config.state_dir_path );
+    fprintf( stderr, "-- mod_file_name = %s\n", config.mod_file_name );
+    fprintf( stderr, "-- cpu_file_name = %s\n", config.cpu_file_name );
+    fprintf( stderr, "-- hdw_file_name = %s\n", config.hdw_file_name );
+    fprintf( stderr, "-- rom_file_name = %s\n", config.rom_file_name );
+    fprintf( stderr, "-- ram_file_name = %s\n", config.ram_file_name );
+    fprintf( stderr, "-- port_1_file_name = %s\n", config.port_1_file_name );
+    fprintf( stderr, "-- port_2_file_name = %s\n", config.port_2_file_name );
+    fprintf( stderr, "-- hw = %s\n", config.hw );
 
-    fprintf( stderr, "  .model = %i\n", config.model );
-    fprintf( stderr, "  .verbose = %s\n", config.verbose ? "true" : "false" );
-    fprintf( stderr, "  .shiftless = %s\n", config.shiftless ? "true" : "false" );
+    fprintf( stderr, "model = %i\n", config.model );
+    fprintf( stderr, "throttle = %s\n", config.throttle ? "true" : "false" );
+    fprintf( stderr, "verbose = %s\n", config.verbose ? "true" : "false" );
+    fprintf( stderr, "shiftless = %s\n", config.shiftless ? "true" : "false" );
 
-    fprintf( stderr, "  .frontend = %i\n", config.frontend );
+    fprintf( stderr, "frontend = %i\n", config.frontend );
 
-    fprintf( stderr, "  .mono = %s\n", config.mono ? "true" : "false" );
-    fprintf( stderr, "  .gray = %s\n", config.gray ? "true" : "false" );
+    fprintf( stderr, "mono = %s\n", config.mono ? "true" : "false" );
+    fprintf( stderr, "gray = %s\n", config.gray ? "true" : "false" );
 
-    fprintf( stderr, "  .chromeless = %s\n", config.chromeless ? "true" : "false" );
-    fprintf( stderr, "  .fullscreen = %s\n", config.fullscreen ? "true" : "false" );
-    fprintf( stderr, "  .scale = %f\n", config.scale );
+    fprintf( stderr, "chromeless = %s\n", config.chromeless ? "true" : "false" );
+    fprintf( stderr, "fullscreen = %s\n", config.fullscreen ? "true" : "false" );
+    fprintf( stderr, "scale = %f\n", config.scale );
 
-    fprintf( stderr, "  .tiny = %s\n", config.tiny ? "true" : "false" );
-    fprintf( stderr, "  .small = %s\n", config.small ? "true" : "false" );
+    fprintf( stderr, "tiny = %s\n", config.tiny ? "true" : "false" );
+    fprintf( stderr, "small = %s\n", config.small ? "true" : "false" );
 
-    fprintf( stderr, "  .wire_name = %s\n", config.wire_name );
-    fprintf( stderr, "  .ir_name = %s\n", config.ir_name );
+    fprintf( stderr, "wire_name = %s\n", config.wire_name );
+    fprintf( stderr, "ir_name = %s\n", config.ir_name );
 
-    fprintf( stderr, "  .reset = %s\n", config.reset ? "true" : "false" );
-    fprintf( stderr, "  .monitor = %s\n", config.monitor ? "true" : "false" );
-    fprintf( stderr, "  .batchXfer = %s\n", config.batchXfer ? "true" : "false" );
-    fprintf( stderr, "  .state_dir_path = %s\n", config.state_dir_path );
-    fprintf( stderr, "  .mod_file_name = %s\n", config.mod_file_name );
-    fprintf( stderr, "  .cpu_file_name = %s\n", config.cpu_file_name );
-    fprintf( stderr, "  .hdw_file_name = %s\n", config.hdw_file_name );
-    fprintf( stderr, "  .rom_file_name = %s\n", config.rom_file_name );
-    fprintf( stderr, "  .ram_file_name = %s\n", config.ram_file_name );
-    fprintf( stderr, "  .port_1_file_name = %s\n", config.port_1_file_name );
-    fprintf( stderr, "  .port_2_file_name = %s\n", config.port_2_file_name );
-    fprintf( stderr, "  .hw = %s\n", config.hw );
-    fprintf( stderr, "*** /config\n" );
+    fprintf( stderr, "reset = %s\n", config.reset ? "true" : "false" );
+    fprintf( stderr, "monitor = %s\n", config.monitor ? "true" : "false" );
+    fprintf( stderr, "-- batchXfer = %s\n", config.batchXfer ? "true" : "false" );
+    fprintf( stderr, "--- /config\n" );
 }
 
 /* Path/name dynamic allocator */
@@ -107,6 +109,7 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_model = -1;
     int clopt_verbose = -1;
+    int clopt_throttle = -1;
     int clopt_shiftless = -1;
     int clopt_frontend = -1;
     int clopt_mono = -1;
@@ -134,6 +137,7 @@ config_t* config_init( int argc, char* argv[] )
     struct option long_options[] = {
         {"help",       no_argument,       NULL,              'h'             },
         {"verbose",    no_argument,       &clopt_verbose,    true            },
+        {"throttle",   no_argument,       &clopt_throttle,   true            },
 
         {"48sx",       no_argument,       &clopt_model,      MODEL_48SX      },
         {"48gx",       no_argument,       &clopt_model,      MODEL_48GX      },
@@ -172,6 +176,14 @@ config_t* config_init( int argc, char* argv[] )
     const char* help_text = "usage: %s [options]\n"
                             "options:\n"
                             "  -h --help       what you are reading\n"
+                            "     --verbose    display more informations\n"
+                            "     --throttle   throttle CPU speed\n"
+                            "     --48gx       emulate a HP 48GX\n"
+                            "     --48sx       emulate a HP 48SX\n"
+                            "     --40g        emulate a HP 40G\n"
+                            "     --49g        emulate a HP 49G\n"
+                            "     --state-dir=<path> use a different data directory "
+                            "(default: ~/.config/saturnMODEL/)\n"
                             "     --gui        graphical (SDL2) front-end (default: true)\n"
                             "     --tui        text front-end (default: false)\n"
                             "     --tui-small  text small front-end (2×2 pixels per character) (default: "
@@ -188,12 +200,10 @@ config_t* config_init( int argc, char* argv[] )
                             "false)\n"
                             "     --gray       make the UI grayscale (default: "
                             "false)\n"
-                            "     --48gx       make the GUI looks like a HP 48GX (default: "
-                            "auto)\n"
-                            "     --48sx       make the GUI looks like a HP 48SX (default: "
-                            "auto)\n"
                             "     --shiftless  don't map the shift keys to let them free for numbers (default: "
-                            "false)\n";
+                            "false)\n"
+                            "     --reset      force a reset\n"
+                            "     --monitor    start with monitor\n";
 
     while ( c != EOF ) {
         c = getopt_long( argc, argv, optstring, long_options, &option_index );
@@ -244,13 +254,6 @@ config_t* config_init( int argc, char* argv[] )
         }
     }
 
-    if ( optind < argc ) {
-        fprintf( stderr, "Invalid arguments : " );
-        while ( optind < argc )
-            fprintf( stderr, "%s\n", argv[ optind++ ] );
-        fprintf( stderr, "\n" );
-    }
-
     /****************************************************/
     /* 2. treat command-line params which have priority */
     /****************************************************/
@@ -258,6 +261,8 @@ config_t* config_init( int argc, char* argv[] )
         config.verbose = clopt_verbose == true;
     if ( clopt_model != -1 )
         config.model = clopt_model;
+    if ( clopt_throttle != -1 )
+        config.throttle = clopt_throttle == true;
     if ( clopt_frontend != -1 )
         config.frontend = clopt_frontend;
     if ( clopt_chromeless != -1 )
@@ -324,7 +329,16 @@ config_t* config_init( int argc, char* argv[] )
 
     config.progname = strdup( argv[ 0 ] );
 
-    print_config();
+    if ( config.verbose ) {
+        print_config();
+
+        if ( optind < argc ) {
+            fprintf( stderr, "%i invalid arguments : ", argc - optind );
+            while ( optind < argc )
+                fprintf( stderr, "%s\n", argv[ optind++ ] );
+            fprintf( stderr, "\n" );
+        }
+    }
 
     return &config;
 }

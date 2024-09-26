@@ -15,6 +15,7 @@ typedef struct {
     char* progname;
 
     int model;
+    bool throttle;
     bool verbose;
     bool shiftless;
 
