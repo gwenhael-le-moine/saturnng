@@ -15,12 +15,36 @@ make install DESTDIR=/
 
 ### locally
 ``` shell
-./dist/run48.sh
+./dist/saturn48gx
+```
+or
+``` shell
+./dist/saturn48sx
+```
+or
+``` shell
+./dist/saturn49g
+```
+or
+``` shell
+./dist/saturn40g
 ```
 
 ### when installed
 ``` shell
 saturn48gx
+```
+or
+``` shell
+saturn48sx
+```
+or
+``` shell
+saturn49g
+```
+or
+``` shell
+saturn40g
 ```
 
 

@@ -1,28 +1,36 @@
 #!/bin/bash -eu
 
 cd "$(dirname "$0")" || exit 1
-#CWD=$(pwd)
 
-STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+BINNAME=$(basename "$0")
 
-STATEDIR=${STATEDIR:-$STATE_HOME/sb4xng/49g}
-mkdir -p "$STATEDIR"
+CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 
-if [ ! -e "$STATEDIR"/rom ]; then
-    if [ ! -d ../share/sb4xng/ROMs/ ]; then
+CONFIGDIR=${CONFIGDIR:-$CONFIG_HOME/$BINNAME}
+mkdir -p "$CONFIGDIR"
+
+if [ ! -e "$CONFIGDIR"/rom ]; then
+    if [ -d ../share/saturn/ROMs/ ]; then
+        cp -R ../share/saturn/ROMs/ "$CONFIGDIR"/
+    elif [ -d ./ROMs/ ]; then
+        cp -R ./ROMs/ "$CONFIGDIR"/
+    fi
+    if [ ! -d "$CONFIGDIR"/ROMs ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
     fi
-    if [ ! -d "$STATEDIR"/../ROMs ]; then
-        cp -R ../share/sb4xng/ROMs/ "$STATEDIR"/../ROMs
-    fi
-    make -C "$STATEDIR"/../ROMs rom.49g
-    cp "$STATEDIR"/../ROMs/rom.49g "$STATEDIR"/rom
+
+    echo "The next step will download a ROM from https://hpcalc.org where \"HP graciously began allowing this to be downloaded in mid-2000.\""
+    echo "You can hit Ctrl-C now if you do not wish to download them."
+    read -r
+
+    make -C "$CONFIGDIR"/ROMs rom.49g
+    cp "$CONFIGDIR"/ROMs/rom.49g "$CONFIGDIR"/rom
 fi
 
 RESET=''
-if [ ! -e "$STATEDIR"/ram ]; then
+if [ ! -e "$CONFIGDIR"/ram ]; then
     RESET=-reset
 fi
 
-sb4xng --49g --state-dir "$STATEDIR" "$RESET" "$@"
+./saturn --49g --state-dir "$CONFIGDIR" "$RESET" "$@"

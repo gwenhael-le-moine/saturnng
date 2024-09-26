@@ -1,4 +1,4 @@
-# Simple Makefile to build saturn_bertolotti
+# Simple Makefile to build saturn
 #
 # The cc-option function and the C{,PP}FLAGS logic were copied from the
 # fsverity-utils project.
@@ -6,8 +6,10 @@
 # The governing license can be found in the LICENSE file or at
 # https://opensource.org/license/MIT.
 
+NAME = saturn
+
 PREFIX = /usr
-DOCDIR = $(PREFIX)/doc/sb4xng
+DOCDIR = $(PREFIX)/doc/$(NAME)
 
 VERSION_MAJOR = 0
 VERSION_MINOR = 0
@@ -103,13 +105,13 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
-all: libChf/libChf.a dist/sb4xng docs
+all: libChf/libChf.a dist/$(NAME) docs
 
 # Building
 libChf/libChf.a:
 	make -C libChf
 
-dist/sb4xng: $(DOTOS) $(DOTOS_UI4x) libChf/libChf.a
+dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) libChf/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/libChf.a
@@ -127,7 +129,7 @@ clean:
 	make -C docs clean
 
 mrproper: clean
-	rm -f dist/sb4xng dist/pack
+	rm -f dist/$(NAME) dist/pack
 	make -C dist/ROMs mrproper
 	make -C libChf mrproper
 	make -C docs mrproper
@@ -144,17 +146,17 @@ get-roms:
 	make -C dist/ROMs get-roms
 
 # Installation
-install: dist/sb4xng doc
+install: dist/$(NAME) doc
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
-	install -c -m 755 dist/sb4xng $(DESTDIR)$(PREFIX)/bin/sb4xng
+	install -c -m 755 dist/$(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
 	install -c -m 755 dist/saturn48sx $(DESTDIR)$(PREFIX)/bin/saturn48sx
 	install -c -m 755 dist/saturn40g $(DESTDIR)$(PREFIX)/bin/saturn40g
 	install -c -m 755 dist/saturn49g $(DESTDIR)$(PREFIX)/bin/saturn49g
 
-	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/sb4xng
-	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/sb4xng/hplogo.png
-	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/sb4xng/
+	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/$(NAME)
+	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/$(NAME)/hplogo.png
+	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/$(NAME)/
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
 	cp -R COPYING LICENSE README* docs-4.1.1.1 docs/*.{info,dvi,ps,pdf} libChf/docs/*.{info,dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
@@ -166,12 +168,12 @@ install: dist/sb4xng doc
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/sb4xng
+	rm -f $(DESTDIR)$(PREFIX)/bin/$(NAME)
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48gx
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48sx
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn40g
 	rm -f $(DESTDIR)$(PREFIX)/bin/saturn49g
-	rm -fr $(DESTDIR)$(PREFIX)/share/sb4xng
+	rm -fr $(DESTDIR)$(PREFIX)/share/$(NAME)
 	rm -fr $(DESTDIR)$(DOCDIR)
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
 	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48sx.desktop

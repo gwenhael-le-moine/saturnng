@@ -1,31 +1,39 @@
 #!/bin/bash -eu
 
 cd "$(dirname "$0")" || exit 1
-#CWD=$(pwd)
 
-STATE_HOME=${XDG_STATE_HOME:-$HOME/.local/state}
+BINNAME=$(basename "$0")
 
-STATEDIR=${STATEDIR:-$STATE_HOME/sb4xng/48gx}
-mkdir -p "$STATEDIR"
+CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
 
-if [ ! -e "$STATEDIR"/rom ]; then
-    if [ ! -d ../share/sb4xng/ROMs/ ]; then
+CONFIGDIR=${CONFIGDIR:-$CONFIG_HOME/$BINNAME}
+mkdir -p "$CONFIGDIR"
+
+if [ ! -e "$CONFIGDIR"/rom ]; then
+    if [ -d ../share/saturn/ROMs/ ]; then
+        cp -R ../share/saturn/ROMs/ "$CONFIGDIR"/
+    elif [ -d ./ROMs/ ]; then
+        cp -R ./ROMs/ "$CONFIGDIR"/
+    fi
+    if [ ! -d "$CONFIGDIR"/ROMs ]; then
         echo "Error: No ROMs/ dir found"
         exit 1
     fi
-    if [ ! -d "$STATEDIR"/../ROMs ]; then
-        cp -R ../share/sb4xng/ROMs/ "$STATEDIR"/../ROMs
-    fi
-    make -C "$STATEDIR"/../ROMs gxrom-r
-    cp "$STATEDIR"/../ROMs/gxrom-r "$STATEDIR"/rom
+
+    echo "The next step will download a ROM from https://hpcalc.org where \"HP graciously began allowing this to be downloaded in mid-2000.\""
+    echo "You can hit Ctrl-C now if you do not wish to download them."
+    read -r
+
+    make -C "$CONFIGDIR"/ROMs gxrom-r
+    cp "$CONFIGDIR"/ROMs/gxrom-r "$CONFIGDIR"/rom
 fi
 
-[ ! -e "$STATEDIR"/port1 ] && dd if=/dev/zero of="$STATEDIR"/port1 bs=1k count=128
-[ ! -e "$STATEDIR"/port2 ] && dd if=/dev/zero of="$STATEDIR"/port2 bs=1k count=4096
+[ ! -e "$CONFIGDIR"/port1 ] && dd if=/dev/zero of="$CONFIGDIR"/port1 bs=1k count=128
+[ ! -e "$CONFIGDIR"/port2 ] && dd if=/dev/zero of="$CONFIGDIR"/port2 bs=1k count=4096
 
 RESET=''
-if [ ! -e "$STATEDIR"/ram ]; then
+if [ ! -e "$CONFIGDIR"/ram ]; then
     RESET=--reset
 fi
 
-sb4xng --48gx --state-dir "$STATEDIR" "$RESET" "$@"
+./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@"
