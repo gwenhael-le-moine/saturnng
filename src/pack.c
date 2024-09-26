@@ -83,6 +83,18 @@ static char rcs_id[] = "$Id";
 #include "cpu.h"
 #include "disk_io.h"
 
+/* Condition codes used by this utility */
+#define UTIL_CHF_MODULE_ID 17
+
+#define UTIL_I_PACK_USAGE 1
+#define UTIL_F_PACK_CMD_LINE 2
+#define UTIL_F_PACK_STAT 3
+#define UTIL_F_PACK_SRC_SIZE 4
+#define UTIL_F_PACK_MALLOC 5
+#define UTIL_F_PACK_OPEN 6
+#define UTIL_F_PACK_READ 7
+#define UTIL_F_PACK_WRITE_NIBBLES 8
+
 #define CHF_MODULE_ID UTIL_CHF_MODULE_ID
 #include <Chf.h>
 
@@ -109,16 +121,11 @@ static const char cat_suffix[] = ".cat";
 
 /* Message catalog base_name */
 static const char cat_base_name[] = "saturn";
+ChfTable message_table[] = {
+    { UTIL_CHF_MODULE_ID, UTIL_I_PACK_USAGE, "Usage:\n	pack <emu48_source_rom> <saturn_dest_rom>" },
+};
 
-/* Condition codes used by this utility */
-#define UTIL_I_PACK_USAGE 1
-#define UTIL_F_PACK_CMD_LINE 2
-#define UTIL_F_PACK_STAT 3
-#define UTIL_F_PACK_SRC_SIZE 4
-#define UTIL_F_PACK_MALLOC 5
-#define UTIL_F_PACK_OPEN 6
-#define UTIL_F_PACK_READ 7
-#define UTIL_F_PACK_WRITE_NIBBLES 8
+size_t message_table_size = sizeof( message_table ) / sizeof( message_table[ 0 ] );
 
 /*---------------------------------------------------------------------------
         Public functions
@@ -138,67 +145,29 @@ static const char cat_base_name[] = "saturn";
 .- */
 int main( int argc, char* argv[] )
 {
-    char* cat_name;    /* Message catalog name */
     struct stat statb; /* stat() buffer on source file */
     char* b;           /* Source buffer */
     Nibble* nb;        /* Nibble buffer */
     int d;             /* Source file descriptor */
     int i;
-    int st;
-
-    if ( ( cat_name = malloc( sizeof( cat_base_name ) + CAT_PREFIX_LEN + CAT_SUFFIX_LEN + 1 ) ) == NULL ) {
-        fprintf( stderr, "Cat_name initialization failed\n" );
-        exit( EXIT_FAILURE );
-    }
-
-    /* Generate catalog name, without optional prefix */
-    strcpy( cat_name, cat_base_name );
-    strcat( cat_name, cat_suffix );
 
     /* Chf initialization with msgcat subsystem;
        notice that on some systems (e.g. Digital UNIX) catopen() can succeed
        even if it was not able to open the right message catalog; better
        try it now.
     */
-    if ( ( st = ChfMsgcatInit( argv[ 0 ],            /* Application's name */
-                               CHF_DEFAULT,          /* Options */
-                               cat_name,             /* Name of the message catalog */
-                               CONDITION_STACK_SIZE, /* Size of the condition stack */
-                               HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                               EXIT_FAILURE          /* Abnormal exit code */
-                               ) ) != CHF_S_OK ||
+    if ( ChfStaticInit( argv[ 0 ],            /* Application's name */
+                        CHF_DEFAULT,          /* Options */
+                        message_table,        /* message catalog */
+                        message_table_size,   /* message catalog size */
+                        CONDITION_STACK_SIZE, /* Size of the condition stack */
+                        HANDLER_STACK_SIZE,   /* Size of the handler stack */
+                        EXIT_FAILURE          /* Abnormal exit code */
+                        ) != CHF_S_OK ||
          ChfGetMessage( CHF_MODULE_ID, UTIL_I_PACK_USAGE, NULL ) == NULL ) {
-        if ( st != CHF_S_OK && st != CHF_F_CATOPEN ) {
-            fprintf( stderr, "Chf initialization failed\n" );
-            exit( EXIT_FAILURE );
-        } else {
-            fprintf( stderr, "Default message catalog open failed; trying alternate\n" );
-
-            /* Bring down Chf before initializing it again */
-            if ( st == CHF_S_OK )
-                ChfExit();
-
-            /* Try alternate message catalog name (with prefix) */
-            strcpy( cat_name, cat_prefix );
-            strcat( cat_name, cat_base_name );
-            strcat( cat_name, cat_suffix );
-
-            if ( ( st = ChfMsgcatInit( argv[ 0 ],            /* Application's name */
-                                       CHF_DEFAULT,          /* Options */
-                                       cat_name,             /* Name of the message catalog */
-                                       CONDITION_STACK_SIZE, /* Size of the condition stack */
-                                       HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                                       EXIT_FAILURE          /* Abnormal exit code */
-                                       ) ) != CHF_S_OK ||
-                 ChfGetMessage( CHF_MODULE_ID, UTIL_I_PACK_USAGE, NULL ) == NULL ) {
-                fprintf( stderr, "Alternate Chf initialization failed\n" );
-                exit( EXIT_FAILURE );
-            }
-        }
+        fprintf( stderr, "Chf initialization failed\n" );
+        exit( EXIT_FAILURE );
     }
-
-    /* cat_name no longer needed */
-    free( cat_name );
 
     /* Now, do some useful work; pack argv[1] into argv[2] */
     if ( argc != 3 ) {
