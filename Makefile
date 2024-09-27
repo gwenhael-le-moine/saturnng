@@ -23,10 +23,10 @@ override CFLAGS := -O$(OPTIM) \
 	-DVERSION_MINOR=$(VERSION_MINOR) \
 	-DPATCHLEVEL=$(PATCHLEVEL) \
 	-I./src/ \
-	-I./libChf/src/ \
+	-I./src/libChf/src/ \
 	$(CFLAGS)
 
-LIBS = -L./libChf -lChf
+LIBS = -L./src/libChf -lChf
 
 SDLCFLAGS = $(shell pkg-config --cflags sdl2)
 SDLLIBS = $(shell pkg-config --libs sdl2)
@@ -106,33 +106,33 @@ override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
-all: libChf/libChf.a dist/$(NAME) docs
+all: src/libChf/libChf.a dist/$(NAME) docs
 
 # Building
-libChf/libChf.a:
-	make -C libChf
+src/libChf/libChf.a:
+	make -C src/libChf
 
-dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) libChf/libChf.a
+dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
 
-dist/pack: src/pack.o src/disk_io.o src/debug.o libChf/libChf.a
+dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
 	# UNUSED
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 doc:
 	make -C docs
-	make -C libChf doc
+	make -C src/libChf doc
 
 # Cleaning
 clean:
 	rm -f src/*.o
-	make -C libChf clean
+	make -C src/libChf clean
 	make -C docs clean
 
 mrproper: clean
 	rm -f dist/$(NAME) dist/pack
 	make -C dist/ROMs mrproper
-	make -C libChf mrproper
+	make -C src/libChf mrproper
 	make -C docs mrproper
 
 clean-all: mrproper
@@ -140,7 +140,7 @@ clean-all: mrproper
 # Formatting
 pretty-code:
 	clang-format -i src/*.c src/*.h
-	make -C libChf pretty-code
+	make -C src/libChf pretty-code
 
 # Dependencies
 get-roms:
@@ -160,7 +160,7 @@ install: dist/$(NAME) doc
 	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/$(NAME)/
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
-	cp -R COPYING LICENSE README* docs-4.1.1.1 docs/*.{info,dvi,ps,pdf} libChf/docs/*.{info,dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
+	cp -R COPYING LICENSE README* docs-4.1.1.1 docs/*.{info,dvi,ps,pdf} src/libChf/docs/*.{info,dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
 
 	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
 	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop

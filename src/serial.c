@@ -116,7 +116,7 @@ static char rcs_id[] = "$Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "debug.h"
 
 #define CHF_MODULE_ID SERIAL_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Determine pty implementation

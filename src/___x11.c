@@ -216,7 +216,7 @@ static char rcs_id[] = "$Id: x11.c,v 4.1.1.1 2002/11/11 16:11:47 cibrario Exp $"
 #include "debug.h"
 
 #define CHF_MODULE_ID X11_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Misc. parameters

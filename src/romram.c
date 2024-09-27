@@ -97,7 +97,7 @@ static char rcs_id[] = "$Id: romram.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #include "debug.h"
 
 #define CHF_MODULE_ID MOD_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
    a private struct ModStatus_48. The dynamic allocation is performed during

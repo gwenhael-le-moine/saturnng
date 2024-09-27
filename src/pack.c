@@ -96,7 +96,7 @@ static char rcs_id[] = "$Id";
 #define UTIL_F_PACK_WRITE_NIBBLES 8
 
 #define CHF_MODULE_ID UTIL_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 /* Maximum size of source ROM (bytes) handled by this utility; set to
    a reasonable value

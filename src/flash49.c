@@ -86,7 +86,7 @@ static char rcs_id[] = "$Id: flash49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include "debug.h"
 
 #define CHF_MODULE_ID FLASH_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Private Macro/Data type definitions

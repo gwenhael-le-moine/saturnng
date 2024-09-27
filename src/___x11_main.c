@@ -117,7 +117,7 @@ static char rcs_id[] = "$Id: saturn.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 /* Chf condition codes (main program only) */
 
 #define CHF_MODULE_ID MAIN_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 #define MAIN_M_COPYRIGHT 501
 #define MAIN_M_LICENSE 502

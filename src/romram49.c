@@ -110,7 +110,7 @@ static char rcs_id[] = "$Id: romram49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 #include "debug.h"
 
 #define CHF_MODULE_ID MOD_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 #define FLASH_VIEW_SELECTOR 0x40000
 #define FLASH_BANK_MASK 0x3FFFF

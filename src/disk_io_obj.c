@@ -76,7 +76,7 @@ static char rcs_id[] = "$Id: disk_io_obj.c,v 4.1 2000/12/11 09:54:19 cibrario Re
 #include "debug.h"
 
 #define CHF_MODULE_ID DISK_IO_CHF_MODULE_ID
-#include <Chf.h>
+#include "libChf/src/Chf.h"
 
 /* .+
 
