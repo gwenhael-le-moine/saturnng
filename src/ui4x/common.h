@@ -1,7 +1,7 @@
 #ifndef _UI4x_COMMON_H
 #define _UI4x_COMMON_H 1
 
-#include "ui4x_config.h"
+#include "config.h"
 
 /*************************************************/
 /* public API: if it's there it's used elsewhere */

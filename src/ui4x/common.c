@@ -1,9 +1,9 @@
 #include <stdlib.h>
 
-#include "ui4x_common.h"
-#include "ui4x_inner.h"
-#include "ui4x_sdl2.h"
-#include "ui4x_ncurses.h"
+#include "common.h"
+#include "inner.h"
+#include "sdl2.h"
+#include "ncurses.h"
 
 letter_t small_font[ 128 ] = {
     {0,                  0,                   0                },

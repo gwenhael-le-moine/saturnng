@@ -2,13 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ui4x_config.h"
-#include "ui4x_emulator.h"
-
 #include "config.h"
-#include "keyb.h"
-#include "modules.h"
-#include "serial.h"
+#include "emulator.h"
+
+#include "../config.h"
+#include "../keyb.h"
+#include "../modules.h"
+#include "../serial.h"
 
 config_t config;
 

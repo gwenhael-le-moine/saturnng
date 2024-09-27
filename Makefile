@@ -52,14 +52,14 @@ DOTOS = src/cpu.o \
 	src/romram49.o \
 	src/serial.o \
 	src/x_func.o \
-	src/chf_messages.o
-
-DOTOS_UI4x = src/ui4x_config.o \
-	src/ui4x_common.o \
-	src/ui4x_sdl2.o \
-	src/ui4x_ncurses.o \
-	src/ui4x_emulator.o \
+	src/chf_messages.o \
 	src/main.o
+
+DOTOS_UI4x = src/ui4x/config.o \
+	src/ui4x/common.o \
+	src/ui4x/sdl2.o \
+	src/ui4x/ncurses.o \
+	src/ui4x/emulator.o
 
 MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
 

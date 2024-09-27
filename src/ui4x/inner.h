@@ -1,11 +1,11 @@
 #ifndef _UI4x_INNER_H
 #define _UI4x_INNER_H 1
 
-#include "ui4x_emulator.h"
+#include "emulator.h"
 
-#include "ui4x_bitmaps_misc.h"
-#include "ui4x_bitmaps_small_font.h"
-#include "ui4x_bitmaps_big_font.h"
+#include "bitmaps_misc.h"
+#include "bitmaps_small_font.h"
+#include "bitmaps_big_font.h"
 
 // Colors
 /*                          48SX    48GX     49g    */

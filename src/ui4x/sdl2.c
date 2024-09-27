@@ -2,12 +2,12 @@
 
 #include <SDL2/SDL.h>
 
-#include "config.h"
+#include "../config.h"
 
-#include "ui4x_config.h"
-#include "ui4x_emulator.h"
-#include "ui4x_common.h"
-#include "ui4x_inner.h"
+#include "config.h"
+#include "emulator.h"
+#include "common.h"
+#include "inner.h"
 
 #define COLORS ( config.model == MODEL_48GX ? colors_48gx : ( config.model == MODEL_49G ? colors_49g : colors_48sx ) )
 #define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : ( config.model == MODEL_49G ? buttons_49g : buttons_48sx ) )

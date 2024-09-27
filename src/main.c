@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#include "ui4x_config.h"
-#include "ui4x_emulator.h"
-#include "ui4x_common.h"
+#include "ui4x/config.h"
+#include "ui4x/emulator.h"
+#include "ui4x/common.h"
 
 #include "config.h"
 #include "cpu.h"

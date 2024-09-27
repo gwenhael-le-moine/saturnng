@@ -14,10 +14,10 @@
 
 #include <curses.h>
 
-#include "ui4x_config.h"
-#include "ui4x_emulator.h"
-#include "ui4x_common.h"
-#include "ui4x_inner.h"
+#include "config.h"
+#include "emulator.h"
+#include "common.h"
+#include "inner.h"
 
 #define COLORS ( config.model == MODEL_48GX ? colors_48gx : colors_48sx )
 #define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : buttons_48sx )

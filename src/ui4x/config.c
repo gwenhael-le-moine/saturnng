@@ -10,7 +10,7 @@
 
 #include <getopt.h>
 
-#include "ui4x_config.h"
+#include "config.h"
 
 static config_t config = {
     .progname = ( char* )"ui4x",

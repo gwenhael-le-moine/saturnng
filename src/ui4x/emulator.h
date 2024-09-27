@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "ui4x_config.h"
+#include "config.h"
 
 // Keys
 #define HPKEY_A 0
