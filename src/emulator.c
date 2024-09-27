@@ -245,8 +245,8 @@ static void EmulatorLoop( void )
         if ( inner_loop < INNER_LOOP_MIN )
             inner_loop = INNER_LOOP_MIN;
 
-        /* 3.13: Force an upper limit to the CPU speed if the compile-time option
-           REAL_CPU_SPEED is defined: inner_loop is limited to
+        /* 3.13: Force an upper limit to the CPU speed if the run-time option
+           config.throttle is defined: inner_loop is limited to
            cpu_status.inner_loop_max
            and the excess time, if any, is spent sleeping; usleep() is
            BSD 4.3-specific, but most recent systems should offer it anyway,
