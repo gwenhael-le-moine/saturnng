@@ -399,6 +399,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                 */
                                 debug1( DEBUG_C_TIMERS, CPU_I_IDLE_X_LOOP, ms );
                                 // IdleXLoop( ms );
+                                usleep( ms );
 
                                 /* End of idle loop; compute actual elapsed time */
                                 gettimeofday( &end_idle, NULL );
