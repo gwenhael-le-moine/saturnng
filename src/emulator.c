@@ -225,7 +225,7 @@ static void EmulatorLoop( void )
         /*     DrawLcd(); */
 
         /* Emulator Interrupt Request */
-        if ( ( t1_count & INT_T1_MASK ) == 0 && emulator_int_req ) {
+        if ( ( t1_count++ & INT_T1_MASK ) == 0 && emulator_int_req ) {
             ChfCondition CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
             ChfSignal();
         }
