@@ -41,12 +41,9 @@ int main( int argc, char** argv )
 {
     config = *config_init( argc, argv );
 
-    /* Chf initialization with msgcat subsystem; notice that on
-           some systems (e.g. Digital UNIX) catopen() can succeed even
-           if it was not able to open the right message catalog;
-           better try it now.
-        */
-    if ( ( ChfStaticInit( argv[ 0 ],            /* Application's name */
+    /* Chf initialization with msgcat subsystem
+     */
+    if ( ( ChfStaticInit( config.progname,      /* Application's name */
                           CHF_DEFAULT,          /* Options */
                           message_table,        /* Name of the message catalog */
                           message_table_size,   /* message catalog size */
