@@ -230,8 +230,8 @@ static void EmulatorLoop( void )
             ChfSignal();
         }
 
-        /* X Events handling */
-        /* HandleXEvents(); */
+        /* UI Events handling */
+        // ui_get_event();
 
         /* Handle serial port */
         HandleSerial();
@@ -324,7 +324,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                this ensures that the latest LCD updated actually
                                get to the screen.
                             */
-                            // DrawLcd();
+                            // ui_update_display();
 
                             /* Handle serial port activity before entering the outer idle
                                loop, because this could possibly bring the cpu out of
