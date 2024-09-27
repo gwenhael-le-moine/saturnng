@@ -18,15 +18,24 @@
 #define CONDITION_STACK_SIZE 16
 #define HANDLER_STACK_SIZE 8
 
+#define QUERY_EVENTS_EVERY_X_FRAME 4
+
 void signal_handler( int sig )
 {
+    static int nb_refreshes_since_last_checking_events = 0;
+
     switch ( sig ) {
-        /* case SIGINT: /\* Ctrl-C *\/ */
-        /*     enter_debugger |= USER_INTERRUPT; */
-        /*     break; */
+            /* case SIGINT: /\* Ctrl-C *\/ */
+            /*     enter_debugger |= USER_INTERRUPT; */
+            /*     break; */
         case SIGALRM:
-            ui_get_event();
+            if ( nb_refreshes_since_last_checking_events > QUERY_EVENTS_EVERY_X_FRAME ) {
+                nb_refreshes_since_last_checking_events = 0;
+                ui_get_event();
+            }
             ui_update_display();
+            nb_refreshes_since_last_checking_events++;
+
             break;
         case SIGPIPE:
             ui_stop();
