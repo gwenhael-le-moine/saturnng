@@ -36,6 +36,7 @@ The local data are stored under $XDG_CONFIG_HOME/saturn<model>/
 ## Known bugs
 - I could get neither the 49 nor the 40 ROM running yet.
 - some bugs in emulation
+- ncurses UI: sometimes (often) becomes unresponsive (but still quits gracefully on F7)
 
 ## Todo
 - sdl2 UI: draw LCD on a distinct texture and then draw that texture on the main one
