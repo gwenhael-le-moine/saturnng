@@ -221,36 +221,19 @@ static void create_annunciators_textures( void )
 
 // Find which key is pressed, if any.
 // Returns -1 is no key is pressed
-static int mouse_click_to_hpkey( unsigned int x, unsigned int y )
+static int mouse_click_to_hpkey( int x, int y )
 {
     /* return immediatly if the click isn't even in the keyboard area */
     if ( y < KEYBOARD_OFFSET_Y )
         return -1;
 
-    int row = ( y - KEYBOARD_OFFSET_Y ) / ( KEYBOARD_HEIGHT / 9 );
-    int column;
-    switch ( row ) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-            column = ( x - KEYBOARD_OFFSET_X ) / ( KEYBOARD_WIDTH / 6 );
-            return ( row * 6 ) + column;
-        case 4: /* with [ENTER] key */
-            column = ( ( x - KEYBOARD_OFFSET_X ) / ( KEYBOARD_WIDTH / 5 ) ) - 1;
-            if ( column < 0 )
-                column = 0;
-            return ( 4 * 6 ) + column;
-        case 5:
-        case 6:
-        case 7:
-        case 8:
-            column = ( x - KEYBOARD_OFFSET_X ) / ( KEYBOARD_WIDTH / 5 );
-            return ( 4 * 6 ) + 5 + ( ( row - 5 ) * 5 ) + column;
+    x -= KEYBOARD_OFFSET_X;
+    y -= KEYBOARD_OFFSET_Y;
 
-        default:
-            return -1;
-    }
+    for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ )
+        if ( ( BUTTONS[ i ].x < x && ( BUTTONS[ i ].x + BUTTONS[ i ].w ) > x ) &&
+             ( BUTTONS[ i ].y < y && ( BUTTONS[ i ].y + BUTTONS[ i ].h ) > y ) )
+            return i;
 
     return -1;
 }
