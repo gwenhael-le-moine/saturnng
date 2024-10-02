@@ -449,62 +449,64 @@ static void _draw_bezel( unsigned int cut, unsigned int offset_y, int keypad_wid
     __draw_line( 0, keypad_height - 2, 0, cut, PAD_BOT );
     __draw_line( 1, keypad_height - 3, 1, cut, PAD_BOT );
 
-    // lower the menu BUTTONS
+    if ( config.model == MODEL_48GX || config.model == MODEL_48SX ) {
+        // lower the menu BUTTONS
 
-    // bottom lines
-    __draw_line( 3, keypad_height - 3, keypad_width - 3, keypad_height - 3, PAD_TOP );
-    __draw_line( 4, keypad_height - 4, keypad_width - 4, keypad_height - 4, PAD_TOP );
+        // bottom lines
+        __draw_line( 3, keypad_height - 3, keypad_width - 3, keypad_height - 3, PAD_TOP );
+        __draw_line( 4, keypad_height - 4, keypad_width - 4, keypad_height - 4, PAD_TOP );
 
-    // right lines
-    __draw_line( keypad_width - 3, keypad_height - 3, keypad_width - 3, cut, PAD_TOP );
-    __draw_line( keypad_width - 4, keypad_height - 4, keypad_width - 4, cut, PAD_TOP );
+        // right lines
+        __draw_line( keypad_width - 3, keypad_height - 3, keypad_width - 3, cut, PAD_TOP );
+        __draw_line( keypad_width - 4, keypad_height - 4, keypad_width - 4, cut, PAD_TOP );
 
-    // right lines
-    __draw_line( keypad_width - 3, cut - 1, keypad_width - 3, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_TOP );
-    __draw_line( keypad_width - 4, cut - 1, keypad_width - 4, offset_y - ( KBD_UPLINE - 2 ), DISP_PAD_TOP );
+        // right lines
+        __draw_line( keypad_width - 3, cut - 1, keypad_width - 3, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_TOP );
+        __draw_line( keypad_width - 4, cut - 1, keypad_width - 4, offset_y - ( KBD_UPLINE - 2 ), DISP_PAD_TOP );
 
-    // top lines
-    __draw_line( 2, offset_y - ( KBD_UPLINE - 0 ), keypad_width - 4, offset_y - ( KBD_UPLINE - 0 ), DISP_PAD_BOT );
-    __draw_line( 3, offset_y - ( KBD_UPLINE - 1 ), keypad_width - 5, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_BOT );
+        // top lines
+        __draw_line( 2, offset_y - ( KBD_UPLINE - 0 ), keypad_width - 4, offset_y - ( KBD_UPLINE - 0 ), DISP_PAD_BOT );
+        __draw_line( 3, offset_y - ( KBD_UPLINE - 1 ), keypad_width - 5, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_BOT );
 
-    // left lines
-    __draw_line( 2, cut - 1, 2, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_BOT );
-    __draw_line( 3, cut - 1, 3, offset_y - ( KBD_UPLINE - 2 ), DISP_PAD_BOT );
+        // left lines
+        __draw_line( 2, cut - 1, 2, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_BOT );
+        __draw_line( 3, cut - 1, 3, offset_y - ( KBD_UPLINE - 2 ), DISP_PAD_BOT );
 
-    // left lines
-    __draw_line( 2, keypad_height - 4, 2, cut, PAD_BOT );
-    __draw_line( 3, keypad_height - 5, 3, cut, PAD_BOT );
+        // left lines
+        __draw_line( 2, keypad_height - 4, 2, cut, PAD_BOT );
+        __draw_line( 3, keypad_height - 5, 3, cut, PAD_BOT );
 
-    // lower the keyboard
+        // lower the keyboard
 
-    // bottom lines
-    __draw_line( 5, keypad_height - 5, keypad_width - 3, keypad_height - 5, PAD_TOP );
-    __draw_line( 6, keypad_height - 6, keypad_width - 4, keypad_height - 6, PAD_TOP );
+        // bottom lines
+        __draw_line( 5, keypad_height - 5, keypad_width - 3, keypad_height - 5, PAD_TOP );
+        __draw_line( 6, keypad_height - 6, keypad_width - 4, keypad_height - 6, PAD_TOP );
 
-    // right lines
-    __draw_line( keypad_width - 5, keypad_height - 5, keypad_width - 5, cut + 1, PAD_TOP );
-    __draw_line( keypad_width - 6, keypad_height - 6, keypad_width - 6, cut + 2, PAD_TOP );
+        // right lines
+        __draw_line( keypad_width - 5, keypad_height - 5, keypad_width - 5, cut + 1, PAD_TOP );
+        __draw_line( keypad_width - 6, keypad_height - 6, keypad_width - 6, cut + 2, PAD_TOP );
 
-    // top lines
-    __draw_line( 4, cut, keypad_width - 6, cut, DISP_PAD_BOT );
-    __draw_line( 5, cut + 1, keypad_width - 7, cut + 1, DISP_PAD_BOT );
+        // top lines
+        __draw_line( 4, cut, keypad_width - 6, cut, DISP_PAD_BOT );
+        __draw_line( 5, cut + 1, keypad_width - 7, cut + 1, DISP_PAD_BOT );
 
-    // left lines
-    __draw_line( 4, keypad_height - 6, 4, cut + 1, PAD_BOT );
-    __draw_line( 5, keypad_height - 7, 5, cut + 2, PAD_BOT );
+        // left lines
+        __draw_line( 4, keypad_height - 6, 4, cut + 1, PAD_BOT );
+        __draw_line( 5, keypad_height - 7, 5, cut + 2, PAD_BOT );
 
-    // round off the bottom edge
-    __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 7, keypad_height - 14, PAD_TOP );
-    __draw_line( keypad_width - 8, keypad_height - 8, keypad_width - 8, keypad_height - 11, PAD_TOP );
-    __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 14, keypad_height - 7, PAD_TOP );
-    __draw_line( keypad_width - 7, keypad_height - 8, keypad_width - 11, keypad_height - 8, PAD_TOP );
-    __draw_pixel( keypad_width - 9, keypad_height - 9, PAD_TOP );
+        // round off the bottom edge
+        __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 7, keypad_height - 14, PAD_TOP );
+        __draw_line( keypad_width - 8, keypad_height - 8, keypad_width - 8, keypad_height - 11, PAD_TOP );
+        __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 14, keypad_height - 7, PAD_TOP );
+        __draw_line( keypad_width - 7, keypad_height - 8, keypad_width - 11, keypad_height - 8, PAD_TOP );
+        __draw_pixel( keypad_width - 9, keypad_height - 9, PAD_TOP );
 
-    __draw_line( 7, keypad_height - 7, 13, keypad_height - 7, PAD_TOP );
-    __draw_line( 8, keypad_height - 8, 10, keypad_height - 8, PAD_TOP );
+        __draw_line( 7, keypad_height - 7, 13, keypad_height - 7, PAD_TOP );
+        __draw_line( 8, keypad_height - 8, 10, keypad_height - 8, PAD_TOP );
 
-    __draw_line( 6, keypad_height - 8, 6, keypad_height - 14, PAD_BOT );
-    __draw_line( 7, keypad_height - 9, 7, keypad_height - 11, PAD_BOT );
+        __draw_line( 6, keypad_height - 8, 6, keypad_height - 14, PAD_BOT );
+        __draw_line( 7, keypad_height - 9, 7, keypad_height - 11, PAD_BOT );
+    }
 }
 
 static void _draw_header( void )
@@ -543,7 +545,8 @@ static void _draw_header( void )
         y = 10 + gx_silver_y_hot;
         __draw_bitmap( x, y, gx_silver_width, gx_silver_height, gx_silver_bitmap, LOGO,
                        0 ); // Background transparent: draw only silver line
-    } else {
+    }
+    if ( config.model == MODEL_48SX ) {
         x = DISPLAY_OFFSET_X;
         y = TOP_SKIP - DISP_FRAME - hp48sx_height - 3;
         __draw_bitmap( x, y, hp48sx_width, hp48sx_height, hp48sx_bitmap, LOGO, DISP_PAD );
@@ -558,7 +561,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
 {
     bool is_down = !is_up;
     int x, y;
-    int on_key_offset_y = ( hpkey == HP48_KEY_ON ) ? 1 : 0;
+    int on_key_offset_y = ( hpkey == HP48_KEY_ON || hpkey == HP49_KEY_ON ) ? 1 : 0;
     SDL_Texture* texture =
         SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h );
     SDL_SetRenderTarget( renderer, texture );
@@ -568,7 +571,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     int outer_color = PAD;
     if ( BUTTONS[ hpkey ].is_menu )
         outer_color = UNDERLAY;
-    if ( hpkey < HP48_KEY_MTH )
+    if ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && hpkey < HP48_KEY_MTH )
         outer_color = DISP_PAD;
     __draw_rect( 0, 0, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h, outer_color );
     __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTON );
@@ -678,11 +681,13 @@ static void _draw_key( int hpkey )
 static void _draw_keypad( void )
 {
     int x, y;
-    int pw = config.model == MODEL_48GX ? 58 : 44;
-    int ph = config.model == MODEL_48GX ? 48 : 9;
     int left_label_width, right_label_width;
     int space_char_width = SmallTextWidth( " ", 1 );
     int total_top_labels_width;
+
+    // for .is_menu highlighted area, 48 only
+    int pw = config.model == MODEL_48GX ? 58 : 44;
+    int ph = config.model == MODEL_48GX ? 48 : 9;
 
     for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ ) {
         // Background
@@ -704,15 +709,15 @@ static void _draw_keypad( void )
             x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x + BUTTONS[ i ].w;
             y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y + BUTTONS[ i ].h;
 
-            if ( config.model == MODEL_48GX ) {
-                x += 3;
-                y += 1;
-            } else {
+            if ( config.model == MODEL_48SX ) {
                 x -= SmallTextWidth( BUTTONS[ i ].letter, 1 ) / 2 + 5;
                 y -= 2;
+            } else {
+                x += 3;
+                y += 1;
             }
 
-            write_with_small_font( x, y, BUTTONS[ i ].letter, WHITE, ( i < HP48_KEY_MTH ) ? DISP_PAD : PAD );
+            write_with_small_font( x, y, BUTTONS[ i ].letter, WHITE, ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && i < HP48_KEY_MTH ) ? DISP_PAD : PAD );
         }
 
         // Bottom label: the only one is the cancel button
