@@ -226,8 +226,8 @@ static void EmulatorLoop( void )
 
         /* Emulator Interrupt Request */
         if ( ( t1_count++ & INT_T1_MASK ) == 0 && emulator_int_req ) {
-            ChfCondition CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
-            ChfSignal();
+            ChfCondition( CPU_CHF_MODULE_ID ) CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
+            ChfSignal( CPU_CHF_MODULE_ID );
         }
 
         /* UI Events handling */
@@ -522,7 +522,7 @@ void Emulator( void )
     /* Setup unwind_context */
     if ( setjmp( unwind_context ) == 0 ) {
         /* Push condition handler, with NULL context */
-        ChfPushHandler( EmulatorLoopHandler, &unwind_context, ( ChfPointer )NULL );
+        ChfPushHandler( CPU_CHF_MODULE_ID, EmulatorLoopHandler, &unwind_context, ( ChfPointer )NULL );
 
         /* Activate emulator loop */
         EmulatorLoop();

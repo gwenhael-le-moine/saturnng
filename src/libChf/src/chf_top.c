@@ -86,7 +86,7 @@ static char rcs_id[] = "$Id: chf_top.c,v 2.2 2001/01/25 14:09:21 cibrario Exp $"
 
 .- */
 const ChfDescriptor* ChfGetTopCondition( /* Retrieve top condition */
-                                         void )
+                                         const int module_id )
 {
     ChfDescriptor* d;
 
@@ -95,8 +95,8 @@ const ChfDescriptor* ChfGetTopCondition( /* Retrieve top condition */
         ChfAbort( CHF_ABORT_INIT );
 
     if ( ( d = chf_context.condition_sp ) == chf_context.condition_base ) {
-        ChfCondition CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
-        ChfSignal();
+        ChfCondition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
+        ChfSignal( module_id );
     }
 
     /* The top element of the condition group is the element immediately

@@ -707,7 +707,7 @@ ChfContext* _ChfGetContext( void )
             ChfAbort( CHF_ABORT_GET_CONTEXT );
 
         /* Push the default handler */
-        ChfPushHandler( DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
+        ChfPushHandler( /* FIXME */ 255, DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
     }
 
     return context;

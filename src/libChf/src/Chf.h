@@ -167,17 +167,17 @@ typedef /* Message retrieval 'exit' function */
    ------------------------------------------------------------------------- */
 
 #if defined( CHF_EXTENDED_INFO )
-#  define ChfCondition                                                                                                                     \
+#  define ChfCondition( module_id )                                                                                                        \
   ChfGenerate(								\
-    CHF_MODULE_ID,							\
+    module_id,							\
     ChfText(__FILE__), __LINE__,
 
 #  define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, ChfText( __FILE__ ), __LINE__, errno, CHF_ERROR )
 
 #else
-#  define ChfCondition                                                                                                                     \
+#  define ChfCondition( module_id )                                                                                                        \
   ChfGenerate(								\
-    CHF_MODULE_ID,							\
+    module_id,							\
     CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER,
 
 #  define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER, errno, CHF_ERROR )
@@ -198,7 +198,7 @@ typedef /* Message retrieval 'exit' function */
             ChfPushHandler( CHF_NULL_HANDLER, _chf_sigjmp_buf, CHF_NULL_POINTER );
 
 #define ChfCatch                                                                                                                           \
-    ChfPopHandler();                                                                                                                       \
+    ChfPopHandler( CHF_MODULE_ID );                                                                                                        \
     }                                                                                                                                      \
     else                                                                                                                                   \
     {
@@ -255,16 +255,16 @@ void ChfExit( void );
 /* Abort application */
 void ChfAbort( const int abort_code );
 /* Push a new handler into the stack */
-void ChfPushHandler( ChfHandler new_handler,    /* Handler to be added */
-                     void* unwind_context,      /* Unwind context */
-                     ChfPointer handler_context /* Private handler context */
+void ChfPushHandler( const int module_id, ChfHandler new_handler, /* Handler to be added */
+                     void* unwind_context,                        /* Unwind context */
+                     ChfPointer handler_context                   /* Private handler context */
 );
 /* Pop a handler */
-void ChfPopHandler( void );
+void ChfPopHandler( const int module_id );
 /* Build a condition message */
 ChfChar* ChfBuildMessage( const ChfDescriptor* descriptor );
 /* Signal the current conditions */
-void ChfSignal( void );
+void ChfSignal( const int module_id );
 /* Discard the current conditions */
 void ChfDiscard( void );
 /* Generate a condition into the stack */
@@ -273,6 +273,6 @@ void ChfGenerate( const int module_id, const ChfChar* file_name, const int line_
 /* Retrieve a condition message */
 const ChfChar* ChfGetMessage( const int module_id, const int condition_code, const ChfChar* default_message );
 /* Retrieve top condition */
-const ChfDescriptor* ChfGetTopCondition( void );
+const ChfDescriptor* ChfGetTopCondition( const int module_id );
 
 #endif /*!_CHF_H*/

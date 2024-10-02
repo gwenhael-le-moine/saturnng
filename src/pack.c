@@ -171,30 +171,30 @@ int main( int argc, char* argv[] )
 
     /* Now, do some useful work; pack argv[1] into argv[2] */
     if ( argc != 3 ) {
-        ChfCondition UTIL_I_PACK_USAGE, CHF_INFO ChfEnd;
-        ChfCondition UTIL_F_PACK_CMD_LINE, CHF_FATAL ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_I_PACK_USAGE, CHF_INFO ChfEnd;
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_CMD_LINE, CHF_FATAL ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     /* Get the size of the source file */
     if ( stat( argv[ 1 ], &statb ) ) {
         ChfErrnoCondition;
-        ChfCondition UTIL_F_PACK_STAT, CHF_FATAL, argv[ 1 ] ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_STAT, CHF_FATAL, argv[ 1 ] ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     /* Check that actual size is reasonable */
     if ( statb.st_size > MAX_SRC_SIZE ) {
-        ChfCondition UTIL_F_PACK_SRC_SIZE, CHF_FATAL, statb.st_size ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_SRC_SIZE, CHF_FATAL, statb.st_size ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     /* Allocate source buffer */
     if ( ( b = ( char* )malloc( statb.st_size ) ) == ( char* )NULL ||
          ( nb = ( Nibble* )malloc( sizeof( Nibble ) * statb.st_size ) ) == ( Nibble* )NULL ) {
         ChfErrnoCondition;
-        ChfCondition UTIL_F_PACK_MALLOC, CHF_FATAL, statb.st_size ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_MALLOC, CHF_FATAL, statb.st_size ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
 
         return EXIT_FAILURE;
     }
@@ -202,8 +202,8 @@ int main( int argc, char* argv[] )
     /* open/read/close */
     if ( ( d = open( argv[ 1 ], O_RDONLY ) ) == -1 ) {
         ChfErrnoCondition;
-        ChfCondition UTIL_F_PACK_OPEN, CHF_FATAL, argv[ 1 ] ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_OPEN, CHF_FATAL, argv[ 1 ] ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     if ( read( d, b, statb.st_size ) != statb.st_size ) {
@@ -211,8 +211,8 @@ int main( int argc, char* argv[] )
 
         ( void )close( d );
 
-        ChfCondition UTIL_F_PACK_READ, CHF_FATAL, argv[ 1 ] ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_READ, CHF_FATAL, argv[ 1 ] ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     ( void )close( d );
@@ -226,8 +226,8 @@ int main( int argc, char* argv[] )
 
     /* Write */
     if ( WriteNibblesToFile( nb, statb.st_size, argv[ 2 ] ) ) {
-        ChfCondition UTIL_F_PACK_WRITE_NIBBLES, CHF_FATAL ChfEnd;
-        ChfSignal();
+        ChfCondition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_WRITE_NIBBLES, CHF_FATAL ChfEnd;
+        ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     return EXIT_SUCCESS;

@@ -149,23 +149,23 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
 
 .- */
 void ChfPushHandler( /* Push a new handler into the stack */
-                     ChfHandler new_handler, void* unwind_context, ChfPointer handler_context )
+                     const int module_id, ChfHandler new_handler, void* unwind_context, ChfPointer handler_context )
 {
     /* Make sure that CHF has been correctly initialized and is idle */
     if ( chf_context.state == CHF_UNKNOWN )
         ChfAbort( CHF_ABORT_INIT );
 
     if ( chf_context.state != CHF_IDLE ) {
-        ChfCondition CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
+        ChfCondition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
 
-        ChfSignal();
+        ChfSignal( module_id );
     }
 
     /* Check if the handler stack is full */
     else if ( chf_context.handler_sp - chf_context.handler_stack >= chf_context.handler_stack_size ) {
-        ChfCondition CHF_F_HDLR_STACK_FULL, CHF_FATAL ChfEnd;
+        ChfCondition( module_id ) CHF_F_HDLR_STACK_FULL, CHF_FATAL ChfEnd;
 
-        ChfSignal();
+        ChfSignal( module_id );
     }
 
     else {
@@ -211,23 +211,23 @@ void ChfPushHandler( /* Push a new handler into the stack */
 
 .- */
 void ChfPopHandler( /* Pop a handler */
-                    void )
+                    const int module_id )
 {
     /* Make sure that CHF has been correctly initialized and is idle */
     if ( chf_context.state == CHF_UNKNOWN )
         ChfAbort( CHF_ABORT_INIT );
 
     if ( chf_context.state != CHF_IDLE ) {
-        ChfCondition CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
+        ChfCondition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
 
-        ChfSignal();
+        ChfSignal( module_id );
     }
 
     /* Check if the handler stack is empty */
     else if ( chf_context.handler_sp == chf_context.handler_stack ) {
-        ChfCondition CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ChfEnd;
+        ChfCondition( module_id ) CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ChfEnd;
 
-        ChfSignal();
+        ChfSignal( module_id );
     }
 
     /* Discard the topmost condition handler */

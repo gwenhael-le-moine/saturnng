@@ -104,21 +104,20 @@ void ChfGenerate( /* Generate a condition into the stack */
            otherwise abort the application.
         */
         if ( new_descriptor - chf_context.condition_stack == chf_context.condition_stack_size ) {
-            new_descriptor->module_id = CHF_MODULE_ID;
+            new_descriptor->module_id = module_id;
             new_descriptor->condition_code = CHF_F_COND_STACK_FULL;
             new_descriptor->severity = CHF_FATAL;
             new_descriptor->line_number = CHF_UNKNOWN_LINE_NUMBER;
             new_descriptor->file_name = CHF_UNKNOWN_FILE_NAME;
 
-            ChfStrncpy( new_descriptor->message,
-                        ChfGetMessage( CHF_MODULE_ID, CHF_F_COND_STACK_FULL, ChfText( "Condition stack is full" ) ),
+            ChfStrncpy( new_descriptor->message, ChfGetMessage( module_id, CHF_F_COND_STACK_FULL, ChfText( "Condition stack is full" ) ),
                         CHF_MAX_MESSAGE_LENGTH - 1 );
             new_descriptor->message[ CHF_MAX_MESSAGE_LENGTH - 1 ] = '\0';
 
             new_descriptor->next = CHF_NULL_DESCRIPTOR;
             chf_context.condition_sp++;
 
-            ChfSignal();
+            ChfSignal( module_id );
         }
 
         else

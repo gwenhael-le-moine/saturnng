@@ -160,8 +160,8 @@ static void SetSpeed( Nibble function_code )
     debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetSpeed" );
 
 #ifndef REAL_CPU_SPEED
-    ChfCondition X_FUNC_E_NO_SPEED, CHF_ERROR ChfEnd;
-    ChfSignal();
+    ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_SPEED, CHF_ERROR ChfEnd;
+    ChfSignal( X_FUNC_CHF_MODULE_ID );
 
 #else
     {
@@ -179,11 +179,11 @@ static void SetSpeed( Nibble function_code )
 
         /* Notify the user about the speed change */
         if ( cpu_status.inner_loop_max )
-            ChfCondition X_FUNC_I_SET_SPEED, CHF_INFO, new_speed ChfEnd;
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_I_SET_SPEED, CHF_INFO, new_speed ChfEnd;
         else
-            ChfCondition X_FUNC_I_MAX_SPEED, CHF_INFO ChfEnd;
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_I_MAX_SPEED, CHF_INFO ChfEnd;
 
-        ChfSignal();
+        ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
 
 #endif
@@ -220,7 +220,7 @@ static const char* BinaryHeader( void )
         if ( strcmp( config.hw, bin_hdr_mapping[ i ].hw ) == 0 )
             return bin_hdr_mapping[ i ].hdr;
 
-    ChfCondition X_FUNC_E_NO_BIN_HDR, CHF_ERROR, config.hw ChfEnd;
+    ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_BIN_HDR, CHF_ERROR, config.hw ChfEnd;
     return ( char* )NULL;
 }
 
@@ -231,8 +231,8 @@ static void KgetContinuation( int proceed, char* file_name )
 {
     /* Check whether continuation should proceed */
     if ( !proceed ) {
-        ChfCondition X_FUNC_W_ABORTED, CHF_WARNING ChfEnd;
-        ChfSignal();
+        ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_ABORTED, CHF_WARNING ChfEnd;
+        ChfSignal( X_FUNC_CHF_MODULE_ID );
     } else {
         /* Ok to proceed; read:
            - target start address from A[A]
@@ -247,8 +247,8 @@ static void KgetContinuation( int proceed, char* file_name )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
-            ChfCondition X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
-            ChfSignal();
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
+            ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
 
@@ -261,8 +261,8 @@ static void KgetContinuation( int proceed, char* file_name )
 static void SendContinuation( int proceed, char* file_name )
 {
     if ( !proceed ) {
-        ChfCondition X_FUNC_W_ABORTED, CHF_WARNING ChfEnd;
-        ChfSignal();
+        ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_ABORTED, CHF_WARNING ChfEnd;
+        ChfSignal( X_FUNC_CHF_MODULE_ID );
     } else {
         /* Ok to proceed; read:
            - source start address from A[A]
@@ -277,8 +277,8 @@ static void SendContinuation( int proceed, char* file_name )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
-            ChfCondition X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
-            ChfSignal();
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
+            ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
 
@@ -315,8 +315,8 @@ static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
 
         /* ( void )CpuHaltRequest(); */
     } else {
-        ChfCondition X_FUNC_E_NO_HALT, CHF_ERROR ChfEnd;
-        ChfSignal();
+        ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_HALT, CHF_ERROR ChfEnd;
+        ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
 }
 
@@ -346,8 +346,8 @@ static void Kget( Nibble function_code )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
-            ChfCondition X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
-            ChfSignal();
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
+            ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
 }
@@ -378,8 +378,8 @@ static void Send( Nibble function_code )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
-            ChfCondition X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
-            ChfSignal();
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING ChfEnd;
+            ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
 }
@@ -437,8 +437,8 @@ void ExtendedFunction( Nibble function_code )
 
     /* Some sanity checks, first */
     if ( function_code < 0 || function_code >= N_X_FUNC || function[ ( int )function_code ] == ( XFunc )NULL ) {
-        ChfCondition X_FUNC_W_BAD_CODE, CHF_WARNING, function_code ChfEnd;
-        ChfSignal();
+        ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_BAD_CODE, CHF_WARNING, function_code ChfEnd;
+        ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
     /* Dispatch */
     else

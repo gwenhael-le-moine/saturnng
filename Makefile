@@ -114,7 +114,7 @@ all: src/libChf/libChf.a dist/$(NAME) docs
 
 # Building
 src/libChf/libChf.a:
-	make -C src/libChf
+	make -C src/libChf MT=yes
 
 dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)

@@ -91,7 +91,7 @@ static char rcs_id[] = "$Id: chf_sig.c,v 2.2 2001/01/25 14:07:42 cibrario Exp $"
     - added support for structured condition handling
 
 .- */
-void ChfSignal( void )
+void ChfSignal( const int module_id )
 {
     ChfState saved_state;
     ChfDescriptor* saved_condition_base;
@@ -314,9 +314,9 @@ void ChfSignal( void )
                        otherwise call ChfAbort()
                     */
                     if ( chf_context.handler_sp > chf_context.handler_stack ) {
-                        ChfCondition CHF_F_INVALID_ACTION, CHF_FATAL, handler_result ChfEnd;
+                        ChfCondition( module_id ) CHF_F_INVALID_ACTION, CHF_FATAL, handler_result ChfEnd;
 
-                        ChfSignal();
+                        ChfSignal( module_id );
                     }
 
                     else

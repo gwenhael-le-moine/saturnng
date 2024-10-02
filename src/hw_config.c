@@ -211,8 +211,8 @@ void ModSelectDescription( const char* hw )
         ;
 
     if ( i == N_DESCRIPTIONS ) {
-        ChfCondition MOD_E_NO_MATCH, CHF_ERROR, hw ChfEnd;
-        ChfSignal();
+        ChfCondition( MOD_CHF_MODULE_ID ) MOD_E_NO_MATCH, CHF_ERROR, hw ChfEnd;
+        ChfSignal( MOD_CHF_MODULE_ID );
     } else
         ModRegisterDescription( table[ i ].description );
 }

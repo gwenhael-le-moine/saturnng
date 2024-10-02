@@ -350,16 +350,16 @@ void Monitor( void )
             /* New command empty; try old command */
             if ( ( tk = strtok( old_cmd, TOK_DELIMITERS ) ) != ( char* )NULL )
                 if ( InvokeCommand( tk ) )
-                    ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
-            ChfSignal();
+                    ChfCondition( CPU_CHF_MODULE_ID ) CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
+            ChfSignal( CPU_CHF_MODULE_ID );
         } else {
             /* Save command */
             strcpy( old_cmd, cmd );
 
             /* New command */
             if ( InvokeCommand( tk ) ) {
-                ChfCondition CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
-                ChfSignal();
+                ChfCondition( CPU_CHF_MODULE_ID ) CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
+                ChfSignal( CPU_CHF_MODULE_ID );
             }
         }
     }

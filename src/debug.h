@@ -112,7 +112,7 @@
 
 #  define debug_postamble                                                                                                                  \
       ChfEnd;                                                                                                                              \
-      ChfSignal();                                                                                                                         \
+      ChfSignal( CHF_MODULE_ID );                                                                                                          \
       }                                                                                                                                    \
       }
 

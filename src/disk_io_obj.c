@@ -143,7 +143,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
-        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
+        ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         /* Check and skip header */
         for ( i = 0; i < ( int )hdr_len; i++ ) {
@@ -151,10 +151,10 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
             if ( by == EOF ) {
                 ChfErrnoCondition;
-                ChfCondition st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
+                ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
                 break;
             } else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
-                ChfCondition st = DISK_IO_E_BAD_HDR, CHF_ERROR, name ChfEnd;
+                ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_BAD_HDR, CHF_ERROR, name ChfEnd;
                 break;
             }
         }
@@ -166,7 +166,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
             while ( ( by = getc( f ) ) != EOF ) {
                 /* Next byte available in by; check available space */
                 if ( cur >= end - 1 ) {
-                    ChfCondition st = DISK_IO_E_SIZE, CHF_ERROR, name ChfEnd;
+                    ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_SIZE, CHF_ERROR, name ChfEnd;
                     break;
                 }
 
@@ -178,7 +178,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
             /* Check why getc() failed */
             if ( ferror( f ) && !feof( f ) ) {
                 ChfErrnoCondition;
-                ChfCondition st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
+                ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
             }
 
             /* Recover from save_area if transfer failed */
@@ -240,13 +240,13 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfErrnoCondition;
-        ChfCondition st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
+        ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         /* Write header; replace wildcard character '?' with 'S' */
         for ( i = 0; i < ( int )hdr_len; i++ ) {
             if ( putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f ) == EOF ) {
                 ChfErrnoCondition;
-                ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                 break;
             }
         }
@@ -261,7 +261,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
                 if ( putc( by, f ) == EOF ) {
                     ChfErrnoCondition;
-                    ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                    ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                     break;
                 }
             }
@@ -272,7 +272,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
                 if ( putc( by, f ) == EOF ) {
                     ChfErrnoCondition;
-                    ChfCondition st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
+                    ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                 }
             }
         }
@@ -280,7 +280,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
         /* Close the output file anyway */
         if ( fclose( f ) == EOF ) {
             ChfErrnoCondition;
-            ChfCondition st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
+            ChfCondition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
         }
     }
 
