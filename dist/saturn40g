@@ -30,7 +30,7 @@ fi
 
 RESET=''
 if [ ! -e "$CONFIGDIR"/ram ]; then
-    RESET=-reset
+    RESET=--reset
 fi
 
 ./saturn --40g --state-dir "$CONFIGDIR" "$RESET" "$@"
