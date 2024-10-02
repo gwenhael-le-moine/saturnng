@@ -515,6 +515,12 @@ static unsigned char big_font_E_bits[] = {
     63, 3, 3, 3, 31, 3, 3, 3, 3, 63,
 };
 
+#define big_font_F_width 8
+#define big_font_F_height 10
+static unsigned char big_font_F_bits[] = {
+    63, 3, 3, 3, 31, 3, 3, 3, 3, 3,
+};
+
 #define big_font_G_width 8
 #define big_font_G_height 10
 static unsigned char big_font_G_bits[] = {
@@ -531,6 +537,12 @@ static unsigned char big_font_H_bits[] = {
 #define big_font_I_height 10
 static unsigned char big_font_I_bits[] = {
     63, 12, 12, 12, 12, 12, 12, 12, 12, 63,
+};
+
+#define big_font_J_width 8
+#define big_font_J_height 10
+static unsigned char big_font_J_bits[] = {
+    96, 96, 96, 96, 96, 96, 96, 51, 51, 30,
 };
 
 #define big_font_L_width 8
@@ -563,6 +575,12 @@ static unsigned char big_font_P_bits[] = {
     31, 51, 51, 51, 51, 31, 3, 3, 3, 3,
 };
 
+#define big_font_Q_width 8
+#define big_font_Q_height 10
+static unsigned char big_font_Q_bits[] = {
+    30, 51, 51, 51, 51, 51, 51, 55, 22, 60,
+};
+
 #define big_font_R_width 8
 #define big_font_R_height 10
 static unsigned char big_font_R_bits[] = {
@@ -587,10 +605,22 @@ static unsigned char big_font_V_bits[] = {
     51, 51, 51, 51, 51, 51, 51, 30, 30, 12,
 };
 
+#define big_font_W_width 8
+#define big_font_W_height 10
+static unsigned char big_font_W_bits[] = {
+    51, 51, 51, 51, 51, 63, 63, 51, 51, 33,
+};
+
 #define big_font_X_width 8
 #define big_font_X_height 10
 static unsigned char big_font_X_bits[] = {
     51, 51, 30, 30, 12, 12, 30, 30, 51, 51,
+};
+
+#define big_font_Y_width 8
+#define big_font_Y_height 10
+static unsigned char big_font_Y_bits[] = {
+    51, 51, 30, 30, 12, 12, 12, 12, 12, 12,
 };
 
 #endif /* _UI4x_BITMAPS_FONTS_H 1 */
