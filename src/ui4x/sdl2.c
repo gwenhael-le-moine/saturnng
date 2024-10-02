@@ -619,7 +619,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     __draw_pixel( 1, BUTTONS[ hpkey ].h - 2, FRAME );
     // bottom-right
     __draw_pixel( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, FRAME );
-    if ( hpkey == HP48_KEY_ON ) {
+    if ( ( config.model == MODEL_49G && hpkey == HP49_KEY_ON) || hpkey == HP48_KEY_ON ) {
         // top
         __draw_line( 2, 1, BUTTONS[ hpkey ].w - 3, 1, FRAME );
         // top-left

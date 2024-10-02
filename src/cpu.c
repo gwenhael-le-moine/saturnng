@@ -270,7 +270,7 @@ static void ExecBUSCB( void )
 static void ExecBUSCC( void )
 {
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
-// 49g bugs here
+    // 49g bugs here
     ChfCondition CPU_F_INTERR, CHF_WARNING, "BUSCC" ChfEnd;
     ChfSignal();
 }
