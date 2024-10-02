@@ -56,6 +56,10 @@ DOTOS = src/cpu.o \
 	src/main.o
 
 DOTOS_UI4x = src/ui4x/config.o \
+	src/ui4x/fonts.o \
+	src/ui4x/48sx.o \
+	src/ui4x/48gx.o \
+	src/ui4x/49g.o \
 	src/ui4x/common.o \
 	src/ui4x/sdl2.o \
 	src/ui4x/ncurses.o \

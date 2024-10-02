@@ -4,8 +4,7 @@
 #include "emulator.h"
 
 #include "bitmaps_misc.h"
-#include "bitmaps_small_font.h"
-#include "bitmaps_big_font.h"
+#include "bitmaps_fonts.h"
 
 // Colors
 /*                          48SX    48GX     49g    */

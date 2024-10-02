@@ -1,4 +1,5 @@
 src/*.o
+src/ui4x/*.o
 
 dist/pack
 dist/saturn
@@ -18,18 +19,18 @@ docs/saturn.pdf
 docs/saturn.ps
 docs/saturn.log
 
-libChf/docs/chf.tps
-libChf/docs/chf.tp
-libChf/docs/chf.toc
-libChf/docs/chf.pdf
-libChf/docs/chf.log
-libChf/docs/chf.info
-libChf/docs/chf.fns
-libChf/docs/chf.fn
-libChf/docs/chf.cps
-libChf/docs/chf.cp
-libChf/docs/chf.aux
-libChf/docs/chf.dvi
-libChf/docs/chf.ps
-libChf/libChf.a
-libChf/src/*.o
+src/libChf/docs/chf.tps
+src/libChf/docs/chf.tp
+src/libChf/docs/chf.toc
+src/libChf/docs/chf.pdf
+src/libChf/docs/chf.log
+src/libChf/docs/chf.info
+src/libChf/docs/chf.fns
+src/libChf/docs/chf.fn
+src/libChf/docs/chf.cps
+src/libChf/docs/chf.cp
+src/libChf/docs/chf.aux
+src/libChf/docs/chf.dvi
+src/libChf/docs/chf.ps
+src/libChf/libChf.a
+src/libChf/src/*.o
