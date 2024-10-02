@@ -31,7 +31,7 @@ gxrom-r:
 
 # HP 49
 rom.49g:
-	curl "https://www.hpcalc.org/hp49/pc/rom/beta1196.zip" --output rom-49g.zip
+	curl "https://www.hpcalc.org/hp49/pc/rom/hp4950emurom.zip" --output rom-49g.zip
 	unzip rom-49g.zip rom.49g
 	rm rom-49g.zip
 
