@@ -10,6 +10,9 @@
 #include "../modules.h"
 #include "../serial.h"
 
+#define KEYBOARD ( config.model == MODEL_48GX || config.model == MODEL_48SX ? keyboard48 : keyboard49 )
+#define NB_KEYS ( config.model == MODEL_48GX || config.model == MODEL_48SX ? NB_HP48_KEYS : NB_HP49_KEYS )
+
 config_t config;
 
 typedef struct hpkey_t {
@@ -18,7 +21,7 @@ typedef struct hpkey_t {
     char* inOut;
 } hpkey_t;
 
-static hpkey_t keyboard48[ NB_KEYS ] = {
+static hpkey_t keyboard48[ NB_HP48_KEYS ] = {
     /* From top left to bottom right */
     {0x14,   false, "1/10"},
     {0x84,   false, "8/10"},
@@ -79,29 +82,104 @@ static hpkey_t keyboard48[ NB_KEYS ] = {
     {0x00,   false, "0/01"},
 };
 
+static hpkey_t keyboard49[ NB_HP49_KEYS ] = {
+    /* From top left to bottom right */
+    {0x50, false, "5/01"},
+    {0x51, false, "5/02"},
+    {0x52, false, "5/04"},
+    {0x53, false, "5/08"},
+    {0x54, false, "5/10"},
+    {0x55, false, "5/20"},
+
+    {0x57, false, "5/80"},
+    {0x47, false, "4/80"},
+    {0x37, false, "3/80"},
+
+    {0x27, false, "2/80"},
+    {0x17, false, "1/80"},
+    {0x07, false, "0/80"},
+
+    {0x63, false, "6/08"},
+    {0x62, false, "6/04"},
+    {0x60, false, "6/01"},
+    {0x61, false, "6/02"},
+
+    {0x46, false, "4/40"},
+    {0x36, false, "3/40"},
+    {0x26, false, "2/40"},
+    {0x16, false, "1/40"},
+    {0x06, false, "0/40"},
+
+    {0x45, false, "4/20"},
+    {0x35, false, "3/20"},
+    {0x25, false, "2/20"},
+    {0x15, false, "1/20"},
+    {0x05, false, "0/20"},
+
+    {0x44, false, "4/10"},
+    {0x34, false, "3/10"},
+    {0x24, false, "2/10"},
+    {0x14, false, "1/10"},
+    {0x04, false, "0/10"},
+
+    {0x73, false, "7/08"},
+    {0x33, false, "3/08"},
+    {0x23, false, "2/08"},
+    {0x13, false, "1/08"},
+    {0x03, false, "0/08"},
+
+    {0x72, false, "7/04"},
+    {0x32, false, "3/04"},
+    {0x22, false, "2/04"},
+    {0x12, false, "1/04"},
+    {0x02, false, "0/04"},
+
+    {0x71, false, "7/02"},
+    {0x31, false, "3/02"},
+    {0x21, false, "2/02"},
+    {0x11, false, "1/02"},
+    {0x01, false, "0/02"},
+
+    {0x8000, false, "*"},
+    {0x30, false, "3/01"},
+    {0x20, false, "2/01"},
+    {0x10, false, "1/01"},
+    {0x00, false, "0/01"},
+};
+
 void press_key( int hpkey )
 {
+    if ( hpkey < 0 || hpkey > NB_KEYS )
+        return;
     // Check not already pressed (may be important: avoids a useless do_kbd_int)
-    if ( keyboard48[ hpkey ].pressed )
+    if ( KEYBOARD[ hpkey ].pressed )
         return;
 
-    keyboard48[ hpkey ].pressed = true;
+    KEYBOARD[ hpkey ].pressed = true;
 
-    KeybPress( keyboard48[ hpkey ].inOut );
+    KeybPress( KEYBOARD[ hpkey ].inOut );
 }
 
 void release_key( int hpkey )
 {
+    if ( hpkey < 0 || hpkey > NB_KEYS )
+        return;
     // Check not already released (not critical)
-    if ( !keyboard48[ hpkey ].pressed )
+    if ( !KEYBOARD[ hpkey ].pressed )
         return;
 
-    keyboard48[ hpkey ].pressed = false;
+    KEYBOARD[ hpkey ].pressed = false;
 
-    KeybRelease( keyboard48[ hpkey ].inOut );
+    KeybRelease( KEYBOARD[ hpkey ].inOut );
 }
 
-bool is_key_pressed( int hpkey ) { return keyboard48[ hpkey ].pressed; }
+bool is_key_pressed( int hpkey )
+{
+    if ( hpkey < 0 || hpkey > NB_KEYS )
+        return false;
+
+    return KEYBOARD[ hpkey ].pressed;
+}
 
 unsigned char get_annunciators( void ) { return mod_status.hdw.lcd_ann; }
 

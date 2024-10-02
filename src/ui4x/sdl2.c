@@ -64,7 +64,7 @@ static int last_annunciators = -1;
 static int last_contrast = -1;
 
 static color_t colors[ NB_COLORS ];
-static on_off_sdl_textures_struct_t buttons_textures[ NB_KEYS ];
+static on_off_sdl_textures_struct_t buttons_textures[ NB_HP49_KEYS ];
 static on_off_sdl_textures_struct_t annunciators_textures[ NB_ANNUNCIATORS ];
 
 static SDL_Window* window;
@@ -261,156 +261,156 @@ static int sdlkey_to_hpkey( SDL_Keycode k )
 {
     switch ( k ) {
         case SDLK_0:
-            return HPKEY_0;
+            return ( config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0);
         case SDLK_1:
-            return HPKEY_1;
+            return ( config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1);
         case SDLK_2:
-            return HPKEY_2;
+            return ( config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2);
         case SDLK_3:
-            return HPKEY_3;
+            return ( config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3);
         case SDLK_4:
-            return HPKEY_4;
+            return ( config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4);
         case SDLK_5:
-            return HPKEY_5;
+            return ( config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5);
         case SDLK_6:
-            return HPKEY_6;
+            return ( config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6);
         case SDLK_7:
-            return HPKEY_7;
+            return ( config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7);
         case SDLK_8:
-            return HPKEY_8;
+            return ( config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8);
         case SDLK_9:
-            return HPKEY_9;
+            return ( config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9);
         case SDLK_KP_0:
-            return HPKEY_0;
+            return ( config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0);
         case SDLK_KP_1:
-            return HPKEY_1;
+            return ( config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1);
         case SDLK_KP_2:
-            return HPKEY_2;
+            return ( config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2);
         case SDLK_KP_3:
-            return HPKEY_3;
+            return ( config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3);
         case SDLK_KP_4:
-            return HPKEY_4;
+            return ( config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4);
         case SDLK_KP_5:
-            return HPKEY_5;
+            return ( config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5);
         case SDLK_KP_6:
-            return HPKEY_6;
+            return ( config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6);
         case SDLK_KP_7:
-            return HPKEY_7;
+            return ( config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7);
         case SDLK_KP_8:
-            return HPKEY_8;
+            return ( config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8);
         case SDLK_KP_9:
-            return HPKEY_9;
+            return ( config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9);
         case SDLK_a:
-            return HPKEY_A;
+            return ( config.model == MODEL_49G ? HP49_KEY_A : HP48_KEY_A);
         case SDLK_b:
-            return HPKEY_B;
+            return ( config.model == MODEL_49G ? HP49_KEY_B : HP48_KEY_B);
         case SDLK_c:
-            return HPKEY_C;
+            return ( config.model == MODEL_49G ? HP49_KEY_C : HP48_KEY_C);
         case SDLK_d:
-            return HPKEY_D;
+            return ( config.model == MODEL_49G ? HP49_KEY_D : HP48_KEY_D);
         case SDLK_e:
-            return HPKEY_E;
+            return ( config.model == MODEL_49G ? HP49_KEY_E : HP48_KEY_E);
         case SDLK_f:
-            return HPKEY_F;
+            return ( config.model == MODEL_49G ? HP49_KEY_F : HP48_KEY_F);
         case SDLK_g:
-            return HPKEY_MTH;
+            return ( config.model == MODEL_49G ? HP49_KEY_APPS : HP48_KEY_MTH);
         case SDLK_h:
-            return HPKEY_PRG;
+            return ( config.model == MODEL_49G ? HP49_KEY_MODE : HP48_KEY_PRG);
         case SDLK_i:
-            return HPKEY_CST;
+            return ( config.model == MODEL_49G ? HP49_KEY_TOOL : HP48_KEY_CST);
         case SDLK_j:
-            return HPKEY_VAR;
+            return ( config.model == MODEL_49G ? HP49_KEY_VAR : HP48_KEY_VAR);
         case SDLK_k:
-            return HPKEY_UP;
+            return ( config.model == MODEL_49G ? HP49_KEY_STO : HP48_KEY_UP);
         case SDLK_UP:
-            return HPKEY_UP;
+            return ( config.model == MODEL_49G ? HP49_KEY_UP : HP48_KEY_UP);
         case SDLK_l:
-            return HPKEY_NXT;
+            return ( config.model == MODEL_49G ? HP49_KEY_NXT : HP48_KEY_NXT);
         case SDLK_m:
-            return HPKEY_QUOTE;
+            return ( config.model == MODEL_49G ? HP49_KEY_HIST : HP48_KEY_QUOTE);
         case SDLK_n:
-            return HPKEY_STO;
+            return ( config.model == MODEL_49G ? HP49_KEY_CAT : HP48_KEY_STO);
         case SDLK_o:
-            return HPKEY_EVAL;
+            return ( config.model == MODEL_49G ? HP49_KEY_EQW : HP48_KEY_EVAL);
         case SDLK_p:
-            return HPKEY_LEFT;
+            return ( config.model == MODEL_49G ? HP49_KEY_SYMB : HP48_KEY_LEFT);
         case SDLK_LEFT:
-            return HPKEY_LEFT;
+            return ( config.model == MODEL_49G ? HP49_KEY_LEFT : HP48_KEY_LEFT);
         case SDLK_q:
-            return HPKEY_DOWN;
+            return ( config.model == MODEL_49G ? HP49_KEY_POWER : HP48_KEY_DOWN);
         case SDLK_DOWN:
-            return HPKEY_DOWN;
+            return ( config.model == MODEL_49G ? HP49_KEY_DOWN : HP48_KEY_DOWN);
         case SDLK_r:
-            return HPKEY_RIGHT;
+            return ( config.model == MODEL_49G ? HP49_KEY_SQRT : HP48_KEY_RIGHT);
         case SDLK_RIGHT:
-            return HPKEY_RIGHT;
+            return ( config.model == MODEL_49G ? HP49_KEY_RIGHT : HP48_KEY_RIGHT);
         case SDLK_s:
-            return HPKEY_SIN;
+            return ( config.model == MODEL_49G ? HP49_KEY_SIN : HP48_KEY_SIN);
         case SDLK_t:
-            return HPKEY_COS;
+            return ( config.model == MODEL_49G ? HP49_KEY_COS : HP48_KEY_COS);
         case SDLK_u:
-            return HPKEY_TAN;
+            return ( config.model == MODEL_49G ? HP49_KEY_TAN : HP48_KEY_TAN);
         case SDLK_v:
-            return HPKEY_SQRT;
+            return ( config.model == MODEL_49G ? HP49_KEY_EEX : HP48_KEY_SQRT);
         case SDLK_w:
-            return HPKEY_POWER;
+            return ( config.model == MODEL_49G ? HP49_KEY_NEG : HP48_KEY_POWER);
         case SDLK_x:
-            return HPKEY_INV;
+            return ( config.model == MODEL_49G ? HP49_KEY_X : HP48_KEY_INV);
         case SDLK_y:
-            return HPKEY_NEG;
+            return ( config.model == MODEL_49G ? HP49_KEY_INV : HP48_KEY_NEG);
         case SDLK_z:
-            return HPKEY_EEX;
+            return ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_EEX);
         case SDLK_SPACE:
-            return HPKEY_SPC;
+            return ( config.model == MODEL_49G ? HP49_KEY_SPC : HP48_KEY_SPC);
         case SDLK_F1:
         case SDLK_RETURN:
         case SDLK_KP_ENTER:
-            return HPKEY_ENTER;
+            return ( config.model == MODEL_49G ? HP49_KEY_ENTER : HP48_KEY_ENTER);
         case SDLK_BACKSPACE:
-            return HPKEY_BS;
+            return ( config.model == MODEL_49G ? HP49_KEY_BS : HP48_KEY_BS);
         case SDLK_DELETE:
-            return HPKEY_DEL;
+            return ( config.model == MODEL_49G ? -1 : HP48_KEY_DEL);
         case SDLK_PERIOD:
-            return HPKEY_PERIOD;
+            return ( config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD);
         case SDLK_KP_PERIOD:
-            return HPKEY_PERIOD;
+            return ( config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD);
         case SDLK_PLUS:
-            return HPKEY_PLUS;
+            return ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS);
         case SDLK_KP_PLUS:
-            return HPKEY_PLUS;
+            return ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS);
         case SDLK_MINUS:
-            return HPKEY_MINUS;
+            return ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS);
         case SDLK_KP_MINUS:
-            return HPKEY_MINUS;
+            return ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS);
         case SDLK_ASTERISK:
-            return HPKEY_MUL;
+            return ( config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL);
         case SDLK_KP_MULTIPLY:
-            return HPKEY_MUL;
+            return ( config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL);
         case SDLK_SLASH:
-            return HPKEY_DIV;
+            return ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV);
         case SDLK_KP_DIVIDE:
-            return HPKEY_DIV;
+            return ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV);
         case SDLK_F5:
         case SDLK_ESCAPE:
-            return HPKEY_ON;
+            return ( config.model == MODEL_49G ? HP49_KEY_ON : HP48_KEY_ON);
         case SDLK_LSHIFT:
             if ( !config.shiftless )
-                return HPKEY_SHL;
+                return ( config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL);
             break;
         case SDLK_RSHIFT:
             if ( !config.shiftless )
-                return HPKEY_SHR;
+                return ( config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR);
             break;
         case SDLK_F2:
         case SDLK_RCTRL:
-            return HPKEY_SHL;
+            return ( config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL);
         case SDLK_F3:
         case SDLK_LCTRL:
-            return HPKEY_SHR;
+            return ( config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR);
         case SDLK_F4:
         case SDLK_LALT:
         case SDLK_RALT:
-            return HPKEY_ALPHA;
+            return ( config.model == MODEL_49G ? HP49_KEY_ALPHA : HP48_KEY_ALPHA);
         case SDLK_F7:
         case SDLK_F10:
             // please_exit = true;
@@ -558,7 +558,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
 {
     bool is_down = !is_up;
     int x, y;
-    int on_key_offset_y = ( hpkey == HPKEY_ON ) ? 1 : 0;
+    int on_key_offset_y = ( hpkey == HP48_KEY_ON ) ? 1 : 0;
     SDL_Texture* texture =
         SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h );
     SDL_SetRenderTarget( renderer, texture );
@@ -568,7 +568,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     int outer_color = PAD;
     if ( BUTTONS[ hpkey ].is_menu )
         outer_color = UNDERLAY;
-    if ( hpkey < HPKEY_MTH )
+    if ( hpkey < HP48_KEY_MTH )
         outer_color = DISP_PAD;
     __draw_rect( 0, 0, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h, outer_color );
     __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTON );
@@ -633,7 +633,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     __draw_pixel( 1, BUTTONS[ hpkey ].h - 2, FRAME );
     // bottom-right
     __draw_pixel( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, FRAME );
-    if ( hpkey == HPKEY_ON ) {
+    if ( hpkey == HP48_KEY_ON ) {
         // top
         __draw_line( 2, 1, BUTTONS[ hpkey ].w - 3, 1, FRAME );
         // top-left
@@ -712,7 +712,7 @@ static void _draw_keypad( void )
                 y -= 2;
             }
 
-            write_with_small_font( x, y, BUTTONS[ i ].letter, WHITE, ( i < HPKEY_MTH ) ? DISP_PAD : PAD );
+            write_with_small_font( x, y, BUTTONS[ i ].letter, WHITE, ( i < HP48_KEY_MTH ) ? DISP_PAD : PAD );
         }
 
         // Bottom label: the only one is the cancel button
@@ -1072,7 +1072,7 @@ void ui_start_sdl( config_t* conf )
     apply_contrast();
 
     if ( !config.chromeless ) {
-        int cut = BUTTONS[ HPKEY_MTH ].y + KEYBOARD_OFFSET_Y - 19;
+        int cut = BUTTONS[ HP48_KEY_MTH ].y + KEYBOARD_OFFSET_Y - 19;
 
         create_buttons_textures();
 

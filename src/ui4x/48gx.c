@@ -203,7 +203,7 @@ color_t colors_48gx[ NB_COLORS ] = {
      },
 };
 
-button_t buttons_48gx[ NB_KEYS ] = {
+button_t buttons_48gx[ NB_HP48_KEYS ] = {
     {.name = "A",
      .x = 0,
      .y = 0,

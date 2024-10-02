@@ -78,9 +78,9 @@ extern color_t colors_48sx[ NB_COLORS ];
 extern color_t colors_48gx[ NB_COLORS ];
 extern color_t colors_49g[ NB_COLORS ];
 
-extern button_t buttons_48sx[ NB_KEYS ];
-extern button_t buttons_48gx[ NB_KEYS ];
-extern button_t buttons_49g[ NB_KEYS ];
+extern button_t buttons_48sx[ NB_HP48_KEYS ];
+extern button_t buttons_48gx[ NB_HP48_KEYS ];
+extern button_t buttons_49g[ NB_HP49_KEYS ];
 
 #define small_ascent 8
 #define small_descent 4
