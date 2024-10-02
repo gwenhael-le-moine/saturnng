@@ -132,7 +132,7 @@
    Define this symbol if extended information is desired during condition
    handling; this is usually useful only for debugging purposes.
 */
-/* #define CHF_EXTENDED_INFO */
+#define CHF_EXTENDED_INFO
 
 /* DEBUG:
    Define this symbol to include the debugging code for all source modules
