@@ -563,15 +563,15 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON );
 
     // draw label in button
-    if ( BUTTONS[ hpkey ].label != ( char* )0 ) {
+    if ( BUTTONS[ hpkey ].label_text != ( char* )0 ) {
         /* Button has a text label */
-        x = strlen( BUTTONS[ hpkey ].label ) - 1;
-        x += ( ( BUTTONS[ hpkey ].w - BigTextWidth( BUTTONS[ hpkey ].label, strlen( BUTTONS[ hpkey ].label ) ) ) / 2 );
+        x = strlen( BUTTONS[ hpkey ].label_text ) - 1;
+        x += ( ( BUTTONS[ hpkey ].w - BigTextWidth( BUTTONS[ hpkey ].label_text, strlen( BUTTONS[ hpkey ].label_text ) ) ) / 2 );
         y = ( BUTTONS[ hpkey ].h + 1 ) / 2 - 6;
         if ( is_down )
             y -= 1;
 
-        write_with_big_font( x, y, BUTTONS[ hpkey ].label, BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
+        write_with_big_font( x, y, BUTTONS[ hpkey ].label_text, BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
     } else if ( BUTTONS[ hpkey ].lw != 0 ) {
         /* Button has a texture */
         x = ( 1 + BUTTONS[ hpkey ].w - BUTTONS[ hpkey ].lw ) / 2;

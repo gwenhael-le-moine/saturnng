@@ -53,7 +53,7 @@ typedef struct button_t {
 
     /* label on the button (text or bitmap) */
     int label_color;
-    const char* label;
+    const char* label_text;
     unsigned int lw, lh;
     unsigned char* lb;
 
