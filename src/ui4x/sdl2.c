@@ -571,7 +571,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
         if ( is_down )
             y -= 1;
 
-        write_with_big_font( x, y, BUTTONS[ hpkey ].label, UI4X_COLOR_WHITE, UI4X_COLOR_BUTTON );
+        write_with_big_font( x, y, BUTTONS[ hpkey ].label, BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
     } else if ( BUTTONS[ hpkey ].lw != 0 ) {
         /* Button has a texture */
         x = ( 1 + BUTTONS[ hpkey ].w - BUTTONS[ hpkey ].lw ) / 2;
@@ -579,7 +579,8 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
         if ( is_up )
             y += 1;
 
-        __draw_bitmap( x, y, BUTTONS[ hpkey ].lw, BUTTONS[ hpkey ].lh, BUTTONS[ hpkey ].lb, BUTTONS[ hpkey ].lc, UI4X_COLOR_BUTTON );
+        __draw_bitmap( x, y, BUTTONS[ hpkey ].lw, BUTTONS[ hpkey ].lh, BUTTONS[ hpkey ].lb, BUTTONS[ hpkey ].label_color,
+                       UI4X_COLOR_BUTTON );
     }
 
     // draw edge of button

@@ -52,7 +52,7 @@ typedef struct button_t {
     bool highlight;
 
     /* label on the button (text or bitmap) */
-    int lc;
+    int label_color;
     const char* label;
     unsigned int lw, lh;
     unsigned char* lb;
