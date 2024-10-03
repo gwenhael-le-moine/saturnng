@@ -49,18 +49,22 @@ typedef struct button_t {
     int x, y;
     int w, h;
 
+    short is_menu;
+
+    /* label on the button (text or bitmap) */
     int lc;
     const char* label;
-    short font_size;
     unsigned int lw, lh;
     unsigned char* lb;
 
+    /* label around the button */
     const char* letter;
-
     const char* left;
-    short is_menu;
     const char* right;
     const char* sub;
+
+    /* unused */
+    short font_size;
 } button_t;
 
 /*************/
