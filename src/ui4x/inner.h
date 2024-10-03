@@ -54,8 +54,8 @@ typedef struct button_t {
     /* label on the button (text or bitmap) */
     int label_color;
     const char* label_text;
-    unsigned int label_bitmap_w, label_bitmap_h;
-    unsigned char* lb;
+    unsigned char* label_bits;
+    unsigned int label_bits_w, label_bits_h;
 
     /* label around the button */
     const char* letter;
