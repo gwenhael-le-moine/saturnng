@@ -143,7 +143,7 @@ clean-all: mrproper
 
 # Formatting
 pretty-code:
-	clang-format -i src/*.c src/*.h
+	clang-format -i src/*.c src/ui4x/*.h src/*.c src/ui4x/*.h
 	make -C src/libChf pretty-code
 
 # Dependencies
