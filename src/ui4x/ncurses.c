@@ -474,11 +474,11 @@ void ui_start_ncurses( config_t* conf )
         start_color();
 
         if ( config.gray ) {
-            init_color( LCD_COLOR_BG, COLORS[ LCD ].gray_rgb, COLORS[ LCD ].gray_rgb, COLORS[ LCD ].gray_rgb );
-            init_color( LCD_COLOR_FG, COLORS[ PIXEL ].gray_rgb, COLORS[ PIXEL ].gray_rgb, COLORS[ PIXEL ].gray_rgb );
+            init_color( LCD_COLOR_BG, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb );
+            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb );
         } else {
-            init_color( LCD_COLOR_BG, COLORS[ LCD ].r, COLORS[ LCD ].g, COLORS[ LCD ].b );
-            init_color( LCD_COLOR_FG, COLORS[ PIXEL ].r, COLORS[ PIXEL ].g, COLORS[ PIXEL ].b );
+            init_color( LCD_COLOR_BG, COLORS[ UI4X_COLOR_LCD_BG ].r, COLORS[ UI4X_COLOR_LCD_BG ].g, COLORS[ UI4X_COLOR_LCD_BG ].b );
+            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_LCD_PIXEL ].r, COLORS[ UI4X_COLOR_LCD_PIXEL ].g, COLORS[ UI4X_COLOR_LCD_PIXEL ].b );
         }
 
         init_pair( LCD_PIXEL_OFF, LCD_COLOR_BG, LCD_COLOR_BG );

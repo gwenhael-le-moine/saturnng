@@ -213,9 +213,9 @@ static void create_annunciators_textures( void )
 {
     for ( int i = 0; i < NB_ANNUNCIATORS; i++ ) {
         annunciators_textures[ i ].up =
-            bitmap_to_texture( annunciators_ui[ i ].width, annunciators_ui[ i ].height, annunciators_ui[ i ].bits, PIXEL, LCD );
+            bitmap_to_texture( annunciators_ui[ i ].width, annunciators_ui[ i ].height, annunciators_ui[ i ].bits, UI4X_COLOR_LCD_PIXEL, UI4X_COLOR_LCD_BG );
         annunciators_textures[ i ].down =
-            bitmap_to_texture( annunciators_ui[ i ].width, annunciators_ui[ i ].height, annunciators_ui[ i ].bits, LCD, LCD );
+            bitmap_to_texture( annunciators_ui[ i ].width, annunciators_ui[ i ].height, annunciators_ui[ i ].bits, UI4X_COLOR_LCD_BG, UI4X_COLOR_LCD_BG );
     }
 }
 
@@ -409,86 +409,86 @@ static int sdlkey_to_hpkey( SDL_Keycode k )
 static void _draw_bezel( unsigned int cut, unsigned int offset_y, int keypad_width, int keypad_height )
 {
     // bottom lines
-    __draw_line( 1, keypad_height - 1, keypad_width - 1, keypad_height - 1, PAD_TOP );
-    __draw_line( 2, keypad_height - 2, keypad_width - 2, keypad_height - 2, PAD_TOP );
+    __draw_line( 1, keypad_height - 1, keypad_width - 1, keypad_height - 1, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+    __draw_line( 2, keypad_height - 2, keypad_width - 2, keypad_height - 2, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
     // right lines
-    __draw_line( keypad_width - 1, keypad_height - 1, keypad_width - 1, cut, PAD_TOP );
-    __draw_line( keypad_width - 2, keypad_height - 2, keypad_width - 2, cut, PAD_TOP );
+    __draw_line( keypad_width - 1, keypad_height - 1, keypad_width - 1, cut, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+    __draw_line( keypad_width - 2, keypad_height - 2, keypad_width - 2, cut, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
     // right lines
-    __draw_line( keypad_width - 1, cut - 1, keypad_width - 1, 1, DISP_PAD_TOP );
-    __draw_line( keypad_width - 2, cut - 1, keypad_width - 2, 2, DISP_PAD_TOP );
+    __draw_line( keypad_width - 1, cut - 1, keypad_width - 1, 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+    __draw_line( keypad_width - 2, cut - 1, keypad_width - 2, 2, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
 
     // top lines
-    __draw_line( 0, 0, keypad_width - 2, 0, DISP_PAD_BOT );
-    __draw_line( 1, 1, keypad_width - 3, 1, DISP_PAD_BOT );
+    __draw_line( 0, 0, keypad_width - 2, 0, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+    __draw_line( 1, 1, keypad_width - 3, 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
     // left lines
-    __draw_line( 0, cut - 1, 0, 0, DISP_PAD_BOT );
-    __draw_line( 1, cut - 1, 1, 1, DISP_PAD_BOT );
+    __draw_line( 0, cut - 1, 0, 0, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+    __draw_line( 1, cut - 1, 1, 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
     // left lines
-    __draw_line( 0, keypad_height - 2, 0, cut, PAD_BOT );
-    __draw_line( 1, keypad_height - 3, 1, cut, PAD_BOT );
+    __draw_line( 0, keypad_height - 2, 0, cut, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
+    __draw_line( 1, keypad_height - 3, 1, cut, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
 
     if ( config.model == MODEL_48GX || config.model == MODEL_48SX ) {
         // lower the menu BUTTONS
 
         // bottom lines
-        __draw_line( 3, keypad_height - 3, keypad_width - 3, keypad_height - 3, PAD_TOP );
-        __draw_line( 4, keypad_height - 4, keypad_width - 4, keypad_height - 4, PAD_TOP );
+        __draw_line( 3, keypad_height - 3, keypad_width - 3, keypad_height - 3, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( 4, keypad_height - 4, keypad_width - 4, keypad_height - 4, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
         // right lines
-        __draw_line( keypad_width - 3, keypad_height - 3, keypad_width - 3, cut, PAD_TOP );
-        __draw_line( keypad_width - 4, keypad_height - 4, keypad_width - 4, cut, PAD_TOP );
+        __draw_line( keypad_width - 3, keypad_height - 3, keypad_width - 3, cut, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 4, keypad_height - 4, keypad_width - 4, cut, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
         // right lines
-        __draw_line( keypad_width - 3, cut - 1, keypad_width - 3, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_TOP );
-        __draw_line( keypad_width - 4, cut - 1, keypad_width - 4, offset_y - ( KBD_UPLINE - 2 ), DISP_PAD_TOP );
+        __draw_line( keypad_width - 3, cut - 1, keypad_width - 3, offset_y - ( KBD_UPLINE - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 4, cut - 1, keypad_width - 4, offset_y - ( KBD_UPLINE - 2 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
 
         // top lines
-        __draw_line( 2, offset_y - ( KBD_UPLINE - 0 ), keypad_width - 4, offset_y - ( KBD_UPLINE - 0 ), DISP_PAD_BOT );
-        __draw_line( 3, offset_y - ( KBD_UPLINE - 1 ), keypad_width - 5, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_BOT );
+        __draw_line( 2, offset_y - ( KBD_UPLINE - 0 ), keypad_width - 4, offset_y - ( KBD_UPLINE - 0 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 3, offset_y - ( KBD_UPLINE - 1 ), keypad_width - 5, offset_y - ( KBD_UPLINE - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
         // left lines
-        __draw_line( 2, cut - 1, 2, offset_y - ( KBD_UPLINE - 1 ), DISP_PAD_BOT );
-        __draw_line( 3, cut - 1, 3, offset_y - ( KBD_UPLINE - 2 ), DISP_PAD_BOT );
+        __draw_line( 2, cut - 1, 2, offset_y - ( KBD_UPLINE - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 3, cut - 1, 3, offset_y - ( KBD_UPLINE - 2 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
         // left lines
-        __draw_line( 2, keypad_height - 4, 2, cut, PAD_BOT );
-        __draw_line( 3, keypad_height - 5, 3, cut, PAD_BOT );
+        __draw_line( 2, keypad_height - 4, 2, cut, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 3, keypad_height - 5, 3, cut, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
 
         // lower the keyboard
 
         // bottom lines
-        __draw_line( 5, keypad_height - 5, keypad_width - 3, keypad_height - 5, PAD_TOP );
-        __draw_line( 6, keypad_height - 6, keypad_width - 4, keypad_height - 6, PAD_TOP );
+        __draw_line( 5, keypad_height - 5, keypad_width - 3, keypad_height - 5, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( 6, keypad_height - 6, keypad_width - 4, keypad_height - 6, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
         // right lines
-        __draw_line( keypad_width - 5, keypad_height - 5, keypad_width - 5, cut + 1, PAD_TOP );
-        __draw_line( keypad_width - 6, keypad_height - 6, keypad_width - 6, cut + 2, PAD_TOP );
+        __draw_line( keypad_width - 5, keypad_height - 5, keypad_width - 5, cut + 1, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 6, keypad_height - 6, keypad_width - 6, cut + 2, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
         // top lines
-        __draw_line( 4, cut, keypad_width - 6, cut, DISP_PAD_BOT );
-        __draw_line( 5, cut + 1, keypad_width - 7, cut + 1, DISP_PAD_BOT );
+        __draw_line( 4, cut, keypad_width - 6, cut, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 5, cut + 1, keypad_width - 7, cut + 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
         // left lines
-        __draw_line( 4, keypad_height - 6, 4, cut + 1, PAD_BOT );
-        __draw_line( 5, keypad_height - 7, 5, cut + 2, PAD_BOT );
+        __draw_line( 4, keypad_height - 6, 4, cut + 1, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 5, keypad_height - 7, 5, cut + 2, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
 
         // round off the bottom edge
-        __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 7, keypad_height - 14, PAD_TOP );
-        __draw_line( keypad_width - 8, keypad_height - 8, keypad_width - 8, keypad_height - 11, PAD_TOP );
-        __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 14, keypad_height - 7, PAD_TOP );
-        __draw_line( keypad_width - 7, keypad_height - 8, keypad_width - 11, keypad_height - 8, PAD_TOP );
-        __draw_pixel( keypad_width - 9, keypad_height - 9, PAD_TOP );
+        __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 7, keypad_height - 14, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 8, keypad_height - 8, keypad_width - 8, keypad_height - 11, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 7, keypad_height - 7, keypad_width - 14, keypad_height - 7, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 7, keypad_height - 8, keypad_width - 11, keypad_height - 8, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_pixel( keypad_width - 9, keypad_height - 9, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
-        __draw_line( 7, keypad_height - 7, 13, keypad_height - 7, PAD_TOP );
-        __draw_line( 8, keypad_height - 8, 10, keypad_height - 8, PAD_TOP );
+        __draw_line( 7, keypad_height - 7, 13, keypad_height - 7, UI4X_COLOR_FACEPLATE_EDGE_TOP );
+        __draw_line( 8, keypad_height - 8, 10, keypad_height - 8, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
-        __draw_line( 6, keypad_height - 8, 6, keypad_height - 14, PAD_BOT );
-        __draw_line( 7, keypad_height - 9, 7, keypad_height - 11, PAD_BOT );
+        __draw_line( 6, keypad_height - 8, 6, keypad_height - 14, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 7, keypad_height - 9, 7, keypad_height - 11, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
     }
 }
 
@@ -501,42 +501,42 @@ static void _draw_header( void )
     if ( config.model == MODEL_48GX )
         x -= 6;
 
-    __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, LOGO, LOGO_BACK );
+    __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_HP_LOGO_BG );
 
     if ( config.model == MODEL_48SX ) {
-        __draw_line( DISPLAY_OFFSET_X, 9, DISPLAY_OFFSET_X + hp_width - 1, 9, FRAME );
-        __draw_line( DISPLAY_OFFSET_X - 1, 10, DISPLAY_OFFSET_X - 1, 10 + hp_height - 1, FRAME );
-        __draw_line( DISPLAY_OFFSET_X, 10 + hp_height, DISPLAY_OFFSET_X + hp_width - 1, 10 + hp_height, FRAME );
-        __draw_line( DISPLAY_OFFSET_X + hp_width, 10, DISPLAY_OFFSET_X + hp_width, 10 + hp_height - 1, FRAME );
+        __draw_line( DISPLAY_OFFSET_X, 9, DISPLAY_OFFSET_X + hp_width - 1, 9, UI4X_COLOR_FRAME );
+        __draw_line( DISPLAY_OFFSET_X - 1, 10, DISPLAY_OFFSET_X - 1, 10 + hp_height - 1, UI4X_COLOR_FRAME );
+        __draw_line( DISPLAY_OFFSET_X, 10 + hp_height, DISPLAY_OFFSET_X + hp_width - 1, 10 + hp_height, UI4X_COLOR_FRAME );
+        __draw_line( DISPLAY_OFFSET_X + hp_width, 10, DISPLAY_OFFSET_X + hp_width, 10 + hp_height - 1, UI4X_COLOR_FRAME );
     }
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
         x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_128K_ram_x_hot + 2;
         y = 10 + gx_128K_ram_y_hot;
-        __draw_bitmap( x, y, gx_128K_ram_width, gx_128K_ram_height, gx_128K_ram_bitmap, LABEL, DISP_PAD );
+        __draw_bitmap( x, y, gx_128K_ram_width, gx_128K_ram_height, gx_128K_ram_bitmap, UI4X_COLOR_48GX_128K_RAM, UI4X_COLOR_UPPER_FACEPLATE );
 
         x = DISPLAY_OFFSET_X + hp_width;
         y = hp_height + 8 - hp48gx_height;
-        __draw_bitmap( x, y, hp48gx_width, hp48gx_height, hp48gx_bitmap, LOGO, DISP_PAD );
+        __draw_bitmap( x, y, hp48gx_width, hp48gx_height, hp48gx_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
         x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_green_x_hot + 2;
         y = 10 + gx_green_y_hot;
-        __draw_bitmap( x, y, gx_green_width, gx_green_height, gx_green_bitmap, RIGHT, DISP_PAD );
+        __draw_bitmap( x, y, gx_green_width, gx_green_height, gx_green_bitmap, UI4X_COLOR_SHIFT_RIGHT, UI4X_COLOR_UPPER_FACEPLATE );
 
         x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_silver_x_hot + 2;
         y = 10 + gx_silver_y_hot;
-        __draw_bitmap( x, y, gx_silver_width, gx_silver_height, gx_silver_bitmap, LOGO,
+        __draw_bitmap( x, y, gx_silver_width, gx_silver_height, gx_silver_bitmap, UI4X_COLOR_HP_LOGO,
                        0 ); // Background transparent: draw only silver line
     }
     if ( config.model == MODEL_48SX ) {
         x = DISPLAY_OFFSET_X;
         y = TOP_SKIP - DISP_FRAME - hp48sx_height - 3;
-        __draw_bitmap( x, y, hp48sx_width, hp48sx_height, hp48sx_bitmap, LOGO, DISP_PAD );
+        __draw_bitmap( x, y, hp48sx_width, hp48sx_height, hp48sx_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
         x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - 1 - science_width;
         y = TOP_SKIP - DISP_FRAME - science_height - 4;
-        __draw_bitmap( x, y, science_width, science_height, science_bitmap, LOGO, DISP_PAD );
+        __draw_bitmap( x, y, science_width, science_height, science_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
     }
 }
 
@@ -551,13 +551,13 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
 
     // Fill the button and outline
     // fix outer-corners color
-    int outer_color = PAD;
+    int outer_color = UI4X_COLOR_FACEPLATE;
     if ( BUTTONS[ hpkey ].is_menu )
-        outer_color = UNDERLAY;
+        outer_color = UI4X_COLOR_KEYPAD_HIGHLIGHT;
     if ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && hpkey < HP48_KEY_MTH )
-        outer_color = DISP_PAD;
+        outer_color = UI4X_COLOR_UPPER_FACEPLATE;
     __draw_rect( 0, 0, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h, outer_color );
-    __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTON );
+    __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON );
 
     // draw label in button
     if ( BUTTONS[ hpkey ].label != ( char* )0 ) {
@@ -568,7 +568,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
         if ( is_down )
             y -= 1;
 
-        write_with_big_font( x, y, BUTTONS[ hpkey ].label, WHITE, BUTTON );
+        write_with_big_font( x, y, BUTTONS[ hpkey ].label, UI4X_COLOR_WHITE, UI4X_COLOR_BUTTON );
     } else if ( BUTTONS[ hpkey ].lw != 0 ) {
         /* Button has a texture */
         x = ( 1 + BUTTONS[ hpkey ].w - BUTTONS[ hpkey ].lw ) / 2;
@@ -576,69 +576,69 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
         if ( is_up )
             y += 1;
 
-        __draw_bitmap( x, y, BUTTONS[ hpkey ].lw, BUTTONS[ hpkey ].lh, BUTTONS[ hpkey ].lb, BUTTONS[ hpkey ].lc, BUTTON );
+        __draw_bitmap( x, y, BUTTONS[ hpkey ].lw, BUTTONS[ hpkey ].lh, BUTTONS[ hpkey ].lb, BUTTONS[ hpkey ].lc, UI4X_COLOR_BUTTON );
     }
 
     // draw edge of button
     // top
-    __draw_line( 1, 1, BUTTONS[ hpkey ].w - 2, 1, BUT_TOP );
-    __draw_line( 2, 2, BUTTONS[ hpkey ].w - 3, 2, BUT_TOP );
+    __draw_line( 1, 1, BUTTONS[ hpkey ].w - 2, 1, UI4X_COLOR_BUTTON_EDGE_TOP );
+    __draw_line( 2, 2, BUTTONS[ hpkey ].w - 3, 2, UI4X_COLOR_BUTTON_EDGE_TOP );
     if ( is_up ) {
-        __draw_line( 3, 3, BUTTONS[ hpkey ].w - 4, 3, BUT_TOP );
-        __draw_line( 4, 4, BUTTONS[ hpkey ].w - 5, 4, BUT_TOP );
+        __draw_line( 3, 3, BUTTONS[ hpkey ].w - 4, 3, UI4X_COLOR_BUTTON_EDGE_TOP );
+        __draw_line( 4, 4, BUTTONS[ hpkey ].w - 5, 4, UI4X_COLOR_BUTTON_EDGE_TOP );
     }
     // top-left
-    __draw_pixel( 4, 3 + ( is_up ? 2 : 0 ), BUT_TOP );
+    __draw_pixel( 4, 3 + ( is_up ? 2 : 0 ), UI4X_COLOR_BUTTON_EDGE_TOP );
     // left
-    __draw_line( 1, 1, 1, BUTTONS[ hpkey ].h - 2, BUT_TOP );
-    __draw_line( 2, 2, 2, BUTTONS[ hpkey ].h - 3, BUT_TOP );
-    __draw_line( 3, 3, 3, BUTTONS[ hpkey ].h - 4, BUT_TOP );
+    __draw_line( 1, 1, 1, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON_EDGE_TOP );
+    __draw_line( 2, 2, 2, BUTTONS[ hpkey ].h - 3, UI4X_COLOR_BUTTON_EDGE_TOP );
+    __draw_line( 3, 3, 3, BUTTONS[ hpkey ].h - 4, UI4X_COLOR_BUTTON_EDGE_TOP );
     // right
-    __draw_line( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, 3, BUT_BOT );
-    __draw_line( BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, 4, BUT_BOT );
-    __draw_line( BUTTONS[ hpkey ].w - 4, BUTTONS[ hpkey ].h - 4, BUTTONS[ hpkey ].w - 4, 5, BUT_BOT );
-    __draw_pixel( BUTTONS[ hpkey ].w - 5, BUTTONS[ hpkey ].h - 4, BUT_BOT );
+    __draw_line( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, 3, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
+    __draw_line( BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, 4, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
+    __draw_line( BUTTONS[ hpkey ].w - 4, BUTTONS[ hpkey ].h - 4, BUTTONS[ hpkey ].w - 4, 5, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
+    __draw_pixel( BUTTONS[ hpkey ].w - 5, BUTTONS[ hpkey ].h - 4, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
     // bottom
-    __draw_line( 3, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUT_BOT );
-    __draw_line( 4, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, BUT_BOT );
+    __draw_line( 3, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
+    __draw_line( 4, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
 
     // draw black frame around button
     // top
-    __draw_line( 2, 0, BUTTONS[ hpkey ].w - 3, 0, FRAME );
+    __draw_line( 2, 0, BUTTONS[ hpkey ].w - 3, 0, UI4X_COLOR_FRAME );
     // left
-    __draw_line( 0, 2, 0, BUTTONS[ hpkey ].h - 3, FRAME );
+    __draw_line( 0, 2, 0, BUTTONS[ hpkey ].h - 3, UI4X_COLOR_FRAME );
     // right
-    __draw_line( BUTTONS[ hpkey ].w - 1, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 1, 2, FRAME );
+    __draw_line( BUTTONS[ hpkey ].w - 1, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 1, 2, UI4X_COLOR_FRAME );
     // bottom
-    __draw_line( 2, BUTTONS[ hpkey ].h - 1, BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 1, FRAME );
+    __draw_line( 2, BUTTONS[ hpkey ].h - 1, BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 1, UI4X_COLOR_FRAME );
     // top-left
-    __draw_pixel( 1, 1, FRAME );
+    __draw_pixel( 1, 1, UI4X_COLOR_FRAME );
     // top-right
-    __draw_pixel( BUTTONS[ hpkey ].w - 2, 1, FRAME );
+    __draw_pixel( BUTTONS[ hpkey ].w - 2, 1, UI4X_COLOR_FRAME );
     // bottom-left
-    __draw_pixel( 1, BUTTONS[ hpkey ].h - 2, FRAME );
+    __draw_pixel( 1, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_FRAME );
     // bottom-right
-    __draw_pixel( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, FRAME );
+    __draw_pixel( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_FRAME );
     if ( ( config.model == MODEL_49G && hpkey == HP49_KEY_ON) || hpkey == HP48_KEY_ON ) {
         // top
-        __draw_line( 2, 1, BUTTONS[ hpkey ].w - 3, 1, FRAME );
+        __draw_line( 2, 1, BUTTONS[ hpkey ].w - 3, 1, UI4X_COLOR_FRAME );
         // top-left
-        __draw_pixel( 1, 1 + on_key_offset_y, FRAME );
+        __draw_pixel( 1, 1 + on_key_offset_y, UI4X_COLOR_FRAME );
         // top-right
-        __draw_pixel( BUTTONS[ hpkey ].w - 2, 1 + on_key_offset_y, FRAME );
+        __draw_pixel( BUTTONS[ hpkey ].w - 2, 1 + on_key_offset_y, UI4X_COLOR_FRAME );
     }
 
     if ( is_down ) {
         // top
-        __draw_line( 2, 1 + on_key_offset_y, BUTTONS[ hpkey ].w - 3, 1 + on_key_offset_y, FRAME );
+        __draw_line( 2, 1 + on_key_offset_y, BUTTONS[ hpkey ].w - 3, 1 + on_key_offset_y, UI4X_COLOR_FRAME );
         // left
-        __draw_line( 1, 2, 1, BUTTONS[ hpkey ].h, FRAME );
+        __draw_line( 1, 2, 1, BUTTONS[ hpkey ].h, UI4X_COLOR_FRAME );
         // right
-        __draw_line( BUTTONS[ hpkey ].w - 2, 2, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h, FRAME );
+        __draw_line( BUTTONS[ hpkey ].w - 2, 2, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h, UI4X_COLOR_FRAME );
         // top-left
-        __draw_pixel( 2, 2 + on_key_offset_y, FRAME );
+        __draw_pixel( 2, 2 + on_key_offset_y, UI4X_COLOR_FRAME );
         // top-right
-        __draw_pixel( BUTTONS[ hpkey ].w - 3, 2 + on_key_offset_y, FRAME );
+        __draw_pixel( BUTTONS[ hpkey ].w - 3, 2 + on_key_offset_y, UI4X_COLOR_FRAME );
     }
 
     return texture;
@@ -684,7 +684,7 @@ static void _draw_keypad( void )
             } else
                 x += ( BUTTONS[ i ].w - pw ) / 2;
 
-            __draw_rect( x, y, pw, ph, UNDERLAY );
+            __draw_rect( x, y, pw, ph, UI4X_COLOR_KEYPAD_HIGHLIGHT );
         }
 
         // Letter (small character bottom right of key)
@@ -700,7 +700,7 @@ static void _draw_keypad( void )
                 y += 1;
             }
 
-            write_with_small_font( x, y, BUTTONS[ i ].letter, WHITE, ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && i < HP48_KEY_MTH ) ? DISP_PAD : PAD );
+            write_with_small_font( x, y, BUTTONS[ i ].letter, UI4X_COLOR_WHITE, ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && i < HP48_KEY_MTH ) ? UI4X_COLOR_UPPER_FACEPLATE : UI4X_COLOR_FACEPLATE );
         }
 
         // Bottom label: the only one is the cancel button
@@ -708,7 +708,7 @@ static void _draw_keypad( void )
             x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x +
                 ( 1 + BUTTONS[ i ].w - SmallTextWidth( BUTTONS[ i ].sub, strlen( BUTTONS[ i ].sub ) ) ) / 2;
             y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y + BUTTONS[ i ].h + small_ascent + 2;
-            write_with_small_font( x, y, BUTTONS[ i ].sub, WHITE, PAD );
+            write_with_small_font( x, y, BUTTONS[ i ].sub, UI4X_COLOR_WHITE, UI4X_COLOR_FACEPLATE );
         }
 
         total_top_labels_width = 0;
@@ -728,7 +728,7 @@ static void _draw_keypad( void )
 
             x += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
 
-            write_with_small_font( x, y, BUTTONS[ i ].left, LEFT, BUTTONS[ i ].is_menu ? UNDERLAY : PAD );
+            write_with_small_font( x, y, BUTTONS[ i ].left, UI4X_COLOR_SHIFT_LEFT, BUTTONS[ i ].is_menu ? UI4X_COLOR_KEYPAD_HIGHLIGHT : UI4X_COLOR_FACEPLATE );
         }
 
         // draw the right labels ( .is_menu never have one )
@@ -744,7 +744,7 @@ static void _draw_keypad( void )
 
             x += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
 
-            write_with_small_font( x, y, BUTTONS[ i ].right, RIGHT, PAD );
+            write_with_small_font( x, y, BUTTONS[ i ].right, UI4X_COLOR_SHIFT_RIGHT, UI4X_COLOR_FACEPLATE );
         }
     }
 
@@ -756,59 +756,59 @@ static void _draw_bezel_LCD( void )
 {
     for ( int i = 0; i < DISP_FRAME; i++ ) {
         __draw_line( DISPLAY_OFFSET_X - i, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISP_PAD_TOP );
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
         __draw_line( DISPLAY_OFFSET_X - i, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, DISP_PAD_TOP );
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
         __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + i, DISPLAY_OFFSET_Y - i, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISP_PAD_TOP );
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
 
         __draw_line( DISPLAY_OFFSET_X - i - 1, DISPLAY_OFFSET_Y - i - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i - 1, DISPLAY_OFFSET_Y - i - 1,
-                     DISP_PAD_BOT );
+                     UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
         __draw_line( DISPLAY_OFFSET_X - i - 1, DISPLAY_OFFSET_Y - i - 1, DISPLAY_OFFSET_X - i - 1,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i - 1, DISP_PAD_BOT );
+                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i - 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
     }
 
     // round off corners
     __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y - DISP_FRAME, DISPLAY_OFFSET_X - DISP_FRAME + 3,
-                 DISPLAY_OFFSET_Y - DISP_FRAME, DISP_PAD );
+                 DISPLAY_OFFSET_Y - DISP_FRAME, UI4X_COLOR_UPPER_FACEPLATE );
     __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y - DISP_FRAME, DISPLAY_OFFSET_X - DISP_FRAME,
-                 DISPLAY_OFFSET_Y - DISP_FRAME + 3, DISP_PAD );
-    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y - DISP_FRAME + 1, DISP_PAD );
+                 DISPLAY_OFFSET_Y - DISP_FRAME + 3, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y - DISP_FRAME + 1, UI4X_COLOR_UPPER_FACEPLATE );
 
     __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 4, DISPLAY_OFFSET_Y - DISP_FRAME,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME, DISP_PAD );
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME, UI4X_COLOR_UPPER_FACEPLATE );
     __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME + 3, DISP_PAD );
-    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y - DISP_FRAME + 1, DISP_PAD );
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME + 3, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y - DISP_FRAME + 1, UI4X_COLOR_UPPER_FACEPLATE );
 
     __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4, DISPLAY_OFFSET_X - DISP_FRAME,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, UI4X_COLOR_UPPER_FACEPLATE );
     __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISPLAY_OFFSET_X - DISP_FRAME + 3,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
-    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, DISP_PAD );
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, UI4X_COLOR_UPPER_FACEPLATE );
 
     __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, UI4X_COLOR_UPPER_FACEPLATE );
     __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 4, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISP_PAD );
-    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, DISP_PAD );
+                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, UI4X_COLOR_UPPER_FACEPLATE );
 
     // simulate rounded lcd corners
-    __draw_line( DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, LCD );
-    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2, DISPLAY_OFFSET_Y - 1, LCD );
+    __draw_line( DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, UI4X_COLOR_LCD_BG );
+    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2, DISPLAY_OFFSET_Y - 1, UI4X_COLOR_LCD_BG );
     __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, LCD );
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, UI4X_COLOR_LCD_BG );
     __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, LCD );
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, UI4X_COLOR_LCD_BG );
 }
 
 static void _draw_background( int width, int height, int w_top, int h_top )
 {
-    __draw_rect( 0, 0, w_top, h_top, PAD );
-    __draw_rect( 0, 0, width, height, DISP_PAD );
+    __draw_rect( 0, 0, w_top, h_top, UI4X_COLOR_FACEPLATE );
+    __draw_rect( 0, 0, width, height, UI4X_COLOR_UPPER_FACEPLATE );
 }
 
-static void _draw_background_LCD( void ) { __draw_rect( DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_WIDTH, DISPLAY_HEIGHT, LCD ); }
+static void _draw_background_LCD( void ) { __draw_rect( DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_WIDTH, DISPLAY_HEIGHT, UI4X_COLOR_LCD_BG ); }
 
 // Show the hp key which is being pressed
 static void _show_key( int hpkey )
@@ -849,7 +849,7 @@ static void _draw_serial_devices_path( void )
     }
 
     if ( strlen( text ) > 0 )
-        write_with_small_font( SIDE_SKIP, KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ), text, WHITE, DISP_PAD );
+        write_with_small_font( SIDE_SKIP, KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ), text, UI4X_COLOR_WHITE, UI4X_COLOR_UPPER_FACEPLATE );
 }
 
 static int sdl_press_key( int hpkey )
@@ -902,7 +902,7 @@ static void sdl_update_annunciators( void )
 
 static void apply_contrast( void )
 {
-    // Adjust the LCD color according to the contrast
+    // Adjust the UI4X_COLOR_LCD_BG color according to the contrast
     int contrast = get_contrast();
 
     if ( last_contrast == contrast )
@@ -927,10 +927,10 @@ static void apply_contrast( void )
             colors[ i ].b = colors[ i ].gray_rgb;
         }
 
-        if ( !config.mono && i == PIXEL ) {
-            colors[ i ].r = ( 0x13 - contrast ) * ( colors[ LCD ].r / 0x10 );
-            colors[ i ].g = ( 0x13 - contrast ) * ( colors[ LCD ].g / 0x10 );
-            colors[ i ].b = 128 - ( ( 0x13 - contrast ) * ( ( 128 - colors[ LCD ].b ) / 0x10 ) );
+        if ( !config.mono && i == UI4X_COLOR_LCD_PIXEL ) {
+            colors[ i ].r = ( 0x13 - contrast ) * ( colors[ UI4X_COLOR_LCD_BG ].r / 0x10 );
+            colors[ i ].g = ( 0x13 - contrast ) * ( colors[ UI4X_COLOR_LCD_BG ].g / 0x10 );
+            colors[ i ].b = 128 - ( ( 0x13 - contrast ) * ( ( 128 - colors[ UI4X_COLOR_LCD_BG ].b ) / 0x10 ) );
         }
     }
 
@@ -999,7 +999,7 @@ void ui_update_display_sdl( void )
         for ( int y = 0; y < LCD_HEIGHT; ++y )
             for ( int x = 0; x < LCD_WIDTH; ++x )
                 __draw_rect( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ), 2, 2,
-                             lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? PIXEL : LCD );
+                             lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? UI4X_COLOR_LCD_PIXEL : UI4X_COLOR_LCD_BG );
 
         SDL_SetRenderTarget( renderer, NULL );
         SDL_RenderCopy( renderer, main_texture, NULL, NULL );
