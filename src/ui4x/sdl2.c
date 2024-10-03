@@ -502,15 +502,13 @@ static void _draw_header( void )
     // insert the HP Logo
     if ( config.model == MODEL_48GX )
         x -= 6;
+    /* if ( config.model == MODEL_49G ) */
+    /*     x += ( DISPLAY_WIDTH / 2 ) - ( hp_width / 2 ); */
 
     __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_HP_LOGO_BG );
 
-    if ( config.model == MODEL_48SX ) {
-        __draw_line( DISPLAY_OFFSET_X, 9, DISPLAY_OFFSET_X + hp_width - 1, 9, UI4X_COLOR_FRAME );
-        __draw_line( DISPLAY_OFFSET_X - 1, 10, DISPLAY_OFFSET_X - 1, 10 + hp_height - 1, UI4X_COLOR_FRAME );
-        __draw_line( DISPLAY_OFFSET_X, 10 + hp_height, DISPLAY_OFFSET_X + hp_width - 1, 10 + hp_height, UI4X_COLOR_FRAME );
-        __draw_line( DISPLAY_OFFSET_X + hp_width, 10, DISPLAY_OFFSET_X + hp_width, 10 + hp_height - 1, UI4X_COLOR_FRAME );
-    }
+    if ( config.model == MODEL_49G )
+        write_with_big_font( DISPLAY_WIDTH, 10, "49G", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
@@ -533,6 +531,11 @@ static void _draw_header( void )
                        0 ); // Background transparent: draw only silver line
     }
     if ( config.model == MODEL_48SX ) {
+        __draw_line( DISPLAY_OFFSET_X, 9, DISPLAY_OFFSET_X + hp_width - 1, 9, UI4X_COLOR_FRAME );
+        __draw_line( DISPLAY_OFFSET_X - 1, 10, DISPLAY_OFFSET_X - 1, 10 + hp_height - 1, UI4X_COLOR_FRAME );
+        __draw_line( DISPLAY_OFFSET_X, 10 + hp_height, DISPLAY_OFFSET_X + hp_width - 1, 10 + hp_height, UI4X_COLOR_FRAME );
+        __draw_line( DISPLAY_OFFSET_X + hp_width, 10, DISPLAY_OFFSET_X + hp_width, 10 + hp_height - 1, UI4X_COLOR_FRAME );
+
         x = DISPLAY_OFFSET_X;
         y = TOP_SKIP - DISP_FRAME - hp48sx_height - 3;
         __draw_bitmap( x, y, hp48sx_width, hp48sx_height, hp48sx_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );

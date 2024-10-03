@@ -102,9 +102,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP */
     {
-     .r = 0x80,
-     .g = 0x80,
-     .b = 0x8A,
+     .r = 0x00,
+     .g = 0x00,
+     .b = 0x00,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x80,
@@ -120,9 +120,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM */
     {
-     .r = 0x54,
-     .g = 0x54,
-     .b = 0x5A,
+     .r = 0x00,
+     .g = 0x00,
+     .b = 0x00,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x54,

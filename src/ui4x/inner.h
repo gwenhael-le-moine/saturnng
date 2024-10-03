@@ -57,7 +57,7 @@ typedef struct button_t {
     unsigned char* label_graphic;
     unsigned int label_graphic_w, label_graphic_h;
 
-    /* label around the button */
+    /* labels around the button */
     const char* letter;
     const char* left;
     const char* right;
