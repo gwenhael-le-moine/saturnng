@@ -572,14 +572,14 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
             y -= 1;
 
         write_with_big_font( x, y, BUTTONS[ hpkey ].label_text, BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
-    } else if ( BUTTONS[ hpkey ].label_bits != ( unsigned char* )0 ) {
+    } else if ( BUTTONS[ hpkey ].label_graphic != ( unsigned char* )0 ) {
         /* Button has a texture */
-        x = ( 1 + BUTTONS[ hpkey ].w - BUTTONS[ hpkey ].label_bits_w ) / 2;
-        y = ( 1 + BUTTONS[ hpkey ].h - BUTTONS[ hpkey ].label_bits_h ) / 2;
+        x = ( 1 + BUTTONS[ hpkey ].w - BUTTONS[ hpkey ].label_graphic_w ) / 2;
+        y = ( 1 + BUTTONS[ hpkey ].h - BUTTONS[ hpkey ].label_graphic_h ) / 2;
         if ( is_up )
             y += 1;
 
-        __draw_bitmap( x, y, BUTTONS[ hpkey ].label_bits_w, BUTTONS[ hpkey ].label_bits_h, BUTTONS[ hpkey ].label_bits,
+        __draw_bitmap( x, y, BUTTONS[ hpkey ].label_graphic_w, BUTTONS[ hpkey ].label_graphic_h, BUTTONS[ hpkey ].label_graphic,
                        BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
     }
 
