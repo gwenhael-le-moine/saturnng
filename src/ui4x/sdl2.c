@@ -555,7 +555,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     // Fill the button and outline
     // fix outer-corners color
     int outer_color = UI4X_COLOR_FACEPLATE;
-    if ( BUTTONS[ hpkey ].is_menu )
+    if ( BUTTONS[ hpkey ].highlight )
         outer_color = UI4X_COLOR_KEYPAD_HIGHLIGHT;
     if ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && hpkey < HP48_KEY_MTH )
         outer_color = UI4X_COLOR_UPPER_FACEPLATE;
@@ -671,13 +671,13 @@ static void _draw_keypad( void )
     int space_char_width = SmallTextWidth( " ", 1 );
     int total_top_labels_width;
 
-    // for .is_menu highlighted area, 48 only
+    // for .highlight highlighted area, 48 only
     int pw = config.model == MODEL_48GX ? 58 : 44;
     int ph = config.model == MODEL_48GX ? 48 : 9;
 
     for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ ) {
         // Background
-        if ( BUTTONS[ i ].is_menu ) {
+        if ( BUTTONS[ i ].highlight ) {
             x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x;
             y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y - small_ascent - small_descent;
 
@@ -735,10 +735,10 @@ static void _draw_keypad( void )
             x += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
 
             write_with_small_font( x, y, BUTTONS[ i ].left, UI4X_COLOR_SHIFT_LEFT,
-                                   BUTTONS[ i ].is_menu ? UI4X_COLOR_KEYPAD_HIGHLIGHT : UI4X_COLOR_FACEPLATE );
+                                   BUTTONS[ i ].highlight ? UI4X_COLOR_KEYPAD_HIGHLIGHT : UI4X_COLOR_FACEPLATE );
         }
 
-        // draw the right labels ( .is_menu never have one )
+        // draw the right labels ( .highlight never have one )
         if ( BUTTONS[ i ].right != ( char* )0 ) {
             x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x;
             y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y - small_descent;

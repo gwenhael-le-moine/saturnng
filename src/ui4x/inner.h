@@ -49,7 +49,7 @@ typedef struct button_t {
     int x, y;
     int w, h;
 
-    short is_menu;
+    bool highlight;
 
     /* label on the button (text or bitmap) */
     int lc;
