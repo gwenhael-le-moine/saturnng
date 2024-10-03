@@ -259,178 +259,178 @@ void ui_get_event_ncurses( void )
 
         switch ( k ) {
             case '0':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0 );
                 break;
             case '1':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1 );
                 break;
             case '2':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2 );
                 break;
             case '3':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3 );
                 break;
             case '4':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4 );
                 break;
             case '5':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5 );
                 break;
             case '6':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6 );
                 break;
             case '7':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7 );
                 break;
             case '8':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8 );
                 break;
             case '9':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9 );
                 break;
             case 'a':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_A : HP48_KEY_A);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_A : HP48_KEY_A );
                 break;
             case 'b':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_B : HP48_KEY_B);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_B : HP48_KEY_B );
                 break;
             case 'c':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_C : HP48_KEY_C);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_C : HP48_KEY_C );
                 break;
             case 'd':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_D : HP48_KEY_D);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_D : HP48_KEY_D );
                 break;
             case 'e':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_E : HP48_KEY_E);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_E : HP48_KEY_E );
                 break;
             case 'f':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_F : HP48_KEY_F);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_F : HP48_KEY_F );
                 break;
             case 'g':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_APPS : HP48_KEY_MTH);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_APPS : HP48_KEY_MTH );
                 break;
             case 'h':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_MODE : HP48_KEY_PRG);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_MODE : HP48_KEY_PRG );
                 break;
             case 'i':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_TOOL : HP48_KEY_CST);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_TOOL : HP48_KEY_CST );
                 break;
             case 'j':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_VAR : HP48_KEY_VAR);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_VAR : HP48_KEY_VAR );
                 break;
             case 'k':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_STO : HP48_KEY_UP);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_STO : HP48_KEY_UP );
                 break;
             case KEY_UP:
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_UP : HP48_KEY_UP);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_UP : HP48_KEY_UP );
                 break;
             case 'l':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_NXT : HP48_KEY_NXT);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_NXT : HP48_KEY_NXT );
                 break;
             case 'm':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_HIST : HP48_KEY_QUOTE);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_HIST : HP48_KEY_QUOTE );
                 break;
             case 'n':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_CAT : HP48_KEY_STO);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_CAT : HP48_KEY_STO );
                 break;
             case 'o':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_EQW : HP48_KEY_EVAL);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_EQW : HP48_KEY_EVAL );
                 break;
             case 'p':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SYMB : HP48_KEY_LEFT);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SYMB : HP48_KEY_LEFT );
                 break;
             case KEY_LEFT:
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_LEFT : HP48_KEY_LEFT);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_LEFT : HP48_KEY_LEFT );
                 break;
             case 'q':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_POWER : HP48_KEY_DOWN);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_POWER : HP48_KEY_DOWN );
                 break;
             case KEY_DOWN:
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_DOWN : HP48_KEY_DOWN);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_DOWN : HP48_KEY_DOWN );
                 break;
             case 'r':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SQRT : HP48_KEY_RIGHT);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SQRT : HP48_KEY_RIGHT );
                 break;
             case KEY_RIGHT:
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_RIGHT : HP48_KEY_RIGHT);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_RIGHT : HP48_KEY_RIGHT );
                 break;
             case 's':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SIN : HP48_KEY_SIN);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SIN : HP48_KEY_SIN );
                 break;
             case 't':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_COS : HP48_KEY_COS);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_COS : HP48_KEY_COS );
                 break;
             case 'u':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_TAN : HP48_KEY_TAN);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_TAN : HP48_KEY_TAN );
                 break;
             case 'v':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_EEX : HP48_KEY_SQRT);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_EEX : HP48_KEY_SQRT );
                 break;
             case 'w':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_NEG : HP48_KEY_POWER);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_NEG : HP48_KEY_POWER );
                 break;
             case 'x':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_X : HP48_KEY_INV);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_X : HP48_KEY_INV );
                 break;
             case 'y':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_INV : HP48_KEY_NEG);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_INV : HP48_KEY_NEG );
                 break;
             case 'z':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_EEX);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_EEX );
                 break;
             case ' ':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SPC : HP48_KEY_SPC);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SPC : HP48_KEY_SPC );
                 break;
             case KEY_DC:
-                hpkey = ( config.model == MODEL_49G ? -1 : HP48_KEY_DEL);
+                hpkey = ( config.model == MODEL_49G ? -1 : HP48_KEY_DEL );
                 break;
             case '.':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD );
                 break;
             case '+':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS );
                 break;
             case '-':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS );
                 break;
             case '*':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL );
                 break;
             case '/':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV );
                 break;
 
             case KEY_F( 1 ):
             case KEY_ENTER:
             case '\n':
             case ',':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_ENTER : HP48_KEY_ENTER);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_ENTER : HP48_KEY_ENTER );
                 break;
             case KEY_BACKSPACE:
             case 127:
             case '\b':
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_BS : HP48_KEY_BS);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_BS : HP48_KEY_BS );
                 break;
             case KEY_F( 2 ):
             case '[':
             case 339: /* PgUp */
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL );
                 break;
             case KEY_F( 3 ):
             case ']':
             case 338: /* PgDn */
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR );
                 break;
             case KEY_F( 4 ):
             case ';':
             case KEY_IC: /* Ins */
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_ALPHA : HP48_KEY_ALPHA);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_ALPHA : HP48_KEY_ALPHA );
                 break;
             case KEY_F( 5 ):
             case '\\':
             case 27:  /* Esc */
             case 262: /* Home */
-                hpkey = ( config.model == MODEL_49G ? HP49_KEY_ON : HP48_KEY_ON);
+                hpkey = ( config.model == MODEL_49G ? HP49_KEY_ON : HP48_KEY_ON );
                 break;
 
             case KEY_F( 7 ):
@@ -474,11 +474,14 @@ void ui_start_ncurses( config_t* conf )
         start_color();
 
         if ( config.gray ) {
-            init_color( LCD_COLOR_BG, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb );
-            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb );
+            init_color( LCD_COLOR_BG, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb, COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb,
+                        COLORS[ UI4X_COLOR_LCD_BG ].gray_rgb );
+            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb, COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb,
+                        COLORS[ UI4X_COLOR_LCD_PIXEL ].gray_rgb );
         } else {
             init_color( LCD_COLOR_BG, COLORS[ UI4X_COLOR_LCD_BG ].r, COLORS[ UI4X_COLOR_LCD_BG ].g, COLORS[ UI4X_COLOR_LCD_BG ].b );
-            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_LCD_PIXEL ].r, COLORS[ UI4X_COLOR_LCD_PIXEL ].g, COLORS[ UI4X_COLOR_LCD_PIXEL ].b );
+            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_LCD_PIXEL ].r, COLORS[ UI4X_COLOR_LCD_PIXEL ].g,
+                        COLORS[ UI4X_COLOR_LCD_PIXEL ].b );
         }
 
         init_pair( LCD_PIXEL_OFF, LCD_COLOR_BG, LCD_COLOR_BG );
