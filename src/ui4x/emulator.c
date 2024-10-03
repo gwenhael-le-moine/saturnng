@@ -99,8 +99,8 @@ static hpkey_t keyboard49[ NB_HP49_KEYS ] = {
     {0x17,   false, "1/80"},
     {0x07,   false, "0/80"},
 
-    {0x63,   false, "6/08"},
     {0x62,   false, "6/04"},
+    {0x63,   false, "6/08"},
     {0x60,   false, "6/01"},
     {0x61,   false, "6/02"},
 
