@@ -533,7 +533,7 @@ int ChfInit(                                 /* Generic initialization */
         /* Push the default handler; in the reentrant case, this will be
            done once per thread, when the thread-specific context is primed.
         */
-        ChfPushHandler( DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
+        ChfPushHandler( CHF_MODULE_ID, DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
 #endif
 
         cc = CHF_S_OK;
