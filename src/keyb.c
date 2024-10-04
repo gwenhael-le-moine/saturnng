@@ -165,12 +165,11 @@ InputRegister KeybIN( OutputRegister out )
 {
     /* Compute the current value of the IN register */
     InputRegister in = ( InputRegister )0;
-    int bit;
 
     /* For each bit set in the 'out' register, OR the corresponding IN register
        value into 'in'
     */
-    for ( bit = 0; bit < OUT_BITS; bit++ ) {
+    for ( int bit = 0; bit < OUT_BITS; bit++ ) {
         if ( out & 0x01 )
             in |= cur_in[ bit ];
         out >>= 1;
@@ -208,10 +207,8 @@ void KeybPress( const char* key )
 {
     if ( strcmp( key, "*" ) == 0 ) {
         /* This is the ON key */
-        int i;
-
         /* Set all 0x8000 lines */
-        for ( i = 0; i < OUT_BITS; i++ )
+        for ( int i = 0; i < OUT_BITS; i++ )
             cur_in[ i ] |= 0x8000;
 
         /* Post an interrupt request to the CPU */
@@ -263,10 +260,8 @@ void KeybRelease( const char* key )
 {
     if ( strcmp( key, "*" ) == 0 ) {
         /* This is the ON key */
-        int i;
-
         /* Reset all 0x8000 lines */
-        for ( i = 0; i < OUT_BITS; i++ )
+        for ( int i = 0; i < OUT_BITS; i++ )
             cur_in[ i ] &= 0x7FFF;
     } else {
         unsigned int in_val, out_bit;
