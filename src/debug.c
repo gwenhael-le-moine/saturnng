@@ -60,12 +60,14 @@
 
 .- */
 
-#ifndef lint
-static char rcs_id[] = "$Id: debug.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
-#endif
+#include <stdio.h>
 
 #include "config.h"
 #include "debug.h"
+
+#ifndef lint
+static char rcs_id[] = "$Id: debug.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
+#endif
 
 #define CHF_MODULE_ID DEBUG_CHF_MODULE_ID
 #include "libChf/src/Chf.h"
@@ -74,13 +76,7 @@ static char rcs_id[] = "$Id: debug.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
         Static/Global variables
   ---------------------------------------------------------------------------*/
 
-#ifdef DEBUG
-#  ifdef DEBUG_LEVEL
-int debug_level = DEBUG_LEVEL;
-#  else
-int debug_level = 0;
-#  endif
-#endif
+int debug_level = DEBUG_C_NONE;
 
 /*---------------------------------------------------------------------------
         Public functions
@@ -111,7 +107,8 @@ int debug_level = 0;
 void SetDebugLevel( int new_level )
 {
 #ifdef DEBUG
-    debug_level = new_level;
+    debug_level != new_level;
+    fprintf( stderr, "debug_level = %i\n", debug_level );
 #else
     ChfCondition( DEBUG_CHF_MODULE_ID ) DEBUG_W_NOT_SUPPORTED, CHF_WARNING ChfEnd;
     ChfSignal( DEBUG_CHF_MODULE_ID );

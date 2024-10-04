@@ -102,11 +102,11 @@
 
 .- */
 
-#ifdef DEBUG
+extern int debug_level;
 
+#ifdef DEBUG
 #  define debug_preamble( debug_class, condition_code )                                                                                    \
       {                                                                                                                                    \
-          extern int debug_level;                                                                                                          \
           if ( debug_level & ( debug_class ) ) {                                                                                           \
           ChfCondition( CHF_MODULE_ID ) condition_code, CHF_INFO
 

@@ -12,6 +12,8 @@
 
 #include "config.h"
 
+#include "../debug.h"
+
 static config_t config = {
     .progname = ( char* )"ui4x",
 
@@ -135,19 +137,20 @@ config_t* config_init( int argc, char* argv[] )
 
     const char* optstring = "h";
     struct option long_options[] = {
-        {"help",       no_argument,       NULL,              'h'             },
-        {"verbose",    no_argument,       &clopt_verbose,    true            },
-        {"throttle",   no_argument,       &clopt_throttle,   true            },
+        {"help",                 no_argument,       NULL,              'h'             },
+        {"verbose",              no_argument,       &clopt_verbose,    true            },
 
-        {"48sx",       no_argument,       &clopt_model,      MODEL_48SX      },
-        {"48gx",       no_argument,       &clopt_model,      MODEL_48GX      },
-        {"40g",        no_argument,       &clopt_model,      MODEL_40G       },
-        {"49g",        no_argument,       &clopt_model,      MODEL_49G       },
+        {"throttle",             no_argument,       &clopt_throttle,   true            },
 
-        {"reset",      no_argument,       &clopt_reset,      true            },
-        {"monitor",    no_argument,       &clopt_monitor,    true            },
+        {"48sx",                 no_argument,       &clopt_model,      MODEL_48SX      },
+        {"48gx",                 no_argument,       &clopt_model,      MODEL_48GX      },
+        {"40g",                  no_argument,       &clopt_model,      MODEL_40G       },
+        {"49g",                  no_argument,       &clopt_model,      MODEL_49G       },
+
+        {"reset",                no_argument,       &clopt_reset,      true            },
+        {"monitor",              no_argument,       &clopt_monitor,    true            },
         /* {"batchXfer",  no_argument,       &clopt_batchXfer,  true            }, */
-        {"state-dir",  required_argument, NULL,              8999            },
+        {"state-dir",            required_argument, NULL,              8999            },
         /* {"mod",        required_argument, NULL,              8000            }, */
         /* {"cpu",        required_argument, NULL,              8010            }, */
         /* {"hdw",        required_argument, NULL,              8020            }, */
@@ -156,21 +159,34 @@ config_t* config_init( int argc, char* argv[] )
         /* {"port1",      required_argument, NULL,              8050            }, */
         /* {"port2",      required_argument, NULL,              8060            }, */
 
-        {"shiftless",  no_argument,       &clopt_shiftless,  true            },
+        {"shiftless",            no_argument,       &clopt_shiftless,  true            },
 
-        {"gui",        no_argument,       &clopt_frontend,   FRONTEND_SDL    },
-        {"chromeless", no_argument,       &clopt_chromeless, true            },
-        {"fullscreen", no_argument,       &clopt_fullscreen, true            },
-        {"scale",      required_argument, NULL,              7110            },
+        {"gui",                  no_argument,       &clopt_frontend,   FRONTEND_SDL    },
+        {"chromeless",           no_argument,       &clopt_chromeless, true            },
+        {"fullscreen",           no_argument,       &clopt_fullscreen, true            },
+        {"scale",                required_argument, NULL,              7110            },
 
-        {"tui",        no_argument,       &clopt_frontend,   FRONTEND_NCURSES},
-        {"tui-small",  no_argument,       NULL,              6110            },
-        {"tui-tiny",   no_argument,       NULL,              6120            },
+        {"tui",                  no_argument,       &clopt_frontend,   FRONTEND_NCURSES},
+        {"tui-small",            no_argument,       NULL,              6110            },
+        {"tui-tiny",             no_argument,       NULL,              6120            },
 
-        {"mono",       no_argument,       &clopt_mono,       true            },
-        {"gray",       no_argument,       &clopt_gray,       true            },
+        {"mono",                 no_argument,       &clopt_mono,       true            },
+        {"gray",                 no_argument,       &clopt_gray,       true            },
 
-        {0,            0,                 0,                 0               }
+        {"debug-x11",            no_argument,       NULL,              38601           },
+        {"debug-revision",       no_argument,       NULL,              38602           },
+        {"debug-x-func",         no_argument,       NULL,              38603           },
+        {"debug-flash",          no_argument,       NULL,              38604           },
+        {"debug-implementation", no_argument,       NULL,              38605           },
+        {"debug-mod-cache",      no_argument,       NULL,              38606           },
+        {"debug-serial",         no_argument,       NULL,              38607           },
+        {"debug-timers",         no_argument,       NULL,              38608           },
+        {"debug-int",            no_argument,       NULL,              38609           },
+        {"debug-display",        no_argument,       NULL,              38610           },
+        {"debug-modules",        no_argument,       NULL,              38611           },
+        {"debug-trace",          no_argument,       NULL,              38612           },
+
+        {0,                      0,                 0,                 0               }
     };
 
     const char* help_text = "usage: %s [options]\n"
@@ -203,7 +219,19 @@ config_t* config_init( int argc, char* argv[] )
                             "     --shiftless  don't map the shift keys to let them free for numbers (default: "
                             "false)\n"
                             "     --reset      force a reset\n"
-                            "     --monitor    start with monitor\n";
+                            "     --monitor    start with monitor\n"
+                            "     --debug-x11            enables debugging x11 (default: no)\n"
+                            "     --debug-revision       enables debugging revision (default: no)\n"
+                            "     --debug-x-func         enables debugging extended functions (default: no)\n"
+                            "     --debug-flash          enables debugging flash (default: no)\n"
+                            "     --debug-implementation enables debugging implementation (default: no)\n"
+                            "     --debug-mod-cache      enables debugging mod cache (default: no)\n"
+                            "     --debug-serial         enables debugging serial (default: no)\n"
+                            "     --debug-timers         enables debugging timers (default: no)\n"
+                            "     --debug-int            enables debugging int (default: no)\n"
+                            "     --debug-display        enables debugging display (default: no)\n"
+                            "     --debug-modules        enables debugging modules (default: no)\n"
+                            "     --debug-trace          enables debugging trace (default: no)\n";
 
     while ( c != EOF ) {
         c = getopt_long( argc, argv, optstring, long_options, &option_index );
@@ -248,6 +276,43 @@ config_t* config_init( int argc, char* argv[] )
                 /* case 8060: */
                 /*     clopt_port_2_file_name = optarg; */
                 /*     break; */
+
+            case 38601:
+                SetDebugLevel( DEBUG_C_X11 );
+                break;
+            case 38602:
+                SetDebugLevel( DEBUG_C_REVISION );
+                break;
+            case 38603:
+                SetDebugLevel( DEBUG_C_X_FUNC );
+                break;
+            case 38604:
+                SetDebugLevel( DEBUG_C_FLASH );
+                break;
+            case 38605:
+                SetDebugLevel( DEBUG_C_IMPLEMENTATION );
+                break;
+            case 38606:
+                SetDebugLevel( DEBUG_C_MOD_CACHE );
+                break;
+            case 38607:
+                SetDebugLevel( DEBUG_C_SERIAL );
+                break;
+            case 38608:
+                SetDebugLevel( DEBUG_C_TIMERS );
+                break;
+            case 38609:
+                SetDebugLevel( DEBUG_C_INT );
+                break;
+            case 38610:
+                SetDebugLevel( DEBUG_C_DISPLAY );
+                break;
+            case 38611:
+                SetDebugLevel( DEBUG_C_MODULES );
+                break;
+            case 38612:
+                SetDebugLevel( DEBUG_C_TRACE );
+                break;
 
             default:
                 break;
