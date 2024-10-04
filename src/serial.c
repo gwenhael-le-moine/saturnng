@@ -106,7 +106,6 @@ static char rcs_id[] = "$Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
 #include <errno.h>
 
 #include "config.h"

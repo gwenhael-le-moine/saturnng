@@ -117,8 +117,6 @@ static char rcs_id[] = "$Id: modules.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <errno.h>
-#include <setjmp.h>
 
 #include "config.h"
 #include "machdep.h"

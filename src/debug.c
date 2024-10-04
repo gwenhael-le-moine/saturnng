@@ -64,13 +64,7 @@
 static char rcs_id[] = "$Id: debug.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
-
 #include "config.h"
-#include "machdep.h"
-#include "cpu.h"
 #include "debug.h"
 
 #define CHF_MODULE_ID DEBUG_CHF_MODULE_ID

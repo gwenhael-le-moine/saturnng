@@ -89,20 +89,14 @@ static char rcs_id[] = "$Id: x_func.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
-#include <errno.h>
 #include <ctype.h>
 #include <string.h>
-
-/* #include <X11/Xlib.h>      /\* Main X header *\/ */
-/* #include <X11/Intrinsic.h> /\* Main Xt header *\/ */
 
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
-/* #include "x11.h" /\* ActivateFSB() *\/ */
 #include "x_func.h"
 #include "debug.h"
 

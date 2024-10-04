@@ -86,7 +86,6 @@ static char rcs_id[] = "$Id: dis.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
 #include <string.h> /* 3.1: strcpy(), strcat(), strlen() */
 
 #include "config.h"

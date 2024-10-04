@@ -103,11 +103,7 @@
 static char rcs_id[] = "$Id: hdw.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
 #include <string.h> /* 3.1: memset() */
-#include <errno.h>
 
 #include "config.h"
 #include "machdep.h"

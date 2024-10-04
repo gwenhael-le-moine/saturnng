@@ -64,8 +64,6 @@ static char rcs_id[] = "$Id: disk_io_obj.c,v 4.1 2000/12/11 09:54:19 cibrario Re
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
-#include <errno.h>
 #include <string.h>
 
 #include "config.h"

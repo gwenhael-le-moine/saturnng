@@ -73,11 +73,6 @@
 static char rcs_id[] = "$Id: flash49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <setjmp.h>
-#include <string.h>
-
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"

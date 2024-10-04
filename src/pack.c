@@ -70,13 +70,11 @@ static char rcs_id[] = "$Id";
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <setjmp.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <errno.h>
 
 #include "config.h"
 #include "machdep.h"
