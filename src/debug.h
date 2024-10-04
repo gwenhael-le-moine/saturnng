@@ -108,7 +108,7 @@
       {                                                                                                                                    \
           extern int debug_level;                                                                                                          \
           if ( debug_level & ( debug_class ) ) {                                                                                           \
-          ChfCondition( condition_code ), CHF_INFO
+          ChfCondition( CHF_MODULE_ID ) condition_code, CHF_INFO
 
 #  define debug_postamble                                                                                                                  \
       ChfEnd;                                                                                                                              \
@@ -150,6 +150,7 @@
 #define DEBUG_C_X_FUNC 0x0040         /* 3.13: Extended functions */
 #define DEBUG_C_REVISION 0x0010       /* Revision information */
 #define DEBUG_C_X11 0x0001            /* X11 Interface */
+#define DEBUG_C_NONE 0
 
 /*---------------------------------------------------------------------------
         Chf condition codes

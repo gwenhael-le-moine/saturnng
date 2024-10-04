@@ -142,7 +142,7 @@
    the initial debug level is set to the value of the symbol DEBUG_LEVEL,
    if it is defined, otherwise it is set to zero.
 */
-// #define DEBUG
+#define DEBUG
 
 /* DEBUG_LEVEL:
    When this symbol is defined and the debugging code has been included
@@ -153,7 +153,8 @@
    DEBUG_C_<> defined in debug.h; each of them corresponds to a class
    of debugging conditions that can be individually enabled or disabled.
 */
-#define DEBUG_LEVEL ( DEBUG_C_REVISION | DEBUG_C_IMPLEMENTATION | DEBUG_C_MOD_CACHE )
+// #define DEBUG_LEVEL ( DEBUG_C_REVISION | DEBUG_C_IMPLEMENTATION | DEBUG_C_MOD_CACHE )
+#define DEBUG_LEVEL DEBUG_C_NONE
 
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the
