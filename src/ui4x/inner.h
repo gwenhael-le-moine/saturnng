@@ -4,7 +4,6 @@
 #include "emulator.h"
 
 #include "bitmaps_misc.h"
-#include "bitmaps_fonts.h"
 
 // Colors
 #define UI4X_COLOR_WHITE 0
