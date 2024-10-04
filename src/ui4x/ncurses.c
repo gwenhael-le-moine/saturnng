@@ -38,7 +38,7 @@
 /* variables */
 /*************/
 static config_t config;
-static int lcd_pixels_buffer[ LCD_WIDTH * LCD_HEIGHT ];
+static int lcd_pixels_buffer[ LCD_WIDTH * 80 ];
 static int last_annunciators = -1;
 // static int last_contrast = -1;
 
