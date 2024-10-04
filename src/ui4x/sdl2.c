@@ -22,7 +22,7 @@
 #define KBD_UPLINE 25
 
 #define DISPLAY_WIDTH ( 264 + 8 )
-#define DISPLAY_HEIGHT ( 128 + 16 + 8 )
+#define DISPLAY_HEIGHT ( ( LCD_HEIGHT * 2 ) + 16 + 8 )
 #define DISPLAY_OFFSET_X ( config.chromeless ? 0 : ( SIDE_SKIP + ( 286 - DISPLAY_WIDTH ) / 2 ) )
 #define DISPLAY_OFFSET_Y ( config.chromeless ? 0 : TOP_SKIP )
 
@@ -59,7 +59,7 @@ static annunciators_ui_t annunciators_ui[ NB_ANNUNCIATORS ] = {
     {.x = 241, .y = 4, .width = ann_io_width,      .height = ann_io_height,      .bits = ann_io_bitmap     },
 };
 
-static int lcd_pixels_buffer[ LCD_WIDTH * LCD_HEIGHT ];
+static int lcd_pixels_buffer[ LCD_WIDTH * 80 ];
 static int last_annunciators = -1;
 static int last_contrast = -1;
 

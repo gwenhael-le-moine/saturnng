@@ -153,7 +153,7 @@
 // LCD
 #define NIBBLES_PER_ROW 34
 #define LCD_WIDTH 131
-#define LCD_HEIGHT 64
+#define LCD_HEIGHT ( config.model == MODEL_49G ? 80 : 64 )
 
 /*************************************************/
 /* public API: if it's there it's used elsewhere */

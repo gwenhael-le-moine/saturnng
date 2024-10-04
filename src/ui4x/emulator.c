@@ -206,8 +206,7 @@ void get_lcd_buffer( int* target )
 
     /* Scan menu display rows */
     addr = mod_status.hdw.lcd_menu_addr;
-#define MAX_ROWS 64
-    for ( ; y < MAX_ROWS; y++ ) {
+    for ( ; y < LCD_HEIGHT; y++ ) {
         /* Scan columns */
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
             v = FetchNibble( addr++ );
