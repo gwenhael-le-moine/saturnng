@@ -22,9 +22,7 @@ static unsigned char lesser_than_or_eq_bits[] = { 48, 12, 3, 12, 51, 12, 48 };
 
 #define infinity_width 7
 #define infinity_height 7
-static unsigned char infinity_bits[] = {
-    0, 54, 73, 73, 73, 54,
-};
+static unsigned char infinity_bits[] = { 0, 54, 73, 73, 73, 54, 0 };
 
 #define not_equal_width 7
 #define not_equal_height 7
@@ -42,7 +40,7 @@ static unsigned char dot_bits[] = {
 
 #define single_quote_width 3
 #define single_quote_height 7
-static unsigned char single_quote_bits[] = { 0x02, 0x02, 0x0, 0x0, 0x0, 0x0, 0x0 };
+static unsigned char single_quote_bits[] = { 0x02, 0x02, 0x02, 0x0, 0x0, 0x0, 0x0 };
 
 #define blank_width 4
 #define blank_height 7
