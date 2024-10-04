@@ -10,10 +10,19 @@ color_t colors_49g[ NB_COLORS ] = {
      .mono_rgb = 0xff,
      .gray_rgb = 0xff,
      },
+    /* UI4X_COLOR_ALPHA */
+    {
+     .r = 0x67,
+     .g = 0xc1,
+     .b = 0x84,
+     .a = 0xff,
+     .mono_rgb = 0xff,
+     .gray_rgb = 0xDC,
+     },
     /* UI4X_COLOR_SHIFT_LEFT */
     {
-     .r = 0x00,
-     .g = 0xbf,
+     .r = 0x82,
+     .g = 0xb1,
      .b = 0xff,
      .a = 0xff,
      .mono_rgb = 0xff,
@@ -21,9 +30,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_SHIFT_RIGHT */
     {
-     .r = 0xcd,
-     .g = 0x5c,
-     .b = 0x5c,
+     .r = 0xff,
+     .g = 0x8a,
+     .b = 0x80,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xA9,
@@ -39,9 +48,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_BUTTON */
     {
-     .r = 0x30,
-     .g = 0x40,
-     .b = 0x55,
+     .r = 0x3f,
+     .g = 0x3f,
+     .b = 0x3f,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x58,
@@ -84,9 +93,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_FACEPLATE */
     {
-     .r = 0x30,
-     .g = 0x40,
-     .b = 0x55,
+     .r = 0x27,
+     .g = 0x27,
+     .b = 0x27,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x4A,
@@ -111,9 +120,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_UPPER_FACEPLATE */
     {
-     .r = 0x30,
-     .g = 0x40,
-     .b = 0x55,
+     .r = 0x26,
+     .g = 0x26,
+     .b = 0x26,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x68,
@@ -653,7 +662,7 @@ button_t buttons_49g[ NB_HP49_KEYS ] = {
      .y = 6 * KB_LINE_HEIGHT,
      .w = 46,
      .h = 26,
-     .label_color = UI4X_COLOR_WHITE,
+     .label_color = UI4X_COLOR_ALPHA,
      .label_text = 0,
      .font_size = 0,
      .label_graphic_w = alpha_width,

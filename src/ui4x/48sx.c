@@ -10,6 +10,15 @@ color_t colors_48sx[ NB_COLORS ] = {
      .mono_rgb = 0xFF,
      .gray_rgb = 0xFF,
      },
+    /* UI4X_COLOR_ALPHA */
+    {
+     .r = 0xFF,
+     .g = 0xFF,
+     .b = 0xFF,
+     .a = 0xFF,
+     .mono_rgb = 0xFF,
+     .gray_rgb = 0xFF,
+     },
     /* UI4X_COLOR_SHIFT_LEFT */
     {
      .r = 0xFF,

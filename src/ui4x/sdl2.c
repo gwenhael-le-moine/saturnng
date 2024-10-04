@@ -707,7 +707,7 @@ static void _draw_keypad( void )
                 y += 1;
             }
 
-            write_with_small_font( x, y, BUTTONS[ i ].letter, UI4X_COLOR_WHITE,
+            write_with_small_font( x, y, BUTTONS[ i ].letter, UI4X_COLOR_ALPHA,
                                    ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && i < HP48_KEY_MTH )
                                        ? UI4X_COLOR_UPPER_FACEPLATE
                                        : UI4X_COLOR_FACEPLATE );
