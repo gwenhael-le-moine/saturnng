@@ -333,7 +333,7 @@ int CpuHaltRequest( void );               /* 3.13 */
 int CpuRunRequest( void );                /* 3.13 */
 int CpuHaltAllowed( void );               /* 3.13 */
 
-Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] );
+Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] ); /* dis.c */
 void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] );
 
 #endif /*!_CPU_H*/
