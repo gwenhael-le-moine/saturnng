@@ -15,7 +15,7 @@
 #define KEYBOARD_HEIGHT ( BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h )
 #define KEYBOARD_WIDTH ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w )
 
-#define TOP_SKIP 65
+#define TOP_SKIP ( config.model == MODEL_49G ? 48 : 65 )
 #define SIDE_SKIP 20
 #define BOTTOM_SKIP 25
 #define DISP_KBD_SKIP 65
@@ -562,10 +562,22 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
         outer_color = UI4X_COLOR_KEYPAD_HIGHLIGHT;
     if ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && hpkey < HP48_KEY_MTH )
         outer_color = UI4X_COLOR_UPPER_FACEPLATE;
+    int inner_color = UI4X_COLOR_BUTTON;
+    int edge_top_color = UI4X_COLOR_BUTTON_EDGE_TOP;
+    int edge_bottom_color = UI4X_COLOR_BUTTON_EDGE_BOTTOM;
+    if ( config.model == MODEL_49G && ( hpkey == HP49_KEY_ALPHA || hpkey == HP49_KEY_SHL || hpkey == HP49_KEY_SHR ) ) {
+        // inner_color = BUTTONS[ hpkey ].label_color;
+        edge_top_color = BUTTONS[ hpkey ].label_color;
+        edge_bottom_color = BUTTONS[ hpkey ].label_color;
+    }
+
     __draw_rect( 0, 0, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h, outer_color );
-    __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON );
+    __draw_rect( 1, 1, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, inner_color );
 
     // draw label in button
+    int label_color = BUTTONS[ hpkey ].label_color;
+    /* if ( config.model == MODEL_49G && ( hpkey == HP49_KEY_ALPHA || hpkey == HP49_KEY_SHL || hpkey == HP49_KEY_SHR ) ) */
+    /*     label_color = UI4X_COLOR_WHITE; */
     if ( BUTTONS[ hpkey ].label_text != ( char* )0 ) {
         /* Button has a text label */
         x = strlen( BUTTONS[ hpkey ].label_text ) - 1;
@@ -574,7 +586,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
         if ( is_down )
             y -= 1;
 
-        write_with_big_font( x, y, BUTTONS[ hpkey ].label_text, BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
+        write_with_big_font( x, y, BUTTONS[ hpkey ].label_text, label_color, inner_color );
     } else if ( BUTTONS[ hpkey ].label_graphic != ( unsigned char* )0 ) {
         /* Button has a texture */
         x = ( 1 + BUTTONS[ hpkey ].w - BUTTONS[ hpkey ].label_graphic_w ) / 2;
@@ -583,31 +595,31 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
             y += 1;
 
         __draw_bitmap( x, y, BUTTONS[ hpkey ].label_graphic_w, BUTTONS[ hpkey ].label_graphic_h, BUTTONS[ hpkey ].label_graphic,
-                       BUTTONS[ hpkey ].label_color, UI4X_COLOR_BUTTON );
+                       label_color, inner_color );
     }
 
     // draw edge of button
     // top
-    __draw_line( 1, 1, BUTTONS[ hpkey ].w - 2, 1, UI4X_COLOR_BUTTON_EDGE_TOP );
-    __draw_line( 2, 2, BUTTONS[ hpkey ].w - 3, 2, UI4X_COLOR_BUTTON_EDGE_TOP );
+    __draw_line( 1, 1, BUTTONS[ hpkey ].w - 2, 1, edge_top_color );
+    __draw_line( 2, 2, BUTTONS[ hpkey ].w - 3, 2, edge_top_color );
     if ( is_up ) {
-        __draw_line( 3, 3, BUTTONS[ hpkey ].w - 4, 3, UI4X_COLOR_BUTTON_EDGE_TOP );
-        __draw_line( 4, 4, BUTTONS[ hpkey ].w - 5, 4, UI4X_COLOR_BUTTON_EDGE_TOP );
+        __draw_line( 3, 3, BUTTONS[ hpkey ].w - 4, 3, edge_top_color );
+        __draw_line( 4, 4, BUTTONS[ hpkey ].w - 5, 4, edge_top_color );
     }
     // top-left
-    __draw_pixel( 4, 3 + ( is_up ? 2 : 0 ), UI4X_COLOR_BUTTON_EDGE_TOP );
+    __draw_pixel( 4, 3 + ( is_up ? 2 : 0 ), edge_top_color );
     // left
-    __draw_line( 1, 1, 1, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON_EDGE_TOP );
-    __draw_line( 2, 2, 2, BUTTONS[ hpkey ].h - 3, UI4X_COLOR_BUTTON_EDGE_TOP );
-    __draw_line( 3, 3, 3, BUTTONS[ hpkey ].h - 4, UI4X_COLOR_BUTTON_EDGE_TOP );
+    __draw_line( 1, 1, 1, BUTTONS[ hpkey ].h - 2, edge_top_color );
+    __draw_line( 2, 2, 2, BUTTONS[ hpkey ].h - 3, edge_top_color );
+    __draw_line( 3, 3, 3, BUTTONS[ hpkey ].h - 4, edge_top_color );
     // right
-    __draw_line( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, 3, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
-    __draw_line( BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, 4, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
-    __draw_line( BUTTONS[ hpkey ].w - 4, BUTTONS[ hpkey ].h - 4, BUTTONS[ hpkey ].w - 4, 5, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
-    __draw_pixel( BUTTONS[ hpkey ].w - 5, BUTTONS[ hpkey ].h - 4, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
+    __draw_line( BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, 3, edge_bottom_color );
+    __draw_line( BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, 4, edge_bottom_color );
+    __draw_line( BUTTONS[ hpkey ].w - 4, BUTTONS[ hpkey ].h - 4, BUTTONS[ hpkey ].w - 4, 5, edge_bottom_color );
+    __draw_pixel( BUTTONS[ hpkey ].w - 5, BUTTONS[ hpkey ].h - 4, edge_bottom_color );
     // bottom
-    __draw_line( 3, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
-    __draw_line( 4, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, UI4X_COLOR_BUTTON_EDGE_BOTTOM );
+    __draw_line( 3, BUTTONS[ hpkey ].h - 2, BUTTONS[ hpkey ].w - 2, BUTTONS[ hpkey ].h - 2, edge_bottom_color );
+    __draw_line( 4, BUTTONS[ hpkey ].h - 3, BUTTONS[ hpkey ].w - 3, BUTTONS[ hpkey ].h - 3, edge_bottom_color );
 
     // draw black frame around button
     // top
