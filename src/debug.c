@@ -107,8 +107,7 @@ int debug_level = DEBUG_C_NONE;
 void SetDebugLevel( int new_level )
 {
 #ifdef DEBUG
-    debug_level != new_level;
-    fprintf( stderr, "debug_level = %i\n", debug_level );
+    debug_level |= new_level;
 #else
     ChfCondition( DEBUG_CHF_MODULE_ID ) DEBUG_W_NOT_SUPPORTED, CHF_WARNING ChfEnd;
     ChfSignal( DEBUG_CHF_MODULE_ID );
