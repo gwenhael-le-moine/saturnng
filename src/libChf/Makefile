@@ -15,6 +15,9 @@ SRC =	src/chf_init.c \
 #
 OBJS =	$(SRC:.c=.o)
 
+HEADERS = src/ChfPriv.h \
+	src/Chf.h \
+
 #
 # Other definitions
 #
@@ -46,8 +49,8 @@ mrproper: clean
 	rm -f $(TARGET)
 	make -C docs mrproper
 
-$(TARGET): $(OBJS)
-	$(AR) $(ARFLAGS) $@ $?
+$(TARGET): $(OBJS) $(HEADERS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 
 # Formatting
 pretty-code:

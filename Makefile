@@ -65,6 +65,26 @@ DOTOS_UI4x = src/ui4x/config.o \
 	src/ui4x/ncurses.o \
 	src/ui4x/emulator.o
 
+HEADERS = src/ui4x/bitmaps_misc.h \
+	src/ui4x/common.h \
+	src/ui4x/config.h \
+	src/ui4x/ncurses.h \
+	src/ui4x/sdl2.h \
+	src/ui4x/inner.h \
+	src/ui4x/emulator.h \
+	src/disk_io.h \
+	src/flash49.h \
+	src/keyb.h \
+	src/machdep.h \
+	src/modules.h \
+	src/monitor.h \
+	src/serial.h \
+	src/x_func.h \
+	src/chf_messages.h \
+	src/config.h \
+	src/cpu.h \
+	src/debug.h
+
 MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
@@ -116,8 +136,8 @@ all: src/libChf/libChf.a dist/$(NAME) docs
 src/libChf/libChf.a:
 	make -C src/libChf #MT=yes
 
-dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a
-	$(CC) $^ -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
+dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) $(HEADERS) src/libChf/libChf.a
+	$(CC) $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
 	# UNUSED
