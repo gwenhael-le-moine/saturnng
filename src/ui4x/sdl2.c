@@ -502,13 +502,13 @@ static void _draw_header( void )
     // insert the HP Logo
     if ( config.model == MODEL_48GX )
         x -= 6;
-    /* if ( config.model == MODEL_49G ) */
-    /*     x += ( DISPLAY_WIDTH / 2 ) - ( hp_width / 2 ); */
+    if ( config.model == MODEL_49G )
+        x += ( DISPLAY_WIDTH / 2 ) - ( hp_width / 2 );
 
     __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_HP_LOGO_BG );
 
     if ( config.model == MODEL_49G )
-        write_with_big_font( DISPLAY_WIDTH, 10, "49G", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
+        write_with_big_font( DISPLAY_WIDTH, 10, "HP 49GX", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
