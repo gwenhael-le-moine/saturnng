@@ -18,6 +18,7 @@ typedef struct {
     bool throttle;
     bool verbose;
     bool shiftless;
+    bool big_screen;
 
     int frontend;
     bool mono;

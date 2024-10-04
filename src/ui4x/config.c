@@ -21,6 +21,7 @@ static config_t config = {
     .throttle = false,
     .verbose = false,
     .shiftless = false,
+    .big_screen = false,
 
     .frontend = FRONTEND_SDL,
 
@@ -111,6 +112,7 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_model = -1;
     int clopt_verbose = -1;
+    int clopt_big_screen = -1;
     int clopt_throttle = -1;
     int clopt_shiftless = -1;
     int clopt_frontend = -1;
@@ -141,6 +143,7 @@ config_t* config_init( int argc, char* argv[] )
         {"verbose",              no_argument,       &clopt_verbose,    true            },
 
         {"throttle",             no_argument,       &clopt_throttle,   true            },
+        {"big-screen",           no_argument,       &clopt_big_screen, true            },
 
         {"48sx",                 no_argument,       &clopt_model,      MODEL_48SX      },
         {"48gx",                 no_argument,       &clopt_model,      MODEL_48GX      },
@@ -194,6 +197,7 @@ config_t* config_init( int argc, char* argv[] )
                             "  -h --help       what you are reading\n"
                             "     --verbose    display more informations\n"
                             "     --throttle   throttle CPU speed\n"
+                            "     --big-screen 131×80 screen (default: false)\n"
                             "     --48gx       emulate a HP 48GX\n"
                             "     --48sx       emulate a HP 48SX\n"
                             "     --40g        emulate a HP 40G\n"
@@ -328,6 +332,8 @@ config_t* config_init( int argc, char* argv[] )
         config.model = clopt_model;
     if ( clopt_throttle != -1 )
         config.throttle = clopt_throttle == true;
+    if ( clopt_big_screen != -1 )
+        config.big_screen = clopt_big_screen == true;
     if ( clopt_frontend != -1 )
         config.frontend = clopt_frontend;
     if ( clopt_chromeless != -1 )
