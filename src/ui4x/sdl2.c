@@ -18,7 +18,7 @@
 #define TOP_SKIP ( config.model == MODEL_49G ? 48 : 65 )
 #define SIDE_SKIP 20
 #define BOTTOM_SKIP 25
-#define DISP_KBD_SKIP 65
+#define DISP_KBD_SKIP ( config.model == MODEL_49G ? 32 : 65 )
 #define KBD_UPLINE 25
 
 #define DISPLAY_WIDTH ( 264 + 8 )
@@ -502,13 +502,13 @@ static void _draw_header( void )
     // insert the HP Logo
     if ( config.model == MODEL_48GX )
         x -= 6;
-    if ( config.model == MODEL_49G )
-        x += ( DISPLAY_WIDTH / 2 ) - ( hp_width / 2 );
+    /* if ( config.model == MODEL_49G ) */
+    /*     x += ( DISPLAY_WIDTH / 2 ) - ( hp_width / 2 ); */
 
     __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_HP_LOGO_BG );
 
     if ( config.model == MODEL_49G )
-        write_with_big_font( DISPLAY_WIDTH, 10, "HP 49GX", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
+        write_with_big_font( DISPLAY_WIDTH - SIDE_SKIP, 10, "HP 49GX", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
@@ -880,7 +880,9 @@ static void _draw_serial_devices_path( void )
     }
 
     if ( strlen( text ) > 0 )
-        write_with_small_font( SIDE_SKIP, KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ), text, UI4X_COLOR_WHITE, UI4X_COLOR_UPPER_FACEPLATE );
+        write_with_small_font( ( ( SIDE_SKIP * 1.5 ) + DISPLAY_WIDTH ) - SmallTextWidth( text, strlen( text ) ),
+                               ( config.model == MODEL_49G ? TOP_SKIP - 12 : KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ) ), text,
+                               UI4X_COLOR_LCD_BG, UI4X_COLOR_UPPER_FACEPLATE );
 }
 
 static int sdl_press_key( int hpkey )
