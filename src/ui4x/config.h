@@ -19,6 +19,7 @@ typedef struct {
     bool verbose;
     bool shiftless;
     bool big_screen;
+    bool black_lcd;
 
     int frontend;
     bool mono;

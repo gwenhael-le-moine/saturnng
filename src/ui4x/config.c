@@ -22,6 +22,7 @@ static config_t config = {
     .verbose = false,
     .shiftless = false,
     .big_screen = false,
+    .black_lcd = false,
 
     .frontend = FRONTEND_SDL,
 
@@ -74,6 +75,9 @@ static void print_config( void )
 
     fprintf( stderr, "frontend = %i\n", config.frontend );
 
+    fprintf( stderr, "big_screen = %s\n", config.big_screen ? "true" : "false" );
+    fprintf( stderr, "black_lcd = %s\n", config.black_lcd ? "true" : "false" );
+
     fprintf( stderr, "mono = %s\n", config.mono ? "true" : "false" );
     fprintf( stderr, "gray = %s\n", config.gray ? "true" : "false" );
 
@@ -113,6 +117,7 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_model = -1;
     int clopt_verbose = -1;
     int clopt_big_screen = -1;
+    int clopt_black_lcd = -1;
     int clopt_throttle = -1;
     int clopt_shiftless = -1;
     int clopt_frontend = -1;
@@ -144,6 +149,7 @@ config_t* config_init( int argc, char* argv[] )
 
         {"throttle",             no_argument,       &clopt_throttle,   true            },
         {"big-screen",           no_argument,       &clopt_big_screen, true            },
+        {"black-lcd",            no_argument,       &clopt_black_lcd,  true            },
 
         {"48sx",                 no_argument,       &clopt_model,      MODEL_48SX      },
         {"48gx",                 no_argument,       &clopt_model,      MODEL_48GX      },
@@ -198,6 +204,7 @@ config_t* config_init( int argc, char* argv[] )
                             "     --verbose    display more informations\n"
                             "     --throttle   throttle CPU speed\n"
                             "     --big-screen 131×80 screen (default: false)\n"
+                            "     --black-lcd  (default: false)\n"
                             "     --48gx       emulate a HP 48GX\n"
                             "     --48sx       emulate a HP 48SX\n"
                             "     --40g        emulate a HP 40G\n"
@@ -334,6 +341,8 @@ config_t* config_init( int argc, char* argv[] )
         config.throttle = clopt_throttle == true;
     if ( clopt_big_screen != -1 )
         config.big_screen = clopt_big_screen == true;
+    if ( clopt_black_lcd != -1 )
+        config.black_lcd = clopt_black_lcd == true;
     if ( clopt_frontend != -1 )
         config.frontend = clopt_frontend;
     if ( clopt_chromeless != -1 )

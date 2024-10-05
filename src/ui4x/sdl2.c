@@ -1024,23 +1024,26 @@ void ui_update_display_sdl( void )
 {
     apply_contrast();
 
-    if ( get_display_state() ) {
+    if ( get_display_state() )
         get_lcd_buffer( lcd_pixels_buffer );
-
-        SDL_SetRenderTarget( renderer, main_texture );
-
-        for ( int y = 0; y < LCD_HEIGHT; ++y )
-            for ( int x = 0; x < LCD_WIDTH; ++x )
-                __draw_rect( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ), 2, 2,
-                             lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? UI4X_COLOR_LCD_PIXEL : UI4X_COLOR_LCD_BG );
-
-        SDL_SetRenderTarget( renderer, NULL );
-        SDL_RenderCopy( renderer, main_texture, NULL, NULL );
-        SDL_RenderPresent( renderer );
-
-        sdl_update_annunciators();
-    } else
+    else
         ui_init_LCD();
+
+    SDL_SetRenderTarget( renderer, main_texture );
+
+    int color_pixel_off = UI4X_COLOR_LCD_BG;
+    int color_pixel_on = ( config.black_lcd ? UI4X_COLOR_FRAME : UI4X_COLOR_LCD_PIXEL );
+
+    for ( int y = 0; y < LCD_HEIGHT; ++y )
+        for ( int x = 0; x < LCD_WIDTH; ++x )
+            __draw_rect( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ), 2, 2,
+                         lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? color_pixel_on : color_pixel_off );
+
+    SDL_SetRenderTarget( renderer, NULL );
+    SDL_RenderCopy( renderer, main_texture, NULL, NULL );
+    SDL_RenderPresent( renderer );
+
+    sdl_update_annunciators();
 }
 
 void ui_start_sdl( config_t* conf )
