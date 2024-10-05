@@ -31,6 +31,9 @@
 #define KEYBOARD_OFFSET_X SIDE_SKIP
 #define KEYBOARD_OFFSET_Y ( TOP_SKIP + DISPLAY_HEIGHT + DISP_KBD_SKIP )
 
+#define COLOR_PIXEL_ON ( config.black_lcd ? UI4X_COLOR_BLACK_PIXEL_ON : UI4X_COLOR_PIXEL_ON )
+#define COLOR_PIXEL_OFF ( config.black_lcd ? UI4X_COLOR_BLACK_PIXEL_OFF : UI4X_COLOR_PIXEL_OFF )
+
 /***********/
 /* typedef */
 /***********/
@@ -213,9 +216,9 @@ static void create_annunciators_textures( void )
 {
     for ( int i = 0; i < NB_ANNUNCIATORS; i++ ) {
         annunciators_textures[ i ].up = bitmap_to_texture( annunciators_ui[ i ].width, annunciators_ui[ i ].height,
-                                                           annunciators_ui[ i ].bits, UI4X_COLOR_LCD_PIXEL, UI4X_COLOR_LCD_BG );
+                                                           annunciators_ui[ i ].bits, COLOR_PIXEL_ON, COLOR_PIXEL_OFF );
         annunciators_textures[ i ].down = bitmap_to_texture( annunciators_ui[ i ].width, annunciators_ui[ i ].height,
-                                                             annunciators_ui[ i ].bits, UI4X_COLOR_LCD_BG, UI4X_COLOR_LCD_BG );
+                                                             annunciators_ui[ i ].bits, COLOR_PIXEL_OFF, COLOR_PIXEL_OFF );
     }
 }
 
@@ -577,7 +580,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
     // draw label in button
     int label_color = BUTTONS[ hpkey ].label_color;
     /* if ( config.model == MODEL_49G && ( hpkey == HP49_KEY_ALPHA || hpkey == HP49_KEY_SHL || hpkey == HP49_KEY_SHR ) ) */
-    /*     label_color = UI4X_COLOR_WHITE; */
+    /*     label_color = UI4X_COLOR_LABEL; */
     if ( BUTTONS[ hpkey ].label_text != ( char* )0 ) {
         /* Button has a text label */
         x = strlen( BUTTONS[ hpkey ].label_text ) - 1;
@@ -730,7 +733,7 @@ static void _draw_keypad( void )
             x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x +
                 ( 1 + BUTTONS[ i ].w - SmallTextWidth( BUTTONS[ i ].sub, strlen( BUTTONS[ i ].sub ) ) ) / 2;
             y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y + BUTTONS[ i ].h + small_ascent + 2;
-            write_with_small_font( x, y, BUTTONS[ i ].sub, UI4X_COLOR_WHITE, UI4X_COLOR_FACEPLATE );
+            write_with_small_font( x, y, BUTTONS[ i ].sub, UI4X_COLOR_LABEL, UI4X_COLOR_FACEPLATE );
         }
 
         total_top_labels_width = 0;
@@ -820,14 +823,12 @@ static void _draw_bezel_LCD( void )
                   UI4X_COLOR_UPPER_FACEPLATE );
 
     // simulate rounded lcd corners
-    __draw_line( DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2,
-                 UI4X_COLOR_LCD_BG );
-    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2, DISPLAY_OFFSET_Y - 1,
-                 UI4X_COLOR_LCD_BG );
+    __draw_line( DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, COLOR_PIXEL_OFF );
+    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2, DISPLAY_OFFSET_Y - 1, COLOR_PIXEL_OFF );
     __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, UI4X_COLOR_LCD_BG );
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, COLOR_PIXEL_OFF );
     __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, UI4X_COLOR_LCD_BG );
+                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, COLOR_PIXEL_OFF );
 }
 
 static void _draw_background( int width, int height, int w_top, int h_top )
@@ -838,7 +839,7 @@ static void _draw_background( int width, int height, int w_top, int h_top )
 
 static void _draw_background_LCD( void )
 {
-    __draw_rect( DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_WIDTH, DISPLAY_HEIGHT, UI4X_COLOR_LCD_BG );
+    __draw_rect( DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_WIDTH, DISPLAY_HEIGHT, COLOR_PIXEL_OFF );
 }
 
 // Show the hp key which is being pressed
@@ -882,7 +883,7 @@ static void _draw_serial_devices_path( void )
     if ( strlen( text ) > 0 )
         write_with_small_font( ( ( SIDE_SKIP * 1.5 ) + DISPLAY_WIDTH ) - SmallTextWidth( text, strlen( text ) ),
                                ( config.model == MODEL_49G ? TOP_SKIP - 12 : KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ) ), text,
-                               UI4X_COLOR_LCD_BG, UI4X_COLOR_UPPER_FACEPLATE );
+                               COLOR_PIXEL_OFF, UI4X_COLOR_UPPER_FACEPLATE );
 }
 
 static int sdl_press_key( int hpkey )
@@ -935,7 +936,7 @@ static void sdl_update_annunciators( void )
 
 static void apply_contrast( void )
 {
-    // Adjust the UI4X_COLOR_LCD_BG color according to the contrast
+    // Adjust the COLOR_PIXEL_OFF color according to the contrast
     int contrast = get_contrast();
 
     if ( last_contrast == contrast )
@@ -943,12 +944,12 @@ static void apply_contrast( void )
 
     last_contrast = contrast;
 
-    if ( contrast < 0x3 )
-        contrast = 0x3;
-    if ( contrast > 0x13 )
-        contrast = 0x13;
+    if ( contrast < 3 )
+        contrast = 3;
+    if ( contrast > 19 )
+        contrast = 19;
 
-    for ( unsigned i = FIRST_COLOR; i < LAST_COLOR; i++ ) {
+    for ( unsigned i = FIRST_COLOR; i < NB_COLORS; i++ ) {
         colors[ i ] = COLORS[ i ];
         if ( config.mono ) {
             colors[ i ].r = colors[ i ].mono_rgb;
@@ -960,10 +961,13 @@ static void apply_contrast( void )
             colors[ i ].b = colors[ i ].gray_rgb;
         }
 
-        if ( !config.mono && i == UI4X_COLOR_LCD_PIXEL ) {
-            colors[ i ].r = ( 0x13 - contrast ) * ( colors[ UI4X_COLOR_LCD_BG ].r / 0x10 );
-            colors[ i ].g = ( 0x13 - contrast ) * ( colors[ UI4X_COLOR_LCD_BG ].g / 0x10 );
-            colors[ i ].b = 128 - ( ( 0x13 - contrast ) * ( ( 128 - colors[ UI4X_COLOR_LCD_BG ].b ) / 0x10 ) );
+        if ( !config.mono && i == COLOR_PIXEL_ON ) {
+            colors[ i ].r = ( 0x13 - contrast ) * ( colors[ COLOR_PIXEL_OFF ].r / 0x10 );
+            colors[ i ].g = ( 0x13 - contrast ) * ( colors[ COLOR_PIXEL_OFF ].g / 0x10 );
+            if ( config.black_lcd )
+                colors[ i ].b = ( 0x13 - contrast ) * ( colors[ COLOR_PIXEL_OFF ].b / 0x10 );
+            else
+                colors[ i ].b = 128 - ( ( 0x13 - contrast ) * ( ( 128 - colors[ COLOR_PIXEL_OFF ].b ) / 0x10 ) );
         }
     }
 
@@ -1031,13 +1035,10 @@ void ui_update_display_sdl( void )
 
     SDL_SetRenderTarget( renderer, main_texture );
 
-    int color_pixel_off = UI4X_COLOR_LCD_BG;
-    int color_pixel_on = ( config.black_lcd ? UI4X_COLOR_FRAME : UI4X_COLOR_LCD_PIXEL );
-
     for ( int y = 0; y < LCD_HEIGHT; ++y )
         for ( int x = 0; x < LCD_WIDTH; ++x )
             __draw_rect( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ), 2, 2,
-                         lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? color_pixel_on : color_pixel_off );
+                         lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF );
 
     SDL_SetRenderTarget( renderer, NULL );
     SDL_RenderCopy( renderer, main_texture, NULL, NULL );

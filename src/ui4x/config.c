@@ -385,6 +385,9 @@ config_t* config_init( int argc, char* argv[] )
     /* if ( clopt_port_2_file_name != NULL ) */
     /*     config.port_2_file_name = strdup( clopt_port_2_file_name ); */
 
+    if ( config.model == MODEL_49G )
+        config.black_lcd = true;
+
     config.mod_file_name = normalize_filename( config.state_dir_path, clopt_mod_file_name );
     config.cpu_file_name = normalize_filename( config.state_dir_path, clopt_cpu_file_name );
     config.hdw_file_name = normalize_filename( config.state_dir_path, clopt_hdw_file_name );
