@@ -44,4 +44,3 @@ The local data are stored under $XDG_CONFIG_HOME/saturn<model>/
 - fix emulation bugs
 - 49g: find a way to enable the bigger screen (131×80)
 - 40g: make emulation work
-- sdl2 UI optimization: draw LCD on a distinct texture and then draw that texture on the main one

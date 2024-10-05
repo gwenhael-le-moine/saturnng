@@ -70,6 +70,7 @@ static on_off_sdl_textures_struct_t annunciators_textures[ NB_ANNUNCIATORS ];
 static SDL_Window* window;
 static SDL_Renderer* renderer;
 static SDL_Texture* main_texture;
+static SDL_Texture* display_texture;
 
 /****************************/
 /* functions implementation */
@@ -1041,12 +1042,18 @@ void ui_update_display_sdl( void )
     else
         ui_init_LCD();
 
-    SDL_SetRenderTarget( renderer, main_texture );
+    SDL_SetRenderTarget( renderer, display_texture );
 
     for ( int y = 0; y < LCD_HEIGHT; ++y )
         for ( int x = 0; x < LCD_WIDTH; ++x )
-            __draw_rect( OFFSET_X_DISPLAY + 5 + ( 2 * x ), OFFSET_Y_DISPLAY + 20 + ( 2 * y ), 2, 2,
-                         lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF );
+            __draw_pixel( x, y, lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF );
+
+    SDL_SetRenderTarget( renderer, NULL );
+    SDL_RenderCopy( renderer, display_texture, NULL, NULL );
+
+    SDL_SetRenderTarget( renderer, main_texture );
+
+    __draw_texture( OFFSET_X_DISPLAY + 5, OFFSET_Y_DISPLAY + 20, LCD_WIDTH * 2, LCD_HEIGHT * 2, display_texture );
 
     SDL_SetRenderTarget( renderer, NULL );
     SDL_RenderCopy( renderer, main_texture, NULL, NULL );
@@ -1098,6 +1105,8 @@ void ui_start_sdl( config_t* conf )
     SDL_RenderSetLogicalSize( renderer, width, height );
 
     main_texture = SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height );
+
+    display_texture = SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, LCD_WIDTH, LCD_HEIGHT );
 
     SDL_SetRenderTarget( renderer, main_texture );
 
