@@ -219,7 +219,7 @@ void get_lcd_buffer( int* target )
     }
 }
 
-int get_contrast( void ) { return mod_status.hdw.lcd_contrast; }
+int get_contrast( void ) { return mod_status.hdw.lcd_contrast - 6; }
 
 void init_emulator( config_t* conf )
 {
