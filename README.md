@@ -34,11 +34,15 @@ Use the wrappers scripts.
 The local data are stored under $XDG_CONFIG_HOME/saturn<model>/
 
 ## Known bugs
-- some bugs in emulation
-- ncurses UI: sometimes (often) becomes unresponsive (but still quits gracefully on F7)
+- some bugs in emulation:
+  - 48gx: ON-D A can hang because it tries to write data in ROM space
+  - 48gx: VERSION spouts messages in the console (but works)
+  - 49g: spouts messages in the console every second (but works)
+- in OFF state the display shows garbage and the wait annunciator is on. It still wakes up correctly.
+- ncurses UI: becomes unresponsive (but still quits gracefully on F7)
 
 ## Todo
-- sdl2 UI: draw LCD on a distinct texture and then draw that texture on the main one
-- sdl2 UI: finish 49g and 40g faces
 - fix emulation bugs
-- make 40g emulation work
+- 49g: find a way to enable the bigger screen (131×80)
+- 40g: make emulation work
+- sdl2 UI optimization: draw LCD on a distinct texture and then draw that texture on the main one
