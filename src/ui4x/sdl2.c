@@ -12,27 +12,24 @@
 #define COLORS ( config.model == MODEL_48GX ? colors_48gx : ( config.model == MODEL_49G ? colors_49g : colors_48sx ) )
 #define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : ( config.model == MODEL_49G ? buttons_49g : buttons_48sx ) )
 
-#define KEYBOARD_HEIGHT ( BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h )
-#define KEYBOARD_WIDTH ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w )
-
-#define TOP_SKIP ( config.model == MODEL_49G ? 48 : 65 )
-#define SIDE_SKIP 20
-#define BOTTOM_SKIP 25
-#define DISP_KBD_SKIP ( config.model == MODEL_49G ? 32 : 65 )
-#define KBD_UPLINE 25
-
-#define DISPLAY_WIDTH ( 264 + 8 )
-#define DISPLAY_HEIGHT ( ( LCD_HEIGHT * 2 ) + 16 + 8 )
-#define DISPLAY_OFFSET_X ( config.chromeless ? 0 : ( SIDE_SKIP + ( 286 - DISPLAY_WIDTH ) / 2 ) )
-#define DISPLAY_OFFSET_Y ( config.chromeless ? 0 : TOP_SKIP )
-
-#define DISP_FRAME 8
-
-#define KEYBOARD_OFFSET_X SIDE_SKIP
-#define KEYBOARD_OFFSET_Y ( TOP_SKIP + DISPLAY_HEIGHT + DISP_KBD_SKIP )
-
 #define COLOR_PIXEL_ON ( config.black_lcd ? UI4X_COLOR_BLACK_PIXEL_ON : UI4X_COLOR_PIXEL_ON )
 #define COLOR_PIXEL_OFF ( config.black_lcd ? UI4X_COLOR_BLACK_PIXEL_OFF : UI4X_COLOR_PIXEL_OFF )
+
+#define PADDING_TOP ( config.model == MODEL_49G ? 48 : 65 )
+#define PADDING_SIDE 20
+#define PADDING_BOTTOM 25
+#define PADDING_BETWEEN_DISPLAY_AND_KEYBOARD ( config.model == MODEL_49G ? 32 : 65 )
+#define OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS 25
+
+#define WIDTH_DISPLAY ( ( ( LCD_WIDTH + 1 ) * 2 ) + 8 )
+#define HEIGHT_DISPLAY ( ( LCD_HEIGHT * 2 ) + 16 + 8 )
+#define OFFSET_X_DISPLAY ( config.chromeless ? 0 : ( PADDING_SIDE + ( 286 - WIDTH_DISPLAY ) / 2 ) )
+#define OFFSET_Y_DISPLAY ( config.chromeless ? 0 : PADDING_TOP )
+
+#define BEZEL_WIDTH_DISPLAY 8
+
+#define OFFSET_X_KEYBOARD PADDING_SIDE
+#define OFFSET_Y_KEYBOARD ( PADDING_TOP + HEIGHT_DISPLAY + PADDING_BETWEEN_DISPLAY_AND_KEYBOARD )
 
 /***********/
 /* typedef */
@@ -227,11 +224,11 @@ static void create_annunciators_textures( void )
 static int mouse_click_to_hpkey( int x, int y )
 {
     /* return immediatly if the click isn't even in the keyboard area */
-    if ( y < KEYBOARD_OFFSET_Y )
+    if ( y < OFFSET_Y_KEYBOARD )
         return -1;
 
-    x -= KEYBOARD_OFFSET_X;
-    y -= KEYBOARD_OFFSET_Y;
+    x -= OFFSET_X_KEYBOARD;
+    y -= OFFSET_Y_KEYBOARD;
 
     for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ )
         if ( ( BUTTONS[ i ].x < x && ( BUTTONS[ i ].x + BUTTONS[ i ].w ) > x ) &&
@@ -447,18 +444,20 @@ static void _draw_bezel( unsigned int cut, unsigned int offset_y, int keypad_wid
         __draw_line( keypad_width - 4, keypad_height - 4, keypad_width - 4, cut, UI4X_COLOR_FACEPLATE_EDGE_TOP );
 
         // right lines
-        __draw_line( keypad_width - 3, cut - 1, keypad_width - 3, offset_y - ( KBD_UPLINE - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
-        __draw_line( keypad_width - 4, cut - 1, keypad_width - 4, offset_y - ( KBD_UPLINE - 2 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 3, cut - 1, keypad_width - 3, offset_y - ( OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS - 1 ),
+                     UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+        __draw_line( keypad_width - 4, cut - 1, keypad_width - 4, offset_y - ( OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS - 2 ),
+                     UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
 
         // top lines
-        __draw_line( 2, offset_y - ( KBD_UPLINE - 0 ), keypad_width - 4, offset_y - ( KBD_UPLINE - 0 ),
-                     UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
-        __draw_line( 3, offset_y - ( KBD_UPLINE - 1 ), keypad_width - 5, offset_y - ( KBD_UPLINE - 1 ),
-                     UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 2, offset_y - OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS, keypad_width - 4,
+                     offset_y - OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 3, offset_y - ( OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS - 1 ), keypad_width - 5,
+                     offset_y - ( OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
         // left lines
-        __draw_line( 2, cut - 1, 2, offset_y - ( KBD_UPLINE - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
-        __draw_line( 3, cut - 1, 3, offset_y - ( KBD_UPLINE - 2 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 2, cut - 1, 2, offset_y - ( OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS - 1 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( 3, cut - 1, 3, offset_y - ( OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS - 2 ), UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
 
         // left lines
         __draw_line( 2, keypad_height - 4, 2, cut, UI4X_COLOR_FACEPLATE_EDGE_BOTTOM );
@@ -499,52 +498,52 @@ static void _draw_bezel( unsigned int cut, unsigned int offset_y, int keypad_wid
 
 static void _draw_header( void )
 {
-    int x = DISPLAY_OFFSET_X;
+    int x = OFFSET_X_DISPLAY;
     int y;
 
     // insert the HP Logo
     if ( config.model == MODEL_48GX )
         x -= 6;
     /* if ( config.model == MODEL_49G ) */
-    /*     x += ( DISPLAY_WIDTH / 2 ) - ( hp_width / 2 ); */
+    /*     x += ( WIDTH_DISPLAY / 2 ) - ( hp_width / 2 ); */
 
     __draw_bitmap( x, 10, hp_width, hp_height, hp_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_HP_LOGO_BG );
 
     if ( config.model == MODEL_49G )
-        write_with_big_font( DISPLAY_WIDTH - SIDE_SKIP, 10, "HP 49GX", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
+        write_with_big_font( WIDTH_DISPLAY - PADDING_SIDE, 10, "HP 49GX", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
-        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_128K_ram_x_hot + 2;
+        x = OFFSET_X_DISPLAY + WIDTH_DISPLAY - gx_128K_ram_width + gx_128K_ram_x_hot + 2;
         y = 10 + gx_128K_ram_y_hot;
         __draw_bitmap( x, y, gx_128K_ram_width, gx_128K_ram_height, gx_128K_ram_bitmap, UI4X_COLOR_48GX_128K_RAM,
                        UI4X_COLOR_UPPER_FACEPLATE );
 
-        x = DISPLAY_OFFSET_X + hp_width;
+        x = OFFSET_X_DISPLAY + hp_width;
         y = hp_height + 8 - hp48gx_height;
         __draw_bitmap( x, y, hp48gx_width, hp48gx_height, hp48gx_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
-        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_green_x_hot + 2;
+        x = OFFSET_X_DISPLAY + WIDTH_DISPLAY - gx_128K_ram_width + gx_green_x_hot + 2;
         y = 10 + gx_green_y_hot;
         __draw_bitmap( x, y, gx_green_width, gx_green_height, gx_green_bitmap, UI4X_COLOR_SHIFT_RIGHT, UI4X_COLOR_UPPER_FACEPLATE );
 
-        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - gx_128K_ram_width + gx_silver_x_hot + 2;
+        x = OFFSET_X_DISPLAY + WIDTH_DISPLAY - gx_128K_ram_width + gx_silver_x_hot + 2;
         y = 10 + gx_silver_y_hot;
         __draw_bitmap( x, y, gx_silver_width, gx_silver_height, gx_silver_bitmap, UI4X_COLOR_HP_LOGO,
                        0 ); // Background transparent: draw only silver line
     }
     if ( config.model == MODEL_48SX ) {
-        __draw_line( DISPLAY_OFFSET_X, 9, DISPLAY_OFFSET_X + hp_width - 1, 9, UI4X_COLOR_FRAME );
-        __draw_line( DISPLAY_OFFSET_X - 1, 10, DISPLAY_OFFSET_X - 1, 10 + hp_height - 1, UI4X_COLOR_FRAME );
-        __draw_line( DISPLAY_OFFSET_X, 10 + hp_height, DISPLAY_OFFSET_X + hp_width - 1, 10 + hp_height, UI4X_COLOR_FRAME );
-        __draw_line( DISPLAY_OFFSET_X + hp_width, 10, DISPLAY_OFFSET_X + hp_width, 10 + hp_height - 1, UI4X_COLOR_FRAME );
+        __draw_line( OFFSET_X_DISPLAY, 9, OFFSET_X_DISPLAY + hp_width - 1, 9, UI4X_COLOR_FRAME );
+        __draw_line( OFFSET_X_DISPLAY - 1, 10, OFFSET_X_DISPLAY - 1, 10 + hp_height - 1, UI4X_COLOR_FRAME );
+        __draw_line( OFFSET_X_DISPLAY, 10 + hp_height, OFFSET_X_DISPLAY + hp_width - 1, 10 + hp_height, UI4X_COLOR_FRAME );
+        __draw_line( OFFSET_X_DISPLAY + hp_width, 10, OFFSET_X_DISPLAY + hp_width, 10 + hp_height - 1, UI4X_COLOR_FRAME );
 
-        x = DISPLAY_OFFSET_X;
-        y = TOP_SKIP - DISP_FRAME - hp48sx_height - 3;
+        x = OFFSET_X_DISPLAY;
+        y = PADDING_TOP - BEZEL_WIDTH_DISPLAY - hp48sx_height - 3;
         __draw_bitmap( x, y, hp48sx_width, hp48sx_height, hp48sx_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
-        x = DISPLAY_OFFSET_X + DISPLAY_WIDTH - 1 - science_width;
-        y = TOP_SKIP - DISP_FRAME - science_height - 4;
+        x = OFFSET_X_DISPLAY + WIDTH_DISPLAY - 1 - science_width;
+        y = PADDING_TOP - BEZEL_WIDTH_DISPLAY - science_height - 4;
         __draw_bitmap( x, y, science_width, science_height, science_bitmap, UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
     }
 }
@@ -679,7 +678,7 @@ static void create_buttons_textures( void )
 
 static void _draw_key( int hpkey )
 {
-    __draw_texture( KEYBOARD_OFFSET_X + BUTTONS[ hpkey ].x, KEYBOARD_OFFSET_Y + BUTTONS[ hpkey ].y, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h,
+    __draw_texture( OFFSET_X_KEYBOARD + BUTTONS[ hpkey ].x, OFFSET_Y_KEYBOARD + BUTTONS[ hpkey ].y, BUTTONS[ hpkey ].w, BUTTONS[ hpkey ].h,
                     is_key_pressed( hpkey ) ? buttons_textures[ hpkey ].down : buttons_textures[ hpkey ].up );
 }
 
@@ -697,8 +696,8 @@ static void _draw_keypad( void )
     for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ ) {
         // Background
         if ( BUTTONS[ i ].highlight ) {
-            x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x;
-            y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y - small_ascent - small_descent;
+            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - small_ascent - small_descent;
 
             if ( config.model == MODEL_48GX ) {
                 x -= 6;
@@ -711,8 +710,8 @@ static void _draw_keypad( void )
 
         // Letter (small character bottom right of key)
         if ( BUTTONS[ i ].letter != ( char* )0 ) {
-            x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x + BUTTONS[ i ].w;
-            y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y + BUTTONS[ i ].h;
+            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x + BUTTONS[ i ].w;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h;
 
             if ( config.model == MODEL_48SX ) {
                 x -= SmallTextWidth( BUTTONS[ i ].letter, 1 ) / 2 + 5;
@@ -730,17 +729,17 @@ static void _draw_keypad( void )
 
         // Bottom label: the only one is the cancel button
         if ( BUTTONS[ i ].sub != ( char* )0 ) {
-            x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x +
+            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x +
                 ( 1 + BUTTONS[ i ].w - SmallTextWidth( BUTTONS[ i ].sub, strlen( BUTTONS[ i ].sub ) ) ) / 2;
-            y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y + BUTTONS[ i ].h + small_ascent + 2;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h + small_ascent + 2;
             write_with_small_font( x, y, BUTTONS[ i ].sub, UI4X_COLOR_LABEL, UI4X_COLOR_FACEPLATE );
         }
 
         total_top_labels_width = 0;
         // Draw the left labels
         if ( BUTTONS[ i ].left != ( char* )0 ) {
-            x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x;
-            y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y - small_descent;
+            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - small_descent;
 
             left_label_width = SmallTextWidth( BUTTONS[ i ].left, strlen( BUTTONS[ i ].left ) );
             total_top_labels_width = left_label_width;
@@ -759,8 +758,8 @@ static void _draw_keypad( void )
 
         // draw the right labels ( .highlight never have one )
         if ( BUTTONS[ i ].right != ( char* )0 ) {
-            x = KEYBOARD_OFFSET_X + BUTTONS[ i ].x;
-            y = KEYBOARD_OFFSET_Y + BUTTONS[ i ].y - small_descent;
+            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - small_descent;
 
             if ( BUTTONS[ i ].left == ( char* )0 ) {
                 right_label_width = SmallTextWidth( BUTTONS[ i ].right, strlen( BUTTONS[ i ].right ) );
@@ -780,55 +779,63 @@ static void _draw_keypad( void )
 
 static void _draw_bezel_LCD( void )
 {
-    for ( int i = 0; i < DISP_FRAME; i++ ) {
-        __draw_line( DISPLAY_OFFSET_X - i, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
-        __draw_line( DISPLAY_OFFSET_X - i, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i + 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
-        __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + i, DISPLAY_OFFSET_Y - i, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+    for ( int i = 0; i < BEZEL_WIDTH_DISPLAY; i++ ) {
+        __draw_line( OFFSET_X_DISPLAY - i, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * i, OFFSET_X_DISPLAY + WIDTH_DISPLAY + i,
+                     OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * i, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+        __draw_line( OFFSET_X_DISPLAY - i, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * i + 1, OFFSET_X_DISPLAY + WIDTH_DISPLAY + i,
+                     OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * i + 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
+        __draw_line( OFFSET_X_DISPLAY + WIDTH_DISPLAY + i, OFFSET_Y_DISPLAY - i, OFFSET_X_DISPLAY + WIDTH_DISPLAY + i,
+                     OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * i, UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP );
 
-        __draw_line( DISPLAY_OFFSET_X - i - 1, DISPLAY_OFFSET_Y - i - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH + i - 1, DISPLAY_OFFSET_Y - i - 1,
+        __draw_line( OFFSET_X_DISPLAY - i - 1, OFFSET_Y_DISPLAY - i - 1, OFFSET_X_DISPLAY + WIDTH_DISPLAY + i - 1, OFFSET_Y_DISPLAY - i - 1,
                      UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
-        __draw_line( DISPLAY_OFFSET_X - i - 1, DISPLAY_OFFSET_Y - i - 1, DISPLAY_OFFSET_X - i - 1,
-                     DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * i - 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
+        __draw_line( OFFSET_X_DISPLAY - i - 1, OFFSET_Y_DISPLAY - i - 1, OFFSET_X_DISPLAY - i - 1,
+                     OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * i - 1, UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM );
     }
 
     // round off corners
-    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y - DISP_FRAME, DISPLAY_OFFSET_X - DISP_FRAME + 3,
-                 DISPLAY_OFFSET_Y - DISP_FRAME, UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y - DISP_FRAME, DISPLAY_OFFSET_X - DISP_FRAME,
-                 DISPLAY_OFFSET_Y - DISP_FRAME + 3, UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y - DISP_FRAME + 1, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_line( OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY + 3,
+                 OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_line( OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY,
+                 OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY + 3, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY + 1, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY + 1, UI4X_COLOR_UPPER_FACEPLATE );
 
-    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 4, DISPLAY_OFFSET_Y - DISP_FRAME,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME, UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y - DISP_FRAME + 3, UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y - DISP_FRAME + 1, UI4X_COLOR_UPPER_FACEPLATE );
-
-    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4, DISPLAY_OFFSET_X - DISP_FRAME,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_line( DISPLAY_OFFSET_X - DISP_FRAME, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, DISPLAY_OFFSET_X - DISP_FRAME + 3,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1, UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_pixel( DISPLAY_OFFSET_X - DISP_FRAME + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2, UI4X_COLOR_UPPER_FACEPLATE );
-
-    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 4,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1,
+    __draw_line( OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 4, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY,
+                 OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 1, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY,
                  UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 4, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1,
-                 DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 1,
+    __draw_line( OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 1, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY,
+                 OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 1, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY + 3,
                  UI4X_COLOR_UPPER_FACEPLATE );
-    __draw_pixel( DISPLAY_OFFSET_X + DISPLAY_WIDTH + DISP_FRAME - 2, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + 2 * DISP_FRAME - 2,
+    __draw_pixel( OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 2, OFFSET_Y_DISPLAY - BEZEL_WIDTH_DISPLAY + 1,
                   UI4X_COLOR_UPPER_FACEPLATE );
 
+    __draw_line( OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 4,
+                 OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 1,
+                 UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_line( OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 1,
+                 OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY + 3, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 1,
+                 UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( OFFSET_X_DISPLAY - BEZEL_WIDTH_DISPLAY + 1, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 2,
+                  UI4X_COLOR_UPPER_FACEPLATE );
+
+    __draw_line( OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 1,
+                 OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 4,
+                 OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 1,
+                 OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 1, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_line( OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 4,
+                 OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 1,
+                 OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 1,
+                 OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 1, UI4X_COLOR_UPPER_FACEPLATE );
+    __draw_pixel( OFFSET_X_DISPLAY + WIDTH_DISPLAY + BEZEL_WIDTH_DISPLAY - 2,
+                  OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + 2 * BEZEL_WIDTH_DISPLAY - 2, UI4X_COLOR_UPPER_FACEPLATE );
+
     // simulate rounded lcd corners
-    __draw_line( DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X - 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, COLOR_PIXEL_OFF );
-    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y - 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2, DISPLAY_OFFSET_Y - 1, COLOR_PIXEL_OFF );
-    __draw_line( DISPLAY_OFFSET_X + 1, DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, DISPLAY_OFFSET_X + DISPLAY_WIDTH - 2,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT, COLOR_PIXEL_OFF );
-    __draw_line( DISPLAY_OFFSET_X + DISPLAY_WIDTH, DISPLAY_OFFSET_Y + 1, DISPLAY_OFFSET_X + DISPLAY_WIDTH,
-                 DISPLAY_OFFSET_Y + DISPLAY_HEIGHT - 2, COLOR_PIXEL_OFF );
+    __draw_line( OFFSET_X_DISPLAY - 1, OFFSET_Y_DISPLAY + 1, OFFSET_X_DISPLAY - 1, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY - 2, COLOR_PIXEL_OFF );
+    __draw_line( OFFSET_X_DISPLAY + 1, OFFSET_Y_DISPLAY - 1, OFFSET_X_DISPLAY + WIDTH_DISPLAY - 2, OFFSET_Y_DISPLAY - 1, COLOR_PIXEL_OFF );
+    __draw_line( OFFSET_X_DISPLAY + 1, OFFSET_Y_DISPLAY + HEIGHT_DISPLAY, OFFSET_X_DISPLAY + WIDTH_DISPLAY - 2,
+                 OFFSET_Y_DISPLAY + HEIGHT_DISPLAY, COLOR_PIXEL_OFF );
+    __draw_line( OFFSET_X_DISPLAY + WIDTH_DISPLAY, OFFSET_Y_DISPLAY + 1, OFFSET_X_DISPLAY + WIDTH_DISPLAY,
+                 OFFSET_Y_DISPLAY + HEIGHT_DISPLAY - 2, COLOR_PIXEL_OFF );
 }
 
 static void _draw_background( int width, int height, int w_top, int h_top )
@@ -839,7 +846,7 @@ static void _draw_background( int width, int height, int w_top, int h_top )
 
 static void _draw_background_LCD( void )
 {
-    __draw_rect( DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_WIDTH, DISPLAY_HEIGHT, COLOR_PIXEL_OFF );
+    __draw_rect( OFFSET_X_DISPLAY, OFFSET_Y_DISPLAY, WIDTH_DISPLAY, HEIGHT_DISPLAY, COLOR_PIXEL_OFF );
 }
 
 // Show the hp key which is being pressed
@@ -881,9 +888,10 @@ static void _draw_serial_devices_path( void )
     }
 
     if ( strlen( text ) > 0 )
-        write_with_small_font( ( ( SIDE_SKIP * 1.5 ) + DISPLAY_WIDTH ) - SmallTextWidth( text, strlen( text ) ),
-                               ( config.model == MODEL_49G ? TOP_SKIP - 12 : KEYBOARD_OFFSET_Y - ( DISP_KBD_SKIP / 2 ) ), text,
-                               COLOR_PIXEL_OFF, UI4X_COLOR_UPPER_FACEPLATE );
+        write_with_small_font(
+            ( ( PADDING_SIDE * 1.5 ) + WIDTH_DISPLAY ) - SmallTextWidth( text, strlen( text ) ),
+            ( config.model == MODEL_49G ? PADDING_TOP - 12 : OFFSET_Y_KEYBOARD - ( PADDING_BETWEEN_DISPLAY_AND_KEYBOARD / 2 ) ), text,
+            COLOR_PIXEL_OFF, UI4X_COLOR_UPPER_FACEPLATE );
 }
 
 static int sdl_press_key( int hpkey )
@@ -923,7 +931,7 @@ static void sdl_update_annunciators( void )
     SDL_SetRenderTarget( renderer, main_texture );
 
     for ( int i = 0; i < NB_ANNUNCIATORS; i++ )
-        __draw_texture( DISPLAY_OFFSET_X + annunciators_ui[ i ].x, DISPLAY_OFFSET_Y + annunciators_ui[ i ].y, annunciators_ui[ i ].width,
+        __draw_texture( OFFSET_X_DISPLAY + annunciators_ui[ i ].x, OFFSET_Y_DISPLAY + annunciators_ui[ i ].y, annunciators_ui[ i ].width,
                         annunciators_ui[ i ].height,
                         ( ( ( annunciators_bits[ i ] & annunciators ) == annunciators_bits[ i ] ) ) ? annunciators_textures[ i ].up
                                                                                                     : annunciators_textures[ i ].down );
@@ -1037,7 +1045,7 @@ void ui_update_display_sdl( void )
 
     for ( int y = 0; y < LCD_HEIGHT; ++y )
         for ( int x = 0; x < LCD_WIDTH; ++x )
-            __draw_rect( DISPLAY_OFFSET_X + 5 + ( 2 * x ), DISPLAY_OFFSET_Y + 20 + ( 2 * y ), 2, 2,
+            __draw_rect( OFFSET_X_DISPLAY + 5 + ( 2 * x ), OFFSET_Y_DISPLAY + 20 + ( 2 * y ), 2, 2,
                          lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF );
 
     SDL_SetRenderTarget( renderer, NULL );
@@ -1065,11 +1073,10 @@ void ui_start_sdl( config_t* conf )
     // On exit: clean SDL
     atexit( SDL_Quit );
 
-    unsigned int width = config.chromeless ? DISPLAY_WIDTH : ( ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w ) + 2 * SIDE_SKIP );
-    unsigned int height =
-        config.chromeless
-            ? DISPLAY_HEIGHT
-            : ( DISPLAY_OFFSET_Y + DISPLAY_HEIGHT + DISP_KBD_SKIP + BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h + BOTTOM_SKIP );
+    unsigned int width = config.chromeless ? WIDTH_DISPLAY : ( ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w ) + 2 * PADDING_SIDE );
+    unsigned int height = config.chromeless ? HEIGHT_DISPLAY
+                                            : ( OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + PADDING_BETWEEN_DISPLAY_AND_KEYBOARD +
+                                                BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h + PADDING_BOTTOM );
 
     uint32_t window_flags = SDL_WINDOW_ALLOW_HIGHDPI;
     if ( config.fullscreen )
@@ -1097,12 +1104,12 @@ void ui_start_sdl( config_t* conf )
     apply_contrast();
 
     if ( !config.chromeless ) {
-        int cut = BUTTONS[ HP48_KEY_MTH ].y + KEYBOARD_OFFSET_Y - 19;
+        int cut = BUTTONS[ HP48_KEY_MTH ].y + OFFSET_Y_KEYBOARD - 19;
 
         create_buttons_textures();
 
         _draw_background( width, cut, width, height );
-        _draw_bezel( cut, KEYBOARD_OFFSET_Y, width, height );
+        _draw_bezel( cut, OFFSET_Y_KEYBOARD, width, height );
         _draw_header();
         _draw_bezel_LCD();
         _draw_keypad();
