@@ -684,7 +684,7 @@ static void _draw_key( int hpkey )
 }
 
 #define SMALL_ASCENT 8
-#define SMALL_DESCENT 4
+#define SMALL_DESCENT 2
 
 static void _draw_keypad( void )
 {
@@ -735,7 +735,8 @@ static void _draw_keypad( void )
         if ( BUTTONS[ i ].sub != ( char* )0 ) {
             x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x +
                 ( 1 + BUTTONS[ i ].w - SmallTextWidth( BUTTONS[ i ].sub, strlen( BUTTONS[ i ].sub ) ) ) / 2;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h + SMALL_ASCENT /* + 2 */;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h + SMALL_ASCENT + 1;
+
             write_with_small_font( x, y, BUTTONS[ i ].sub, UI4X_COLOR_LABEL, UI4X_COLOR_FACEPLATE );
         }
 
@@ -753,7 +754,6 @@ static void _draw_keypad( void )
                 right_label_width = SmallTextWidth( BUTTONS[ i ].right, strlen( BUTTONS[ i ].right ) );
                 total_top_labels_width += space_char_width + right_label_width;
 
-                // draw the right labels ( .highlight never have one )
                 xr = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
             }
             if ( total_top_labels_width > BUTTONS[ i ].w || BUTTONS[ i ].right == ( char* )0 ) {
@@ -773,6 +773,7 @@ static void _draw_keypad( void )
             write_with_small_font( x, y, BUTTONS[ i ].left, UI4X_COLOR_SHIFT_LEFT,
                                    BUTTONS[ i ].highlight ? UI4X_COLOR_KEYPAD_HIGHLIGHT : UI4X_COLOR_FACEPLATE );
 
+            // draw the right labels ( .highlight never have one )
             if ( BUTTONS[ i ].right != ( char* )0 )
                 write_with_small_font( xr, y, BUTTONS[ i ].right, UI4X_COLOR_SHIFT_RIGHT, UI4X_COLOR_FACEPLATE );
         }
