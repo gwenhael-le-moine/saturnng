@@ -683,6 +683,9 @@ static void _draw_key( int hpkey )
                     is_key_pressed( hpkey ) ? buttons_textures[ hpkey ].down : buttons_textures[ hpkey ].up );
 }
 
+#define SMALL_ASCENT 8
+#define SMALL_DESCENT 4
+
 static void _draw_keypad( void )
 {
     int x, y;
@@ -698,7 +701,7 @@ static void _draw_keypad( void )
         // Background
         if ( BUTTONS[ i ].highlight ) {
             x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - small_ascent - small_descent;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - SMALL_ASCENT - SMALL_DESCENT;
 
             if ( config.model == MODEL_48GX ) {
                 x -= 6;
@@ -732,7 +735,7 @@ static void _draw_keypad( void )
         if ( BUTTONS[ i ].sub != ( char* )0 ) {
             x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x +
                 ( 1 + BUTTONS[ i ].w - SmallTextWidth( BUTTONS[ i ].sub, strlen( BUTTONS[ i ].sub ) ) ) / 2;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h + small_ascent + 2;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h + SMALL_ASCENT /* + 2 */;
             write_with_small_font( x, y, BUTTONS[ i ].sub, UI4X_COLOR_LABEL, UI4X_COLOR_FACEPLATE );
         }
 
@@ -740,7 +743,7 @@ static void _draw_keypad( void )
         // Draw the left labels
         if ( BUTTONS[ i ].left != ( char* )0 ) {
             x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - small_descent;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - SMALL_DESCENT;
 
             left_label_width = SmallTextWidth( BUTTONS[ i ].left, strlen( BUTTONS[ i ].left ) );
             total_top_labels_width = left_label_width;
@@ -760,7 +763,7 @@ static void _draw_keypad( void )
         // draw the right labels ( .highlight never have one )
         if ( BUTTONS[ i ].right != ( char* )0 ) {
             x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - small_descent;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - SMALL_DESCENT;
 
             if ( BUTTONS[ i ].left == ( char* )0 ) {
                 right_label_width = SmallTextWidth( BUTTONS[ i ].right, strlen( BUTTONS[ i ].right ) );
