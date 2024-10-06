@@ -12,6 +12,12 @@ The main binary is `dist/saturn` with helpers/wrappers scripts available per mod
 * `dist/saturn49g`
 * `dist/saturn40g` (not really functional (yet))
 
+## Screenshots
+
+![screenshot of saturn49g](./saturn49g.png?raw=true "screenshot of saturn49g")
+![screenshot of saturn48gx](./saturn48gx.png?raw=true "screenshot of saturn48gx")
+![screenshot of saturn48sx](./saturn48sx.png?raw=true "screenshot of saturn48sx")
+
 ## Building
 
 Dependencies:
