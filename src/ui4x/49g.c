@@ -12,9 +12,9 @@ color_t colors_49g[ NB_COLORS ] = {
      },
     /* UI4X_COLOR_HP_LOGO_BG */
     {
-     .r = 0x68,
-     .g = 0x68,
-     .b = 0x6E,
+     .r = 0x13,
+     .g = 0x13,
+     .b = 0x13,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x68,
