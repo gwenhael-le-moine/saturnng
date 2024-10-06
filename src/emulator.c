@@ -155,7 +155,7 @@
 #define LCD_T1_MASK 0x3 /* LCD refresh timing mask */
 #define INT_T1_MASK 0xF /* Int. req. timing mask */
 
-static int emulator_int_req = 0; /* Interrupt request flag */
+static bool emulator_int_req = false; /* Interrupt request flag */
 
 /* This function contains the main emulator loop; under normal conditions,
    it never returns to the caller. The only way to exit this function is
@@ -167,21 +167,20 @@ static void EmulatorLoop( void )
     int ela;
     int inner_loop = cpu_status.inner_loop;
     int t1_count = 0;
-    int i, j;
 
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "EmulatorLoop" );
 
     /* Ignore past interrupt requests */
-    emulator_int_req = 0;
+    emulator_int_req = false;
 
     /* Get current time of day */
     gettimeofday( &old_t, NULL );
 
-    while ( 1 ) {
+    while ( true ) {
         /* T1 loop */
-        for ( j = 0; j < T1_MULTIPLIER; j++ ) {
+        for ( int j = 0; j < T1_MULTIPLIER; j++ ) {
             /* Inner loop */
-            for ( i = 0; i < inner_loop; i++ )
+            for ( int i = 0; i < inner_loop; i++ )
                 OneStep();
 
             /* T2 update */
@@ -260,7 +259,7 @@ static void EmulatorLoop( void )
 }
 
 /* Condition handler for the EmulatorLoop */
-static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, ChfPointer ctx )
+static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, ChfPointer _ctx )
 {
     ChfAction act;
 
@@ -547,7 +546,7 @@ void Emulator( void )
   1.1, 18-Feb-1998, creation
 
 .- */
-void EmulatorIntRequest( void ) { emulator_int_req = 1; }
+void EmulatorIntRequest( void ) { emulator_int_req = true; }
 
 /* .+
 
