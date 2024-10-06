@@ -688,7 +688,7 @@ static void _draw_key( int hpkey )
 
 static void _draw_keypad( void )
 {
-    int x, y;
+    int x, xr, y;
     int left_label_width, right_label_width;
     int space_char_width = SmallTextWidth( " ", 1 );
     int total_top_labels_width;
@@ -752,28 +752,29 @@ static void _draw_keypad( void )
                 // label to the left
                 right_label_width = SmallTextWidth( BUTTONS[ i ].right, strlen( BUTTONS[ i ].right ) );
                 total_top_labels_width += space_char_width + right_label_width;
-            }
 
-            x += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
+                // draw the right labels ( .highlight never have one )
+                xr = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
+            }
+            if ( total_top_labels_width > BUTTONS[ i ].w || BUTTONS[ i ].right == ( char* )0 ) {
+                x += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
+
+                if ( BUTTONS[ i ].right != ( char* )0 ) {
+                    xr += space_char_width + left_label_width;
+                    xr += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
+                }
+            } else {
+                x += 2;
+
+                if ( BUTTONS[ i ].right != ( char* )0 )
+                    xr = ( OFFSET_X_KEYBOARD + BUTTONS[ i ].x + BUTTONS[ i ].w ) - right_label_width;
+            }
 
             write_with_small_font( x, y, BUTTONS[ i ].left, UI4X_COLOR_SHIFT_LEFT,
                                    BUTTONS[ i ].highlight ? UI4X_COLOR_KEYPAD_HIGHLIGHT : UI4X_COLOR_FACEPLATE );
-        }
 
-        // draw the right labels ( .highlight never have one )
-        if ( BUTTONS[ i ].right != ( char* )0 ) {
-            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y - SMALL_DESCENT;
-
-            if ( BUTTONS[ i ].left == ( char* )0 ) {
-                right_label_width = SmallTextWidth( BUTTONS[ i ].right, strlen( BUTTONS[ i ].right ) );
-                total_top_labels_width = right_label_width;
-            } else
-                x += space_char_width + left_label_width;
-
-            x += ( 1 + BUTTONS[ i ].w - total_top_labels_width ) / 2;
-
-            write_with_small_font( x, y, BUTTONS[ i ].right, UI4X_COLOR_SHIFT_RIGHT, UI4X_COLOR_FACEPLATE );
+            if ( BUTTONS[ i ].right != ( char* )0 )
+                write_with_small_font( xr, y, BUTTONS[ i ].right, UI4X_COLOR_SHIFT_RIGHT, UI4X_COLOR_FACEPLATE );
         }
     }
 
