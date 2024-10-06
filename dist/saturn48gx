@@ -36,4 +36,8 @@ if [ ! -e "$CONFIGDIR"/ram ]; then
     RESET=--reset
 fi
 
-./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@"
+if echo "$@" | grep -q "\-\-verbose"; then
+    ./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@"
+else
+    ./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@" 2> /dev/null
+fi
