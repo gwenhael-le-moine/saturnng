@@ -196,111 +196,8 @@ static Address PopRSTK( void )
 }
 
 /*---------------------------------------------------------------------------
-        Private functions: interrupt handling
-  ---------------------------------------------------------------------------*/
-
-/* RTI */
-static void ExecRTI( void )
-{
-    debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRTI" );
-
-    if ( cpu_status.int_pending != INT_REQUEST_NONE ) {
-        debug1( DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
-
-        /* Service immediately any pending interrupt request */
-        cpu_status.int_service = 1;
-        cpu_status.int_pending = INT_REQUEST_NONE;
-        cpu_status.PC = INT_HANDLER_PC;
-    } else {
-        /* Reenable interrupts and return */
-        debug0( DEBUG_C_INT, CPU_I_RTI_END );
-
-        cpu_status.int_service = 0;
-        cpu_status.PC = PopRSTK();
-    }
-}
-
-/* RSI */
-static void ExecRSI( void )
-{
-    debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRSI" );
-
-    /* Discard last nibble of RSI opcode */
-    cpu_status.PC++;
-
-    KeybRSI();
-}
-
-/* INTON */
-static void ExecINTON( void )
-{
-    debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTON" );
-
-    /* Enable maskable interrupts */
-    cpu_status.int_enable = 1;
-}
-
-/* INTOFF */
-static void ExecINTOFF( void )
-{
-    debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTOFF" );
-
-    cpu_status.int_enable = 0;
-}
-
-/*---------------------------------------------------------------------------
         Private functions: bus input/output
   ---------------------------------------------------------------------------*/
-
-/* BUSCB */
-static void ExecBUSCB( void )
-{
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCB" );
-    ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCB" ChfEnd;
-    ChfSignal( CPU_CHF_MODULE_ID );
-}
-
-/* BUSCC */
-static void ExecBUSCC( void )
-{
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
-    // FIXME: 49g bugs here
-    ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCC" ChfEnd;
-    ChfSignal( CPU_CHF_MODULE_ID );
-}
-
-/* BUSCD */
-static void ExecBUSCD( void )
-{
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCD" );
-    ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCD" ChfEnd;
-    ChfSignal( CPU_CHF_MODULE_ID );
-}
-
-/* SREQ */
-static void ExecSREQ( void )
-{
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecSREQ" );
-    ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "SREQ" ChfEnd;
-    ChfSignal( CPU_CHF_MODULE_ID );
-}
-
-/* OUTC */
-static void ExecOUTC( void )
-{
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTC" );
-
-    cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( ( OutputRegister )cpu_status.C[ 1 ] << 4 ) |
-                     ( ( OutputRegister )cpu_status.C[ 2 ] << 8 );
-}
-
-/* OUTCS */
-static void ExecOUTCS( void )
-{
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTCS" );
-
-    cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( cpu_status.OUT & 0xFF0 );
-}
 
 /* IN */
 static void ExecIN( Nibble* r )
@@ -1657,7 +1554,22 @@ static void ExecGroup_0( void )
             break;
 
         case 0xF: /* RTI */
-            ExecRTI();
+            debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRTI" );
+
+            if ( cpu_status.int_pending != INT_REQUEST_NONE ) {
+                debug1( DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
+
+                /* Service immediately any pending interrupt request */
+                cpu_status.int_service = 1;
+                cpu_status.int_pending = INT_REQUEST_NONE;
+                cpu_status.PC = INT_HANDLER_PC;
+            } else {
+                /* Reenable interrupts and return */
+                debug0( DEBUG_C_INT, CPU_I_RTI_END );
+
+                cpu_status.int_service = 0;
+                cpu_status.PC = PopRSTK();
+            }
             break;
 
         default: /* Unknown opcode */
@@ -2006,11 +1918,19 @@ static void ExecGroup_808( void )
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_808" );
     switch ( n ) {
         case 0: /* INTON */
-            ExecINTON();
+            debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTON" );
+
+            /* Enable maskable interrupts */
+            cpu_status.int_enable = 1;
             break;
 
         case 1: /* RSI */
-            ExecRSI();
+            debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRSI" );
+
+            /* Discard last nibble of RSI opcode */
+            cpu_status.PC++;
+
+            KeybRSI();
             break;
 
         case 2: /* LA(m) n..n */
@@ -2018,7 +1938,9 @@ static void ExecGroup_808( void )
             break;
 
         case 3: /* BUSCB */
-            ExecBUSCB();
+            debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCB" );
+            ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCB" ChfEnd;
+            ChfSignal( CPU_CHF_MODULE_ID );
             break;
 
         case 4: /* ABIT=0 d */
@@ -2063,7 +1985,9 @@ static void ExecGroup_808( void )
 
         case 0xD:
             /* BUSCD */
-            ExecBUSCD();
+            debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCD" );
+            ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCD" ChfEnd;
+            ChfSignal( CPU_CHF_MODULE_ID );
             break;
 
         case 0xE:
@@ -2073,7 +1997,9 @@ static void ExecGroup_808( void )
 
         case 0xF:
             /* INTOFF */
-            ExecINTOFF();
+            debug1( DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTOFF" );
+
+            cpu_status.int_enable = 0;
             break;
 
         default:
@@ -2088,15 +2014,21 @@ static void ExecGroup_808( void )
 static void ExecGroup_80( void )
 {
     Nibble n = GetNibble( cpu_status.PC++ );
+    Nibble t;
 
     debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80" );
     switch ( n ) {
         case 0: /* OUT=CS */
-            ExecOUTCS();
+            debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTCS" );
+
+            cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( cpu_status.OUT & 0xFF0 );
             break;
 
         case 1: /* OUT=C */
-            ExecOUTC();
+            debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTC" );
+
+            cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( ( OutputRegister )cpu_status.C[ 1 ] << 4 ) |
+                             ( ( OutputRegister )cpu_status.C[ 2 ] << 8 );
             break;
 
         case 2: /* A=IN */
@@ -2136,11 +2068,16 @@ static void ExecGroup_80( void )
             break;
 
         case 0xB: /* BUSCC */
-            ExecBUSCC();
+            debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
+            // FIXME: 49g bugs here
+            ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCC" ChfEnd;
+            ChfSignal( CPU_CHF_MODULE_ID );
             break;
 
         case 0xE: /* SREQ? */
-            ExecSREQ();
+            debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecSREQ" );
+            ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "SREQ" ChfEnd;
+            ChfSignal( CPU_CHF_MODULE_ID );
             break;
 
         case 0xC: /* C=P n */
@@ -2152,14 +2089,11 @@ static void ExecGroup_80( void )
             break;
 
         case 0xF: /* CPEX */
-            {
-                Nibble t;
-                n = GetNibble( cpu_status.PC++ );
-                t = cpu_status.P;
-                SetP( cpu_status.C[ ( int )n ] );
-                cpu_status.C[ ( int )n ] = t;
-                break;
-            }
+            t = cpu_status.P;
+            n = GetNibble( cpu_status.PC++ );
+            SetP( cpu_status.C[ ( int )n ] );
+            cpu_status.C[ ( int )n ] = t;
+            break;
 
         default:
             ChfCondition( CPU_CHF_MODULE_ID ) CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n ChfEnd;
