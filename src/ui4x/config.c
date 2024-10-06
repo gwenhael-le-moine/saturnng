@@ -73,7 +73,7 @@ static void print_config( void )
     fprintf( stderr, "verbose = %s\n", config.verbose ? "true" : "false" );
     fprintf( stderr, "shiftless = %s\n", config.shiftless ? "true" : "false" );
 
-    fprintf( stderr, "frontend = %i\n", config.frontend );
+    fprintf( stderr, "frontend = %s\n", ( config.frontend == FRONTEND_SDL ? "sdl" : "tui" ) );
 
     fprintf( stderr, "big_screen = %s\n", config.big_screen ? "true" : "false" );
     fprintf( stderr, "black_lcd = %s\n", config.black_lcd ? "true" : "false" );

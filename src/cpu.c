@@ -2069,7 +2069,7 @@ static void ExecGroup_80( void )
 
         case 0xB: /* BUSCC */
             debug1( DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
-            // FIXME: 49g bugs here
+            // FIXME: 49g bugs here on display change
             ChfCondition( CPU_CHF_MODULE_ID ) CPU_F_INTERR, CHF_WARNING, "BUSCC" ChfEnd;
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
