@@ -201,7 +201,7 @@ color_t colors_49g[ NB_COLORS ] = {
      },
 };
 
-#define KB_LINE_HEIGHT 45
+#define KB_LINE_HEIGHT 52
 #define KB_COLUMN_WIDTH_6_KEYS 50
 #define KB_COLUMN_WIDTH_5_KEYS 60
 
