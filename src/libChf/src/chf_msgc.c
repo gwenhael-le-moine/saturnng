@@ -28,10 +28,6 @@
 
 .- */
 
-#ifndef lint
-static char rcs_id[] = "$Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $";
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -42,10 +38,6 @@ static char rcs_id[] = "$Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $
 
 #include "Chf.h"
 #include "ChfPriv.h"
-
-/* -------------------------------------------------------------------------
-   Global and static variables
-   ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
    Private type definitions

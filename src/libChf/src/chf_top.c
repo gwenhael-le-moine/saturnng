@@ -28,10 +28,6 @@
 
 .- */
 
-#ifndef lint
-static char rcs_id[] = "$Id: chf_top.c,v 2.2 2001/01/25 14:09:21 cibrario Exp $";
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>

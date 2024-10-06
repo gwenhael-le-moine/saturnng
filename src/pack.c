@@ -64,10 +64,6 @@
 
 .- */
 
-#ifndef lint
-static char rcs_id[] = "$Id";
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

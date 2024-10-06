@@ -99,10 +99,6 @@
 
 .- */
 
-#ifndef lint
-static char rcs_id[] = "$Id: hdw.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
-#endif
-
 #include <string.h> /* 3.1: memset() */
 
 #include "config.h"

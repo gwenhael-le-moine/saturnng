@@ -72,10 +72,6 @@
 
 .- */
 
-#ifndef lint
-static char rcs_id[] = "$Id: hw_config.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $";
-#endif
-
 #include <string.h>
 
 #include "config.h"
