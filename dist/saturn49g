@@ -30,7 +30,7 @@ fi
 
 RESET=''
 if [ ! -e "$CONFIGDIR"/ram ]; then
-    RESET=-reset
+    RESET=--reset
 fi
 
 if echo "$@" | grep -q "\--verbose"; then
