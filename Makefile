@@ -185,7 +185,7 @@ install: dist/$(NAME) doc
 	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/$(NAME)/
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
-	cp -R COPYING LICENSE README* docs-4.1.1.1 docs/*.{dvi,ps,pdf} src/libChf/docs/*.{dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
+	cp -R COPYING LICENSE README* ./*.png docs-4.1.1.1 docs/*.{dvi,ps,pdf} src/libChf/docs/*.{dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
 
 	install -m 755 -d -- $(DESTDIR)$(INFODIR)
 	cp docs/*.info src/libChf/docs/*.info $(DESTDIR)$(INFODIR)
