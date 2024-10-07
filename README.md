@@ -1,4 +1,4 @@
-# Emulator of the HP 48GX, HP 49, and HP 40
+# Emulator of the HP 49G, HP 48 (GX & SX), and HP 40G
 
 **This is a fork of saturn v4.1.1.1 originally by Ivan Cibrario Bertolotti.**
 
