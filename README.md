@@ -6,12 +6,6 @@ Original source are available at https://www.hpcalc.org/details/4382
 
 The GUI has been replaced by a new one (taken from x48ng) in SDL2 and/or ncurses.
 
-The main binary is `dist/saturn` with helpers/wrappers scripts available per model as:
-* `dist/saturn48gx`
-* `dist/saturn48sx`
-* `dist/saturn49g`
-* `dist/saturn40g` (not really functional (yet))
-
 ## Screenshots
 
 ![screenshot of saturn49g](./saturn49g.png?raw=true "screenshot of saturn49g")
@@ -35,9 +29,15 @@ make install DESTDIR=/
 ```
 
 ## Using
-Use the wrappers scripts.
+The main binary is `dist/saturn` with helpers/wrappers scripts available per model as:
+* `dist/saturn48gx`
+* `dist/saturn48sx`
+* `dist/saturn49g`
+* `dist/saturn40g` (not really functional (yet))
 
-The local data are stored under $XDG_CONFIG_HOME/saturn<model>/
+The local data are stored under `$XDG_CONFIG_HOME/saturn<model>/`.
+
+The scripts will take care of creating `$XDG_CONFIG_HOME/saturn<model>/`, download an appropriate ROM from hpcalc.org and create RAM cards (for 48gx and 48sx models.)
 
 ## Known bugs
 - some bugs in emulation:
