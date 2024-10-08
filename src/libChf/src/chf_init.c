@@ -289,8 +289,8 @@ static char* scopy( char* p, const char* q, char* p_end )
     - added Win32 support
 
 .- */
-const char* ChfGetMessage( /* Retrieve a condition message */
-                           const int module_id, const int condition_code, const char* default_message )
+/* Retrieve a condition message */
+const char* ChfGetMessage( const int module_id, const int condition_code, const char* default_message )
 {
     const char* message;
 
@@ -339,8 +339,8 @@ const char* ChfGetMessage( /* Retrieve a condition message */
     - added Win32 support
 
 .- */
-char* ChfBuildMessage( /* Build a condition message */
-                       const ChfDescriptor* descriptor )
+/* Build a condition message */
+char* ChfBuildMessage( const ChfDescriptor* descriptor )
 {
     char* tmp_p;
     char* tmp_end;
@@ -421,7 +421,7 @@ char* ChfBuildMessage( /* Build a condition message */
                         exit_code);
 .input	      :
                 const char *app_name, Application's name
-                const ChfOptions options, Options
+                const int options, Options
                 void *mrs_data, Message retrieval private data
                 ChfMrsGet mrs_get, 'GetMessage' function
                 ChfMrsExit mrs_exit, 'Exit' function
@@ -442,15 +442,15 @@ char* ChfBuildMessage( /* Build a condition message */
     - added Win32 support; a malloc() call was not portable.
 
 .- */
-int ChfInit(                                 /* Generic initialization */
-             const char* app_name,           /* Application's name */
-             const ChfOptions options,       /* Options */
-             void* mrs_data,                 /* Message retrieval private data */
-             ChfMrsGet mrs_get,              /* 'GetMessage' function */
-             ChfMrsExit mrs_exit,            /* 'Exit' function */
-             const int condition_stack_size, /* Size of the condition stack */
-             const int handler_stack_size,   /* Size of the handler stack */
-             const int exit_code             /* Abnormal exit code */
+/* Generic initialization */
+int ChfInit( const int module_id, const char* app_name, /* Application's name */
+             const int options,                         /* Options */
+             void* mrs_data,                            /* Message retrieval private data */
+             ChfMrsGet mrs_get,                         /* 'GetMessage' function */
+             ChfMrsExit mrs_exit,                       /* 'Exit' function */
+             const int condition_stack_size,            /* Size of the condition stack */
+             const int handler_stack_size,              /* Size of the handler stack */
+             const int exit_code                        /* Abnormal exit code */
 )
 {
     int cc;
@@ -520,7 +520,7 @@ int ChfInit(                                 /* Generic initialization */
         /* Push the default handler; in the reentrant case, this will be
            done once per thread, when the thread-specific context is primed.
         */
-        ChfPushHandler( CHF_MODULE_ID, DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
+        ChfPushHandler( module_id, DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
 #endif
 
         cc = CHF_S_OK;
@@ -694,7 +694,7 @@ ChfContext* _ChfGetContext( void )
             ChfAbort( CHF_ABORT_GET_CONTEXT );
 
         /* Push the default handler */
-        ChfPushHandler( /* FIXME */ 255, DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
+        ChfPushHandler( module_id, DefaultHandler, CHF_NULL_CONTEXT, CHF_NULL_POINTER );
     }
 
     return context;

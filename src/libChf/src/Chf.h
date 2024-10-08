@@ -103,9 +103,6 @@ typedef enum {
     CHF_UNWIND_KEEP /* Unwind, keep last cond. group */
 } ChfAction;
 
-/* CHF options */
-typedef int ChfOptions;
-
 #define CHF_DEFAULT 0x0000 /* default flags */
 #define CHF_ABORT 0x0001   /* use abort() instead of exit() */
 
@@ -150,13 +147,13 @@ void ChfGenerate( const int module_id, const char* file_name, const int line_num
 /* used in saturn */
 /******************/
 /* Initialization with static message tables */
-int ChfStaticInit( const char* app_name,           /* Application's name */
-                   const ChfOptions options,       /* Options */
-                   const ChfTable* table,          /* Static message table */
-                   const size_t table_size,        /* Size of the message table */
-                   const int condition_stack_size, /* Size of the condition stack */
-                   const int handler_stack_size,   /* Size of the handler stack */
-                   const int exit_code             /* Abnormal exit code */
+int ChfStaticInit( const int module_id, const char* app_name, /* Application's name */
+                   const int options,                         /* Options */
+                   const ChfTable* table,                     /* Static message table */
+                   const size_t table_size,                   /* Size of the message table */
+                   const int condition_stack_size,            /* Size of the condition stack */
+                   const int handler_stack_size,              /* Size of the handler stack */
+                   const int exit_code                        /* Abnormal exit code */
 );
 
 /* Push a new handler into the stack */

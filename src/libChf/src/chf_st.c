@@ -106,7 +106,7 @@ static void ExitMessage( void* private_context ) {}
                         exit_code);
 .input	      :
                 const char *app_name, Application's name
-                const ChfOptions options, Options
+                const int options, Options
                 const ChfTable *table, pointer to the static message table
                 const size_t table_size, size of the table (# of entries)
                 const int condition_stack_size, Size of the condition stack
@@ -121,13 +121,13 @@ static void ExitMessage( void* private_context ) {}
 
 .- */
 /* Initialization with static message tables */
-int ChfStaticInit( const char* app_name,           /* Application's name */
-                   const ChfOptions options,       /* Options */
-                   const ChfTable* table,          /* Static message table */
-                   const size_t table_size,        /* Size of the message table */
-                   const int condition_stack_size, /* Size of the condition stack */
-                   const int handler_stack_size,   /* Size of the handler stack */
-                   const int exit_code             /* Abnormal exit code */
+int ChfStaticInit( const int module_id, const char* app_name, /* Application's name */
+                   const int options,                         /* Options */
+                   const ChfTable* table,                     /* Static message table */
+                   const size_t table_size,                   /* Size of the message table */
+                   const int condition_stack_size,            /* Size of the condition stack */
+                   const int handler_stack_size,              /* Size of the handler stack */
+                   const int exit_code                        /* Abnormal exit code */
 )
 {
     ChfStaticContext* private_context;
@@ -135,7 +135,7 @@ int ChfStaticInit( const char* app_name,           /* Application's name */
 
     if ( ( private_context = ( ChfStaticContext* )malloc( sizeof( ChfStaticContext ) ) ) == ( ChfStaticContext* )NULL )
         cc = CHF_F_MALLOC;
-    else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, StGetMessage, ExitMessage, condition_stack_size,
+    else if ( ( cc = ChfInit( module_id, app_name, options, ( void* )private_context, StGetMessage, ExitMessage, condition_stack_size,
                               handler_stack_size, exit_code ) ) != CHF_S_OK )
         free( private_context );
     else {

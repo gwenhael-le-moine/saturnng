@@ -52,13 +52,13 @@ int main( int argc, char** argv )
 
     /* Chf initialization with msgcat subsystem
      */
-    if ( ( ChfStaticInit( config.progname,      /* Application's name */
-                          CHF_DEFAULT,          /* Options */
-                          message_table,        /* Name of the message catalog */
-                          message_table_size,   /* message catalog size */
-                          CONDITION_STACK_SIZE, /* Size of the condition stack */
-                          HANDLER_STACK_SIZE,   /* Size of the handler stack */
-                          EXIT_FAILURE          /* Abnormal exit code */
+    if ( ( ChfStaticInit( MAIN_CHF_MODULE_ID, config.progname, /* Application's name */
+                          CHF_DEFAULT,                         /* Options */
+                          message_table,                       /* Name of the message catalog */
+                          message_table_size,                  /* message catalog size */
+                          CONDITION_STACK_SIZE,                /* Size of the condition stack */
+                          HANDLER_STACK_SIZE,                  /* Size of the handler stack */
+                          EXIT_FAILURE                         /* Abnormal exit code */
                           ) ) != CHF_S_OK ) {
         fprintf( stderr, "saturn-E-Primary Chf initialization failed\n" );
         exit( EXIT_FAILURE );

@@ -263,7 +263,7 @@ Moreover, each module using the Chf library must include the header file
 @node ChfInit(), ChfMsgcatInit(), Initialization and exit, Initialization and exit
 @section ChfInit()
 @cindex Initialization
-@deftypefn Function int ChfInit (const char *app_name, const ChfOptions options, void *mrs_data, ChfMrsGet mrs_get, ChfMrsExit mrs_exit, const int condition_stack_size, const int handler_stack_size, const int exit_code)
+@deftypefn Function int ChfInit (const char *app_name, const int options, void *mrs_data, ChfMrsGet mrs_get, ChfMrsExit mrs_exit, const int condition_stack_size, const int handler_stack_size, const int exit_code)
 
 This function initializes the Chf library using a custom message retrieval
 subsystem, and returns to the caller a condition code; that code will be either
@@ -364,7 +364,7 @@ must be invoked only once before starting multithreaded operation.
 @section ChfMsgcatInit()
 @cindex Initialization
 @cindex Internationalization
-@deftypefn Function int ChfMsgcatInit (const char *app_name, const ChfOptions options, const char *msgcat_name, const int condition_stack_size, const int handler_stack_size, const int exit_code)
+@deftypefn Function int ChfMsgcatInit (const char *app_name, const int options, const char *msgcat_name, const int condition_stack_size, const int handler_stack_size, const int exit_code)
 
 This function initializes the Chf library and activates the message retrieval
 subsystem based on @code{catgets()}, offering support for
@@ -420,7 +420,7 @@ before.
 @node ChfStaticInit(), ChfWin32Init(), ChfMsgcatInit(), Initialization and exit
 @section ChfStaticInit()
 @cindex Initialization
-@deftypefn Function int ChfStaticInit (const char *app_name, const ChfOptions options, const ChfTable *table, const size_t table_size, const int condition_stack_size, const int handler_stack_size, const int exit_code)
+@deftypefn Function int ChfStaticInit (const char *app_name, const int options, const ChfTable *table, const size_t table_size, const int condition_stack_size, const int handler_stack_size, const int exit_code)
 
 This function initializes the Chf library and activates the static
 message retrieval subsystem using the message table @code{table},
@@ -482,7 +482,7 @@ The message fragment or template associated with
 @section ChfWin32Init()
 @cindex Initialization
 @cindex Internationalization
-@deftypefn Function int ChfWin32Init (const char *app_name, const ChfOptions options, HINSTANCE instance, const int condition_stack_size, const int handler_stack_size, const int exit_code)
+@deftypefn Function int ChfWin32Init (const char *app_name, const int options, HINSTANCE instance, const int condition_stack_size, const int handler_stack_size, const int exit_code)
 
 This function initializes the Chf library and activates the message
 retrieval subsystem based on the Win32 function @code{LoadString()},

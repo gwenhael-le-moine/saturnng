@@ -80,7 +80,7 @@ typedef struct ChfHandlerDescriptor_S {
 typedef struct ChfContext_S {
     ChfState state;                      /* Current CHF state */
     const char* app_name;                /* Application's name */
-    ChfOptions options;                  /* Options */
+    int options;                         /* Options */
     void* mrs_data;                      /* Message retrieval private data */
     ChfMrsGet mrs_get;                   /* 'GetMessage' function */
     ChfMrsExit mrs_exit;                 /* 'Exit' function */
@@ -105,27 +105,6 @@ typedef struct ChfContext_S {
 #endif
 
 /* -------------------------------------------------------------------------
-   Structured condition handling
-   ------------------------------------------------------------------------- */
-
-/* #define CHF_Try \ */
-/*     { \ */
-/*         sigjmp_buf _chf_sigjmp_buf; \ */
-/*         if ( sigsetjmp( _chf_sigjmp_buf, 1 ) == 0 ) { \ */
-/*             ChfPushHandler( CHF_NULL_HANDLER, _chf_sigjmp_buf, CHF_NULL_POINTER ); */
-
-/* #define CHF_Catch \ */
-/*     ChfPopHandler( CHF_MODULE_ID ); \ */
-/*     } \ */
-/*     else \ */
-/*     { */
-
-/* #define CHF_EndTry \ */
-/*     ChfDiscard(); \ */
-/*     } \ */
-/*     } */
-
-/* -------------------------------------------------------------------------
    Global variables
  ------------------------------------------------------------------------- */
 
@@ -139,14 +118,14 @@ ChfContext* _ChfGetContext( void );
 #endif
 
 /* Generic initialization */
-int ChfInit( const char* app_name,           /* Application's name */
-             const ChfOptions options,       /* Options */
-             void* mrs_data,                 /* Message retrieval private data */
-             ChfMrsGet mrs_get,              /* 'GetMessage' function */
-             ChfMrsExit mrs_exit,            /* 'Exit' function */
-             const int condition_stack_size, /* Size of the condition stack */
-             const int handler_stack_size,   /* Size of the handler stack */
-             const int exit_code             /* Abnormal exit code */
+int ChfInit( const int module_id, const char* app_name, /* Application's name */
+             const int options,                         /* Options */
+             void* mrs_data,                            /* Message retrieval private data */
+             ChfMrsGet mrs_get,                         /* 'GetMessage' function */
+             ChfMrsExit mrs_exit,                       /* 'Exit' function */
+             const int condition_stack_size,            /* Size of the condition stack */
+             const int handler_stack_size,              /* Size of the handler stack */
+             const int exit_code                        /* Abnormal exit code */
 );
 
 /* Abort application */
@@ -154,9 +133,6 @@ void ChfAbort( const int abort_code );
 
 /* Build a condition message */
 char* ChfBuildMessage( const ChfDescriptor* descriptor );
-
-/* Retrieve top condition */
-/* const ChfDescriptor* ChfGetTopCondition( const int module_id ); */
 
 /* Retrieve a condition message */
 const char* ChfGetMessage( const int module_id, const int condition_code, const char* default_message );
