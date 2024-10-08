@@ -146,7 +146,7 @@ void HdwInit( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "HdwInit" );
 
     if ( ReadStructFromFile( config.hdw_file_name, sizeof( mod_status.hdw ), &mod_status.hdw ) ) {
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_HDW_INIT, CHF_WARNING ChfEnd;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_HDW_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
         ( void )memset( &mod_status.hdw, 0, sizeof( mod_status.hdw ) );
@@ -180,7 +180,7 @@ void HdwSave( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "HdwSave" );
 
     if ( WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_file_name ) ) {
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_HDW_SAVE, CHF_ERROR ChfEnd;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_HDW_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 }
@@ -324,7 +324,7 @@ Nibble HdwRead( Address rel_address )
             return ( Nibble )( ( mod_status.hdw.t2_val >> ( ( rel_address - 0x38 ) * 4 ) ) & 0x0F );
 
         default:
-            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_HDW_READ, CHF_WARNING, rel_address ChfEnd;
+            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_HDW_READ, CHF_WARNING, rel_address );
             ChfSignal( MOD_CHF_MODULE_ID );
             return ( Nibble )0xF;
     }
@@ -531,7 +531,7 @@ void HdwWrite( Address rel_address, Nibble data )
             break;
 
         default:
-            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_HDW_WRITE, CHF_WARNING, rel_address, ( int )data ChfEnd;
+            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_HDW_WRITE, CHF_WARNING, rel_address, ( int )data );
             ChfSignal( MOD_CHF_MODULE_ID );
     }
 

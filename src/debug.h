@@ -111,7 +111,7 @@ extern int debug_level;
           CHF_Condition( CHF_MODULE_ID ) condition_code, CHF_INFO
 
 #  define debug_postamble                                                                                                                  \
-      ChfEnd;                                                                                                                              \
+      );                                                                                                                              \
       ChfSignal( CHF_MODULE_ID );                                                                                                          \
       }                                                                                                                                    \
       }

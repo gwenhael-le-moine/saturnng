@@ -344,7 +344,7 @@ void Monitor( void )
             /* New command empty; try old command */
             if ( ( tk = strtok( old_cmd, TOK_DELIMITERS ) ) != ( char* )NULL )
                 if ( InvokeCommand( tk ) )
-                    CHF_Condition( CPU_CHF_MODULE_ID ) CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
+                    CHF_Condition( CPU_CHF_MODULE_ID ) CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk );
             ChfSignal( CPU_CHF_MODULE_ID );
         } else {
             /* Save command */
@@ -352,7 +352,7 @@ void Monitor( void )
 
             /* New command */
             if ( InvokeCommand( tk ) ) {
-                CHF_Condition( CPU_CHF_MODULE_ID ) CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk ChfEnd;
+                CHF_Condition( CPU_CHF_MODULE_ID ) CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk );
                 ChfSignal( CPU_CHF_MODULE_ID );
             }
         }
