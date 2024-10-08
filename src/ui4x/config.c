@@ -67,7 +67,6 @@ static void print_config( void )
     fprintf( stderr, "-- ram_file_name = %s\n", config.ram_file_name );
     fprintf( stderr, "-- port_1_file_name = %s\n", config.port_1_file_name );
     fprintf( stderr, "-- port_2_file_name = %s\n", config.port_2_file_name );
-    fprintf( stderr, "-- hw = %s\n", config.hw );
 
     fprintf( stderr, "model = %i\n", config.model );
     fprintf( stderr, "throttle = %s\n", config.throttle ? "true" : "false" );
@@ -396,20 +395,6 @@ config_t* config_init( int argc, char* argv[] )
     config.ram_file_name = normalize_filename( config.state_dir_path, clopt_ram_file_name );
     config.port_1_file_name = normalize_filename( config.state_dir_path, clopt_port_1_file_name );
     config.port_2_file_name = normalize_filename( config.state_dir_path, clopt_port_2_file_name );
-
-    switch ( clopt_model ) {
-        case MODEL_40G:
-            config.hw = "hp40";
-            break;
-        case MODEL_49G:
-            config.hw = "hp49";
-            break;
-        case MODEL_48SX:
-        case MODEL_48GX:
-        default:
-            config.hw = "hp48";
-            break;
-    }
 
     config.progname = basename( strdup( argv[ 0 ] ) );
     switch ( config.model ) {

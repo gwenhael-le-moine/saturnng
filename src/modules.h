@@ -570,7 +570,7 @@ extern struct ModStatus mod_status;
   ---------------------------------------------------------------------------*/
 
 /* Initialization */
-void ModSelectDescription( const char* hw );
+void ModSelectDescription( int model );
 void ModRegisterDescription( ModDescription p );
 void ModInit( void );
 void ModSave( void );

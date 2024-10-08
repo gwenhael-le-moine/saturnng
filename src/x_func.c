@@ -181,37 +181,30 @@ static void SetSpeed( Nibble function_code )
 
 /*---------------------------------------------------------------------------*/
 
-/* This array holds the binary headers for all known hw configurations;
-   here, '?' is a wildcard character when reading from file
+/* Return the header of binary files for current hw configuration;
+   '?' is a wildcard character when reading from file
    (see ReadObjectFromFile()) and is replaced by 'S' when writing
    to file (see WriteObjectToFile()).
-*/
-struct BinHdrMapping {
-    char* hw;
-    char* hdr;
-};
-
-static const struct BinHdrMapping bin_hdr_mapping[] = {
-    {"hp48", "HPHP48-?"},
-    {"hp49", "HPHP49-?"}
-};
-
-#define N_BIN_HDR_MAPPING ( int )( sizeof( bin_hdr_mapping ) / sizeof( bin_hdr_mapping[ 0 ] ) )
-
-/* Return the header of binary files for current hw configuration;
    return NULL if the header cannot be determined.  In the latter case,
    generate an appropriate condition.
 */
 static const char* BinaryHeader( void )
 {
-    int i;
 
-    for ( i = 0; i < N_BIN_HDR_MAPPING; i++ )
-        if ( strcmp( config.hw, bin_hdr_mapping[ i ].hw ) == 0 )
-            return bin_hdr_mapping[ i ].hdr;
-
-    ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_BIN_HDR, CHF_ERROR, config.hw ChfEnd;
-    return ( char* )NULL;
+    switch ( config.model ) {
+        case MODEL_48SX:
+        case MODEL_48GX:
+            return "HPHP48-?";
+            break;
+        case MODEL_40G:
+        case MODEL_49G:
+            return "HPHP49-?";
+            break;
+        default:
+            ChfCondition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_BIN_HDR, CHF_ERROR, "hw unknown" ChfEnd;
+            fprintf( stderr, "Error: Unknown model %i\n", config.model );
+            return ( char* )NULL;
+    }
 }
 
 /* This function is the continuation of Kget(); it is invoked when the

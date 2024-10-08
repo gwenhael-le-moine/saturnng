@@ -72,7 +72,7 @@
 
 .- */
 
-#include <string.h>
+#include <stdio.h>
 
 #include "config.h"
 #include "machdep.h"
@@ -143,29 +143,22 @@ extern void Ce1Write49( Address, Nibble );
 extern void Ce2Write49( Address, Nibble );
 extern void NCe3Write49( Address, Nibble );
 
-static const struct {
-    const char* hw;
-    ModDescription description;
-} table[] = {
-    {"hp48",
-     { { "ROM              (ROM)", 0x00, 0, RomInit, RomSave, RomRead, RomWrite, MOD_CONFIGURED, 0x00000, 0xFFFFF, 0 },
-        { "Hardware Regs.   (HDW)", 0x19, 5, HdwInit, HdwSave, HdwRead, HdwWrite, MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0 },
-        { "Internal RAM     (RAM)", 0x03, 4, RamInit, RamSave, RamRead, RamWrite, MOD_UNCONFIGURED, 0, 0, 0 },
-        { "Bank Select      (CE1)", 0x05, 2, Ce1Init, Ce1Save, Ce1Read, Ce1Write, MOD_UNCONFIGURED, 0, 0, 0 },
-        { "Port 1 Control   (CE2)", 0x07, 3, Ce2Init, Ce2Save, Ce2Read, Ce2Write, MOD_UNCONFIGURED, 0, 0, 0 },
-        { "Port 2 Control   (NCE3)", 0x01, 1, NCe3Init, NCe3Save, NCe3Read, NCe3Write, MOD_UNCONFIGURED, 0, 0, 0 } }},
-
-    {"hp49",
-     { { "ROM              (ROM)", 0x00, 0, RomInit49, RomSave49, RomRead49, RomWrite49, MOD_CONFIGURED, 0x00000, 0xFFFFF, 0 },
-        { "Hardware Regs.   (HDW)", 0x19, 5, HdwInit, HdwSave, HdwRead, HdwWrite, MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0 },
-        { "IRAM             (RAM)", 0x03, 4, RamInit49, RamSave49, RamRead49, RamWrite49, MOD_UNCONFIGURED, 0, 0, 0 },
-        { "Bank Select      (CE1)", 0x05, 2, Ce1Init49, Ce1Save49, Ce1Read49, Ce1Write49, MOD_UNCONFIGURED, 0, 0, 0 },
-        { "ERAM Bank 0      (CE2)", 0x07, 3, Ce2Init49, Ce2Save49, Ce2Read49, Ce2Write49, MOD_UNCONFIGURED, 0, 0, 0 },
-        { "ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, MOD_UNCONFIGURED, 0, 0,
-          MOD_MAP_FLAGS_ABS } }                                                                                     }
+static const ModDescription hw48_description = {
+    {"ROM              (ROM)",  0x00, 0, RomInit,  RomSave,  RomRead,  RomWrite,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,  HdwSave,  HdwRead,  HdwWrite,  MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Internal RAM     (RAM)",  0x03, 4, RamInit,  RamSave,  RamRead,  RamWrite,  MOD_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init,  Ce1Save,  Ce1Read,  Ce1Write,  MOD_UNCONFIGURED,    0,       0,       0},
+    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init,  Ce2Save,  Ce2Read,  Ce2Write,  MOD_UNCONFIGURED,    0,       0,       0},
+    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init, NCe3Save, NCe3Read, NCe3Write, MOD_UNCONFIGURED,    0,       0,       0}
 };
-
-#define N_DESCRIPTIONS ( int )( sizeof( table ) / sizeof( table[ 0 ] ) )
+static const ModDescription hw49_description = {
+    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0                },
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
+    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  MOD_UNCONFIGURED,    0,       0,       0                },
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  MOD_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  MOD_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, MOD_UNCONFIGURED,    0,       0,       MOD_MAP_FLAGS_ABS}
+};
 
 /*---------------------------------------------------------------------------
                                 Public functions
@@ -194,18 +187,23 @@ static const struct {
   1.1, 28-Jan-1998, creation
 
 .- */
-void ModSelectDescription( const char* hw )
+void ModSelectDescription( int model )
 {
-    int i;
-
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModSelectDescription" );
 
-    for ( i = 0; i < N_DESCRIPTIONS && strcmp( hw, table[ i ].hw ); i++ )
-        ;
-
-    if ( i == N_DESCRIPTIONS ) {
-        ChfCondition( MOD_CHF_MODULE_ID ) MOD_E_NO_MATCH, CHF_ERROR, hw ChfEnd;
-        ChfSignal( MOD_CHF_MODULE_ID );
-    } else
-        ModRegisterDescription( table[ i ].description );
+    switch ( model ) {
+        case MODEL_48SX:
+        case MODEL_48GX:
+            ModRegisterDescription( hw48_description );
+            break;
+        case MODEL_40G:
+        case MODEL_49G:
+            ModRegisterDescription( hw49_description );
+            break;
+        default:
+            /* ChfCondition( MOD_CHF_MODULE_ID ) MOD_E_NO_MATCH, CHF_ERROR, config.hw ChfEnd; */
+            /* ChfSignal( MOD_CHF_MODULE_ID ); */
+            fprintf( stderr, "Error: Unknown model %i\n", model );
+            exit( EXIT_FAILURE );
+    }
 }

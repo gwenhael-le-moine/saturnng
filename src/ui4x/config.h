@@ -47,7 +47,6 @@ typedef struct {
     char* ram_file_name;
     char* port_1_file_name;
     char* port_2_file_name;
-    char* hw; /* 2.1: Hardware configuration (unused) */
 } config_t;
 
 /*************/
