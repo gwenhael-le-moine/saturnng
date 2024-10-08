@@ -76,21 +76,21 @@
 
 .- */
 /* Retrieve top condition */
-const ChfDescriptor* ChfGetTopCondition( const int module_id )
-{
-    ChfDescriptor* d;
+/* const ChfDescriptor* ChfGetTopCondition( const int module_id ) */
+/* { */
+/*     ChfDescriptor* d; */
 
-    /* Check that CHF has been correctly initialized */
-    if ( chf_context.state == CHF_UNKNOWN )
-        ChfAbort( CHF_ABORT_INIT );
+/*     /\* Check that CHF has been correctly initialized *\/ */
+/*     if ( chf_context.state == CHF_UNKNOWN ) */
+/*         ChfAbort( CHF_ABORT_INIT ); */
 
-    if ( ( d = chf_context.condition_sp ) == chf_context.condition_base ) {
-        ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_BAD_STATE, CHF_FATAL );
-        ChfSignal( module_id );
-    }
+/*     if ( ( d = chf_context.condition_sp ) == chf_context.condition_base ) { */
+/*         ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_BAD_STATE, CHF_FATAL ); */
+/*         ChfSignal( module_id ); */
+/*     } */
 
-    /* The top element of the condition group is the element immediately
-       below the stack pointer.
-    */
-    return d - 1;
-}
+/*     /\* The top element of the condition group is the element immediately */
+/*        below the stack pointer. */
+/*     *\/ */
+/*     return d - 1; */
+/* } */

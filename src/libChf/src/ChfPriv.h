@@ -150,13 +150,13 @@ int ChfInit( const char* app_name,           /* Application's name */
 );
 
 /* Initialization with msgcat subsystem */
-int ChfMsgcatInit( const char* app_name,           /* Application's name */
-                   const ChfOptions options,       /* Options */
-                   const char* msgcat_name,        /* Name of the message catalog */
-                   const int condition_stack_size, /* Size of the condition stack */
-                   const int handler_stack_size,   /* Size of the handler stack */
-                   const int exit_code             /* Abnormal exit code */
-);
+/* int ChfMsgcatInit( const char* app_name,           /\* Application's name *\/ */
+/*                    const ChfOptions options,       /\* Options *\/ */
+/*                    const char* msgcat_name,        /\* Name of the message catalog *\/ */
+/*                    const int condition_stack_size, /\* Size of the condition stack *\/ */
+/*                    const int handler_stack_size,   /\* Size of the handler stack *\/ */
+/*                    const int exit_code             /\* Abnormal exit code *\/ */
+/* ); */
 
 /* /\* Pop a handler *\/ */
 /* void ChfPopHandler( const int module_id ); */
@@ -174,7 +174,7 @@ void ChfAbort( const int abort_code );
 char* ChfBuildMessage( const ChfDescriptor* descriptor );
 
 /* Retrieve top condition */
-const ChfDescriptor* ChfGetTopCondition( const int module_id );
+/* const ChfDescriptor* ChfGetTopCondition( const int module_id ); */
 
 /* Retrieve a condition message */
 const char* ChfGetMessage( const int module_id, const int condition_code, const char* default_message );

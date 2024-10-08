@@ -110,32 +110,32 @@ static void ExitMessage( void* private_context )
     - added Win32 support
 
 .- */
-int ChfMsgcatInit(                                 /* Initialization with msgcat subsystem */
-                   const char* app_name,           /* Application's name */
-                   const ChfOptions options,       /* Options */
-                   const char* msgcat_name,        /* Name of the message catalog */
-                   const int condition_stack_size, /* Size of the condition stack */
-                   const int handler_stack_size,   /* Size of the handler stack */
-                   const int exit_code             /* Abnormal exit code */
-)
-{
-    ChfMsgcatContext* private_context;
-    int cc;
+/* int ChfMsgcatInit(                                 /\* Initialization with msgcat subsystem *\/ */
+/*                    const char* app_name,           /\* Application's name *\/ */
+/*                    const ChfOptions options,       /\* Options *\/ */
+/*                    const char* msgcat_name,        /\* Name of the message catalog *\/ */
+/*                    const int condition_stack_size, /\* Size of the condition stack *\/ */
+/*                    const int handler_stack_size,   /\* Size of the handler stack *\/ */
+/*                    const int exit_code             /\* Abnormal exit code *\/ */
+/* ) */
+/* { */
+/*     ChfMsgcatContext* private_context; */
+/*     int cc; */
 
-    if ( ( private_context = ( ChfMsgcatContext* )malloc( sizeof( ChfMsgcatContext ) ) ) == ( ChfMsgcatContext* )NULL )
-        cc = CHF_F_MALLOC;
-    else if ( setlocale( LC_ALL, "" ) == ( char* )NULL ) {
-        free( private_context );
-        cc = CHF_F_SETLOCALE;
-    } else if ( ( private_context->catalog = catopen( msgcat_name, 0 ) ) == ( nl_catd )( -1 ) ) {
-        free( private_context );
-        cc = CHF_F_CATOPEN;
-    } else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, GetMessage, ExitMessage, condition_stack_size,
-                                handler_stack_size, exit_code ) ) != CHF_S_OK ) {
-        ( void )catclose( private_context->catalog );
-        free( private_context );
-    } else
-        cc = CHF_S_OK;
+/*     if ( ( private_context = ( ChfMsgcatContext* )malloc( sizeof( ChfMsgcatContext ) ) ) == ( ChfMsgcatContext* )NULL ) */
+/*         cc = CHF_F_MALLOC; */
+/*     else if ( setlocale( LC_ALL, "" ) == ( char* )NULL ) { */
+/*         free( private_context ); */
+/*         cc = CHF_F_SETLOCALE; */
+/*     } else if ( ( private_context->catalog = catopen( msgcat_name, 0 ) ) == ( nl_catd )( -1 ) ) { */
+/*         free( private_context ); */
+/*         cc = CHF_F_CATOPEN; */
+/*     } else if ( ( cc = ChfInit( app_name, options, ( void* )private_context, GetMessage, ExitMessage, condition_stack_size, */
+/*                                 handler_stack_size, exit_code ) ) != CHF_S_OK ) { */
+/*         ( void )catclose( private_context->catalog ); */
+/*         free( private_context ); */
+/*     } else */
+/*         cc = CHF_S_OK; */
 
-    return cc;
-}
+/*     return cc; */
+/* } */
