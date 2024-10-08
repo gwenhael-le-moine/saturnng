@@ -117,4 +117,36 @@ extern ChfContext _chf_context; /* CHF Context */
 ChfContext* _ChfGetContext( void );
 #endif
 
+/* Generic initialization */
+int ChfInit( const char* app_name,           /* Application's name */
+             const ChfOptions options,       /* Options */
+             void* mrs_data,                 /* Message retrieval private data */
+             ChfMrsGet mrs_get,              /* 'GetMessage' function */
+             ChfMrsExit mrs_exit,            /* 'Exit' function */
+             const int condition_stack_size, /* Size of the condition stack */
+             const int handler_stack_size,   /* Size of the handler stack */
+             const int exit_code             /* Abnormal exit code */
+);
+
+/* Initialization with msgcat subsystem */
+int ChfMsgcatInit( const char* app_name,           /* Application's name */
+                   const ChfOptions options,       /* Options */
+                   const char* msgcat_name,        /* Name of the message catalog */
+                   const int condition_stack_size, /* Size of the condition stack */
+                   const int handler_stack_size,   /* Size of the handler stack */
+                   const int exit_code             /* Abnormal exit code */
+);
+
+/* Exit */
+/* void ChfExit( void ); */
+
+/* Abort application */
+void ChfAbort( const int abort_code );
+
+/* Build a condition message */
+char* ChfBuildMessage( const ChfDescriptor* descriptor );
+
+/* Retrieve top condition */
+const ChfDescriptor* ChfGetTopCondition( const int module_id );
+
 #endif /*!_CHF_PRIV_H*/

@@ -199,24 +199,21 @@ typedef /* Message retrieval 'exit' function */
 /* -------------------------------------------------------------------------
    Function prototypes
    ------------------------------------------------------------------------- */
-/* Generic initialization */
-int ChfInit( const char* app_name,           /* Application's name */
-             const ChfOptions options,       /* Options */
-             void* mrs_data,                 /* Message retrieval private data */
-             ChfMrsGet mrs_get,              /* 'GetMessage' function */
-             ChfMrsExit mrs_exit,            /* 'Exit' function */
-             const int condition_stack_size, /* Size of the condition stack */
-             const int handler_stack_size,   /* Size of the handler stack */
-             const int exit_code             /* Abnormal exit code */
-);
-/* Initialization with msgcat subsystem */
-int ChfMsgcatInit( const char* app_name,           /* Application's name */
-                   const ChfOptions options,       /* Options */
-                   const char* msgcat_name,        /* Name of the message catalog */
-                   const int condition_stack_size, /* Size of the condition stack */
-                   const int handler_stack_size,   /* Size of the handler stack */
-                   const int exit_code             /* Abnormal exit code */
-);
+/* used above */
+
+/* Pop a handler */
+void ChfPopHandler( const int module_id );
+
+/* Discard the current conditions */
+void ChfDiscard( void );
+
+/* Generate a condition into the stack */
+void ChfGenerate( const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
+                  ... );
+
+/******************/
+/* used in saturn */
+/******************/
 /* Initialization with static message tables */
 int ChfStaticInit( const char* app_name,           /* Application's name */
                    const ChfOptions options,       /* Options */
@@ -226,29 +223,14 @@ int ChfStaticInit( const char* app_name,           /* Application's name */
                    const int handler_stack_size,   /* Size of the handler stack */
                    const int exit_code             /* Abnormal exit code */
 );
-/* Exit */
-void ChfExit( void );
-/* Abort application */
-void ChfAbort( const int abort_code );
 /* Push a new handler into the stack */
 void ChfPushHandler( const int module_id, ChfHandler new_handler, /* Handler to be added */
                      void* unwind_context,                        /* Unwind context */
                      void* handler_context                        /* Private handler context */
 );
-/* Pop a handler */
-void ChfPopHandler( const int module_id );
-/* Build a condition message */
-char* ChfBuildMessage( const ChfDescriptor* descriptor );
 /* Signal the current conditions */
 void ChfSignal( const int module_id );
-/* Discard the current conditions */
-void ChfDiscard( void );
-/* Generate a condition into the stack */
-void ChfGenerate( const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
-                  ... );
 /* Retrieve a condition message */
 const char* ChfGetMessage( const int module_id, const int condition_code, const char* default_message );
-/* Retrieve top condition */
-const ChfDescriptor* ChfGetTopCondition( const int module_id );
 
 #endif /*!_CHF_H*/
