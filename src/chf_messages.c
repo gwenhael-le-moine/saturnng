@@ -2,6 +2,18 @@
 #include "chf_messages.h"
 
 ChfTable message_table[] = {
+    {CHF_MODULE_NAMES_SET,  CHF_SET,                 "Chf"                                                                                   },
+    {CHF_MODULE_NAMES_SET,  MAIN_CHF_MODULE_ID,      "MAIN"                                                                                  },
+    {CHF_MODULE_NAMES_SET,  CPU_CHF_MODULE_ID,       "CPU"                                                                                   },
+    {CHF_MODULE_NAMES_SET,  MOD_CHF_MODULE_ID,       "MOD"                                                                                   },
+    {CHF_MODULE_NAMES_SET,  DISK_IO_CHF_MODULE_ID,   "DISK_IO"                                                                               },
+    {CHF_MODULE_NAMES_SET,  X11_CHF_MODULE_ID,       "X11"                                                                                   },
+    {CHF_MODULE_NAMES_SET,  SERIAL_CHF_MODULE_ID,    "SERIAL"                                                                                },
+    {CHF_MODULE_NAMES_SET,  FLASH_CHF_MODULE_ID,     "FLASH"                                                                                 },
+    {CHF_MODULE_NAMES_SET,  UTIL_CHF_MODULE_ID,      "UTIL"                                                                                  },
+    {CHF_MODULE_NAMES_SET,  X_FUNC_CHF_MODULE_ID,    "X_FUNC"                                                                                },
+    {CHF_MODULE_NAMES_SET,  DEBUG_CHF_MODULE_ID,     "DEBUG"                                                                                 },
+
     {CHF_SET,               CHF_S_OK,                ""                                                                                      },
     {CHF_SET,               CHF_F_COND_STACK_FULL,   "Condition stack is full"                                                               },
     {CHF_SET,               CHF_F_HDLR_STACK_FULL,   "Handler stack is full"                                                                 },
