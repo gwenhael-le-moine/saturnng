@@ -1473,6 +1473,7 @@ static void ExecGroup_0( void )
     Nibble n = GetNibble( cpu_status.PC++ );
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_0" );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
     switch ( n ) {
         case 0: /* RTNSXM */
             cpu_status.HST |= HST_XM_MASK;
@@ -1589,6 +1590,7 @@ static void ExecGroup_1( void )
     Address ta;
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_1" );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
     switch ( n ) {
         case 0: /* Rn=A/C */
             n = GetNibble( cpu_status.PC++ );
@@ -2867,14 +2869,17 @@ void OneStep( void )
             break;
 
         case 2: /* P=n */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             SetP( GetNibble( cpu_status.PC++ ) );
             break;
 
         case 3: /* LC(m) n...n */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             FetchR( cpu_status.C, GetNibble( cpu_status.PC++ ) );
             break;
 
         case 4: /* RTNC/GOC */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             if ( cpu_status.carry ) {
                 offset = Get2Nibbles2C( cpu_status.PC );
                 if ( offset == 0 )
@@ -2887,6 +2892,7 @@ void OneStep( void )
             break;
 
         case 5: /* RTNNC/GONC */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             if ( !cpu_status.carry ) {
                 offset = Get2Nibbles2C( cpu_status.PC );
                 if ( offset == 0 )
@@ -2899,10 +2905,12 @@ void OneStep( void )
             break;
 
         case 6: /* GOTO */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             cpu_status.PC += Get3Nibbles2C( cpu_status.PC );
             break;
 
         case 7: /* GOSUB */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             offset = Get3Nibbles2C( cpu_status.PC );
             cpu_status.PC += 3;
             PushRSTK( cpu_status.PC );
@@ -2942,6 +2950,7 @@ void OneStep( void )
             break;
 
         default:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;

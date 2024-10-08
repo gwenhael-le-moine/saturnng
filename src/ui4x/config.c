@@ -183,7 +183,7 @@ config_t* config_init( int argc, char* argv[] )
         {"mono",                 no_argument,       &clopt_mono,       true            },
         {"gray",                 no_argument,       &clopt_gray,       true            },
 
-        /* {"debug-x11",            no_argument,       NULL,              38601           }, */
+        {"debug-opcodes",        no_argument,       NULL,              38601           },
         {"debug-revision",       no_argument,       NULL,              38602           },
         {"debug-x-func",         no_argument,       NULL,              38603           },
         {"debug-flash",          no_argument,       NULL,              38604           },
@@ -232,7 +232,7 @@ config_t* config_init( int argc, char* argv[] )
                             "false)\n"
                             "     --reset      force a reset\n"
                             "     --monitor    start with monitor\n"
-                            /* "     --debug-x11            enables debugging x11 (default: no)\n" */
+                            "     --debug-opcodes        enables debugging opcodes (default: no)\n"
                             "     --debug-revision       enables debugging revision (default: no)\n"
                             "     --debug-x-func         enables debugging extended functions (default: no)\n"
                             "     --debug-flash          enables debugging flash (default: no)\n"
@@ -289,9 +289,9 @@ config_t* config_init( int argc, char* argv[] )
                 /*     clopt_port_2_file_name = optarg; */
                 /*     break; */
 
-            /* case 38601: */
-            /*     config.debug_level |= DEBUG_C_X11; */
-            /*     break; */
+            case 38601:
+                config.debug_level |= DEBUG_C_OPCODES;
+                break;
             case 38602:
                 config.debug_level |= DEBUG_C_REVISION;
                 break;
