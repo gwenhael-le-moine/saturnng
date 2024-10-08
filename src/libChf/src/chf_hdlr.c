@@ -78,7 +78,7 @@
   2.1, 19-May-2000, creation
 
 .- */
-static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState state, ChfPointer handler_context )
+static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState state, void* handler_context )
 {
     ChfAction action;
     const ChfDescriptor* d;
@@ -128,7 +128,7 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
 .input	      :
                 ChfHandler new_handler, new condition handler
                 void *unwind_context, handler unwind context pointer
-                ChfPointer handler_context, private handler context pointer
+                void* handler_context, private handler context pointer
 .output	      :
                 void
 .status_codes :
@@ -145,7 +145,7 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
 
 .- */
 void ChfPushHandler( /* Push a new handler into the stack */
-                     const int module_id, ChfHandler new_handler, void* unwind_context, ChfPointer handler_context )
+                     const int module_id, ChfHandler new_handler, void* unwind_context, void* handler_context )
 {
     /* Make sure that CHF has been correctly initialized and is idle */
     if ( chf_context.state == CHF_UNKNOWN )

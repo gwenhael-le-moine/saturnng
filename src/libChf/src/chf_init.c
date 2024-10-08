@@ -155,7 +155,7 @@ static void DestroyContext( void* context )
     - added Win32 support
 
 .- */
-static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state, ChfPointer handler_context )
+static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state, void* handler_context )
 {
     ChfAction action;
     const ChfDescriptor* d;
@@ -235,16 +235,16 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
 .- */
 static char* scopy( char* p, const char* q, char* p_end )
 {
-    size_t q_len = ChfStrlen( q );
+    size_t q_len = strlen( q );
     size_t p_avail = p_end - p;
 
     if ( q_len < p_avail ) {
-        ChfStrcpy( p, q );
+        strcpy( p, q );
         p += q_len;
     }
 
     else if ( p_avail > 1 ) {
-        ChfStrncpy( p, q, p_avail - 2 );
+        strncpy( p, q, p_avail - 2 );
         p[ p_avail - 1 ] = '\0';
         p = p_end;
     }
@@ -374,7 +374,7 @@ char* ChfBuildMessage( /* Build a condition message */
         tmp_p = scopy( tmp_p, "\t", tmp_end );
 
     /* The message continues with the module name */
-    ChfSprintf( def_message, CHF_DEF_MID_MSG_FMT, descriptor->module_id );
+    sprintf( def_message, CHF_DEF_MID_MSG_FMT, descriptor->module_id );
 
     tmp_p = scopy( tmp_p, ChfGetMessage( CHF_MODULE_NAMES_SET, descriptor->module_id, def_message ), tmp_end );
 
@@ -382,7 +382,7 @@ char* ChfBuildMessage( /* Build a condition message */
     if ( descriptor->line_number != CHF_UNKNOWN_LINE_NUMBER ) {
         tmp_p = scopy( tmp_p, " ", tmp_end );
 
-        ChfSprintf( def_message, CHF_EXTENDED_INFO_FMT, descriptor->file_name, descriptor->line_number );
+        sprintf( def_message, CHF_EXTENDED_INFO_FMT, descriptor->file_name, descriptor->line_number );
 
         tmp_p = scopy( tmp_p, def_message, tmp_end );
     }

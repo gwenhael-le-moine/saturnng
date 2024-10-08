@@ -27,14 +27,14 @@
 /* Dummy handler; pushed only to verify that the handler stack overflow
    checks are correct.
 */
-ChfAction h1( const ChfDescriptor* c, const ChfState s, ChfPointer p ) { return CHF_RESIGNAL; }
+ChfAction h1( const ChfDescriptor* c, const ChfState s, void* p ) { return CHF_RESIGNAL; }
 
 /* Overflow check handler; it unwinds if the CHF_F_HDLR_STACK_FULL
    condition is signalled exactly after H_STACK_SIZE-2 invocations
    of ChfPushHandler(), it resignals a modified condition if the
    condition is signalled too early
 */
-ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
+ChfAction h2( const ChfDescriptor* c, const ChfState s, void* p )
 {
     int push_count = *( ( int* )p );
     ChfAction action;
@@ -62,7 +62,7 @@ ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
    of CHF_Condition, it resignals a modified condition if the
    condition is signalled too early
 */
-ChfAction h3( const ChfDescriptor* c, const ChfState s, ChfPointer p )
+ChfAction h3( const ChfDescriptor* c, const ChfState s, void* p )
 {
     int push_count = *( ( int* )p );
     ChfAction action;
@@ -100,7 +100,7 @@ void* task( void* arg )
         int i;
 
         /* Push the handler */
-        ChfPushHandler( h2, jb, ( ChfPointer )( &push_count ) );
+        ChfPushHandler( h2, jb, ( void* )( &push_count ) );
 
         /* The sleep() is here to increase contention between threads */
         sleep( 1 );
@@ -122,7 +122,7 @@ void* task( void* arg )
         int i;
 
         /* Push the handler */
-        ChfPushHandler( h3, jb, ( ChfPointer )( &push_count ) );
+        ChfPushHandler( h3, jb, ( void* )( &push_count ) );
 
         /* The sleep() is here to increase contention between threads */
         sleep( 1 );
@@ -145,7 +145,7 @@ void* task( void* arg )
         int i;
 
         /* Push the handler */
-        ChfPushHandler( h3, jb, ( ChfPointer )( &push_count ) );
+        ChfPushHandler( h3, jb, ( void* )( &push_count ) );
 
         /* The sleep() is here to increase contention between threads */
         sleep( 1 );

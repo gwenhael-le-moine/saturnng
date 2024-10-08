@@ -259,7 +259,7 @@ static void EmulatorLoop( void )
 }
 
 /* Condition handler for the EmulatorLoop */
-static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, ChfPointer _ctx )
+static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, void* _ctx )
 {
     ChfAction act;
 
@@ -515,7 +515,7 @@ void Emulator( void )
     /* Setup unwind_context */
     if ( setjmp( unwind_context ) == 0 ) {
         /* Push condition handler, with NULL context */
-        ChfPushHandler( CPU_CHF_MODULE_ID, EmulatorLoopHandler, &unwind_context, ( ChfPointer )NULL );
+        ChfPushHandler( CPU_CHF_MODULE_ID, EmulatorLoopHandler, &unwind_context, ( void* )NULL );
 
         /* Activate emulator loop */
         EmulatorLoop();

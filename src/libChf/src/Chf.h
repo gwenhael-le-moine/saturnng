@@ -30,9 +30,9 @@
   - Added structured condition handling macros: CHF_Try, CHF_Catch, CHF_EndTry
 
   Revision 1.6  1997/01/15  13:41:20  cibrario
-  Defined the new data type ChfPointer, a generic (void *) pointer. Each
+  Defined the new data type void*, a generic (void *) pointer. Each
   condition handler can have a private handler context pointer, of type
-  ChfPointer, that the function ChfPushHandler() stores and that is passed
+  void*, that the function ChfPushHandler() stores and that is passed
   to the handler when it's activated.
   Fixed a wrong adjustment of the condition handlers stack pointer after
   an unwind operation.
@@ -66,7 +66,7 @@
 #define CHF_UNKNOWN_FILE_NAME ( char* )NULL
 #define CHF_NULL_DESCRIPTOR ( ChfDescriptor* )NULL
 #define CHF_NULL_CONTEXT ( void* )NULL
-#define CHF_NULL_POINTER ( ChfPointer* )NULL
+#define CHF_NULL_POINTER ( void** )NULL
 #define CHF_NULL_HANDLER ( ChfHandler ) NULL
 #define CHF_LIBRARY_ID "$Id: Chf.h,v 2.2 2001/01/25 11:56:44 cibrario Exp $"
 
@@ -141,11 +141,8 @@ typedef struct ChfTable_S /* Standalone message table */
     char* msg_template; /* Message template */
 } ChfTable;
 
-typedef /* Generic pointer */
-    void* ChfPointer;
-
 typedef /* Condition handler */
-    ChfAction ( *ChfHandler )( const ChfDescriptor*, const ChfState, ChfPointer );
+    ChfAction ( *ChfHandler )( const ChfDescriptor*, const ChfState, void* );
 
 typedef /* Message retrieval 'get_message' function */
     const char* ( *ChfMrsGet )( void*, const int, const int, const char* default_message );
@@ -236,7 +233,7 @@ void ChfAbort( const int abort_code );
 /* Push a new handler into the stack */
 void ChfPushHandler( const int module_id, ChfHandler new_handler, /* Handler to be added */
                      void* unwind_context,                        /* Unwind context */
-                     ChfPointer handler_context                   /* Private handler context */
+                     void* handler_context                        /* Private handler context */
 );
 /* Pop a handler */
 void ChfPopHandler( const int module_id );

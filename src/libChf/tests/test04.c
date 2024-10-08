@@ -26,7 +26,7 @@ struct tdata_s {
     int phase;
 };
 
-ChfAction h1( const ChfDescriptor* c, const ChfState s, ChfPointer p )
+ChfAction h1( const ChfDescriptor* c, const ChfState s, void* p )
 {
     struct tdata_s* tdata_p = ( struct tdata_s* )p;
     ChfAction action;
@@ -42,7 +42,7 @@ ChfAction h1( const ChfDescriptor* c, const ChfState s, ChfPointer p )
     return action;
 }
 
-ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
+ChfAction h2( const ChfDescriptor* c, const ChfState s, void* p )
 {
     struct tdata_s* tdata_p = ( struct tdata_s* )p;
     ChfAction action;
@@ -76,7 +76,7 @@ ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
     return action;
 }
 
-ChfAction h3( const ChfDescriptor* c, const ChfState s, ChfPointer p )
+ChfAction h3( const ChfDescriptor* c, const ChfState s, void* p )
 {
     struct tdata_s* tdata_p = ( struct tdata_s* )p;
     ChfAction action;
@@ -106,7 +106,7 @@ ChfAction h3( const ChfDescriptor* c, const ChfState s, ChfPointer p )
     return action;
 }
 
-ChfAction h4( const ChfDescriptor* c, const ChfState s, ChfPointer p )
+ChfAction h4( const ChfDescriptor* c, const ChfState s, void* p )
 {
     struct tdata_s* tdata_p = ( struct tdata_s* )p;
     ChfAction action;
@@ -159,7 +159,7 @@ void* task( void* arg )
     printf( "\tThread %d\n", ( int )arg );
 
     /* Push the handler */
-    ChfPushHandler( h1, NULL, ( ChfPointer )( &tdata ) );
+    ChfPushHandler( h1, NULL, ( void* )( &tdata ) );
 
     /* Generate a condition group and signal it */
     CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
@@ -190,7 +190,7 @@ void* task( void* arg )
 
         tdata.phase = 0;
         if ( setjmp( jb ) == 0 ) {
-            ChfPushHandler( h2, jb, ( ChfPointer )( &tdata ) );
+            ChfPushHandler( h2, jb, ( void* )( &tdata ) );
 
             /* Generate a condition group and signal it */
             tdata.phase = 1;
@@ -230,8 +230,8 @@ void* task( void* arg )
     {
         tdata.phase = 0;
 
-        ChfPushHandler( h3, NULL, ( ChfPointer )&tdata );
-        ChfPushHandler( h4, NULL, ( ChfPointer )&tdata );
+        ChfPushHandler( h3, NULL, ( void* )&tdata );
+        ChfPushHandler( h4, NULL, ( void* )&tdata );
 
         tdata.phase = 1;
         CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;

@@ -106,8 +106,8 @@ void ChfGenerate( /* Generate a condition into the stack */
             new_descriptor->line_number = CHF_UNKNOWN_LINE_NUMBER;
             new_descriptor->file_name = CHF_UNKNOWN_FILE_NAME;
 
-            ChfStrncpy( new_descriptor->message, ChfGetMessage( module_id, CHF_F_COND_STACK_FULL, "Condition stack is full" ),
-                        CHF_MAX_MESSAGE_LENGTH - 1 );
+            strncpy( new_descriptor->message, ChfGetMessage( module_id, CHF_F_COND_STACK_FULL, "Condition stack is full" ),
+                     CHF_MAX_MESSAGE_LENGTH - 1 );
             new_descriptor->message[ CHF_MAX_MESSAGE_LENGTH - 1 ] = '\0';
 
             new_descriptor->next = CHF_NULL_DESCRIPTOR;
@@ -131,16 +131,16 @@ void ChfGenerate( /* Generate a condition into the stack */
         new_descriptor->file_name = file_name;
 
         /* Generate the default message */
-        ChfSprintf( def_message, CHF_DEF_PARTIAL_MSG_FMT, condition_code );
+        sprintf( def_message, CHF_DEF_PARTIAL_MSG_FMT, condition_code );
 
         /* Generate the partial message associated with the condition using a
            temporary area
         */
-        if ( ChfVsprintf( tmp_message, ChfGetMessage( module_id, condition_code, def_message ), aux_arg ) >= CHF_TMP_MESSAGE_LENGTH )
+        if ( vsprintf( tmp_message, ChfGetMessage( module_id, condition_code, def_message ), aux_arg ) >= CHF_TMP_MESSAGE_LENGTH )
             ChfAbort( CHF_ABORT_MSG_OVF );
 
         /* Copy the message into the condition descriptor */
-        ChfStrncpy( new_descriptor->message, tmp_message, CHF_MAX_MESSAGE_LENGTH - 1 );
+        strncpy( new_descriptor->message, tmp_message, CHF_MAX_MESSAGE_LENGTH - 1 );
         new_descriptor->message[ CHF_MAX_MESSAGE_LENGTH - 1 ] = '\0';
 
         /* Link the new descriptor with the current descriptor list, if it

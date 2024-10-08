@@ -1,6 +1,18 @@
+#include "libChf/src/Chf.h"
 #include "chf_messages.h"
 
 ChfTable message_table[] = {
+    {CHF_SET,               CHF_S_OK,                ""                                                                                      },
+    {CHF_SET,               CHF_F_COND_STACK_FULL,   "Condition stack is full"                                                               },
+    {CHF_SET,               CHF_F_HDLR_STACK_FULL,   "Handler stack is full"                                                                 },
+    {CHF_SET,               CHF_F_HDLR_STACK_EMPTY,  "Handler stack is empty"                                                                },
+    {CHF_SET,               CHF_F_BAD_STATE,         "Wrong Chf state for requested operation"                                               },
+    {CHF_SET,               CHF_F_INVALID_ACTION,    "Invalid action code from handler (code=<%d>d)"                                         },
+    {CHF_SET,               CHF_F_MALLOC,            "Dynamic memory allocation failed"                                                      },
+    {CHF_SET,               CHF_F_NOT_AVAILABLE,     "Function not implemented"                                                              },
+    {CHF_SET,               CHF_F_SETLOCALE,         "setlocale() failed"                                                                    },
+    {CHF_SET,               CHF_F_CATOPEN,           "catopen() failed"                                                                      },
+
     {CPU_CHF_MODULE_ID,     CPU_I_CALLED,            "Function [%s] called"                                                                  },
     {CPU_CHF_MODULE_ID,     CPU_I_EXECUTING,         "Executing @ PC[%05X]"                                                                  },
     {CPU_CHF_MODULE_ID,     CPU_I_SHUTDN,            "CPU shutdown executed"                                                                 },

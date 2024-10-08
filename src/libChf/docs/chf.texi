@@ -976,7 +976,7 @@ typedef				/* Condition handler */
   ChfAction (*ChfHandler)(
     const ChfDescriptor *,
     const ChfState,
-    ChfPointer
+    void*
 );
 @end example
 
@@ -990,7 +990,7 @@ is a pointer to the condition group that is being signaled.
 @item const ChfState
 represents the current state of the condition handling facility.
 
-@item ChfPointer
+@item void*
 is a copy of the @code{handler_context} pointer passed to the
 @code{ChfPushHandler()} invocation that established the condition
 handler.
@@ -1024,7 +1024,7 @@ of the new condition group allows it to do so.
 @subsection ChfPushHandler()
 @cindex Condition handlers
 @cindex Adding condition handlers
-@deftypefn Function void ChfPushHandler (ChfHandler new_handler, void *unwind_context, ChfPointer handler_context)
+@deftypefn Function void ChfPushHandler (ChfHandler new_handler, void *unwind_context, void* handler_context)
 
 This function pushes the new condition handler @code{new_handler} with
 its associated @code{siglongjmp()} context, pointed by

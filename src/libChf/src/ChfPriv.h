@@ -83,7 +83,7 @@
 typedef struct ChfHandlerDescriptor_S {
     ChfHandler handler;
     void* unwind_context;
-    ChfPointer handler_context;
+    void* handler_context;
 } ChfHandlerDescriptor;
 
 typedef struct ChfContext_S /* CHF Context */
@@ -126,16 +126,5 @@ extern ChfContext _chf_context; /* CHF Context */
 #ifdef _REENTRANT
 ChfContext* _ChfGetContext( void );
 #endif
-
-/* -------------------------------------------------------------------------
-   Private redirection of stdlib functions needed by Win32
- ------------------------------------------------------------------------- */
-
-#define ChfStrlen strlen
-#define ChfStrcpy strcpy
-#define ChfStrcat strcat
-#define ChfStrncpy strncpy
-#define ChfSprintf sprintf
-#define ChfVsprintf vsprintf
 
 #endif /*!_CHF_PRIV_H*/
