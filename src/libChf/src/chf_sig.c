@@ -169,9 +169,7 @@ void ChfSignal( const int module_id )
                     chf_context.condition_base->next = current_condition;
                     current_condition = chf_context.condition_sp - 1;
                     chf_context.condition_base = chf_context.condition_sp;
-                }
-
-                else
+                } else
                     chf_context.condition_sp = chf_context.condition_base;
             }
 
@@ -310,9 +308,7 @@ void ChfSignal( const int module_id )
                         ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_INVALID_ACTION, CHF_FATAL, handler_result );
 
                         ChfSignal( module_id );
-                    }
-
-                    else
+                    } else
                         ChfAbort( CHF_ABORT_INVALID_ACTION );
 
                     break;
