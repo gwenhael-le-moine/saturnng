@@ -201,7 +201,7 @@ void ModSelectDescription( int model )
             ModRegisterDescription( hw49_description );
             break;
         default:
-            /* CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_NO_MATCH, CHF_ERROR, config.hw ); */
+            /* ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_NO_MATCH, CHF_ERROR, config.hw ); */
             /* ChfSignal( MOD_CHF_MODULE_ID ); */
             fprintf( stderr, "Error: Unknown model %i\n", model );
             exit( EXIT_FAILURE );

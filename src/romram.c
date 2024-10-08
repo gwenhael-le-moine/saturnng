@@ -139,16 +139,16 @@ void RomInit( void )
 
     if ( ( mod_status_48 = ( struct ModStatus_48* )malloc( sizeof( struct ModStatus_48 ) ) ) == ( struct ModStatus_48* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_48 ) );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_48 ) );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 
     if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
-        /* CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_ROM_INIT, CHF_FATAL ); */
+        /* ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL ); */
         /* ChfSignal( MOD_CHF_MODULE_ID ); */
         // HACK: To load 48SX ROM, try again with half the size this time.
         if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE / 2, mod_status_rom ) ) {
-            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_ROM_INIT, CHF_FATAL );
+            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL );
             ChfSignal( MOD_CHF_MODULE_ID );
         }
     }
@@ -233,7 +233,7 @@ void RomWrite( Address rel_address, Nibble datum )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite" );
 
     // FIXME: 48gx: saturn48gx-Mid <12>d (src/romram.c,235)-E-Write into ROM A[1B632] D[9]
-    CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_ROM_WRITE, CHF_ERROR, rel_address, datum );
+    ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_ROM_WRITE, CHF_ERROR, rel_address, datum );
     ChfSignal( MOD_CHF_MODULE_ID );
 }
 
@@ -267,7 +267,7 @@ void RamInit( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamInit" );
 
     if ( ReadNibblesFromFile( config.ram_file_name, N_RAM_SIZE, mod_status_ram ) ) {
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_RAM_INIT, CHF_WARNING );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RAM_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
         ( void )memset( mod_status_ram, 0, sizeof( mod_status_ram ) );
@@ -303,7 +303,7 @@ void RamSave( void )
 
     if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, config.ram_file_name ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_RAM_SAVE, CHF_ERROR );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_RAM_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 }
@@ -504,7 +504,7 @@ void Ce1Write( Address rel_address, Nibble datum )
 {
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Write" );
 
-    CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_CE1_WRITE, CHF_ERROR, rel_address, datum );
+    ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_CE1_WRITE, CHF_ERROR, rel_address, datum );
     ChfSignal( MOD_CHF_MODULE_ID );
 }
 
@@ -542,7 +542,7 @@ void Ce2Init( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init" );
 
     if ( ReadNibblesFromFile( config.port_1_file_name, N_PORT_1_SIZE, mod_status_port_1 ) ) {
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_PORT_1_INIT, CHF_WARNING );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_PORT_1_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
         ( void )memset( mod_status_port_1, 0, sizeof( mod_status_port_1 ) );
@@ -558,7 +558,7 @@ void Ce2Init( void )
             new_status &= ~CE2_CARD_WE;
 
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_I_PORT_1_WP, CHF_INFO );
+            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_I_PORT_1_WP, CHF_INFO );
             ChfSignal( MOD_CHF_MODULE_ID );
         }
     }
@@ -603,7 +603,7 @@ void Ce2Save( void )
     /* Attempt to save only if port is write-enabled */
     if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, config.port_1_file_name ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_PORT_1_SAVE, CHF_ERROR );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_PORT_1_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 }
@@ -701,7 +701,7 @@ void NCe3Init( void )
 
 #ifdef N_PORT_2_BANK
     if ( ReadNibblesFromFile( config.port_2_file_name, N_PORT_2_SIZE, mod_status_port_2 ) ) {
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_PORT_2_INIT, CHF_WARNING );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_PORT_2_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
         ( void )memset( mod_status_port_2, 0, sizeof( mod_status_port_2 ) );
@@ -717,7 +717,7 @@ void NCe3Init( void )
             new_status &= ~NCE3_CARD_WE;
 
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_I_PORT_2_WP, CHF_INFO );
+            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_I_PORT_2_WP, CHF_INFO );
             ChfSignal( MOD_CHF_MODULE_ID );
         }
     }
@@ -769,7 +769,7 @@ void NCe3Save( void )
     if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) &&
          WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port_2_file_name ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_PORT_2_SAVE, CHF_ERROR );
+        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_PORT_2_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 #endif
@@ -806,7 +806,7 @@ Nibble NCe3Read( Address rel_address )
     return mod_status_port_2[ rel_address | mod_status_hdw.accel.a48.bs_address ];
 
 #else
-    CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_NCE3_READ, CHF_ERROR, rel_address );
+    ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_NCE3_READ, CHF_ERROR, rel_address );
     ChfSignal( MOD_CHF_MODULE_ID );
     return ( Nibble )0;
 
@@ -846,7 +846,7 @@ void NCe3Write( Address rel_address, Nibble datum )
     mod_status_port_2[ rel_address | mod_status_hdw.accel.a48.bs_address ] = datum;
 
 #else
-    CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_NCE3_WRITE, CHF_ERROR, rel_address, datum );
+    ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_NCE3_WRITE, CHF_ERROR, rel_address, datum );
     ChfSignal( MOD_CHF_MODULE_ID );
 
 #endif

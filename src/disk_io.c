@@ -110,14 +110,14 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
     } else {
         for ( i = 0; i < size; ) {
             by = getc( f );
 
             if ( by == -1 ) {
                 ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_GETC, CHF_ERROR, name );
+                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_GETC, CHF_ERROR, name );
                 break;
             }
 
@@ -168,7 +168,7 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
     } else {
         for ( i = 0; i < size; ) {
             by = ( int )src[ i++ ];
@@ -176,14 +176,14 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 
             if ( putc( by, f ) == EOF ) {
                 ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name );
+                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_PUTC, CHF_ERROR, name );
                 break;
             }
         }
 
         if ( fclose( f ) == EOF ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_CLOSE, CHF_ERROR, name );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_CLOSE, CHF_ERROR, name );
         }
     }
 
@@ -223,11 +223,11 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
     } else {
         if ( fread( s, s_size, ( size_t )1, f ) != 1 ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_READ, CHF_ERROR, name );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_READ, CHF_ERROR, name );
         }
 
         ( void )fclose( f );
@@ -271,16 +271,16 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
     } else {
         if ( fwrite( s, s_size, ( size_t )1, f ) != 1 ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_WRITE, CHF_ERROR, name );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_WRITE, CHF_ERROR, name );
         }
 
         if ( fclose( f ) == EOF ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_CLOSE, CHF_ERROR, name );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_CLOSE, CHF_ERROR, name );
         }
     }
 

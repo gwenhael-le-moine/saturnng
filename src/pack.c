@@ -165,21 +165,21 @@ int main( int argc, char* argv[] )
 
     /* Now, do some useful work; pack argv[1] into argv[2] */
     if ( argc != 3 ) {
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_I_PACK_USAGE, CHF_INFO );
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_CMD_LINE, CHF_FATAL );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_I_PACK_USAGE, CHF_INFO );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_CMD_LINE, CHF_FATAL );
         ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     /* Get the size of the source file */
     if ( stat( argv[ 1 ], &statb ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_STAT, CHF_FATAL, argv[ 1 ] );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_STAT, CHF_FATAL, argv[ 1 ] );
         ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
     /* Check that actual size is reasonable */
     if ( statb.st_size > MAX_SRC_SIZE ) {
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_SRC_SIZE, CHF_FATAL, statb.st_size );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_SRC_SIZE, CHF_FATAL, statb.st_size );
         ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
@@ -187,7 +187,7 @@ int main( int argc, char* argv[] )
     if ( ( b = ( char* )malloc( statb.st_size ) ) == ( char* )NULL ||
          ( nb = ( Nibble* )malloc( sizeof( Nibble ) * statb.st_size ) ) == ( Nibble* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_MALLOC, CHF_FATAL, statb.st_size );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_MALLOC, CHF_FATAL, statb.st_size );
         ChfSignal( UTIL_CHF_MODULE_ID );
 
         return EXIT_FAILURE;
@@ -196,7 +196,7 @@ int main( int argc, char* argv[] )
     /* open/read/close */
     if ( ( d = open( argv[ 1 ], O_RDONLY ) ) == -1 ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_OPEN, CHF_FATAL, argv[ 1 ] );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_OPEN, CHF_FATAL, argv[ 1 ] );
         ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
@@ -205,7 +205,7 @@ int main( int argc, char* argv[] )
 
         ( void )close( d );
 
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_READ, CHF_FATAL, argv[ 1 ] );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_READ, CHF_FATAL, argv[ 1 ] );
         ChfSignal( UTIL_CHF_MODULE_ID );
     }
 
@@ -220,7 +220,7 @@ int main( int argc, char* argv[] )
 
     /* Write */
     if ( WriteNibblesToFile( nb, statb.st_size, argv[ 2 ] ) ) {
-        CHF_Condition( UTIL_CHF_MODULE_ID ) UTIL_F_PACK_WRITE_NIBBLES, CHF_FATAL );
+        ChfGenerate( UTIL_CHF_MODULE_ID, __FILE__, __LINE__, UTIL_F_PACK_WRITE_NIBBLES, CHF_FATAL );
         ChfSignal( UTIL_CHF_MODULE_ID );
     }
 

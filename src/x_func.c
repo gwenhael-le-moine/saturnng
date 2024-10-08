@@ -150,7 +150,7 @@ static void SetSpeed( Nibble function_code )
     debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetSpeed" );
 
 #ifndef REAL_CPU_SPEED
-    CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_SPEED, CHF_ERROR );
+    ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_SPEED, CHF_ERROR );
     ChfSignal( X_FUNC_CHF_MODULE_ID );
 
 #else
@@ -169,9 +169,9 @@ static void SetSpeed( Nibble function_code )
 
         /* Notify the user about the speed change */
         if ( cpu_status.inner_loop_max )
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_I_SET_SPEED, CHF_INFO, new_speed );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_I_SET_SPEED, CHF_INFO, new_speed );
         else
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_I_MAX_SPEED, CHF_INFO );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_I_MAX_SPEED, CHF_INFO );
 
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
@@ -201,7 +201,7 @@ static const char* BinaryHeader( void )
             return "HPHP49-?";
             break;
         default:
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_BIN_HDR, CHF_ERROR, "hw unknown" );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_BIN_HDR, CHF_ERROR, "hw unknown" );
             fprintf( stderr, "Error: Unknown model %i\n", config.model );
             return ( char* )NULL;
     }
@@ -214,7 +214,7 @@ static void KgetContinuation( int proceed, char* file_name )
 {
     /* Check whether continuation should proceed */
     if ( !proceed ) {
-        CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_ABORTED, CHF_WARNING );
+        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_ABORTED, CHF_WARNING );
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     } else {
         /* Ok to proceed; read:
@@ -230,7 +230,7 @@ static void KgetContinuation( int proceed, char* file_name )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
             ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
@@ -244,7 +244,7 @@ static void KgetContinuation( int proceed, char* file_name )
 static void SendContinuation( int proceed, char* file_name )
 {
     if ( !proceed ) {
-        CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_ABORTED, CHF_WARNING );
+        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_ABORTED, CHF_WARNING );
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     } else {
         /* Ok to proceed; read:
@@ -260,7 +260,7 @@ static void SendContinuation( int proceed, char* file_name )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
             ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
@@ -298,7 +298,7 @@ static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
 
         /* ( void )CpuHaltRequest(); */
     } else {
-        CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_E_NO_HALT, CHF_ERROR );
+        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_HALT, CHF_ERROR );
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
 }
@@ -329,7 +329,7 @@ static void Kget( Nibble function_code )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
             ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
@@ -361,7 +361,7 @@ static void Send( Nibble function_code )
         debug3( DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
-            CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_FAILED, CHF_WARNING );
+            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
             ChfSignal( X_FUNC_CHF_MODULE_ID );
         }
     }
@@ -420,7 +420,7 @@ void ExtendedFunction( Nibble function_code )
 
     /* Some sanity checks, first */
     if ( function_code < 0 || function_code >= N_X_FUNC || function[ ( int )function_code ] == ( XFunc )NULL ) {
-        CHF_Condition( X_FUNC_CHF_MODULE_ID ) X_FUNC_W_BAD_CODE, CHF_WARNING, function_code );
+        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_BAD_CODE, CHF_WARNING, function_code );
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
     /* Dispatch */

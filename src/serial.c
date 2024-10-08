@@ -533,7 +533,7 @@ const char* SerialInit( void )
         pty_name = ( char* )NULL;
 
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPENPTY, CHF_FATAL );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_OPENPTY, CHF_FATAL );
         ChfSignal( SERIAL_CHF_MODULE_ID );
     } else {
         int cur_flags;
@@ -546,7 +546,7 @@ const char* SerialInit( void )
         /* Set O_NONBLOCK on master_pty */
         if ( ( cur_flags = fcntl( master_pty, F_GETFL, 0 ) ) < 0 || fcntl( master_pty, F_SETFL, cur_flags | O_NONBLOCK ) < 0 ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_FCNTL, CHF_FATAL );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_FCNTL, CHF_FATAL );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
@@ -558,7 +558,7 @@ const char* SerialInit( void )
         pty_name = ( char* )NULL;
 
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER );
         ChfSignal( SERIAL_CHF_MODULE_ID );
     } else {
         /* Master side opened ok; change permissions and unlock slave side */
@@ -569,7 +569,7 @@ const char* SerialInit( void )
 
             ( void )close( master_pty );
 
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_GRANTPT, CHF_FATAL );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_GRANTPT, CHF_FATAL );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -579,7 +579,7 @@ const char* SerialInit( void )
 
             ( void )close( master_pty );
 
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_UNLOCKPT, CHF_FATAL );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_UNLOCKPT, CHF_FATAL );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -593,7 +593,7 @@ const char* SerialInit( void )
 
             ( void )close( master_pty );
 
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -606,13 +606,13 @@ const char* SerialInit( void )
         */
         if ( ioctl( slave_pty, I_PUSH, "ptem" ) == -1 ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_PUSH, CHF_FATAL, "ptem" );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_PUSH, CHF_FATAL, "ptem" );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
         if ( ioctl( slave_pty, I_PUSH, "ldterm" ) == -1 ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_PUSH, CHF_FATAL, "ldterm" );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_PUSH, CHF_FATAL, "ldterm" );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
@@ -628,7 +628,7 @@ const char* SerialInit( void )
 
         if ( tcgetattr( slave_pty, &tios ) ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_TCGETATTR, CHF_FATAL );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_TCGETATTR, CHF_FATAL );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -653,7 +653,7 @@ const char* SerialInit( void )
 
         if ( tcsetattr( slave_pty, TCSANOW, &tios ) ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_TCSETATTR, CHF_FATAL );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_TCSETATTR, CHF_FATAL );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
@@ -661,7 +661,7 @@ const char* SerialInit( void )
 
     /* Publish pty name */
     if ( config.verbose ) {
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_I_PTY_NAME, CHF_INFO, pty_name );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_I_PTY_NAME, CHF_INFO, pty_name );
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 
@@ -669,7 +669,7 @@ const char* SerialInit( void )
     /* Dummy implementation; do nothing */
     pty_name = "";
 
-    CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_W_NOPTY, CHF_WARNING );
+    ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_W_NOPTY, CHF_WARNING );
     ChfSignal( SERIAL_CHF_MODULE_ID );
 #endif
 
@@ -710,7 +710,7 @@ void SerialClose( void )
 
     if ( close( slave_pty ) || close( master_pty ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_E_PTY_CLOSE, CHF_ERROR );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_PTY_CLOSE, CHF_ERROR );
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 }
@@ -893,7 +893,7 @@ int8 Serial_RBR_Read( void )
         /* 3.2: The HP49 firmware (1.19-4) can read from an empty RRB;
                 this is not harmful, and this warning can be removed.
         */
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs );
         ChfSignal( SERIAL_CHF_MODULE_ID );
 #endif
 
@@ -1082,7 +1082,7 @@ void Serial_TBR_Write( int8 d )
         Push( trb, d );
     } else {
         /* trb is full; discard character */
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_W_FULL_TRB, CHF_WARNING, tcs );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_W_FULL_TRB, CHF_WARNING, tcs );
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 
@@ -1144,7 +1144,7 @@ void HandleSerial( void )
     /* Signal a condition upon failure */
     if ( result < 0 ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_E_TRB_DRAIN, CHF_ERROR );
+        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_TRB_DRAIN, CHF_ERROR );
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 
@@ -1158,7 +1158,7 @@ void HandleSerial( void )
         /* Signal a condition upon failure */
         if ( result < 0 ) {
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_E_RRB_CHARGE, CHF_ERROR );
+            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_RRB_CHARGE, CHF_ERROR );
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 

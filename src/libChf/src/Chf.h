@@ -151,18 +151,6 @@ typedef /* Message retrieval 'exit' function */
     void ( *ChfMrsExit )( void* );
 
 /* -------------------------------------------------------------------------
-   Condition generation macros
-   ------------------------------------------------------------------------- */
-
-#define CHF_Condition( module_id )                                                                                                         \
-  ChfGenerate(								\
-    module_id,							\
-    __FILE__, __LINE__,
-
-#define ChfEnd                                                                                                                             \
-  )
-
-/* -------------------------------------------------------------------------
    Function prototypes
    ------------------------------------------------------------------------- */
 /* Generate a condition into the stack */
