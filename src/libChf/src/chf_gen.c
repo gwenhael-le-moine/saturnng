@@ -25,9 +25,6 @@
 .- */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
 #include <stdarg.h>
 #include <string.h>
 
@@ -79,8 +76,8 @@
   1.1,  3-May-1996, creation
 
 .- */
-void ChfGenerate( /* Generate a condition into the stack */
-                  const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
+/* Generate a condition into the stack */
+void ChfGenerate( const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
                   ... )
 {
     ChfDescriptor* new_descriptor;
@@ -114,13 +111,9 @@ void ChfGenerate( /* Generate a condition into the stack */
             chf_context.condition_sp++;
 
             ChfSignal( module_id );
-        }
-
-        else
+        } else
             ChfAbort( CHF_ABORT_COND_STACK_OVF );
-    }
-
-    else {
+    } else {
         char def_message[ CHF_DEF_MESSAGE_LENGTH ];
         char tmp_message[ CHF_TMP_MESSAGE_LENGTH ];
 

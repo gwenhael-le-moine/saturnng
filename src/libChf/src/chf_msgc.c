@@ -30,8 +30,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
 #include <string.h>
 #include <locale.h>
 #include <nl_types.h>

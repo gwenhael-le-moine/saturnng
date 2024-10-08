@@ -37,9 +37,6 @@
 
 .- */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <setjmp.h>
 
 #include "Chf.h"
@@ -310,7 +307,7 @@ void ChfSignal( const int module_id )
                        otherwise call ChfAbort()
                     */
                     if ( chf_context.handler_sp > chf_context.handler_stack ) {
-                        CHF_Condition( module_id ) CHF_F_INVALID_ACTION, CHF_FATAL, handler_result ChfEnd;
+                        ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_INVALID_ACTION, CHF_FATAL, handler_result );
 
                         ChfSignal( module_id );
                     }

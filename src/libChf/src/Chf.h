@@ -68,10 +68,6 @@
 #define CHF_NULL_CONTEXT ( void* )NULL
 #define CHF_NULL_POINTER ( void** )NULL
 #define CHF_NULL_HANDLER ( ChfHandler ) NULL
-#define CHF_LIBRARY_ID "$Id: Chf.h,v 2.2 2001/01/25 11:56:44 cibrario Exp $"
-
-#define CHF_MAJOR_RELEASE_NUMBER 2
-#define CHF_MINOR_RELEASE_NUMBER 2
 
 #define CHF_MODULE_NAMES_SET 1
 #define CHF_SET 2
@@ -96,35 +92,28 @@
    Type definitions
    ------------------------------------------------------------------------- */
 
-typedef enum /* Condition severity codes */
-{ CHF_SUCCESS,
-  CHF_INFO,
-  CHF_WARNING,
-  CHF_ERROR,
-  CHF_FATAL } ChfSeverity;
+/* Condition severity codes */
+typedef enum { CHF_SUCCESS, CHF_INFO, CHF_WARNING, CHF_ERROR, CHF_FATAL } ChfSeverity;
 
-typedef enum      /* Condition handler action codes */
-{ CHF_CONTINUE,   /* Continue application */
-  CHF_RESIGNAL,   /* Resignal to next handler */
-  CHF_UNWIND,     /* Stack unwind */
-  CHF_UNWIND_KEEP /* Unwind, keep last cond. group */
+/* Condition handler action codes */
+typedef enum {
+    CHF_CONTINUE,   /* Continue application */
+    CHF_RESIGNAL,   /* Resignal to next handler */
+    CHF_UNWIND,     /* Stack unwind */
+    CHF_UNWIND_KEEP /* Unwind, keep last cond. group */
 } ChfAction;
 
-typedef int /* CHF options */
-    ChfOptions;
+/* CHF options */
+typedef int ChfOptions;
 
 #define CHF_DEFAULT 0x0000 /* default flags */
 #define CHF_ABORT 0x0001   /* use abort() instead of exit() */
 
-typedef enum /* Current CHF state */
-{ CHF_UNKNOWN,
-  CHF_IDLE,
-  CHF_SIGNALING,
-  CHF_UNWINDING,
-  CHF_SIGNAL_UNWINDING } ChfState;
+/* Current CHF state */
+typedef enum { CHF_UNKNOWN, CHF_IDLE, CHF_SIGNALING, CHF_UNWINDING, CHF_SIGNAL_UNWINDING } ChfState;
 
-typedef struct ChfDescriptor_S /* Condition descriptor */
-{
+/* Condition descriptor */
+typedef struct ChfDescriptor_S {
     int module_id;                          /* Module identifier */
     int condition_code;                     /* Condition code */
     ChfSeverity severity;                   /* Severity */
@@ -134,21 +123,21 @@ typedef struct ChfDescriptor_S /* Condition descriptor */
     struct ChfDescriptor_S* next;           /* Link to next descriptor */
 } ChfDescriptor;
 
-typedef struct ChfTable_S /* Standalone message table */
-{
+/* Standalone message table */
+typedef struct ChfTable_S {
     int module;         /* Module identifier */
     int code;           /* Condition code */
     char* msg_template; /* Message template */
 } ChfTable;
 
-typedef /* Condition handler */
-    ChfAction ( *ChfHandler )( const ChfDescriptor*, const ChfState, void* );
+/* Condition handler */
+typedef ChfAction ( *ChfHandler )( const ChfDescriptor*, const ChfState, void* );
 
-typedef /* Message retrieval 'get_message' function */
-    const char* ( *ChfMrsGet )( void*, const int, const int, const char* default_message );
+/* Message retrieval 'get_message' function */
+typedef const char* ( *ChfMrsGet )( void*, const int, const int, const char* default_message );
 
-typedef /* Message retrieval 'exit' function */
-    void ( *ChfMrsExit )( void* );
+/* Message retrieval 'exit' function */
+typedef void ( *ChfMrsExit )( void* );
 
 /* -------------------------------------------------------------------------
    Function prototypes

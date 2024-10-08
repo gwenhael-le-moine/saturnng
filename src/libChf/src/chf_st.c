@@ -26,8 +26,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
 #include <string.h>
 
 #include "Chf.h"
@@ -54,13 +52,10 @@ static int Search( const void* l, const void* r )
 {
     if ( ( ( ChfTable* )l )->module > ( ( ChfTable* )r )->module )
         return ( GT );
-
     else if ( ( ( ChfTable* )l )->module < ( ( ChfTable* )r )->module )
         return ( LT );
-
     else if ( ( ( ChfTable* )l )->code > ( ( ChfTable* )r )->code )
         return ( GT );
-
     else if ( ( ( ChfTable* )l )->code < ( ( ChfTable* )r )->code )
         return ( LT );
 
@@ -125,8 +120,8 @@ static void ExitMessage( void* private_context ) {}
   1.1, 27-May-1996, creation
 
 .- */
-int ChfStaticInit(                                 /* Initialization with static message tables */
-                   const char* app_name,           /* Application's name */
+/* Initialization with static message tables */
+int ChfStaticInit( const char* app_name,           /* Application's name */
                    const ChfOptions options,       /* Options */
                    const ChfTable* table,          /* Static message table */
                    const size_t table_size,        /* Size of the message table */

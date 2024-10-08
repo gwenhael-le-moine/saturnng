@@ -28,12 +28,6 @@
 
 .- */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
-#include <string.h>
-
 #include "Chf.h"
 #include "ChfPriv.h"
 
@@ -81,8 +75,8 @@
     - condition stack referenced incorrectly
 
 .- */
-const ChfDescriptor* ChfGetTopCondition( /* Retrieve top condition */
-                                         const int module_id )
+/* Retrieve top condition */
+const ChfDescriptor* ChfGetTopCondition( const int module_id )
 {
     ChfDescriptor* d;
 
@@ -91,7 +85,7 @@ const ChfDescriptor* ChfGetTopCondition( /* Retrieve top condition */
         ChfAbort( CHF_ABORT_INIT );
 
     if ( ( d = chf_context.condition_sp ) == chf_context.condition_base ) {
-        CHF_Condition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
+        ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_BAD_STATE, CHF_FATAL );
         ChfSignal( module_id );
     }
 

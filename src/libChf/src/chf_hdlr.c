@@ -37,11 +37,6 @@
 
 .- */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
-
 #include "Chf.h"
 #include "ChfPriv.h"
 
@@ -144,32 +139,27 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
     - added StructuredHelper handling
 
 .- */
-void ChfPushHandler( /* Push a new handler into the stack */
-                     const int module_id, ChfHandler new_handler, void* unwind_context, void* handler_context )
+/* Push a new handler into the stack */
+void ChfPushHandler( const int module_id, ChfHandler new_handler, void* unwind_context, void* handler_context )
 {
     /* Make sure that CHF has been correctly initialized and is idle */
     if ( chf_context.state == CHF_UNKNOWN )
         ChfAbort( CHF_ABORT_INIT );
 
     if ( chf_context.state != CHF_IDLE ) {
-        CHF_Condition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
-
+        ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_BAD_STATE, CHF_FATAL );
         ChfSignal( module_id );
-    }
-
-    /* Check if the handler stack is full */
-    else if ( chf_context.handler_sp - chf_context.handler_stack >= chf_context.handler_stack_size ) {
-        CHF_Condition( module_id ) CHF_F_HDLR_STACK_FULL, CHF_FATAL ChfEnd;
-
-        ChfSignal( module_id );
-    }
-
-    else {
-        chf_context.handler_sp->unwind_context = unwind_context;
-        chf_context.handler_sp->handler_context = handler_context;
-        chf_context.handler_sp->handler = ( ( new_handler == CHF_NULL_HANDLER ) ? StructuredHelper : new_handler );
-        chf_context.handler_sp++;
-    }
+    } else
+        /* Check if the handler stack is full */
+        if ( chf_context.handler_sp - chf_context.handler_stack >= chf_context.handler_stack_size ) {
+            ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_HDLR_STACK_FULL, CHF_FATAL );
+            ChfSignal( module_id );
+        } else {
+            chf_context.handler_sp->unwind_context = unwind_context;
+            chf_context.handler_sp->handler_context = handler_context;
+            chf_context.handler_sp->handler = ( ( new_handler == CHF_NULL_HANDLER ) ? StructuredHelper : new_handler );
+            chf_context.handler_sp++;
+        }
 }
 
 /* .+
@@ -214,14 +204,14 @@ void ChfPushHandler( /* Push a new handler into the stack */
 /*         ChfAbort( CHF_ABORT_INIT ); */
 
 /*     if ( chf_context.state != CHF_IDLE ) { */
-/*         CHF_Condition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd; */
+/*         ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_BAD_STATE, CHF_FATAL ); */
 
 /*         ChfSignal( module_id ); */
 /*     } */
 
 /*     /\* Check if the handler stack is empty *\/ */
 /*     else if ( chf_context.handler_sp == chf_context.handler_stack ) { */
-/*         CHF_Condition( module_id ) CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ChfEnd; */
+/*         ChfGenerate( module_id, __FILE__, __LINE__, CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ); */
 
 /*         ChfSignal( module_id ); */
 /*     } */

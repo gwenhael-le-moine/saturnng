@@ -76,8 +76,8 @@ typedef struct ChfHandlerDescriptor_S {
     void* handler_context;
 } ChfHandlerDescriptor;
 
-typedef struct ChfContext_S /* CHF Context */
-{
+/* CHF Context */
+typedef struct ChfContext_S {
     ChfState state;                      /* Current CHF state */
     const char* app_name;                /* Application's name */
     ChfOptions options;                  /* Options */

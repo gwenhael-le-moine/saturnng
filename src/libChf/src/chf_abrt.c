@@ -32,8 +32,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
 
 #include "Chf.h"
 #include "ChfPriv.h"
@@ -89,8 +87,8 @@
     - added Win32 support
 
 .- */
-void ChfAbort( /* Abort application */
-               const int abort_code )
+/* Abort application */
+void ChfAbort( const int abort_code )
 {
 
     /* Abort codes message table; the relative position of the messages must
@@ -113,14 +111,12 @@ void ChfAbort( /* Abort application */
 
         if ( abort_code < 0 || abort_code >= ( int )( sizeof( message_table ) / sizeof( const char* ) ) )
             fprintf( stderr, "Bad abort code <%d>d\n", abort_code );
-
         else
             fprintf( stderr, "%s\n", message_table[ abort_code ] );
     }
 
     if ( chf_context.state == CHF_UNKNOWN || chf_context.options & CHF_ABORT )
         abort();
-
     else
 #ifndef _REENTRANT
         exit( chf_context.exit_code );

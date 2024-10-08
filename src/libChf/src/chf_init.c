@@ -49,8 +49,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <errno.h>
-#include <setjmp.h>
 #include <string.h>
 
 #include "Chf.h"
@@ -59,11 +57,6 @@
 /* -------------------------------------------------------------------------
    Global and static variables
    ------------------------------------------------------------------------- */
-
-/* Chf Library Id */
-#ifndef lint
-static char rcs_lib_id[] = CHF_LIBRARY_ID;
-#endif
 
 /* CHF context */
 ChfContext _chf_context;
