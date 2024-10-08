@@ -44,7 +44,7 @@ int main( int argc, char* argv[] )
         exit( EXIT_FAILURE );
 
     /* Generate a condition and check descriptor; this is line 46 */
-    ChfCondition 3, CHF_WARNING, 456 ChfEnd;
+    CHF_Condition 3, CHF_WARNING, 456 ChfEnd;
 
     if ( ( d = ChfGetTopCondition() ) == NULL )
         exit( EXIT_FAILURE );
@@ -53,7 +53,7 @@ int main( int argc, char* argv[] )
         exit( EXIT_FAILURE );
 
     /* Generate another condition and check; this is line 60 */
-    ChfCondition 4, CHF_INFO, "arg" ChfEnd;
+    CHF_Condition 4, CHF_INFO, "arg" ChfEnd;
 
     if ( ( e = ChfGetTopCondition() ) == NULL )
         exit( EXIT_FAILURE );
@@ -65,7 +65,7 @@ int main( int argc, char* argv[] )
     ChfDiscard();
 
     /* This is line 77 */
-    ChfCondition 5, CHF_ERROR, 456, 789 ChfEnd;
+    CHF_Condition 5, CHF_ERROR, 456, 789 ChfEnd;
 
     if ( ( d = ChfGetTopCondition() ) == NULL )
         exit( EXIT_FAILURE );

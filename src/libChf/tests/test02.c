@@ -34,7 +34,7 @@ void* task( void* arg )
         exit( EXIT_FAILURE );
 
     /* Generate a condition and check descriptor; this is line 36 */
-    ChfCondition 3, CHF_WARNING, 456 ChfEnd;
+    CHF_Condition 3, CHF_WARNING, 456 ChfEnd;
 
     if ( ( d = ChfGetTopCondition() ) == NULL )
         exit( EXIT_FAILURE );
@@ -43,7 +43,7 @@ void* task( void* arg )
         exit( EXIT_FAILURE );
 
     /* Generate another condition and check; this is line 50 */
-    ChfCondition 4, CHF_INFO, "arg" ChfEnd;
+    CHF_Condition 4, CHF_INFO, "arg" ChfEnd;
 
     if ( ( e = ChfGetTopCondition() ) == NULL )
         exit( EXIT_FAILURE );
@@ -55,7 +55,7 @@ void* task( void* arg )
     ChfDiscard();
 
     /* This is line 67 */
-    ChfCondition 5, CHF_ERROR, 456, 789 ChfEnd;
+    CHF_Condition 5, CHF_ERROR, 456, 789 ChfEnd;
 
     if ( ( d = ChfGetTopCondition() ) == NULL )
         exit( EXIT_FAILURE );

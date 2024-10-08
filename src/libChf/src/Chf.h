@@ -27,7 +27,7 @@
     CHF_MINOR_RELEASE_NUMBER
   - New ChfAction value: CHF_UNWIND_KEEP; fixed spelling of ChfAction value:
     CHF_SIGNALLING -> CHF_SIGNALING
-  - Added structured condition handling macros: ChfTry, ChfCatch, ChfEndTry
+  - Added structured condition handling macros: CHF_Try, CHF_Catch, CHF_EndTry
 
   Revision 1.6  1997/01/15  13:41:20  cibrario
   Defined the new data type ChfPointer, a generic (void *) pointer. Each
@@ -61,11 +61,7 @@
    Win32 & UNICODE support
    ------------------------------------------------------------------------- */
 
-#define ChfChar char
 #define ChfText( x ) x
-#define ChfSigjmp_buf sigjmp_buf
-#define ChfSigsetjmp( x, y ) sigsetjmp( x, y )
-#define ChfSiglongjmp( x, y ) siglongjmp( x, y )
 
 /* -------------------------------------------------------------------------
    CHF implementation limits and other symbolic constants
@@ -73,7 +69,7 @@
 
 #define CHF_MAX_MESSAGE_LENGTH 256
 #define CHF_UNKNOWN_LINE_NUMBER ( -1 )
-#define CHF_UNKNOWN_FILE_NAME ( ChfChar* )NULL
+#define CHF_UNKNOWN_FILE_NAME ( char* )NULL
 #define CHF_NULL_DESCRIPTOR ( ChfDescriptor* )NULL
 #define CHF_NULL_CONTEXT ( void* )NULL
 #define CHF_NULL_POINTER ( ChfPointer* )NULL
@@ -135,20 +131,20 @@ typedef enum /* Current CHF state */
 
 typedef struct ChfDescriptor_S /* Condition descriptor */
 {
-    int module_id;                             /* Module identifier */
-    int condition_code;                        /* Condition code */
-    ChfSeverity severity;                      /* Severity */
-    int line_number;                           /* Line # or CHF_UNK_LINE_NUMBER */
-    const ChfChar* file_name;                  /* File name or CHF_UNK_FILE_NAME */
-    ChfChar message[ CHF_MAX_MESSAGE_LENGTH ]; /* Partial message */
-    struct ChfDescriptor_S* next;              /* Link to next descriptor */
+    int module_id;                          /* Module identifier */
+    int condition_code;                     /* Condition code */
+    ChfSeverity severity;                   /* Severity */
+    int line_number;                        /* Line # or CHF_UNK_LINE_NUMBER */
+    const char* file_name;                  /* File name or CHF_UNK_FILE_NAME */
+    char message[ CHF_MAX_MESSAGE_LENGTH ]; /* Partial message */
+    struct ChfDescriptor_S* next;           /* Link to next descriptor */
 } ChfDescriptor;
 
 typedef struct ChfTable_S /* Standalone message table */
 {
-    int module;            /* Module identifier */
-    int code;              /* Condition code */
-    ChfChar* msg_template; /* Message template */
+    int module;         /* Module identifier */
+    int code;           /* Condition code */
+    char* msg_template; /* Message template */
 } ChfTable;
 
 typedef /* Generic pointer */
@@ -158,7 +154,7 @@ typedef /* Condition handler */
     ChfAction ( *ChfHandler )( const ChfDescriptor*, const ChfState, ChfPointer );
 
 typedef /* Message retrieval 'get_message' function */
-    const ChfChar* ( *ChfMrsGet )( void*, const int, const int, const ChfChar* default_message );
+    const char* ( *ChfMrsGet )( void*, const int, const int, const char* default_message );
 
 typedef /* Message retrieval 'exit' function */
     void ( *ChfMrsExit )( void* );
@@ -168,20 +164,20 @@ typedef /* Message retrieval 'exit' function */
    ------------------------------------------------------------------------- */
 
 #if defined( CHF_EXTENDED_INFO )
-#  define ChfCondition( module_id )                                                                                                        \
+#  define CHF_Condition( module_id )                                                                                                       \
   ChfGenerate(								\
     module_id,							\
     ChfText(__FILE__), __LINE__,
 
-#  define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, ChfText( __FILE__ ), __LINE__, errno, CHF_ERROR )
+#  define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, ChfText( __FILE__ ), __LINE__, errno, CHF_ERROR )
 
 #else
-#  define ChfCondition( module_id )                                                                                                        \
+#  define CHF_Condition( module_id )                                                                                                       \
   ChfGenerate(								\
     module_id,							\
     CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER,
 
-#  define ChfErrnoCondition ChfGenerate( CHF_ERRNO_SET, CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER, errno, CHF_ERROR )
+#  define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER, errno, CHF_ERROR )
 
 #endif
 
@@ -192,19 +188,19 @@ typedef /* Message retrieval 'exit' function */
    Structured condition handling
    ------------------------------------------------------------------------- */
 
-#define ChfTry                                                                                                                             \
+#define CHF_Try                                                                                                                            \
     {                                                                                                                                      \
-        ChfSigjmp_buf _chf_sigjmp_buf;                                                                                                     \
-        if ( ChfSigsetjmp( _chf_sigjmp_buf, 1 ) == 0 ) {                                                                                   \
+        sigjmp_buf _chf_sigjmp_buf;                                                                                                        \
+        if ( sigsetjmp( _chf_sigjmp_buf, 1 ) == 0 ) {                                                                                      \
             ChfPushHandler( CHF_NULL_HANDLER, _chf_sigjmp_buf, CHF_NULL_POINTER );
 
-#define ChfCatch                                                                                                                           \
+#define CHF_Catch                                                                                                                          \
     ChfPopHandler( CHF_MODULE_ID );                                                                                                        \
     }                                                                                                                                      \
     else                                                                                                                                   \
     {
 
-#define ChfEndTry                                                                                                                          \
+#define CHF_EndTry                                                                                                                         \
     ChfDiscard();                                                                                                                          \
     }                                                                                                                                      \
     }
@@ -225,7 +221,7 @@ typedef /* Message retrieval 'exit' function */
    Function prototypes
    ------------------------------------------------------------------------- */
 /* Generic initialization */
-int ChfInit( const ChfChar* app_name,        /* Application's name */
+int ChfInit( const char* app_name,           /* Application's name */
              const ChfOptions options,       /* Options */
              void* mrs_data,                 /* Message retrieval private data */
              ChfMrsGet mrs_get,              /* 'GetMessage' function */
@@ -235,15 +231,15 @@ int ChfInit( const ChfChar* app_name,        /* Application's name */
              const int exit_code             /* Abnormal exit code */
 );
 /* Initialization with msgcat subsystem */
-int ChfMsgcatInit( const ChfChar* app_name,        /* Application's name */
+int ChfMsgcatInit( const char* app_name,           /* Application's name */
                    const ChfOptions options,       /* Options */
-                   const ChfChar* msgcat_name,     /* Name of the message catalog */
+                   const char* msgcat_name,        /* Name of the message catalog */
                    const int condition_stack_size, /* Size of the condition stack */
                    const int handler_stack_size,   /* Size of the handler stack */
                    const int exit_code             /* Abnormal exit code */
 );
 /* Initialization with static message tables */
-int ChfStaticInit( const ChfChar* app_name,        /* Application's name */
+int ChfStaticInit( const char* app_name,           /* Application's name */
                    const ChfOptions options,       /* Options */
                    const ChfTable* table,          /* Static message table */
                    const size_t table_size,        /* Size of the message table */
@@ -263,16 +259,16 @@ void ChfPushHandler( const int module_id, ChfHandler new_handler, /* Handler to 
 /* Pop a handler */
 void ChfPopHandler( const int module_id );
 /* Build a condition message */
-ChfChar* ChfBuildMessage( const ChfDescriptor* descriptor );
+char* ChfBuildMessage( const ChfDescriptor* descriptor );
 /* Signal the current conditions */
 void ChfSignal( const int module_id );
 /* Discard the current conditions */
 void ChfDiscard( void );
 /* Generate a condition into the stack */
-void ChfGenerate( const int module_id, const ChfChar* file_name, const int line_number, const int condition_code,
-                  const ChfSeverity severity, ... );
+void ChfGenerate( const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
+                  ... );
 /* Retrieve a condition message */
-const ChfChar* ChfGetMessage( const int module_id, const int condition_code, const ChfChar* default_message );
+const char* ChfGetMessage( const int module_id, const int condition_code, const char* default_message );
 /* Retrieve top condition */
 const ChfDescriptor* ChfGetTopCondition( const int module_id );
 

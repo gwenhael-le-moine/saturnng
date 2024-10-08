@@ -28,50 +28,50 @@ void* task( void* arg )
 {
     volatile int phase = 0;
 
-    ChfTry
+    CHF_Try
     {
         phase = 1;
-        ChfCondition 20, CHF_SUCCESS ChfEnd;
+        CHF_Condition 20, CHF_SUCCESS ChfEnd;
         ChfSignal();
 
         phase = 2;
-        ChfCondition 20, CHF_INFO ChfEnd;
+        CHF_Condition 20, CHF_INFO ChfEnd;
         ChfSignal();
 
         phase = 3;
-        ChfCondition 20, CHF_WARNING ChfEnd;
+        CHF_Condition 20, CHF_WARNING ChfEnd;
         ChfSignal();
 
         phase = 4;
-        ChfCondition 20, CHF_ERROR ChfEnd;
+        CHF_Condition 20, CHF_ERROR ChfEnd;
         ChfSignal();
 
         phase = 5;
-        ChfCondition 20, CHF_FATAL ChfEnd;
+        CHF_Condition 20, CHF_FATAL ChfEnd;
         ChfSignal();
 
         /* Should not be reached */
         return ( void* )EXIT_FAILURE;
     }
-    ChfCatch
+    CHF_Catch
     {
         /* Catched an exception; check descriptor */
         const ChfDescriptor* d = ChfGetTopCondition();
         if ( d == NULL || ChfGetNextDescriptor( d ) != NULL || ChfGetModuleId( d ) != CHF_MODULE_ID || ChfGetConditionCode( d ) != 20 )
             return ( void* )EXIT_FAILURE;
     }
-    ChfEndTry;
+    CHF_EndTry;
 
     /* Check that the condition stack actually is empty after catch */
-    ChfTry { const volatile ChfDescriptor* e = ChfGetTopCondition(); }
-    ChfCatch
+    CHF_Try { const volatile ChfDescriptor* e = ChfGetTopCondition(); }
+    CHF_Catch
     {
         const ChfDescriptor* d = ChfGetTopCondition();
         if ( d == NULL || ChfGetNextDescriptor( d ) != NULL || ChfGetModuleId( d ) != CHF_SET ||
              ChfGetConditionCode( d ) != CHF_F_BAD_STATE )
             return ( void* )EXIT_FAILURE;
     }
-    ChfEndTry;
+    CHF_EndTry;
 
     return ( void* )EXIT_SUCCESS;
 }

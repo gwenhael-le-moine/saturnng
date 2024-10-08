@@ -32,11 +32,11 @@ void* task( void* arg )
     printf( "\tThread %d\n", ( int )arg );
 
     /* Generate a condition group and signal it */
-    ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
-    ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
-    ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
-    ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
-    ChfCondition 7, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 7, CHF_INFO, ( int )arg ChfEnd;
 
     /* The sleep() is here to increase contention between threads */
     sleep( 1 );

@@ -532,8 +532,8 @@ const char* SerialInit( void )
     if ( openpty( &master_pty, &slave_pty, NULL, NULL, NULL ) ) {
         pty_name = ( char* )NULL;
 
-        ChfErrnoCondition;
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPENPTY, CHF_FATAL ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPENPTY, CHF_FATAL ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
     } else {
         int cur_flags;
@@ -545,8 +545,8 @@ const char* SerialInit( void )
 
         /* Set O_NONBLOCK on master_pty */
         if ( ( cur_flags = fcntl( master_pty, F_GETFL, 0 ) ) < 0 || fcntl( master_pty, F_SETFL, cur_flags | O_NONBLOCK ) < 0 ) {
-            ChfErrnoCondition;
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_FCNTL, CHF_FATAL ChfEnd;
+            CHF_ErrnoCondition;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_FCNTL, CHF_FATAL ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
@@ -557,29 +557,29 @@ const char* SerialInit( void )
     if ( ( master_pty = open( PTY_MASTER, O_RDWR | O_NONBLOCK ) ) < 0 ) {
         pty_name = ( char* )NULL;
 
-        ChfErrnoCondition;
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
     } else {
         /* Master side opened ok; change permissions and unlock slave side */
 
         if ( grantpt( master_pty ) < 0 ) {
             /* close() may modify errno; save it first */
-            ChfErrnoCondition;
+            CHF_ErrnoCondition;
 
             ( void )close( master_pty );
 
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_GRANTPT, CHF_FATAL ChfEnd;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_GRANTPT, CHF_FATAL ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
         if ( unlockpt( master_pty ) < 0 ) {
             /* close() may modify errno; save it first */
-            ChfErrnoCondition;
+            CHF_ErrnoCondition;
 
             ( void )close( master_pty );
 
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_UNLOCKPT, CHF_FATAL ChfEnd;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_UNLOCKPT, CHF_FATAL ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -589,11 +589,11 @@ const char* SerialInit( void )
         /* Open slave in nonblocking mode */
         if ( ( slave_pty = open( pty_name, O_RDWR | O_NONBLOCK ) ) < 0 ) {
             /* close() may modify errno; save it first */
-            ChfErrnoCondition;
+            CHF_ErrnoCondition;
 
             ( void )close( master_pty );
 
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name ChfEnd;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -605,14 +605,14 @@ const char* SerialInit( void )
            indistinguishable from a real terminal.
         */
         if ( ioctl( slave_pty, I_PUSH, "ptem" ) == -1 ) {
-            ChfErrnoCondition;
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_PUSH, CHF_FATAL, "ptem" ChfEnd;
+            CHF_ErrnoCondition;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_PUSH, CHF_FATAL, "ptem" ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
         if ( ioctl( slave_pty, I_PUSH, "ldterm" ) == -1 ) {
-            ChfErrnoCondition;
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_PUSH, CHF_FATAL, "ldterm" ChfEnd;
+            CHF_ErrnoCondition;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_PUSH, CHF_FATAL, "ldterm" ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
@@ -627,8 +627,8 @@ const char* SerialInit( void )
         struct termios tios;
 
         if ( tcgetattr( slave_pty, &tios ) ) {
-            ChfErrnoCondition;
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_TCGETATTR, CHF_FATAL ChfEnd;
+            CHF_ErrnoCondition;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_TCGETATTR, CHF_FATAL ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 
@@ -652,8 +652,8 @@ const char* SerialInit( void )
         tios.c_cc[ VTIME ] = 0;
 
         if ( tcsetattr( slave_pty, TCSANOW, &tios ) ) {
-            ChfErrnoCondition;
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_F_TCSETATTR, CHF_FATAL ChfEnd;
+            CHF_ErrnoCondition;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_F_TCSETATTR, CHF_FATAL ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
@@ -661,7 +661,7 @@ const char* SerialInit( void )
 
     /* Publish pty name */
     if ( config.verbose ) {
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_I_PTY_NAME, CHF_INFO, pty_name ChfEnd;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_I_PTY_NAME, CHF_INFO, pty_name ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 
@@ -669,7 +669,7 @@ const char* SerialInit( void )
     /* Dummy implementation; do nothing */
     pty_name = "";
 
-    ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_W_NOPTY, CHF_WARNING ChfEnd;
+    CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_W_NOPTY, CHF_WARNING ChfEnd;
     ChfSignal( SERIAL_CHF_MODULE_ID );
 #endif
 
@@ -709,8 +709,8 @@ void SerialClose( void )
     debug1( DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialClose" );
 
     if ( close( slave_pty ) || close( master_pty ) ) {
-        ChfErrnoCondition;
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_E_PTY_CLOSE, CHF_ERROR ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_E_PTY_CLOSE, CHF_ERROR ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 }
@@ -893,7 +893,7 @@ int8 Serial_RBR_Read( void )
         /* 3.2: The HP49 firmware (1.19-4) can read from an empty RRB;
                 this is not harmful, and this warning can be removed.
         */
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs ChfEnd;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
 #endif
 
@@ -1082,7 +1082,7 @@ void Serial_TBR_Write( int8 d )
         Push( trb, d );
     } else {
         /* trb is full; discard character */
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_W_FULL_TRB, CHF_WARNING, tcs ChfEnd;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_W_FULL_TRB, CHF_WARNING, tcs ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 
@@ -1143,8 +1143,8 @@ void HandleSerial( void )
 
     /* Signal a condition upon failure */
     if ( result < 0 ) {
-        ChfErrnoCondition;
-        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_E_TRB_DRAIN, CHF_ERROR ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_E_TRB_DRAIN, CHF_ERROR ChfEnd;
         ChfSignal( SERIAL_CHF_MODULE_ID );
     }
 
@@ -1157,8 +1157,8 @@ void HandleSerial( void )
 
         /* Signal a condition upon failure */
         if ( result < 0 ) {
-            ChfErrnoCondition;
-            ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_E_RRB_CHARGE, CHF_ERROR ChfEnd;
+            CHF_ErrnoCondition;
+            CHF_Condition( SERIAL_CHF_MODULE_ID ) SERIAL_E_RRB_CHARGE, CHF_ERROR ChfEnd;
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
 

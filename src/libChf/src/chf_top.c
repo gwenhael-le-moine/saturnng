@@ -91,7 +91,7 @@ const ChfDescriptor* ChfGetTopCondition( /* Retrieve top condition */
         ChfAbort( CHF_ABORT_INIT );
 
     if ( ( d = chf_context.condition_sp ) == chf_context.condition_base ) {
-        ChfCondition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
+        CHF_Condition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
         ChfSignal( module_id );
     }
 

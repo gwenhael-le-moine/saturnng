@@ -113,9 +113,9 @@ static void ExitMessage( void* private_context )
 
 .- */
 int ChfMsgcatInit(                                 /* Initialization with msgcat subsystem */
-                   const ChfChar* app_name,        /* Application's name */
+                   const char* app_name,           /* Application's name */
                    const ChfOptions options,       /* Options */
-                   const ChfChar* msgcat_name,     /* Name of the message catalog */
+                   const char* msgcat_name,        /* Name of the message catalog */
                    const int condition_stack_size, /* Size of the condition stack */
                    const int handler_stack_size,   /* Size of the handler stack */
                    const int exit_code             /* Abnormal exit code */

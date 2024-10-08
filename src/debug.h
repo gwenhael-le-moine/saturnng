@@ -108,7 +108,7 @@ extern int debug_level;
 #  define debug_preamble( debug_class, condition_code )                                                                                    \
       {                                                                                                                                    \
           if ( debug_level & ( debug_class ) ) {                                                                                           \
-          ChfCondition( CHF_MODULE_ID ) condition_code, CHF_INFO
+          CHF_Condition( CHF_MODULE_ID ) condition_code, CHF_INFO
 
 #  define debug_postamble                                                                                                                  \
       ChfEnd;                                                                                                                              \

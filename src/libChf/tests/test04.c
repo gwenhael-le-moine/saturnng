@@ -32,7 +32,7 @@ ChfAction h1( const ChfDescriptor* c, const ChfState s, ChfPointer p )
     ChfAction action;
 
     if ( c != tdata_p->e || ChfGetNextDescriptor( c ) != tdata_p->d ) {
-        ChfCondition 10, CHF_FATAL ChfEnd;
+        CHF_Condition 10, CHF_FATAL ChfEnd;
         action = CHF_RESIGNAL;
     }
 
@@ -51,7 +51,7 @@ ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
         case CHF_SIGNALING:
             {
                 if ( c != tdata_p->e || ChfGetNextDescriptor( c ) != tdata_p->d || ( tdata_p->phase != 2 && tdata_p->phase != 4 ) ) {
-                    ChfCondition 10, CHF_FATAL ChfEnd;
+                    CHF_Condition 10, CHF_FATAL ChfEnd;
                     action = CHF_RESIGNAL;
                 }
 
@@ -119,14 +119,14 @@ ChfAction h4( const ChfDescriptor* c, const ChfState s, ChfPointer p )
         case CHF_SIGNALING:
             {
                 if ( c != tdata_p->e || ChfGetNextDescriptor( c ) != tdata_p->d ) {
-                    ChfCondition 10, CHF_FATAL ChfEnd;
+                    CHF_Condition 10, CHF_FATAL ChfEnd;
                     action = CHF_RESIGNAL;
                 }
 
                 else {
                     /* This generates a new group and signals it */
                     tdata_p->phase = 3;
-                    ChfCondition 9, CHF_INFO ChfEnd;
+                    CHF_Condition 9, CHF_INFO ChfEnd;
                     ChfSignal();
 
                     if ( tdata_p->phase != 4 )
@@ -134,7 +134,7 @@ ChfAction h4( const ChfDescriptor* c, const ChfState s, ChfPointer p )
                     tdata_p->phase = 5;
 
                     if ( c != tdata_p->e || ChfGetNextDescriptor( c ) != tdata_p->d ) {
-                        ChfCondition 10, CHF_FATAL ChfEnd;
+                        CHF_Condition 10, CHF_FATAL ChfEnd;
                         action = CHF_RESIGNAL;
                     } else
                         action = CHF_CONTINUE;
@@ -162,9 +162,9 @@ void* task( void* arg )
     ChfPushHandler( h1, NULL, ( ChfPointer )( &tdata ) );
 
     /* Generate a condition group and signal it */
-    ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
     tdata.d = ChfGetTopCondition();
-    ChfCondition 7, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 7, CHF_INFO, ( int )arg ChfEnd;
     tdata.e = ChfGetTopCondition();
 
     /* The sleep() is here to increase contention between threads */
@@ -178,9 +178,9 @@ void* task( void* arg )
        and signal it; this checks that the handler has actually been
        removed.
     */
-    ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
     tdata.d = NULL;
-    ChfCondition 7, CHF_INFO, ( int )arg ChfEnd;
+    CHF_Condition 7, CHF_INFO, ( int )arg ChfEnd;
     tdata.e = NULL;
     ChfSignal();
 
@@ -194,9 +194,9 @@ void* task( void* arg )
 
             /* Generate a condition group and signal it */
             tdata.phase = 1;
-            ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
+            CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
             tdata.d = ChfGetTopCondition();
-            ChfCondition 7, CHF_INFO, ( int )arg ChfEnd;
+            CHF_Condition 7, CHF_INFO, ( int )arg ChfEnd;
             tdata.e = ChfGetTopCondition();
 
             /* This does not trigger an unwind */
@@ -204,9 +204,9 @@ void* task( void* arg )
             ChfSignal();
 
             tdata.phase = 3;
-            ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
+            CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
             tdata.d = ChfGetTopCondition();
-            ChfCondition 8, CHF_INFO, ( int )arg ChfEnd;
+            CHF_Condition 8, CHF_INFO, ( int )arg ChfEnd;
             tdata.e = ChfGetTopCondition();
 
             /* This MUST trigger an unwind */
@@ -234,9 +234,9 @@ void* task( void* arg )
         ChfPushHandler( h4, NULL, ( ChfPointer )&tdata );
 
         tdata.phase = 1;
-        ChfCondition 6, CHF_INFO, ( int )arg ChfEnd;
+        CHF_Condition 6, CHF_INFO, ( int )arg ChfEnd;
         tdata.d = ChfGetTopCondition();
-        ChfCondition 7, CHF_INFO, ( int )arg ChfEnd;
+        CHF_Condition 7, CHF_INFO, ( int )arg ChfEnd;
         tdata.e = ChfGetTopCondition();
 
         tdata.phase = 2;

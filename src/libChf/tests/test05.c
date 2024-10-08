@@ -45,7 +45,7 @@ ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
             if ( push_count == H_STACK_SIZE - 2 && ChfGetNextDescriptor( c ) == NULL && ChfGetSeverity( c ) == CHF_FATAL )
                 action = CHF_UNWIND;
             else {
-                ChfCondition 11, CHF_FATAL, push_count, H_STACK_SIZE - 2 ChfEnd;
+                CHF_Condition 11, CHF_FATAL, push_count, H_STACK_SIZE - 2 ChfEnd;
                 action = CHF_RESIGNAL;
             }
         }
@@ -59,7 +59,7 @@ ChfAction h2( const ChfDescriptor* c, const ChfState s, ChfPointer p )
 
 /* Overflow check handler; it unwinds if the CHF_F_COND_STACK_FULL
    condition is signalled exactly after C_STACK_SIZE invocations
-   of ChfCondition, it resignals a modified condition if the
+   of CHF_Condition, it resignals a modified condition if the
    condition is signalled too early
 */
 ChfAction h3( const ChfDescriptor* c, const ChfState s, ChfPointer p )
@@ -73,7 +73,7 @@ ChfAction h3( const ChfDescriptor* c, const ChfState s, ChfPointer p )
             if ( push_count == C_STACK_SIZE && ChfGetNextDescriptor( c ) == NULL && ChfGetSeverity( c ) == CHF_FATAL )
                 action = CHF_UNWIND;
             else {
-                ChfCondition 12, CHF_FATAL, push_count, C_STACK_SIZE ChfEnd;
+                CHF_Condition 12, CHF_FATAL, push_count, C_STACK_SIZE ChfEnd;
                 action = CHF_RESIGNAL;
             }
         }
@@ -129,7 +129,7 @@ void* task( void* arg )
 
         /* Push dummy conditions until an error should occur */
         for ( ; push_count <= C_STACK_SIZE; push_count++ )
-            ChfCondition 1, CHF_INFO ChfEnd;
+            CHF_Condition 1, CHF_INFO ChfEnd;
 
         /* No error? Bad! */
         return ( void* )EXIT_FAILURE;
@@ -152,7 +152,7 @@ void* task( void* arg )
 
         /* Push dummy conditions until an error should occur */
         for ( ; push_count <= C_STACK_SIZE; push_count++ )
-            ChfCondition 1, CHF_INFO ChfEnd;
+            CHF_Condition 1, CHF_INFO ChfEnd;
 
         /* No error? Bad! */
         return ( void* )EXIT_FAILURE;

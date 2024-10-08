@@ -89,7 +89,7 @@ typedef struct ChfHandlerDescriptor_S {
 typedef struct ChfContext_S /* CHF Context */
 {
     ChfState state;                      /* Current CHF state */
-    const ChfChar* app_name;             /* Application's name */
+    const char* app_name;                /* Application's name */
     ChfOptions options;                  /* Options */
     void* mrs_data;                      /* Message retrieval private data */
     ChfMrsGet mrs_get;                   /* 'GetMessage' function */
@@ -102,7 +102,7 @@ typedef struct ChfContext_S /* CHF Context */
     ChfDescriptor* condition_sp;         /* Current condition stack pointer */
     ChfHandlerDescriptor* handler_stack; /* Handler stack */
     ChfHandlerDescriptor* handler_sp;    /* Current handler stack pointer */
-    ChfChar* message_buffer;             /* Message buffer */
+    char* message_buffer;                /* Message buffer */
 } ChfContext;
 
 /* -------------------------------------------------------------------------

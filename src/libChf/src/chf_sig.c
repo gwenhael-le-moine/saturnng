@@ -290,7 +290,7 @@ void ChfSignal( const int module_id )
                         if ( unwind_handler->unwind_context == CHF_NULL_CONTEXT )
                             ChfAbort( CHF_ABORT_SILENT );
                         else
-                            ChfSiglongjmp( unwind_handler->unwind_context, 1 );
+                            siglongjmp( unwind_handler->unwind_context, 1 );
                     }
 
                     break;
@@ -310,7 +310,7 @@ void ChfSignal( const int module_id )
                        otherwise call ChfAbort()
                     */
                     if ( chf_context.handler_sp > chf_context.handler_stack ) {
-                        ChfCondition( module_id ) CHF_F_INVALID_ACTION, CHF_FATAL, handler_result ChfEnd;
+                        CHF_Condition( module_id ) CHF_F_INVALID_ACTION, CHF_FATAL, handler_result ChfEnd;
 
                         ChfSignal( module_id );
                     }

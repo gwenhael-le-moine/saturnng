@@ -80,8 +80,8 @@
 
 .- */
 void ChfGenerate( /* Generate a condition into the stack */
-                  const int module_id, const ChfChar* file_name, const int line_number, const int condition_code,
-                  const ChfSeverity severity, ... )
+                  const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
+                  ... )
 {
     ChfDescriptor* new_descriptor;
     va_list aux_arg;
@@ -121,8 +121,8 @@ void ChfGenerate( /* Generate a condition into the stack */
     }
 
     else {
-        ChfChar def_message[ CHF_DEF_MESSAGE_LENGTH ];
-        ChfChar tmp_message[ CHF_TMP_MESSAGE_LENGTH ];
+        char def_message[ CHF_DEF_MESSAGE_LENGTH ];
+        char tmp_message[ CHF_TMP_MESSAGE_LENGTH ];
 
         new_descriptor->module_id = module_id;
         new_descriptor->condition_code = condition_code;

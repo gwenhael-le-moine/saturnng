@@ -68,10 +68,10 @@ Condition generation and signal
 
 Generating a condition
 
-* ChfCondition::
+* CHF_Condition::
 * ChfEnd::
 * ChfSeverity::
-* ChfErrnoCondition::
+* CHF_ErrnoCondition::
 
 Signaling a condition
 
@@ -98,9 +98,9 @@ Structured condition handling
 
 Chf behavior during structured condition handling
 
-* ChfTry::
-* ChfCatch::
-* ChfEndTry::
+* CHF_Try::
+* CHF_Catch::
+* CHF_EndTry::
 
 Message retrieval
 
@@ -178,7 +178,7 @@ The reentrant flavor of the Chf library is not yet supported.  Multithreaded
 application must serialize Chf accesses themselves.
 
 @item
-The @code{ChfErrnoCondition} macro is not supported, and has no effect.
+The @code{CHF_ErrnoCondition} macro is not supported, and has no effect.
 
 @item
 The default condition handler does not display the condition message
@@ -321,8 +321,8 @@ Size of the handler stack.  This value determines the maximum number of
 active condition handlers the application can have.  A condition handler is
 activated when a @code{ChfPushHandler()} is executed for it, and it is
 deactivated when the corresponding @code{ChfPopHandler()} completes.
-In addition, each execution of the @code{ChfTry} macro also pushes
-a condition handler; the handler is removed when @code{ChfEndTry}
+In addition, each execution of the @code{CHF_Try} macro also pushes
+a condition handler; the handler is removed when @code{CHF_EndTry}
 is executed.
 
 @item exit_code
@@ -697,15 +697,15 @@ When an unusual or noteworthy condition occurs, the application may generate
 a condition that describes it.
 
 @menu
-* ChfCondition::
+* CHF_Condition::
 * ChfEnd::
 * ChfSeverity::
-* ChfErrnoCondition::
+* CHF_ErrnoCondition::
 @end menu
 
-@node ChfCondition, ChfEnd, Generating a condition, Generating a condition
-@subsection ChfCondition
-@deftypefn Macro {} ChfCondition {...}
+@node CHF_Condition, ChfEnd, Generating a condition, Generating a condition
+@subsection CHF_Condition
+@deftypefn Macro {} CHF_Condition {...}
 
 This macro starts the definition of a condition using the current
 application's module specifier @code{CHF_MODULE_ID}; it must be followed by
@@ -759,15 +759,15 @@ there was an attempt to generate a condition while the Chf condition
 @end deftypefn
 
 
-@node ChfEnd, ChfSeverity, ChfCondition, Generating a condition
+@node ChfEnd, ChfSeverity, CHF_Condition, Generating a condition
 @subsection ChfEnd
 @deftypefn Macro {} ChfEnd
 
 This macro terminates the generation of the condition, started
-with @code{ChfCondition}; it must be followed by @code{;}. For example:
+with @code{CHF_Condition}; it must be followed by @code{;}. For example:
 
 @example
-ChfCondition
+CHF_Condition
         <condition_code>, <severity>, <additional_info>
 ChfEnd;
 @end example
@@ -776,7 +776,7 @@ ChfEnd;
 
 @c 2.1, cibrario, 26-May-2000
 @c Expanded description of severity codes
-@node ChfSeverity, ChfErrnoCondition, ChfEnd, Generating a condition
+@node ChfSeverity, CHF_ErrnoCondition, ChfEnd, Generating a condition
 @subsection ChfSeverity
 @deftp {Data type} ChfSeverity
 The severity code of a condition is an enumerated type, and can assume one
@@ -822,9 +822,9 @@ call.  It is usually signaled immediately after generation.
 @end table
 @end deftp
 
-@node ChfErrnoCondition,  , ChfSeverity, Generating a condition
-@subsection ChfErrnoCondition
-@deftypefn Macro {} ChfErrnoCondition
+@node CHF_ErrnoCondition,  , ChfSeverity, Generating a condition
+@subsection CHF_ErrnoCondition
+@deftypefn Macro {} CHF_ErrnoCondition
 
 This macro generates a condition from the current value of the @code{errno}
 variable. The module identifier of the condition is set to the special
@@ -1342,19 +1342,19 @@ the structured condition handling is layered above the general one.
 The syntax establishing a structured condition handler is as follows:
 
 @example
-ChfTry
+CHF_Try
         @{
                 ... body ...
         @}
-ChfCatch
+CHF_Catch
         @{
                 const ChfDescriptor *exc = ChfGetTopCondition();
                 ... condition handler ...
         @}
-ChfEndTry;
+CHF_EndTry;
 @end example
 
-The macros @code{ChfTry}, @code{ChfCatch} and @code{ChfEndTry}
+The macros @code{CHF_Try}, @code{CHF_Catch} and @code{CHF_EndTry}
 expand as follows:
 
 @example
@@ -1392,7 +1392,7 @@ The @code{body} is either a statement or a block of statements (a block
 is shown in the example) to be protected.  If an exception with severity
 equal to @code{CHF_FATAL} is signaled during the execution of
 @code{body}, control is transferred to the @code{condition handler}
-following @code{ChfCatch}.
+following @code{CHF_Catch}.
 
 The handler can then retrieve the condition group associated with the
 exception using @code{ChfGetTopCondition()}, as shown in the example,
@@ -1403,12 +1403,12 @@ and must perform one of the following actions:
 Handle the exception; when the condition handler completes, that is, its
 last statement has been executed, the current condition group is
 automatically discarded and control is transferred to the code that
-follows @code{ChfEndTry}.
+follows @code{CHF_EndTry}.
 @item
 Resignal the exception, possibly after adding one or more conditions to
 it; in this case, the handler explicitly calls @code{ChfSignal()}.
 In response, Chf continues to search for a handler that actually
-handles the exception, in the @code{ChfTry}/@code{ChfCatch} blocks
+handles the exception, in the @code{CHF_Try}/@code{CHF_Catch} blocks
 enclosing the current one, in inner to outer order.  The control
 will never be returned to the resignaling handler.
 @end itemize
@@ -1430,7 +1430,7 @@ automatically signaled immediately after generation and are not reported
 to the caller; they are informational conditions only, and they must not
 disrupt the normal control flow of the application.  Accordingly, the
 structured condition handler is @strong{not} invoked when a
-success/informational condition is signaled in its @code{ChfTry} body.
+success/informational condition is signaled in its @code{CHF_Try} body.
 @item
 @code{CHF_WARNING} conditions generated by a module are usually not
 signaled immediately after generation, but are reported to the
@@ -1440,7 +1440,7 @@ has been at least partially successful; this usually means that
 the disruption of the control flow of the application can be kept to
 a minimum and handled locally.  Accordingly, the structured condition
 handler is @strong{not} invoked when a warning condition
-is signaled in its @code{ChfTry} body.
+is signaled in its @code{CHF_Try} body.
 @item
 @code{CHF_ERROR} conditions generated by a module indicate that the
 module execution has been unsuccessful; they are usually reported to the
@@ -1449,7 +1449,7 @@ indicates that a significant disruption of the control flow of the
 application is required to recover, and that local handling is still
 possible but could not suffice.  Accordingly, the structured condition
 handler is @strong{not} invoked when an error condition is signaled in
-its @code{ChfTry} body.  Notice also that if the @code{ChfTry} body is
+its @code{CHF_Try} body.  Notice also that if the @code{CHF_Try} body is
 not able to locally recover the condition, it can add a @code{CHF_FATAL}
 condition to the condition group and signal the modified group, thus
 triggering the invocation of the structured condition handler.
@@ -1457,7 +1457,7 @@ triggering the invocation of the structured condition handler.
 @code{CHF_FATAL} conditions are usually signaled immediately after
 generation and always require a global recovery action.
 Accordingly, the structured condition handler is
-invoked when a warning condition is signaled in its @code{ChfTry} body.
+invoked when a warning condition is signaled in its @code{CHF_Try} body.
 @end itemize
 
 Notice also that control is transferred to the structured exception
@@ -1471,7 +1471,7 @@ detailed description of its operation.
 
 If no exceptions are raised during the execution of @code{body},
 the @code{condition handler} is skipped and execution continues
-immediately after @code{ChfEndTry}.
+immediately after @code{CHF_EndTry}.
 
 @node Chf behavior during structured condition handling,  , Syntax of structured condition handlers, Structured condition handling
 @section Chf behavior during structured condition handling
@@ -1502,11 +1502,11 @@ immediately returns without doing anything, since Chf is now in state
 @item
 Chf transitions to the @code{CHF_IDLE} state and performs a non-local
 control transfer to the structured condition handler's unwind context;
-this corresponds to the code that follows @code{ChfCatch}.
+this corresponds to the code that follows @code{CHF_Catch}.
 The current condition group is not removed from the condition stack.
 @item
 Since the current condition group has not been removed from the
-condition stack, the code that follows @code{ChfCatch} can freely
+condition stack, the code that follows @code{CHF_Catch} can freely
 access the condition group using @code{ChfGetTopCondition()}
 and @code{ChfGetNextDescriptor()}.
 @item
@@ -1514,7 +1514,7 @@ If any new condition is generated in this phase, it is merged with the
 current condition group; the condition group can be re-signaled at will
 by invoking @code{ChfSignal()}.
 @item
-Immediately after the code that follows @code{ChfCatch} completes,
+Immediately after the code that follows @code{CHF_Catch} completes,
 @code{ChfDiscard()} is automatically invoked to remove the topmost
 condition group from the stack.
 @end itemize
@@ -1531,38 +1531,38 @@ In summary, the following structured condition handling macros
 are currently available:
 
 @menu
-* ChfTry::
-* ChfCatch::
-* ChfEndTry::
+* CHF_Try::
+* CHF_Catch::
+* CHF_EndTry::
 @end menu
 
-@node ChfTry, ChfCatch, Chf behavior during structured condition handling, Chf behavior during structured condition handling
-@subsection ChfTry
-@deftypefn Macro {} ChfTry {...}
+@node CHF_Try, CHF_Catch, Chf behavior during structured condition handling, Chf behavior during structured condition handling
+@subsection CHF_Try
+@deftypefn Macro {} CHF_Try {...}
 
 This macro introduces a new structured condition handling body.
 The body is either a statement or a block of statements to be
 protected: if a @code{CHF_FATAL} exception is signaled during its
 execution, control is transferred to the condition handling code
-following @code{ChfCatch}.
+following @code{CHF_Catch}.
 
 @end deftypefn
 
-@node ChfCatch, ChfEndTry, ChfTry, Chf behavior during structured condition handling
-@subsection ChfCatch
-@deftypefn Macro {} ChfCatch {...}
+@node CHF_Catch, CHF_EndTry, CHF_Try, Chf behavior during structured condition handling
+@subsection CHF_Catch
+@deftypefn Macro {} CHF_Catch {...}
 
-This macro must follow @code{ChfTry} and introduces a new structured
+This macro must follow @code{CHF_Try} and introduces a new structured
 condition handler following it; the handler can be either a statement or
 a block of statements.  If a @code{CHF_FATAL} exception is signaled
-during the execution of the body protected by @code{ChfTry}, control is
-transferred to the condition handling code following @code{ChfCatch}.
+during the execution of the body protected by @code{CHF_Try}, control is
+transferred to the condition handling code following @code{CHF_Catch}.
 
 @end deftypefn
 
-@node ChfEndTry,  , ChfCatch, Chf behavior during structured condition handling
-@subsection ChfEndTry
-@deftypefn Macro {} ChfEndTry
+@node CHF_EndTry,  , CHF_Catch, Chf behavior during structured condition handling
+@subsection CHF_EndTry
+@deftypefn Macro {} CHF_EndTry
 
 This macro marks the end of a body/condition handler pair.
 
@@ -1908,36 +1908,6 @@ messages Chf uses internally. It has the value 2.
 @deftypefn Macro {} CHF_ERRNO_SET
 Contains the integer identifier of the message set containing the condition
 messages for @code{errno} codes. It has the value 3.
-@end deftypefn
-
-@deftypefn Macro {} ChfChar
-This macro is used to make portable declarations of character variables,
-and is mapped into either @code{char} or @code{TCHAR} depending on the
-platform.
-@end deftypefn
-
-@deftypefn Macro {} ChfText (x)
-This macro is used to make portable declarations of character strings,
-and is mapped into either @code{x} or @code{_T(x)} depending on the
-platform.
-@end deftypefn
-
-@deftypefn Macro {} ChfSigjmp_buf
-This macro is mapped into either @code{sigjmp_buf} or @code{jmp_buf},
-depending on whether the platform supports @code{sigjmp_buf}
-contexts or not.
-@end deftypefn
-
-@deftypefn Macro {} ChfSigsetjmp (x,y)
-This macro is mapped into either @code{sigsetjmp()} or @code{setjmp()},
-depending on whether the platform supports @code{sigjmp_buf}
-contexts or not. In the latter case argument @code{x} is ignored.
-@end deftypefn
-
-@deftypefn Macro {} ChfSiglongjmp (x,y)
-This macro is mapped into either @code{siglongjmp()} or @code{longjmp()},
-depending on whether the platform supports @code{sigjmp_buf}
-contexts or not.
 @end deftypefn
 
 @node Other useful functions, Changes since release 1, Other useful macro definitions, Top

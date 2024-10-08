@@ -67,7 +67,7 @@ static int Search( const void* l, const void* r )
     return ( EQ );
 }
 
-static const ChfChar* StGetMessage( void* private_context, const int module_id, const int condition_code, const ChfChar* default_message )
+static const char* StGetMessage( void* private_context, const int module_id, const int condition_code, const char* default_message )
 {
     ChfTable key;
     ChfTable* res;
@@ -126,7 +126,7 @@ static void ExitMessage( void* private_context ) {}
 
 .- */
 int ChfStaticInit(                                 /* Initialization with static message tables */
-                   const ChfChar* app_name,        /* Application's name */
+                   const char* app_name,           /* Application's name */
                    const ChfOptions options,       /* Options */
                    const ChfTable* table,          /* Static message table */
                    const size_t table_size,        /* Size of the message table */

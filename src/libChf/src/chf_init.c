@@ -62,15 +62,15 @@
 
 /* Chf Library Id */
 #ifndef lint
-static ChfChar rcs_lib_id[] = CHF_LIBRARY_ID;
+static char rcs_lib_id[] = CHF_LIBRARY_ID;
 #endif
 
 /* CHF context */
 ChfContext _chf_context;
 
 /* Message separator and severity names for ChfBuildMessage() */
-static const ChfChar separator[] = CHF_MESSAGE_SEPARATOR;
-static const ChfChar* severity_name[] = CHF_SEVERITY_NAMES;
+static const char separator[] = CHF_MESSAGE_SEPARATOR;
+static const char* severity_name[] = CHF_SEVERITY_NAMES;
 
 /* -------------------------------------------------------------------------
    Multithreading support
@@ -233,7 +233,7 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
   1.1, 16-May-1996, creation
 
 .- */
-static ChfChar* scopy( ChfChar* p, const ChfChar* q, ChfChar* p_end )
+static char* scopy( char* p, const char* q, char* p_end )
 {
     size_t q_len = ChfStrlen( q );
     size_t p_avail = p_end - p;
@@ -296,10 +296,10 @@ static ChfChar* scopy( ChfChar* p, const ChfChar* q, ChfChar* p_end )
     - added Win32 support
 
 .- */
-const ChfChar* ChfGetMessage( /* Retrieve a condition message */
-                              const int module_id, const int condition_code, const ChfChar* default_message )
+const char* ChfGetMessage( /* Retrieve a condition message */
+                           const int module_id, const int condition_code, const char* default_message )
 {
-    const ChfChar* message;
+    const char* message;
 
     /* Check that CHF has been correctly initialized */
     if ( chf_context.state == CHF_UNKNOWN )
@@ -346,12 +346,12 @@ const ChfChar* ChfGetMessage( /* Retrieve a condition message */
     - added Win32 support
 
 .- */
-ChfChar* ChfBuildMessage( /* Build a condition message */
-                          const ChfDescriptor* descriptor )
+char* ChfBuildMessage( /* Build a condition message */
+                       const ChfDescriptor* descriptor )
 {
-    ChfChar* tmp_p;
-    ChfChar* tmp_end;
-    ChfChar def_message[ CHF_DEF_MESSAGE_LENGTH ];
+    char* tmp_p;
+    char* tmp_end;
+    char def_message[ CHF_DEF_MESSAGE_LENGTH ];
     ChfSeverity severity;
 
     /* Check that CHF has been correctly initialized */
@@ -452,7 +452,7 @@ ChfChar* ChfBuildMessage( /* Build a condition message */
 
 .- */
 int ChfInit(                                 /* Generic initialization */
-             const ChfChar* app_name,        /* Application's name */
+             const char* app_name,           /* Application's name */
              const ChfOptions options,       /* Options */
              void* mrs_data,                 /* Message retrieval private data */
              ChfMrsGet mrs_get,              /* 'GetMessage' function */
@@ -490,8 +490,8 @@ int ChfInit(                                 /* Generic initialization */
         cc = CHF_F_MALLOC;
     }
 
-    else if ( ( _chf_context.message_buffer = ( ChfChar* )malloc( ( size_t )( CHF_MAX_MESSAGE_LENGTH ) * sizeof( ChfChar ) ) ) ==
-              ( ChfChar* )NULL ) {
+    else if ( ( _chf_context.message_buffer = ( char* )malloc( ( size_t )( CHF_MAX_MESSAGE_LENGTH ) * sizeof( char ) ) ) ==
+              ( char* )NULL ) {
         free( _chf_context.condition_stack );
         free( _chf_context.handler_stack );
         cc = CHF_F_MALLOC;

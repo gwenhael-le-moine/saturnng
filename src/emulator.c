@@ -219,7 +219,7 @@ static void EmulatorLoop( void )
 
         /* Emulator Interrupt Request */
         if ( ( t1_count++ & INT_T1_MASK ) == 0 && emulator_int_req ) {
-            ChfCondition( CPU_CHF_MODULE_ID ) CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
+            CHF_Condition( CPU_CHF_MODULE_ID ) CPU_I_EMULATOR_INT, CHF_INFO ChfEnd;
             ChfSignal( CPU_CHF_MODULE_ID );
         }
 

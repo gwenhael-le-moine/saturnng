@@ -213,10 +213,10 @@ void KeybPress( const char* key )
         unsigned int in_val, out_bit;
 
         if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
-            ChfCondition( MOD_CHF_MODULE_ID ) MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
+            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
             ChfSignal( MOD_CHF_MODULE_ID );
             /* } else if ( out_bit < 0 || out_bit >= OUT_BITS ) { */
-            /*     ChfCondition( MOD_CHF_MODULE_ID ) MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd; */
+            /*     CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd; */
             /*     ChfSignal( MOD_CHF_MODULE_ID ); */
         } else {
             /* Update the cur_in array */
@@ -263,10 +263,10 @@ void KeybRelease( const char* key )
         unsigned int in_val, out_bit;
 
         if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
-            ChfCondition( MOD_CHF_MODULE_ID ) MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
+            CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_BAD_KEY, CHF_WARNING, key ChfEnd;
             ChfSignal( MOD_CHF_MODULE_ID );
             /* } else if ( out_bit < 0 || out_bit >= OUT_BITS ) { */
-            /*     ChfCondition( MOD_CHF_MODULE_ID ) MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd; */
+            /*     CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ChfEnd; */
             /*     ChfSignal( MOD_CHF_MODULE_ID ); */
         } else {
             /* Update the cur_in array */

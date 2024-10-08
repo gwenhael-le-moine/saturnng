@@ -153,13 +153,13 @@ void RomInit49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomInit49" );
 
     if ( ( mod_status_49 = ( struct ModStatus_49* )malloc( sizeof( struct ModStatus_49 ) ) ) == ( struct ModStatus_49* )NULL ) {
-        ChfErrnoCondition;
-        ChfCondition( MOD_CHF_MODULE_ID ) MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_49 ) ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_49 ) ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 
     if ( ReadNibblesFromFile( config.rom_file_name, N_FLASH_SIZE_49, mod_status_49->flash ) ) {
-        ChfCondition( MOD_CHF_MODULE_ID ) MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_ROM_INIT, CHF_FATAL ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 }
@@ -191,8 +191,8 @@ void RomSave49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomSave49" );
 
     if ( WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_file_name ) ) {
-        ChfErrnoCondition;
-        ChfCondition( MOD_CHF_MODULE_ID ) MOD_E_ROM_SAVE, CHF_ERROR ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_ROM_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 }
@@ -296,7 +296,7 @@ void RamInit49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamInit49" );
 
     if ( ReadNibblesFromFile( config.ram_file_name, N_RAM_SIZE_49, mod_status_49->ram ) ) {
-        ChfCondition( MOD_CHF_MODULE_ID ) MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_W_RAM_INIT, CHF_WARNING ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
 
         ( void )memset( mod_status_49->ram, 0, sizeof( mod_status_49->ram ) );
@@ -329,8 +329,8 @@ void RamSave49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamSave49" );
 
     if ( WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_file_name ) ) {
-        ChfErrnoCondition;
-        ChfCondition( MOD_CHF_MODULE_ID ) MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
+        CHF_ErrnoCondition;
+        CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 }
