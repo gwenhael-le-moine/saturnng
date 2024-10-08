@@ -149,24 +149,6 @@ int ChfInit( const char* app_name,           /* Application's name */
              const int exit_code             /* Abnormal exit code */
 );
 
-/* Initialization with msgcat subsystem */
-/* int ChfMsgcatInit( const char* app_name,           /\* Application's name *\/ */
-/*                    const ChfOptions options,       /\* Options *\/ */
-/*                    const char* msgcat_name,        /\* Name of the message catalog *\/ */
-/*                    const int condition_stack_size, /\* Size of the condition stack *\/ */
-/*                    const int handler_stack_size,   /\* Size of the handler stack *\/ */
-/*                    const int exit_code             /\* Abnormal exit code *\/ */
-/* ); */
-
-/* /\* Pop a handler *\/ */
-/* void ChfPopHandler( const int module_id ); */
-
-/* /\* Discard the current conditions *\/ */
-/* void ChfDiscard( void ); */
-
-/* Exit */
-/* void ChfExit( void ); */
-
 /* Abort application */
 void ChfAbort( const int abort_code );
 

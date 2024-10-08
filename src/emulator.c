@@ -632,4 +632,5 @@ void EmulatorExit( enum ExitOption opt )
             /* Default behavior; do nothing */
             break;
     }
+    ChfExit();
 }

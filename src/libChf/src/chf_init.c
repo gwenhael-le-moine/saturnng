@@ -565,62 +565,62 @@ int ChfInit(                                 /* Generic initialization */
     - added multithreading support
 
 .- */
-/* void ChfExit( void ) */
-/* { */
-/*     /\* Check that CHF has been correctly initialized *\/ */
-/* #ifndef _REENTRANT */
-/*     if ( _chf_context.state == CHF_UNKNOWN ) */
-/*         ChfAbort( CHF_ABORT_INIT ); */
-/* #else */
-/*     /\* Reentrant check; lock context_mutex first *\/ */
-/*     if ( pthread_mutex_lock( &context_mutex ) ) */
-/*         ChfAbort( CHF_ABORT_PTHREAD ); */
-/*     if ( _chf_context.state == CHF_UNKNOWN ) { */
-/*         if ( pthread_mutex_unlock( &context_mutex ) ) */
-/*             ChfAbort( CHF_ABORT_PTHREAD ); */
-/*         ChfAbort( CHF_ABORT_INIT ); */
-/*     } */
-/* #endif */
+void ChfExit( void )
+{
+    /* Check that CHF has been correctly initialized */
+#ifndef _REENTRANT
+    if ( _chf_context.state == CHF_UNKNOWN )
+        ChfAbort( CHF_ABORT_INIT );
+#else
+    /* Reentrant check; lock context_mutex first */
+    if ( pthread_mutex_lock( &context_mutex ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
+    if ( _chf_context.state == CHF_UNKNOWN ) {
+        if ( pthread_mutex_unlock( &context_mutex ) )
+            ChfAbort( CHF_ABORT_PTHREAD );
+        ChfAbort( CHF_ABORT_INIT );
+    }
+#endif
 
-/*         /\* Destroy the context associated with this thread now; this is necessary */
-/*            to ensure that the context is actually destroyed when a single-threaded */
-/*            application links with the multithreaded version of Chf: in this case, */
-/*            pthread_exit() is called *after* ChfExit(), the Chf data key no longer */
-/*            exists when pthread_exit() is called and the destructor registered */
-/*            with pthread_key_create() does not take place. */
-/*            The data pointer associated with the Chf data key is set to NULL to */
-/*            avoid any subsequent reactivation of the destructor. */
-/*         *\/ */
-/* #ifdef _REENTRANT */
-/*     DestroyContext( &chf_context ); */
-/*     if ( pthread_setspecific( data_key, ( void* )NULL ) ) { */
-/*         ( void )pthread_mutex_unlock( &context_mutex ); */
-/*         ChfAbort( CHF_ABORT_PTHREAD ); */
-/*     } */
-/* #endif */
+        /* Destroy the context associated with this thread now; this is necessary
+           to ensure that the context is actually destroyed when a single-threaded
+           application links with the multithreaded version of Chf: in this case,
+           pthread_exit() is called *after* ChfExit(), the Chf data key no longer
+           exists when pthread_exit() is called and the destructor registered
+           with pthread_key_create() does not take place.
+           The data pointer associated with the Chf data key is set to NULL to
+           avoid any subsequent reactivation of the destructor.
+        */
+#ifdef _REENTRANT
+    DestroyContext( &chf_context );
+    if ( pthread_setspecific( data_key, ( void* )NULL ) ) {
+        ( void )pthread_mutex_unlock( &context_mutex );
+        ChfAbort( CHF_ABORT_PTHREAD );
+    }
+#endif
 
-/*     /\* Shut down the message retrieval subsystem first *\/ */
-/*     _chf_context.mrs_exit( _chf_context.mrs_data ); */
+    /* Shut down the message retrieval subsystem first */
+    _chf_context.mrs_exit( _chf_context.mrs_data );
 
-/* #ifndef _REENTRANT */
-/*     /\* Free the dynamic memory previously allocated *\/ */
-/*     free( _chf_context.message_buffer ); */
-/*     free( _chf_context.handler_stack ); */
-/*     free( _chf_context.condition_stack ); */
-/* #else */
-/*     /\* Destroy the Chf data key *\/ */
-/*     if ( pthread_key_delete( data_key ) ) */
-/*         ChfAbort( CHF_ABORT_PTHREAD ); */
-/* #endif */
+#ifndef _REENTRANT
+    /* Free the dynamic memory previously allocated */
+    free( _chf_context.message_buffer );
+    free( _chf_context.handler_stack );
+    free( _chf_context.condition_stack );
+#else
+    /* Destroy the Chf data key */
+    if ( pthread_key_delete( data_key ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
+#endif
 
-/*     /\* Reset CHF state to prevent subsequent calls to ChfExit() itself *\/ */
-/*     _chf_context.state = CHF_UNKNOWN; */
+    /* Reset CHF state to prevent subsequent calls to ChfExit() itself */
+    _chf_context.state = CHF_UNKNOWN;
 
-/* #ifdef _REENTRANT */
-/*     if ( pthread_mutex_unlock( &context_mutex ) ) */
-/*         ChfAbort( CHF_ABORT_PTHREAD ); */
-/* #endif */
-/* } */
+#ifdef _REENTRANT
+    if ( pthread_mutex_unlock( &context_mutex ) )
+        ChfAbort( CHF_ABORT_PTHREAD );
+#endif
+}
 
 /* .+
 

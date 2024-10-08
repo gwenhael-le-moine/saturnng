@@ -7,8 +7,7 @@ SRC =	src/chf_init.c \
 	src/chf_abrt.c \
 	src/chf_hdlr.c \
 	src/chf_msgc.c \
-	src/chf_st.c \
-	src/chf_top.c
+	src/chf_st.c
 
 #
 # Target object files

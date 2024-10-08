@@ -168,4 +168,7 @@ void ChfPushHandler( const int module_id, ChfHandler new_handler, /* Handler to 
 /* Signal the current conditions */
 void ChfSignal( const int module_id );
 
+/* Exit */
+void ChfExit( void );
+
 #endif /*!_CHF_H*/
