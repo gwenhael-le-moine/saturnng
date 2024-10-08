@@ -166,7 +166,7 @@ static int repl_c = 0;  /* Entry replacement counter */
 
 #  define IncPerfCtr( x ) x++
 #  define DecPerfCtr( x ) x--
-#  define PrintPerfCtr( x ) debug2( DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
+#  define PrintPerfCtr( x ) debug2( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
 
 #  define PrintCacheStats                                                                                                                  \
       {                                                                                                                                    \
@@ -294,7 +294,7 @@ static void RebuildPageTable( int lo, int hi )
     int prio;
     int winner = -1;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RebuildPageTable" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RebuildPageTable" );
 
     /* Scan all pages in the [lo, hi] range */
     for ( page = lo; page <= hi; page++ ) {
@@ -372,7 +372,7 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 
     int i;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ClearCachingInfo" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ClearCachingInfo" );
 
     for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
         d->cache.config[ i ] = empty;
@@ -420,7 +420,7 @@ static struct ModMap* NewModMap( void )
 {
     struct ModMap* new;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap" );
 
     if ( ( new = ( struct ModMap* )malloc( sizeof( struct ModMap ) ) ) == ( struct ModMap* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -467,7 +467,7 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 {
     struct ModMap* link = d->cache.link; /* Save .link of dest. */
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "CopyModMap" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "CopyModMap" );
 
     *d = *s;
     d->cache.link = link; /* Restore .link */
@@ -510,7 +510,7 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 .- */
 static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 {
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ReplaceModMap" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ReplaceModMap" );
 
     if ( *d == ( struct ModMap* )NULL )
         /* Allocation needed; cache cleared after allocation */
@@ -549,7 +549,7 @@ static void FlushCache( struct ModMap* save )
 {
     struct ModMap *p, *n;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "FlushCache" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "FlushCache" );
 
     /* Scan the cache list; free all elements except that pointed by 'save' */
     p = cache_head;
@@ -610,7 +610,7 @@ static struct ModMap* AccessConfigCache( Address tag )
 {
     int i;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache" );
 
     for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
         if ( mod_map.cache.config[ i ].tag == tag )
@@ -648,7 +648,7 @@ static struct ModMap* AccessUnconfigCache( int i )
 {
     struct ModMap* p;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     p = mod_map.cache.unconfig[ i ];
 
@@ -697,7 +697,7 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
     int v = mod_map.cache.victim;
     struct ModCacheTableEntry* victim = ( struct ModCacheTableEntry* )NULL;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     /* Scan the config cache entries, starting at .cache.victim,
        until a suitable one is found or the index loops around
@@ -767,7 +767,7 @@ static struct ModMap* CheckForLateHit( void )
     struct ModMap* p;
     int i;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     p = cache_head;
 
@@ -827,7 +827,7 @@ static void FreeModMap( struct ModMap* p )
 {
     struct ModMap* n;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "FreeModMap" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "FreeModMap" );
 
     /* Free the struct ModMap pointed by p, preserving the linkage of
        other entries.  The caller must ensure that the entry is not
@@ -894,7 +894,7 @@ static void FreeModMap( struct ModMap* p )
 .- */
 void ModRegisterDescription( ModDescription p )
 {
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModRegisterDescription" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModRegisterDescription" );
     mod_description = p;
 }
 
@@ -942,8 +942,8 @@ void ModInit( void )
 {
     int mod;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModInit" );
-    debug1( DEBUG_C_REVISION, MOD_I_REVISION, MOD_RCS_INFO );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModInit" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_REVISION, MOD_I_REVISION, MOD_RCS_INFO );
 
     /* First, a little sanity check on mod_description: ensure that
        ModRegisterDescription() has been called at least once with a
@@ -956,7 +956,7 @@ void ModInit( void )
 
     /* Scan the mod_description table, initializing all modules */
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        debug1( DEBUG_C_MODULES, MOD_I_INITIALIZING, mod_description[ mod ].name );
+        debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_INITIALIZING, mod_description[ mod ].name );
         mod_description[ mod ].init();
     }
 
@@ -1014,11 +1014,11 @@ void ModSave( void )
 {
     int mod;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModSave" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModSave" );
 
     /* Scan the mod_description table, initializing all modules */
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        debug1( DEBUG_C_MODULES, MOD_I_SAVING, mod_description[ mod ].name );
+        debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_SAVING, mod_description[ mod ].name );
         mod_description[ mod ].save();
     }
 
@@ -1070,7 +1070,7 @@ Address ModGetID( void )
     int mod;
     Address id;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModGetID" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModGetID" );
 
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
@@ -1087,7 +1087,7 @@ Address ModGetID( void )
              ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
              ( mod_description[ mod ].id + ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ? 0 : 1 ) );
 
-    debug1( DEBUG_C_MODULES, MOD_I_GET_ID, id );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_GET_ID, id );
     return id;
 }
 
@@ -1120,13 +1120,13 @@ void ModReset( void )
 {
     int mod;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModReset" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModReset" );
 
     /* Scan the mod_description table, initializing the module
        mapping information mod_map.map_info.
     */
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        debug1( DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[ mod ].name );
+        debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[ mod ].name );
 
         /* Set the module configuration status */
         mod_map.map_info[ mod ].config = mod_description[ mod ].r_config;
@@ -1198,7 +1198,7 @@ void ModConfig( Address config_info )
 
     int mod;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModConfig" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModConfig" );
 
 #ifdef HP49_SUPPORT
     /* 3.2: The HP49 firmware (1.19-4) can generate misaligned config
@@ -1215,7 +1215,7 @@ void ModConfig( Address config_info )
 
         IncPerfCtr( hit_c );
 
-        debug1( DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info );
+        debug1( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info );
         return;
     }
 
@@ -1275,8 +1275,8 @@ void ModConfig( Address config_info )
             */
             mod_map.cache.config_point = 1;
 
-            debug3( DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_CONFIG, mod_description[ mod ].name, mod_map.map_info[ mod ].abs_base_addr,
-                    mod_map.map_info[ mod ].size );
+            debug3( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_CONFIG, mod_description[ mod ].name,
+                    mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size );
         }
 
         /* Set the unconfig cache pointer of module 'mod' to the old ModMap,
@@ -1325,7 +1325,7 @@ void ModUnconfig( Address unconfig_info )
     struct ModMap *nxt, *old;
     int mod;
 
-    debug1( DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig" );
+    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig" );
 
     /* Determine the module to unconfigure */
     if ( ( mod = mod_map.page_table[ ModPage( unconfig_info ) ].index ) == MOD_NO_MOD_INDEX ) {
@@ -1346,7 +1346,7 @@ void ModUnconfig( Address unconfig_info )
 
             IncPerfCtr( hit_c );
 
-            debug0( DEBUG_C_MOD_CACHE, MOD_I_CACHED_UNCONFIG );
+            debug0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_UNCONFIG );
             return;
         }
 
@@ -1397,7 +1397,7 @@ void ModUnconfig( Address unconfig_info )
             mod_map_ptr = nxt;
 
             IncPerfCtr( lhit_c );
-            debug0( DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT );
+            debug0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT );
         } else {
             /* Continue to use the new map with no caching information,
                and hope that further configuration activities will link it
@@ -1412,10 +1412,10 @@ void ModUnconfig( Address unconfig_info )
 
             IncPerfCtr( miss_c );
 
-            debug0( DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS );
+            debug0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS );
 
-            debug3( DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG, mod_description[ mod ].name, mod_map.map_info[ mod ].abs_base_addr,
-                    mod_map.map_info[ mod ].size );
+            debug3( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG, mod_description[ mod ].name,
+                    mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size );
         }
     }
 }

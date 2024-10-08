@@ -147,7 +147,7 @@ static char* NameFromD1( void )
 */
 static void SetSpeed( Nibble function_code )
 {
-    debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetSpeed" );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetSpeed" );
 
 #ifndef REAL_CPU_SPEED
     ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_SPEED, CHF_ERROR );
@@ -226,8 +226,8 @@ static void KgetContinuation( int proceed, char* file_name )
         int end_addr = R2int( cpu_status.C );
         const char* bin_hdr = BinaryHeader();
 
-        debug1( DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
+        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
+        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
             ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
@@ -256,8 +256,8 @@ static void SendContinuation( int proceed, char* file_name )
         int end_addr = R2int( cpu_status.C );
         const char* bin_hdr = BinaryHeader();
 
-        debug1( DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
+        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
+        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
             ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
@@ -281,7 +281,7 @@ static void SendContinuation( int proceed, char* file_name )
 typedef void ( *FsbContinuation )( int proceed, char* file_name );
 static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
 {
-    debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetupXfer" );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetupXfer" );
 
     if ( CpuHaltAllowed() ) {
         /* char* fsb_title = XtNewString( ChfGetMessage( CHF_MODULE_ID, msg, def_msg ) ); */
@@ -308,7 +308,7 @@ static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
 */
 static void Kget( Nibble function_code )
 {
-    debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "Kget" );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "Kget" );
 
     /* Setup File Selection Box if transfers are *not* in batch mode */
     if ( !config.batchXfer )
@@ -325,8 +325,8 @@ static void Kget( Nibble function_code )
         int end_addr = R2int( cpu_status.C );
         const char* bin_hdr = BinaryHeader();
 
-        debug1( DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
+        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
+        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
             ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
@@ -340,7 +340,7 @@ static void Kget( Nibble function_code )
 */
 static void Send( Nibble function_code )
 {
-    debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "Send" );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "Send" );
 
     /* Setup File Selection Box if transfers are *not* in batch mode */
     if ( !config.batchXfer )
@@ -357,8 +357,8 @@ static void Send( Nibble function_code )
         int end_addr = R2int( cpu_status.C );
         const char* bin_hdr = BinaryHeader();
 
-        debug1( DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
+        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
+        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
 
         if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
             ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
@@ -415,8 +415,8 @@ static const XFunc function[] = {
 .- */
 void ExtendedFunction( Nibble function_code )
 {
-    debug1( DEBUG_C_TRACE, X_FUNC_I_CALLED, "ExtendedFunction" );
-    debug1( DEBUG_C_X_FUNC, X_FUNC_I_CODE, function_code );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "ExtendedFunction" );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_CODE, function_code );
 
     /* Some sanity checks, first */
     if ( function_code < 0 || function_code >= N_X_FUNC || function[ ( int )function_code ] == ( XFunc )NULL ) {

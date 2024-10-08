@@ -138,7 +138,7 @@ static int debug( void )
     Address addr;
     if ( ReadHexAddress( &addr ) )
         return FAILED;
-    SetDebugLevel( ( int )addr );
+    config.debug_level |= ( int )addr;
     return OK;
 }
 

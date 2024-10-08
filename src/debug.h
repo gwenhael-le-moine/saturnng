@@ -102,37 +102,22 @@
 
 .- */
 
-extern int debug_level;
+#define debug_preamble( module_id, debug_class, condition_code )                                                                           \
+    {                                                                                                                                      \
+        if ( config.debug_level > 0 && config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
+#define debug_postamble( module_id ) );                                                                                                  \
+    ChfSignal( module_id );                                                                                                                \
+    }                                                                                                                                      \
+    }
 
-#ifdef DEBUG
-#  define debug_preamble( debug_class, condition_code )                                                                                    \
-      {                                                                                                                                    \
-          if ( debug_level & ( debug_class ) ) {                                                                                           \
-          ChfGenerate( CHF_MODULE_ID, __FILE__, __LINE__, condition_code, CHF_INFO
-
-#  define debug_postamble                                                                                                                  \
-      );                                                                                                                                   \
-      ChfSignal( CHF_MODULE_ID );                                                                                                          \
-      }                                                                                                                                    \
-      }
-
-#  define debug0( debug_class, condition_code ) debug_preamble( debug_class, condition_code ) debug_postamble
-
-#  define debug1( debug_class, condition_code, arg_1 ) debug_preamble( debug_class, condition_code ), arg_1 debug_postamble
-
-#  define debug2( debug_class, condition_code, arg_1, arg_2 ) debug_preamble( debug_class, condition_code ), arg_1, arg_2 debug_postamble
-
-#  define debug3( debug_class, condition_code, arg_1, arg_2, arg_3 )                                                                       \
-      debug_preamble( debug_class, condition_code ), arg_1, arg_2, arg_3 debug_postamble
-
-#else
-
-#  define debug0( debug_class, condition_code )
-#  define debug1( debug_class, condition_code, arg_1 )
-#  define debug2( debug_class, condition_code, arg_1, arg_2 )
-#  define debug3( debug_class, condition_code, arg_1, arg_2, arg_3 )
-
-#endif
+#define debug0( module_id, debug_class, condition_code )                                                                                   \
+    debug_preamble( module_id, debug_class, condition_code ) debug_postamble( module_id )
+#define debug1( module_id, debug_class, condition_code, arg_1 )                                                                            \
+    debug_preamble( module_id, debug_class, condition_code ), arg_1 debug_postamble( module_id )
+#define debug2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                     \
+    debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 debug_postamble( module_id )
+#define debug3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                              \
+    debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 debug_postamble( module_id )
 
 /*---------------------------------------------------------------------------
         Debug classes
@@ -158,11 +143,5 @@ extern int debug_level;
 
 #define DEBUG_W_NOT_SUPPORTED 201 /* Debug not supported */
 #define DEBUG_W_BAD_CMD 202       /* Invalid command */
-
-/*---------------------------------------------------------------------------
-        Function prototypes
-  ---------------------------------------------------------------------------*/
-
-void SetDebugLevel( int new_level );
 
 #endif /*!_DEBUG_H*/

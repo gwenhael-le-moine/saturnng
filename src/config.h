@@ -128,16 +128,6 @@
 
 #include "ui4x/config.h"
 
-/* DEBUG:
-   Define this symbol to include the debugging code for all source modules
-   in the executable image.
-
-   At run-time, the debug level can be set using the function SetDebugLevel();
-   the initial debug level is set to the value of the symbol DEBUG_LEVEL,
-   if it is defined, otherwise it is set to zero.
-*/
-#define DEBUG
-
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the
    number of 128 Kbyte banks the port must have and must be a power of 2

@@ -129,7 +129,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
     int st = DISK_IO_S_OK;
 
-    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadObjectFromFile" );
+    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadObjectFromFile" );
 
     /* Save first nibbles of target space into save_area */
     for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
@@ -230,7 +230,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
     int st = DISK_IO_S_OK;
 
-    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile" );
+    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile" );
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );

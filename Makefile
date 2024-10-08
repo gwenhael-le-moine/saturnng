@@ -38,7 +38,6 @@ NCURSESLIBS = $(shell pkg-config --libs ncursesw)
 FULL_WARNINGS = no
 
 DOTOS = src/cpu.o \
-	src/debug.o \
 	src/dis.o \
 	src/disk_io.o \
 	src/disk_io_obj.o \

@@ -16,7 +16,7 @@
 #include "../debug.h"
 
 static config_t config = {
-    .progname = ( char* )"ui4x",
+    .progname = ( char* )"saturn4xxx",
 
     .model = MODEL_48GX,
     .throttle = false,
@@ -52,7 +52,8 @@ static config_t config = {
     /* .ram_file_name, */
     /* .port_1_file_name, */
     /* .port_2_file_name, */
-    /* .hw = ( char* )"hp48", /\* 2.1: Hardware configuration (unused) *\/ */
+
+    .debug_level = DEBUG_C_NONE,
 };
 
 static void print_config( void )
@@ -289,40 +290,40 @@ config_t* config_init( int argc, char* argv[] )
                 /*     break; */
 
             case 38601:
-                SetDebugLevel( DEBUG_C_X11 );
+                config.debug_level |= DEBUG_C_X11;
                 break;
             case 38602:
-                SetDebugLevel( DEBUG_C_REVISION );
+                config.debug_level |= DEBUG_C_REVISION;
                 break;
             case 38603:
-                SetDebugLevel( DEBUG_C_X_FUNC );
+                config.debug_level |= DEBUG_C_X_FUNC;
                 break;
             case 38604:
-                SetDebugLevel( DEBUG_C_FLASH );
+                config.debug_level |= DEBUG_C_FLASH;
                 break;
             case 38605:
-                SetDebugLevel( DEBUG_C_IMPLEMENTATION );
+                config.debug_level |= DEBUG_C_IMPLEMENTATION;
                 break;
             case 38606:
-                SetDebugLevel( DEBUG_C_MOD_CACHE );
+                config.debug_level |= DEBUG_C_MOD_CACHE;
                 break;
             case 38607:
-                SetDebugLevel( DEBUG_C_SERIAL );
+                config.debug_level |= DEBUG_C_SERIAL;
                 break;
             case 38608:
-                SetDebugLevel( DEBUG_C_TIMERS );
+                config.debug_level |= DEBUG_C_TIMERS;
                 break;
             case 38609:
-                SetDebugLevel( DEBUG_C_INT );
+                config.debug_level |= DEBUG_C_INT;
                 break;
             case 38610:
-                SetDebugLevel( DEBUG_C_DISPLAY );
+                config.debug_level |= DEBUG_C_DISPLAY;
                 break;
             case 38611:
-                SetDebugLevel( DEBUG_C_MODULES );
+                config.debug_level |= DEBUG_C_MODULES;
                 break;
             case 38612:
-                SetDebugLevel( DEBUG_C_TRACE );
+                config.debug_level |= DEBUG_C_TRACE;
                 break;
 
             default:

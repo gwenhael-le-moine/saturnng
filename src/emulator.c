@@ -168,7 +168,7 @@ static void EmulatorLoop( void )
     int inner_loop = cpu_status.inner_loop;
     int t1_count = 0;
 
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "EmulatorLoop" );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "EmulatorLoop" );
 
     /* Ignore past interrupt requests */
     emulator_int_req = false;
@@ -186,7 +186,7 @@ static void EmulatorLoop( void )
             /* T2 update */
             if ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
                 if ( --mod_status.hdw.t2_val == ( int )0xFFFFFFFF ) {
-                    debug1( DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
+                    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
 
                     mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
 
@@ -202,7 +202,7 @@ static void EmulatorLoop( void )
         /* T1 update */
         mod_status.hdw.t1_val = ( mod_status.hdw.t1_val - 1 ) & NIBBLE_MASK;
         if ( mod_status.hdw.t1_val == 0xF ) {
-            debug1( DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl );
 
             mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
 
@@ -352,9 +352,9 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                 int ela;
                                 int ela_ticks;
 
-                                debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", mod_status.hdw.t1_ctrl,
+                                debug3( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", mod_status.hdw.t1_ctrl,
                                         mod_status.hdw.t1_val );
-                                debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", mod_status.hdw.t2_ctrl,
+                                debug3( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", mod_status.hdw.t2_ctrl,
                                         mod_status.hdw.t2_val );
 
                                 /* Determine which timer will expire first */
@@ -362,7 +362,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                     /* T1 will do something on expiration */
                                     mst = ( ( unsigned long )mod_status.hdw.t1_val + 1 ) * T1_MS_MULTIPLIER;
 
-                                    debug2( DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T1", mst );
+                                    debug2( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T1", mst );
 
                                     if ( mst < ms )
                                         ms = mst;
@@ -373,7 +373,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                     /* T2 is running and will do something on expiration */
                                     mst = ( ( unsigned long )mod_status.hdw.t2_val + 1 ) / T2_MS_DIVISOR;
 
-                                    debug2( DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T2", mst );
+                                    debug2( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T2", mst );
 
                                     if ( mst < ms )
                                         ms = mst;
@@ -390,7 +390,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                    - any X Event occurs (possibly clearing the shutdown)
                                    - the given timeout expires
                                 */
-                                debug1( DEBUG_C_TIMERS, CPU_I_IDLE_X_LOOP, ms );
+                                debug1( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_IDLE_X_LOOP, ms );
                                 // IdleXLoop( ms );
                                 usleep( ms );
 
@@ -402,14 +402,14 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                 /* Update start_idle here to contain lag */
                                 start_idle = end_idle;
 
-                                debug1( DEBUG_C_TIMERS, CPU_I_ELAPSED, ela );
+                                debug1( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_ELAPSED, ela );
 
                                 /* Update timers and act accordingly */
                                 ela_ticks = ( ( ela + frac_t1 ) + T1_INTERVAL / 2 ) / T1_INTERVAL;
                                 frac_t1 = ( ela + frac_t1 ) - ela_ticks * T1_INTERVAL;
 
                                 if ( ela_ticks > mod_status.hdw.t1_val ) {
-                                    debug1( DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl );
+                                    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl );
 
                                     mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
 
@@ -427,7 +427,7 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                     frac_t2 = ( ela + frac_t2 ) - ela_ticks * T2_INTERVAL;
 
                                     if ( ela_ticks > mod_status.hdw.t2_val ) {
-                                        debug1( DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
+                                        debug1( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl );
 
                                         mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
 
@@ -442,8 +442,10 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
                                 }
                             }
 
-                            debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", mod_status.hdw.t1_ctrl, mod_status.hdw.t1_val );
-                            debug3( DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", mod_status.hdw.t2_ctrl, mod_status.hdw.t2_val );
+                            debug3( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", mod_status.hdw.t1_ctrl,
+                                    mod_status.hdw.t1_val );
+                            debug3( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", mod_status.hdw.t2_ctrl,
+                                    mod_status.hdw.t2_val );
 
                             act = CHF_CONTINUE;
                         }
@@ -510,7 +512,7 @@ void Emulator( void )
 {
     jmp_buf unwind_context;
 
-    debug1( DEBUG_C_TRACE, CPU_I_CALLED, "Emulator" );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "Emulator" );
 
     /* Setup unwind_context */
     if ( setjmp( unwind_context ) == 0 ) {

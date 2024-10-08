@@ -106,7 +106,7 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
     int by;
     int st = DISK_IO_S_OK;
 
-    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile" );
+    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile" );
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -164,7 +164,7 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
     int by;
     int st = DISK_IO_S_OK;
 
-    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile" );
+    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile" );
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -219,7 +219,7 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
     FILE* f;
     int st = DISK_IO_S_OK;
 
-    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile" );
+    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile" );
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -267,7 +267,7 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
     FILE* f;
     int st = DISK_IO_S_OK;
 
-    debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile" );
+    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile" );
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );

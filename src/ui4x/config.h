@@ -47,6 +47,8 @@ typedef struct {
     char* ram_file_name;
     char* port_1_file_name;
     char* port_2_file_name;
+
+    int debug_level;
 } config_t;
 
 /*************/
