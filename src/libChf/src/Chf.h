@@ -154,59 +154,19 @@ typedef /* Message retrieval 'exit' function */
    Condition generation macros
    ------------------------------------------------------------------------- */
 
-#if defined( CHF_EXTENDED_INFO )
-#  define CHF_Condition( module_id )                                                                                                       \
+#define CHF_Condition( module_id )                                                                                                         \
   ChfGenerate(								\
     module_id,							\
     __FILE__, __LINE__,
 
-#  define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR )
-
-#else
-#  define CHF_Condition( module_id )                                                                                                       \
-  ChfGenerate(								\
-    module_id,							\
-    CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER,
-
-#  define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, CHF_UNKNOWN_FILE_NAME, CHF_UNKNOWN_LINE_NUMBER, errno, CHF_ERROR )
-
-#endif
+#define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR )
 
 #define ChfEnd                                                                                                                             \
   )
 
 /* -------------------------------------------------------------------------
-   Structured condition handling
-   ------------------------------------------------------------------------- */
-
-#define CHF_Try                                                                                                                            \
-    {                                                                                                                                      \
-        sigjmp_buf _chf_sigjmp_buf;                                                                                                        \
-        if ( sigsetjmp( _chf_sigjmp_buf, 1 ) == 0 ) {                                                                                      \
-            ChfPushHandler( CHF_NULL_HANDLER, _chf_sigjmp_buf, CHF_NULL_POINTER );
-
-#define CHF_Catch                                                                                                                          \
-    ChfPopHandler( CHF_MODULE_ID );                                                                                                        \
-    }                                                                                                                                      \
-    else                                                                                                                                   \
-    {
-
-#define CHF_EndTry                                                                                                                         \
-    ChfDiscard();                                                                                                                          \
-    }                                                                                                                                      \
-    }
-
-/* -------------------------------------------------------------------------
    Function prototypes
    ------------------------------------------------------------------------- */
-/* used above */
-
-/* Pop a handler */
-void ChfPopHandler( const int module_id );
-
-/* Discard the current conditions */
-void ChfDiscard( void );
-
 /* Generate a condition into the stack */
 void ChfGenerate( const int module_id, const char* file_name, const int line_number, const int condition_code, const ChfSeverity severity,
                   ... );
@@ -223,14 +183,14 @@ int ChfStaticInit( const char* app_name,           /* Application's name */
                    const int handler_stack_size,   /* Size of the handler stack */
                    const int exit_code             /* Abnormal exit code */
 );
+
 /* Push a new handler into the stack */
 void ChfPushHandler( const int module_id, ChfHandler new_handler, /* Handler to be added */
                      void* unwind_context,                        /* Unwind context */
                      void* handler_context                        /* Private handler context */
 );
+
 /* Signal the current conditions */
 void ChfSignal( const int module_id );
-/* Retrieve a condition message */
-const char* ChfGetMessage( const int module_id, const int condition_code, const char* default_message );
 
 #endif /*!_CHF_H*/

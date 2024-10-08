@@ -1559,12 +1559,12 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
     offset = ModOffset( addr );
 
     if ( ( mod = mod_map.page_table[ page ].index ) == MOD_NO_MOD_INDEX )
-        sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_NOT_MAPPED, "" ), addr );
+        sprintf( ob, "A[%05X] -> *Not Mapped*", addr );
     else {
         Address rel_addr;
         rel_addr = mod_map.page_table[ page ].rel_base_addr | offset;
 
-        sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_MAPPED, "" ), addr, mod_description[ mod ].name, rel_addr );
+        sprintf( ob, "A[%05X] -> M[%s] R[%05X]", addr, mod_description[ mod ].name, rel_addr );
     }
 
     ChfSignal( MOD_CHF_MODULE_ID );
@@ -1595,16 +1595,14 @@ void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] )
 {
     int mod;
 
-    sprintf( ob, "%s\n", ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_TABLE_TITLE, "" ) );
+    sprintf( ob, "%s\n", "Device\t\t\tAddress\tSize\tStatus" );
     ob += strlen( ob );
 
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        sprintf( ob, ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_TABLE_ROW, "" ), mod_description[ mod ].name,
-                 mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size,
-                 mod_map.map_info[ mod ].config == MOD_CONFIGURED ? ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_CONFIGURED, "C" )
-                                                                  : ( mod_map.map_info[ mod ].config == MOD_SIZE_CONFIGURED
-                                                                          ? ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_SZ_CONFIGURED, "S" )
-                                                                          : ChfGetMessage( CHF_MODULE_ID, MOD_M_MAP_UNCONFIGURED, "U" ) ) );
+        sprintf( ob, "%s\t%05X\t%05X\t%s", mod_description[ mod ].name, mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size,
+                 mod_map.map_info[ mod ].config == MOD_CONFIGURED
+                     ? "Configured"
+                     : ( mod_map.map_info[ mod ].config == MOD_SIZE_CONFIGURED ? "Size_configured" : "*Unconfigured*" ) );
 
         strcat( ob, "\n" );
         ob += strlen( ob );
