@@ -7,6 +7,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <libgen.h>
 
 #include <getopt.h>
 
@@ -410,7 +411,21 @@ config_t* config_init( int argc, char* argv[] )
             break;
     }
 
-    config.progname = strdup( argv[ 0 ] );
+    config.progname = basename( strdup( argv[ 0 ] ) );
+    switch ( config.model ) {
+        case MODEL_48GX:
+            strcat( config.progname, "48gx" );
+            break;
+        case MODEL_48SX:
+            strcat( config.progname, "48sx" );
+            break;
+        case MODEL_49G:
+            strcat( config.progname, "49g" );
+            break;
+        case MODEL_40G:
+            strcat( config.progname, "40g" );
+            break;
+    }
 
     if ( config.verbose ) {
         print_config();
