@@ -206,27 +206,27 @@ void ChfPushHandler( /* Push a new handler into the stack */
     - improved documentation
 
 .- */
-void ChfPopHandler( /* Pop a handler */
-                    const int module_id )
-{
-    /* Make sure that CHF has been correctly initialized and is idle */
-    if ( chf_context.state == CHF_UNKNOWN )
-        ChfAbort( CHF_ABORT_INIT );
+/* void ChfPopHandler( /\* Pop a handler *\/ */
+/*                     const int module_id ) */
+/* { */
+/*     /\* Make sure that CHF has been correctly initialized and is idle *\/ */
+/*     if ( chf_context.state == CHF_UNKNOWN ) */
+/*         ChfAbort( CHF_ABORT_INIT ); */
 
-    if ( chf_context.state != CHF_IDLE ) {
-        CHF_Condition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd;
+/*     if ( chf_context.state != CHF_IDLE ) { */
+/*         CHF_Condition( module_id ) CHF_F_BAD_STATE, CHF_FATAL ChfEnd; */
 
-        ChfSignal( module_id );
-    }
+/*         ChfSignal( module_id ); */
+/*     } */
 
-    /* Check if the handler stack is empty */
-    else if ( chf_context.handler_sp == chf_context.handler_stack ) {
-        CHF_Condition( module_id ) CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ChfEnd;
+/*     /\* Check if the handler stack is empty *\/ */
+/*     else if ( chf_context.handler_sp == chf_context.handler_stack ) { */
+/*         CHF_Condition( module_id ) CHF_F_HDLR_STACK_EMPTY, CHF_FATAL ChfEnd; */
 
-        ChfSignal( module_id );
-    }
+/*         ChfSignal( module_id ); */
+/*     } */
 
-    /* Discard the topmost condition handler */
-    else
-        --chf_context.handler_sp;
-}
+/*     /\* Discard the topmost condition handler *\/ */
+/*     else */
+/*         --chf_context.handler_sp; */
+/* } */

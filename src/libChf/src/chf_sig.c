@@ -353,15 +353,15 @@ void ChfSignal( const int module_id )
   1.1, 17-May-1996, creation
 
 .- */
-void ChfDiscard( /* Discard the current conditions */
-                 void )
-{
-    /* Check that CHF has been correctly initialized */
-    if ( chf_context.state == CHF_UNKNOWN )
-        ChfAbort( CHF_ABORT_INIT );
+/* void ChfDiscard( /\* Discard the current conditions *\/ */
+/*                  void ) */
+/* { */
+/*     /\* Check that CHF has been correctly initialized *\/ */
+/*     if ( chf_context.state == CHF_UNKNOWN ) */
+/*         ChfAbort( CHF_ABORT_INIT ); */
 
-    /* Reset the current condition stack pointer to the current condition
-       stack base pointer
-    */
-    chf_context.condition_sp = chf_context.condition_base;
-}
+/*     /\* Reset the current condition stack pointer to the current condition */
+/*        stack base pointer */
+/*     *\/ */
+/*     chf_context.condition_sp = chf_context.condition_base; */
+/* } */
