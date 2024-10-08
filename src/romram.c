@@ -138,7 +138,7 @@ void RomInit( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomInit" );
 
     if ( ( mod_status_48 = ( struct ModStatus_48* )malloc( sizeof( struct ModStatus_48 ) ) ) == ( struct ModStatus_48* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_48 ) ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -294,7 +294,7 @@ void RamInit( void )
 .notes	      :
   1.1, 11-Feb-1998, creation
   2.4, 12-Sep-2000, update
-    - upon failure, added push of CHF_ErrnoCondition to condition stack.
+    - upon failure, added push of ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR ) to condition stack.
 
 .- */
 void RamSave( void )
@@ -302,7 +302,7 @@ void RamSave( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamSave" );
 
     if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, config.ram_file_name ) ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -557,7 +557,7 @@ void Ce2Init( void )
         else {
             new_status &= ~CE2_CARD_WE;
 
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( MOD_CHF_MODULE_ID ) MOD_I_PORT_1_WP, CHF_INFO ChfEnd;
             ChfSignal( MOD_CHF_MODULE_ID );
         }
@@ -602,7 +602,7 @@ void Ce2Save( void )
 
     /* Attempt to save only if port is write-enabled */
     if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, config.port_1_file_name ) ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_PORT_1_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -716,7 +716,7 @@ void NCe3Init( void )
         else {
             new_status &= ~NCE3_CARD_WE;
 
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( MOD_CHF_MODULE_ID ) MOD_I_PORT_2_WP, CHF_INFO ChfEnd;
             ChfSignal( MOD_CHF_MODULE_ID );
         }
@@ -768,7 +768,7 @@ void NCe3Save( void )
     /* Attempt to save only if port is write-enabled */
     if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) &&
          WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port_2_file_name ) ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_PORT_2_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }

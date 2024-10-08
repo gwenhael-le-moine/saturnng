@@ -136,7 +136,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
         save_area[ i ] = ReadNibble( cur );
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         /* Check and skip header */
@@ -144,7 +144,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
             by = getc( f );
 
             if ( by == EOF ) {
-                CHF_ErrnoCondition;
+                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                 CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
                 break;
             } else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
@@ -171,7 +171,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
             /* Check why getc() failed */
             if ( ferror( f ) && !feof( f ) ) {
-                CHF_ErrnoCondition;
+                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                 CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
             }
 
@@ -233,13 +233,13 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
     debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile" );
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         /* Write header; replace wildcard character '?' with 'S' */
         for ( i = 0; i < ( int )hdr_len; i++ ) {
             if ( putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f ) == EOF ) {
-                CHF_ErrnoCondition;
+                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                 CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                 break;
             }
@@ -254,7 +254,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
                 by |= ( int )ReadNibble( cur++ ) << 4;
 
                 if ( putc( by, f ) == EOF ) {
-                    CHF_ErrnoCondition;
+                    ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                     CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                     break;
                 }
@@ -265,7 +265,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
                 by = ( int )ReadNibble( cur++ );
 
                 if ( putc( by, f ) == EOF ) {
-                    CHF_ErrnoCondition;
+                    ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                     CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                 }
             }
@@ -273,7 +273,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
         /* Close the output file anyway */
         if ( fclose( f ) == EOF ) {
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
         }
     }

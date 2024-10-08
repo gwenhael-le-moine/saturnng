@@ -159,8 +159,6 @@ typedef /* Message retrieval 'exit' function */
     module_id,							\
     __FILE__, __LINE__,
 
-#define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR )
-
 #define ChfEnd                                                                                                                             \
   )
 

@@ -153,7 +153,7 @@ void RomInit49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomInit49" );
 
     if ( ( mod_status_49 = ( struct ModStatus_49* )malloc( sizeof( struct ModStatus_49 ) ) ) == ( struct ModStatus_49* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_49 ) ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -191,7 +191,7 @@ void RomSave49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RomSave49" );
 
     if ( WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_file_name ) ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_ROM_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -329,7 +329,7 @@ void RamSave49( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "RamSave49" );
 
     if ( WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_file_name ) ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_E_RAM_SAVE, CHF_ERROR ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }

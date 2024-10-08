@@ -423,7 +423,7 @@ static struct ModMap* NewModMap( void )
     debug1( DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap" );
 
     if ( ( new = ( struct ModMap* )malloc( sizeof( struct ModMap ) ) ) == ( struct ModMap* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( MOD_CHF_MODULE_ID ) MOD_F_MAP_ALLOC, CHF_FATAL ChfEnd;
         ChfSignal( MOD_CHF_MODULE_ID );
     }

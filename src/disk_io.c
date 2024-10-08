@@ -109,14 +109,14 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
     debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile" );
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         for ( i = 0; i < size; ) {
             by = getc( f );
 
             if ( by == -1 ) {
-                CHF_ErrnoCondition;
+                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                 CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_GETC, CHF_ERROR, name ChfEnd;
                 break;
             }
@@ -167,7 +167,7 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
     debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile" );
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         for ( i = 0; i < size; ) {
@@ -175,14 +175,14 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
             by |= ( int )src[ i++ ] << 4;
 
             if ( putc( by, f ) == EOF ) {
-                CHF_ErrnoCondition;
+                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
                 CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_PUTC, CHF_ERROR, name ChfEnd;
                 break;
             }
         }
 
         if ( fclose( f ) == EOF ) {
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
         }
     }
@@ -222,11 +222,11 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
     debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile" );
 
     if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         if ( fread( s, s_size, ( size_t )1, f ) != 1 ) {
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_READ, CHF_ERROR, name ChfEnd;
         }
 
@@ -270,16 +270,16 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
     debug1( DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile" );
 
     if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
-        CHF_ErrnoCondition;
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_OPEN, CHF_ERROR, name ChfEnd;
     } else {
         if ( fwrite( s, s_size, ( size_t )1, f ) != 1 ) {
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_WRITE, CHF_ERROR, name ChfEnd;
         }
 
         if ( fclose( f ) == EOF ) {
-            CHF_ErrnoCondition;
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
             CHF_Condition( DISK_IO_CHF_MODULE_ID ) st = DISK_IO_E_CLOSE, CHF_ERROR, name ChfEnd;
         }
     }

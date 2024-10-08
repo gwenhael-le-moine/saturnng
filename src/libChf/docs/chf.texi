@@ -71,7 +71,6 @@ Generating a condition
 * CHF_Condition::
 * ChfEnd::
 * ChfSeverity::
-* CHF_ErrnoCondition::
 
 Signaling a condition
 
@@ -176,9 +175,6 @@ this change is transparent and the documentation does not reflect it.
 @item
 The reentrant flavor of the Chf library is not yet supported.  Multithreaded
 application must serialize Chf accesses themselves.
-
-@item
-The @code{CHF_ErrnoCondition} macro is not supported, and has no effect.
 
 @item
 The default condition handler does not display the condition message
@@ -694,7 +690,6 @@ a condition that describes it.
 * CHF_Condition::
 * ChfEnd::
 * ChfSeverity::
-* CHF_ErrnoCondition::
 @end menu
 
 @node CHF_Condition, ChfEnd, Generating a condition, Generating a condition
@@ -770,7 +765,7 @@ ChfEnd;
 
 @c 2.1, cibrario, 26-May-2000
 @c Expanded description of severity codes
-@node ChfSeverity, CHF_ErrnoCondition, ChfEnd, Generating a condition
+@node ChfSeverity, ChfEnd, Generating a condition
 @subsection ChfSeverity
 @deftp {Data type} ChfSeverity
 The severity code of a condition is an enumerated type, and can assume one
@@ -815,19 +810,6 @@ call.  It is usually signaled immediately after generation.
 
 @end table
 @end deftp
-
-@node CHF_ErrnoCondition,  , ChfSeverity, Generating a condition
-@subsection CHF_ErrnoCondition
-@deftypefn Macro {} CHF_ErrnoCondition
-
-This macro generates a condition from the current value of the @code{errno}
-variable. The module identifier of the condition is set to the special
-value @code{CHF_ERRNO_SET}. The severity is always @code{CHF_ERROR}.
-
-@strong{Win32:} This macro is not supported and has no effect when invoked.
-
-@end deftypefn
-
 
 @node Signaling a condition,  , Generating a condition, Condition generation and signal
 @section Signaling a condition
