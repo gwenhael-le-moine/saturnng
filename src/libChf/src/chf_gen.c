@@ -131,7 +131,7 @@ void ChfGenerate( /* Generate a condition into the stack */
         new_descriptor->file_name = file_name;
 
         /* Generate the default message */
-        sprintf( def_message, CHF_DEF_PARTIAL_MSG_FMT, condition_code );
+        sprintf( def_message, "Code <%d>d", condition_code );
 
         /* Generate the partial message associated with the condition using a
            temporary area

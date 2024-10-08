@@ -69,8 +69,8 @@ static char rcs_lib_id[] = CHF_LIBRARY_ID;
 ChfContext _chf_context;
 
 /* Message separator and severity names for ChfBuildMessage() */
-static const char separator[] = CHF_MESSAGE_SEPARATOR;
-static const char* severity_name[] = CHF_SEVERITY_NAMES;
+static const char separator[] = "-";
+static const char* severity_name[] = { "S", "I", "W", "E", "F" };
 
 /* -------------------------------------------------------------------------
    Multithreading support
@@ -374,7 +374,7 @@ char* ChfBuildMessage( /* Build a condition message */
         tmp_p = scopy( tmp_p, "\t", tmp_end );
 
     /* The message continues with the module name */
-    sprintf( def_message, CHF_DEF_MID_MSG_FMT, descriptor->module_id );
+    sprintf( def_message, "Mid <%d>d", descriptor->module_id );
 
     tmp_p = scopy( tmp_p, ChfGetMessage( CHF_MODULE_NAMES_SET, descriptor->module_id, def_message ), tmp_end );
 
@@ -382,7 +382,7 @@ char* ChfBuildMessage( /* Build a condition message */
     if ( descriptor->line_number != CHF_UNKNOWN_LINE_NUMBER ) {
         tmp_p = scopy( tmp_p, " ", tmp_end );
 
-        sprintf( def_message, CHF_EXTENDED_INFO_FMT, descriptor->file_name, descriptor->line_number );
+        sprintf( def_message, "(%s,%)", descriptor->file_name, descriptor->line_number );
 
         tmp_p = scopy( tmp_p, def_message, tmp_end );
     }
@@ -390,16 +390,14 @@ char* ChfBuildMessage( /* Build a condition message */
     tmp_p = scopy( tmp_p, separator, tmp_end );
 
     /* Add the severity code of the message */
-    tmp_p = scopy( tmp_p,
-                   ( ( severity = descriptor->severity ) < CHF_SUCCESS || severity > CHF_FATAL ) ? CHF_UNKNOWN_SEVERITY
-                                                                                                 : severity_name[ severity ],
+    tmp_p = scopy( tmp_p, ( ( severity = descriptor->severity ) < CHF_SUCCESS || severity > CHF_FATAL ) ? "?" : severity_name[ severity ],
                    tmp_end );
 
     tmp_p = scopy( tmp_p, separator, tmp_end );
 
     /* The message ends with the partial message from the descriptor */
     tmp_p = scopy( tmp_p, descriptor->message, tmp_end );
-    ( void )scopy( tmp_p, CHF_MESSAGE_TERMINATOR, tmp_end );
+    ( void )scopy( tmp_p, "\n", tmp_end );
 
     return chf_context.message_buffer;
 }

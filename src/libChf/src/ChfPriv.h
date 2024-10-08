@@ -49,16 +49,6 @@
 #define CHF_MODULE_ID CHF_SET
 #define CHF_TMP_MESSAGE_LENGTH ( 2 * CHF_MAX_MESSAGE_LENGTH )
 #define CHF_DEF_MESSAGE_LENGTH 40
-#define CHF_DEF_PARTIAL_MSG_FMT "Code <%d>d"
-#define CHF_DEF_MID_MSG_FMT "Mid <%d>d"
-#define CHF_EXTENDED_INFO_FMT "(%s,%)"
-#define CHF_SEVERITY_NAMES { "S", "I", "W", "E", "F" }
-#define CHF_UNKNOWN_SEVERITY "?"
-#define CHF_MESSAGE_SEPARATOR "-"
-#define CHF_MESSAGE_TERMINATOR "\n"
-#define CHF_ABORT_HEADER "ChfAbort-F-"
-#define CHF_ABORT_BAD_CODE_FMT "Bad abort code <%d>d\n"
-#define CHF_ABORT_GOOD_CODE_FMT "%s\n"
 
 /* -------------------------------------------------------------------------
    Abort codes used with ChfAbort()

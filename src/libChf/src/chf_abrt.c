@@ -109,13 +109,13 @@ void ChfAbort( /* Abort application */
                                     "Pthread interaction failed" };
 
     if ( abort_code != CHF_ABORT_SILENT ) {
-        fputs( CHF_ABORT_HEADER, stderr );
+        fputs( "ChfAbort-F-", stderr );
 
         if ( abort_code < 0 || abort_code >= ( int )( sizeof( message_table ) / sizeof( const char* ) ) )
-            fprintf( stderr, CHF_ABORT_BAD_CODE_FMT, abort_code );
+            fprintf( stderr, "Bad abort code <%d>d\n", abort_code );
 
         else
-            fprintf( stderr, CHF_ABORT_GOOD_CODE_FMT, message_table[ abort_code ] );
+            fprintf( stderr, "%s\n", message_table[ abort_code ] );
     }
 
     if ( chf_context.state == CHF_UNKNOWN || chf_context.options & CHF_ABORT )
