@@ -124,8 +124,6 @@
 
 .- */
 
-#include <stdbool.h>
-
 #include "ui4x/config.h"
 
 /* 2.4: N_PORT_2_BANK
@@ -145,13 +143,6 @@
 */
 /* #define SERIAL_FORCE_OPENPTY */
 /* #define SERIAL_FORCE_STREAMSPTY */
-
-/* 3.2: HP49_SUPPORT
-   Define this symbol to enable HP49-specific support code in the
-   emulator; it does not harm if this symbol is defined when emulating
-   a HP48, too, since all changed should be backward-compatible.
-*/
-#define HP49_SUPPORT
 
 /* 3.14: CPU_SLOW_IN
    Define this symbol (recommended) to slow down the A=IN and C=IN

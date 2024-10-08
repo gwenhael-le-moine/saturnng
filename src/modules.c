@@ -94,7 +94,7 @@
  *   description table dynamically.
  * - ModInit() now refuses to work if no module description table has
  *   been registered yet.
- * - Conditionally (#ifdef HP49_SUPPORT) enabled forced alignment of
+ * - enabled forced alignment of
  *   module configuration sizes and addresses in ModConfig()
  *
  * Revision 3.1  2000/09/20  14:00:02  cibrario
@@ -1188,7 +1188,7 @@ void ModReset( void )
   2.7, 15-Sep-2000, update
     - implemented module config/unconfig cache
   3.2, 22-Sep-2000, update
-    - conditionally (#ifdef HP49_SUPPORT) enabled forced alignment
+    - enabled forced alignment
       of config_info
 .- */
 void ModConfig( Address config_info )
@@ -1200,13 +1200,11 @@ void ModConfig( Address config_info )
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModConfig" );
 
-#ifdef HP49_SUPPORT
     /* 3.2: The HP49 firmware (1.19-4) can generate misaligned config
             addresses, that is, addresses that are not a multiple of 0x100;
             silently align them here.
     */
     config_info &= ~0xFF;
-#endif
 
     /* ACCESS CONFIG CACHE */
     if ( ( nxt = AccessConfigCache( config_info ) ) != ( struct ModMap* )NULL ) {

@@ -79,13 +79,13 @@
 
   Revision 3.2  2000/09/22 14:34:55  cibrario
   Implemented preliminary support of HP49 hw architecture:
-  - Conditionally (#ifdef HP49_SUPPORT) simplified handling of
+  - simplified handling of
     RCS_RBZ and RCS_RBF bits of RCS register.
-  - Conditionally (#ifdef HP49_SUPPORT) disabled local ECHO on master
+  - disabled local ECHO on master
     pty when USE_OPENPTY is in effect; this avoid spurious rx
     when no process is connected to the slave pty yet. Apparently,
     USE_STREAMSPTY does not suffer from this.
-  - Conditionally (#ifdef HP49_SUPPORT) removed warning message
+  - removed warning message
     when reading from an empty RRB.
 
  * Revision 2.6  2000/09/15  09:23:02  cibrario
@@ -416,7 +416,7 @@ static int slave_pty;  /* File descriptor of pty's slave side */
                 - if the receiver ring buffer is empty,
                   RCS_RBZ and RCS_RBF are both reset
 
-                3.2: If HP49_SUPPORT is enabled, the RCS_RBZ bit is
+                3.2: the RCS_RBZ bit is
                      always left clear and only RCS_RBF is updated;
                      this is simpler and works well on the 48, too.
 
@@ -436,24 +436,12 @@ static int slave_pty;  /* File descriptor of pty's slave side */
                                 ( ( ioc & IOC_ERBZ ) && ( rcs & RCS_RBZ ) ) ) )                                                            \
     CpuIntRequest( INT_REQUEST_IRQ )
 
-#ifdef HP49_SUPPORT
-#  define UpdateRCS                                                                                                                        \
-      if ( FullSlots( rrb ) > 0 ) {                                                                                                        \
-          rcs |= RCS_RBF;                                                                                                                  \
-      } else {                                                                                                                             \
-          rcs &= ~( RCS_RBF );                                                                                                             \
-      }
-#else
-#  define UpdateRCS                                                                                                                        \
-      if ( FullSlots( rrb ) > 1 ) {                                                                                                        \
-          rcs |= ( RCS_RBF | RCS_RBZ );                                                                                                    \
-      } else if ( FullSlots( rrb ) > 0 ) {                                                                                                 \
-          rcs |= RCS_RBF;                                                                                                                  \
-          rcs &= ~RCS_RBZ;                                                                                                                 \
-      } else {                                                                                                                             \
-          rcs &= ~( RCS_RBF | RCS_RBZ );                                                                                                   \
-      }
-#endif
+#define UpdateRCS                                                                                                                          \
+    if ( FullSlots( rrb ) > 0 ) {                                                                                                          \
+        rcs |= RCS_RBF;                                                                                                                    \
+    } else {                                                                                                                               \
+        rcs &= ~( RCS_RBF );                                                                                                               \
+    }
 
 #define UpdateTCS                                                                                                                          \
     if ( EmptySlots( trb ) > 1 ) {                                                                                                         \
@@ -507,7 +495,7 @@ static int slave_pty;  /* File descriptor of pty's slave side */
   2.6, 15-Sep-2000, update
     - implemented USE_STREAMSPTY
   3.2, 22-Sep-2000, update
-    - conditionally (#ifdef HP49_SUPPORT) disabled local ECHO on master
+    - disabled local ECHO on master
       pty when USE_OPENPTY is in effect; this avoid spurious rx
       when no process is connected to the slave pty yet.
   3.16, 16-Nov-2000, update
@@ -618,7 +606,6 @@ const char* SerialInit( void )
     }
 #  endif
 
-#  ifdef HP49_SUPPORT
     /* 3.17: Ensure that the pty is fully trasparent by default.
        This allows to use most non-terminal-aware applications (such as od)
        on the pty directly.
@@ -657,7 +644,6 @@ const char* SerialInit( void )
             ChfSignal( SERIAL_CHF_MODULE_ID );
         }
     }
-#  endif
 
     /* Publish pty name */
     if ( config.verbose ) {
@@ -874,7 +860,7 @@ Nibble Serial_TCS_Read( void )
 .notes	      :
   2.5, 13-Sep-2000, creation
   3.2, 22-Sep-2000, update
-    - conditionally (#ifdef HP49_SUPPORT) removed warning message
+    - removed warning message
       when reading from an empty RRB.
 .- */
 int8 Serial_RBR_Read( void )
@@ -888,14 +874,6 @@ int8 Serial_RBR_Read( void )
         Pull( rrb, &rx );
     } else {
         /* rrb is empty */
-
-#ifndef HP49_SUPPORT
-        /* 3.2: The HP49 firmware (1.19-4) can read from an empty RRB;
-                this is not harmful, and this warning can be removed.
-        */
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_W_EMPTY_RRB, CHF_WARNING, rcs );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
-#endif
 
         rx = ( int8 )0xFF;
     }

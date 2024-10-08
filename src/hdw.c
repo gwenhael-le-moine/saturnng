@@ -74,7 +74,7 @@
   Revision 3.2  2000/09/22 13:46:30  cibrario
   Implemented preliminary support of HP49 hw architecture:
   - The HP49 firmware (1.19-4) reads a nibble from 0x30 for unknown reasons;
-    conditionally (#ifdef HP49_SUPPORT) enabled reads from relative
+    enabled reads from relative
     addresses 0x30..0x34 without signaling a warning.
 
  * Revision 3.1  2000/09/20  13:48:52  cibrario
@@ -300,7 +300,6 @@ Nibble HdwRead( Address rel_address )
         case 0x2F: /* Timer 2 Control */
             return mod_status.hdw.t2_ctrl;
 
-#ifdef HP49_SUPPORT
         /* 3.2: The HP49 firmware (1.19-4) reads a nibble from 0x30 */
         case 0x30:
         case 0x31:
@@ -308,7 +307,6 @@ Nibble HdwRead( Address rel_address )
         case 0x33:
         case 0x34:
             return ( Nibble )0x0;
-#endif
 
         case 0x37: /* Timer 1 value */
             return mod_status.hdw.t1_val;
