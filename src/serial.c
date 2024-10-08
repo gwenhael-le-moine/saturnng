@@ -660,8 +660,10 @@ const char* SerialInit( void )
 #  endif
 
     /* Publish pty name */
-    ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_I_PTY_NAME, CHF_INFO, pty_name ChfEnd;
-    ChfSignal( SERIAL_CHF_MODULE_ID );
+    if ( config.verbose ) {
+        ChfCondition( SERIAL_CHF_MODULE_ID ) SERIAL_I_PTY_NAME, CHF_INFO, pty_name ChfEnd;
+        ChfSignal( SERIAL_CHF_MODULE_ID );
+    }
 
 #else
     /* Dummy implementation; do nothing */
