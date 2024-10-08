@@ -183,7 +183,7 @@ config_t* config_init( int argc, char* argv[] )
         {"mono",                 no_argument,       &clopt_mono,       true            },
         {"gray",                 no_argument,       &clopt_gray,       true            },
 
-        {"debug-x11",            no_argument,       NULL,              38601           },
+        /* {"debug-x11",            no_argument,       NULL,              38601           }, */
         {"debug-revision",       no_argument,       NULL,              38602           },
         {"debug-x-func",         no_argument,       NULL,              38603           },
         {"debug-flash",          no_argument,       NULL,              38604           },
@@ -191,7 +191,7 @@ config_t* config_init( int argc, char* argv[] )
         {"debug-mod-cache",      no_argument,       NULL,              38606           },
         {"debug-serial",         no_argument,       NULL,              38607           },
         {"debug-timers",         no_argument,       NULL,              38608           },
-        {"debug-int",            no_argument,       NULL,              38609           },
+        {"debug-interruptions",  no_argument,       NULL,              38609           },
         {"debug-display",        no_argument,       NULL,              38610           },
         {"debug-modules",        no_argument,       NULL,              38611           },
         {"debug-trace",          no_argument,       NULL,              38612           },
@@ -232,7 +232,7 @@ config_t* config_init( int argc, char* argv[] )
                             "false)\n"
                             "     --reset      force a reset\n"
                             "     --monitor    start with monitor\n"
-                            "     --debug-x11            enables debugging x11 (default: no)\n"
+                            /* "     --debug-x11            enables debugging x11 (default: no)\n" */
                             "     --debug-revision       enables debugging revision (default: no)\n"
                             "     --debug-x-func         enables debugging extended functions (default: no)\n"
                             "     --debug-flash          enables debugging flash (default: no)\n"
@@ -240,7 +240,7 @@ config_t* config_init( int argc, char* argv[] )
                             "     --debug-mod-cache      enables debugging mod cache (default: no)\n"
                             "     --debug-serial         enables debugging serial (default: no)\n"
                             "     --debug-timers         enables debugging timers (default: no)\n"
-                            "     --debug-int            enables debugging int (default: no)\n"
+                            "     --debug-interruptions  enables debugging interruptions (default: no)\n"
                             "     --debug-display        enables debugging display (default: no)\n"
                             "     --debug-modules        enables debugging modules (default: no)\n"
                             "     --debug-trace          enables debugging trace (default: no)\n";
@@ -289,9 +289,9 @@ config_t* config_init( int argc, char* argv[] )
                 /*     clopt_port_2_file_name = optarg; */
                 /*     break; */
 
-            case 38601:
-                config.debug_level |= DEBUG_C_X11;
-                break;
+            /* case 38601: */
+            /*     config.debug_level |= DEBUG_C_X11; */
+            /*     break; */
             case 38602:
                 config.debug_level |= DEBUG_C_REVISION;
                 break;
