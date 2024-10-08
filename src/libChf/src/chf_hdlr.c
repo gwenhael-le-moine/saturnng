@@ -83,7 +83,7 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
     ChfAction action;
     const ChfDescriptor* d;
 
-    return ( ( state == CHF_SIGNALING && ChfGetSeverity( desc ) == CHF_FATAL ) ? CHF_UNWIND_KEEP : CHF_RESIGNAL );
+    return ( ( state == CHF_SIGNALING && desc->severity == CHF_FATAL ) ? CHF_UNWIND_KEEP : CHF_RESIGNAL );
 }
 
 /* .+

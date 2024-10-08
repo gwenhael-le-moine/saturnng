@@ -42,23 +42,6 @@
 #  include <pthread.h>
 #endif
 
-/* Abort codes message table; the relative position of the messages must
-   match the numeric codes CHF_ABORT_xxxx defined in ChfPriv.h
-*/
-static const char* message_table[] = { ( const char* )NULL,
-                                       "Not initialized",
-                                       "Temporary message buffer overflow",
-                                       "Invalid action from last chance handler",
-                                       "Already initialized",
-                                       "Unwind request while unwinding",
-                                       "Improperly handled condition",
-                                       "Fatal condition while unwinding",
-                                       "Condition stack overflow",
-                                       "Can't prime a new Chf context",
-                                       "Pthread interaction failed" };
-
-#define MESSAGE_TABLE_SIZE ( sizeof( message_table ) / sizeof( const char* ) )
-
 /* .+
 
 .title	      : ChfAbort
@@ -109,10 +92,26 @@ static const char* message_table[] = { ( const char* )NULL,
 void ChfAbort( /* Abort application */
                const int abort_code )
 {
+
+    /* Abort codes message table; the relative position of the messages must
+       match the numeric codes CHF_ABORT_xxxx defined in ChfPriv.h
+    */
+    const char* message_table[] = { ( const char* )NULL,
+                                    "Not initialized",
+                                    "Temporary message buffer overflow",
+                                    "Invalid action from last chance handler",
+                                    "Already initialized",
+                                    "Unwind request while unwinding",
+                                    "Improperly handled condition",
+                                    "Fatal condition while unwinding",
+                                    "Condition stack overflow",
+                                    "Can't prime a new Chf context",
+                                    "Pthread interaction failed" };
+
     if ( abort_code != CHF_ABORT_SILENT ) {
         fputs( CHF_ABORT_HEADER, stderr );
 
-        if ( abort_code < 0 || abort_code >= ( int )MESSAGE_TABLE_SIZE )
+        if ( abort_code < 0 || abort_code >= ( int )( sizeof( message_table ) / sizeof( const char* ) ) )
             fprintf( stderr, CHF_ABORT_BAD_CODE_FMT, abort_code );
 
         else

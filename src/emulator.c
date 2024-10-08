@@ -268,9 +268,9 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* d, const ChfState s, 
         /* 2.1: Chf release 2 fixed the spelling of 'SIGNALING' */
         case CHF_SIGNALING:
             /* ChfSignal() in progress */
-            if ( ChfGetModuleId( d ) == CPU_CHF_MODULE_ID ) {
+            if ( d->module_id == CPU_CHF_MODULE_ID ) {
                 /* Condition from CPU modules; check Condition Code */
-                switch ( ChfGetConditionCode( d ) ) {
+                switch ( d->condition_code ) {
                     case CPU_I_SHUTDN:
                         {
                             /* 3.1: CPU_SPIN_SHUTDN is not defined, and the cpu emulator

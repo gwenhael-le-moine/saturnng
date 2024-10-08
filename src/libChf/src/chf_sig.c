@@ -165,8 +165,8 @@ void ChfSignal( const int module_id )
             if ( chf_context.condition_sp > chf_context.condition_base ) {
                 if ( chf_context.state == CHF_SIGNALING ) {
                     /* Force the new severity to CHF_FATAL if necessary */
-                    if ( ChfGetSeverity( current_condition ) == CHF_FATAL )
-                        ChfGetSeverity( chf_context.condition_sp - 1 ) = CHF_FATAL;
+                    if ( current_condition->severity == CHF_FATAL )
+                        ( chf_context.condition_sp - 1 )->severity = CHF_FATAL;
 
                     /* Link together the condition groups */
                     chf_context.condition_base->next = current_condition;
@@ -181,7 +181,7 @@ void ChfSignal( const int module_id )
             /* The action CHF_CONTINUE is not allowed if the current condition
                severity is CHF_FATAL; it's automatically changed to CHF_RESIGNAL
             */
-            if ( handler_result == CHF_CONTINUE && ChfGetSeverity( current_condition ) == CHF_FATAL )
+            if ( handler_result == CHF_CONTINUE && current_condition->severity == CHF_FATAL )
                 handler_result = CHF_RESIGNAL;
         }
 

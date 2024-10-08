@@ -200,18 +200,6 @@ typedef /* Message retrieval 'exit' function */
     }
 
 /* -------------------------------------------------------------------------
-   Other macros
-   ------------------------------------------------------------------------- */
-
-#define ChfGetNextDescriptor( d ) ( d )->next
-#define ChfGetModuleId( d ) ( d )->module_id
-#define ChfGetConditionCode( d ) ( d )->condition_code
-#define ChfGetSeverity( d ) ( d )->severity
-#define ChfGetLineNumber( d ) ( d )->line_number
-#define ChfGetFileName( d ) ( d )->file_name
-#define ChfGetPartialMessage( d ) ( d )->message
-
-/* -------------------------------------------------------------------------
    Function prototypes
    ------------------------------------------------------------------------- */
 /* Generic initialization */

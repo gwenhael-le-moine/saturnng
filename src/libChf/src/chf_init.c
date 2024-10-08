@@ -169,12 +169,12 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
            is done atomically if multithreading support is enabled.
            In Win32, the default handler does not print anything.
         */
-        if ( ChfGetSeverity( desc ) > CHF_SUCCESS ) {
+        if ( desc->severity > CHF_SUCCESS ) {
 #ifdef _REENTRANT
             if ( pthread_mutex_lock( &fputs_mutex ) )
                 ChfAbort( CHF_ABORT_PTHREAD );
 #endif
-            for ( d = desc; d != CHF_NULL_DESCRIPTOR; d = ChfGetNextDescriptor( d ) )
+            for ( d = desc; d != CHF_NULL_DESCRIPTOR; d = d->next )
                 fputs( ChfBuildMessage( d ), stderr );
 #ifdef _REENTRANT
             if ( pthread_mutex_unlock( &fputs_mutex ) )
@@ -183,7 +183,7 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
         }
 
         /* Determine the handler action */
-        switch ( ChfGetSeverity( desc ) ) {
+        switch ( desc->severity ) {
             case CHF_SUCCESS:
             case CHF_INFO:
             case CHF_WARNING:
@@ -374,15 +374,15 @@ char* ChfBuildMessage( /* Build a condition message */
         tmp_p = scopy( tmp_p, "\t", tmp_end );
 
     /* The message continues with the module name */
-    ChfSprintf( def_message, CHF_DEF_MID_MSG_FMT, ChfGetModuleId( descriptor ) );
+    ChfSprintf( def_message, CHF_DEF_MID_MSG_FMT, descriptor->module_id );
 
-    tmp_p = scopy( tmp_p, ChfGetMessage( CHF_MODULE_NAMES_SET, ChfGetModuleId( descriptor ), def_message ), tmp_end );
+    tmp_p = scopy( tmp_p, ChfGetMessage( CHF_MODULE_NAMES_SET, descriptor->module_id, def_message ), tmp_end );
 
     /* Add also the extended information, if any */
-    if ( ChfGetLineNumber( descriptor ) != CHF_UNKNOWN_LINE_NUMBER ) {
+    if ( descriptor->line_number != CHF_UNKNOWN_LINE_NUMBER ) {
         tmp_p = scopy( tmp_p, " ", tmp_end );
 
-        ChfSprintf( def_message, CHF_EXTENDED_INFO_FMT, ChfGetFileName( descriptor ), ChfGetLineNumber( descriptor ) );
+        ChfSprintf( def_message, CHF_EXTENDED_INFO_FMT, descriptor->file_name, descriptor->line_number );
 
         tmp_p = scopy( tmp_p, def_message, tmp_end );
     }
@@ -391,14 +391,14 @@ char* ChfBuildMessage( /* Build a condition message */
 
     /* Add the severity code of the message */
     tmp_p = scopy( tmp_p,
-                   ( ( severity = ChfGetSeverity( descriptor ) ) < CHF_SUCCESS || severity > CHF_FATAL ) ? CHF_UNKNOWN_SEVERITY
-                                                                                                         : severity_name[ severity ],
+                   ( ( severity = descriptor->severity ) < CHF_SUCCESS || severity > CHF_FATAL ) ? CHF_UNKNOWN_SEVERITY
+                                                                                                 : severity_name[ severity ],
                    tmp_end );
 
     tmp_p = scopy( tmp_p, separator, tmp_end );
 
     /* The message ends with the partial message from the descriptor */
-    tmp_p = scopy( tmp_p, ChfGetPartialMessage( descriptor ), tmp_end );
+    tmp_p = scopy( tmp_p, descriptor->message, tmp_end );
     ( void )scopy( tmp_p, CHF_MESSAGE_TERMINATOR, tmp_end );
 
     return chf_context.message_buffer;
