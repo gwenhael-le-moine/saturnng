@@ -371,7 +371,7 @@ char* ChfBuildMessage( /* Build a condition message */
     }
 
     else
-        tmp_p = scopy( tmp_p, ChfText( "\t" ), tmp_end );
+        tmp_p = scopy( tmp_p, "\t", tmp_end );
 
     /* The message continues with the module name */
     ChfSprintf( def_message, CHF_DEF_MID_MSG_FMT, ChfGetModuleId( descriptor ) );
@@ -380,7 +380,7 @@ char* ChfBuildMessage( /* Build a condition message */
 
     /* Add also the extended information, if any */
     if ( ChfGetLineNumber( descriptor ) != CHF_UNKNOWN_LINE_NUMBER ) {
-        tmp_p = scopy( tmp_p, ChfText( " " ), tmp_end );
+        tmp_p = scopy( tmp_p, " ", tmp_end );
 
         ChfSprintf( def_message, CHF_EXTENDED_INFO_FMT, ChfGetFileName( descriptor ), ChfGetLineNumber( descriptor ) );
 

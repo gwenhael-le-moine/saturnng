@@ -58,12 +58,6 @@
 #include <errno.h>
 
 /* -------------------------------------------------------------------------
-   Win32 & UNICODE support
-   ------------------------------------------------------------------------- */
-
-#define ChfText( x ) x
-
-/* -------------------------------------------------------------------------
    CHF implementation limits and other symbolic constants
    ------------------------------------------------------------------------- */
 
@@ -74,7 +68,7 @@
 #define CHF_NULL_CONTEXT ( void* )NULL
 #define CHF_NULL_POINTER ( ChfPointer* )NULL
 #define CHF_NULL_HANDLER ( ChfHandler ) NULL
-#define CHF_LIBRARY_ID ChfText( "$Id: Chf.h,v 2.2 2001/01/25 11:56:44 cibrario Exp $" )
+#define CHF_LIBRARY_ID "$Id: Chf.h,v 2.2 2001/01/25 11:56:44 cibrario Exp $"
 
 #define CHF_MAJOR_RELEASE_NUMBER 2
 #define CHF_MINOR_RELEASE_NUMBER 2
@@ -167,9 +161,9 @@ typedef /* Message retrieval 'exit' function */
 #  define CHF_Condition( module_id )                                                                                                       \
   ChfGenerate(								\
     module_id,							\
-    ChfText(__FILE__), __LINE__,
+    __FILE__, __LINE__,
 
-#  define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, ChfText( __FILE__ ), __LINE__, errno, CHF_ERROR )
+#  define CHF_ErrnoCondition ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR )
 
 #else
 #  define CHF_Condition( module_id )                                                                                                       \

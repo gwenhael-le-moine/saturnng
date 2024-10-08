@@ -46,16 +46,16 @@
    match the numeric codes CHF_ABORT_xxxx defined in ChfPriv.h
 */
 static const char* message_table[] = { ( const char* )NULL,
-                                       ChfText( "Not initialized" ),
-                                       ChfText( "Temporary message buffer overflow" ),
-                                       ChfText( "Invalid action from last chance handler" ),
-                                       ChfText( "Already initialized" ),
-                                       ChfText( "Unwind request while unwinding" ),
-                                       ChfText( "Improperly handled condition" ),
-                                       ChfText( "Fatal condition while unwinding" ),
-                                       ChfText( "Condition stack overflow" ),
-                                       ChfText( "Can't prime a new Chf context" ),
-                                       ChfText( "Pthread interaction failed" ) };
+                                       "Not initialized",
+                                       "Temporary message buffer overflow",
+                                       "Invalid action from last chance handler",
+                                       "Already initialized",
+                                       "Unwind request while unwinding",
+                                       "Improperly handled condition",
+                                       "Fatal condition while unwinding",
+                                       "Condition stack overflow",
+                                       "Can't prime a new Chf context",
+                                       "Pthread interaction failed" };
 
 #define MESSAGE_TABLE_SIZE ( sizeof( message_table ) / sizeof( const char* ) )
 

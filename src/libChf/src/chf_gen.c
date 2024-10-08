@@ -106,7 +106,7 @@ void ChfGenerate( /* Generate a condition into the stack */
             new_descriptor->line_number = CHF_UNKNOWN_LINE_NUMBER;
             new_descriptor->file_name = CHF_UNKNOWN_FILE_NAME;
 
-            ChfStrncpy( new_descriptor->message, ChfGetMessage( module_id, CHF_F_COND_STACK_FULL, ChfText( "Condition stack is full" ) ),
+            ChfStrncpy( new_descriptor->message, ChfGetMessage( module_id, CHF_F_COND_STACK_FULL, "Condition stack is full" ),
                         CHF_MAX_MESSAGE_LENGTH - 1 );
             new_descriptor->message[ CHF_MAX_MESSAGE_LENGTH - 1 ] = '\0';
 
