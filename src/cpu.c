@@ -1443,7 +1443,6 @@ static void ExecGroup_0( void )
     Nibble n = GetNibble( cpu_status.PC++ );
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_0" );
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
     switch ( n ) {
         case 0: /* RTNSXM */
             cpu_status.HST |= HST_XM_MASK;
@@ -1577,7 +1576,6 @@ static void ExecGroup_1( void )
     Address ta;
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_1" );
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
     switch ( n ) {
         case 0: /* Rn=A/C */
             n = GetNibble( cpu_status.PC++ );
@@ -2059,6 +2057,8 @@ static void ExecGroup_80( void )
         case 0xB: /* BUSCC */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
             // FIXME: 49g bugs here on display change
+            DEBUG_print_cpu_instruction();
+
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
@@ -2774,9 +2774,9 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
     char dob[ DISASSEMBLE_OB_SIZE ];
     int n;
 
-    /* Dump PC  and current instruction */
+    /* Dump PC and current instruction */
     ( void )Disassemble( cpu_status.PC, dob );
-    sprintf( ob, "%s\n\n", dob );
+    sprintf( ob, "\n%s\n\n", dob );
     ob += strlen( ob );
 
     /* Dump A, B, C, D */
@@ -2809,6 +2809,17 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
     sprintf( ob, "hexmode: %d, carry: %d, int_enable/pending/service: %d/%d/%d, shutdn:%d\n", cpu_status.hexmode, cpu_status.carry,
              cpu_status.int_enable, cpu_status.int_pending, cpu_status.int_service, cpu_status.shutdn );
     ob += strlen( ob );
+}
+
+void DEBUG_print_cpu_instruction( void )
+{
+    if ( config.debug_level > 0 && config.debug_level & DEBUG_C_OPCODES ) {
+        char dob[ DISASSEMBLE_OB_SIZE ];
+
+        /* Dump PC and current instruction */
+        ( void )Disassemble( cpu_status.PC, dob );
+        fprintf( stderr, "\n%s\n\n", dob );
+    }
 }
 
 /* .+
@@ -2856,17 +2867,14 @@ void OneStep( void )
             break;
 
         case 2: /* P=n */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             SetP( GetNibble( cpu_status.PC++ ) );
             break;
 
         case 3: /* LC(m) n...n */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             FetchR( cpu_status.C, GetNibble( cpu_status.PC++ ) );
             break;
 
         case 4: /* RTNC/GOC */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             if ( cpu_status.carry ) {
                 offset = Get2Nibbles2C( cpu_status.PC );
                 if ( offset == 0 )
@@ -2879,7 +2887,6 @@ void OneStep( void )
             break;
 
         case 5: /* RTNNC/GONC */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             if ( !cpu_status.carry ) {
                 offset = Get2Nibbles2C( cpu_status.PC );
                 if ( offset == 0 )
@@ -2892,12 +2899,10 @@ void OneStep( void )
             break;
 
         case 6: /* GOTO */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             cpu_status.PC += Get3Nibbles2C( cpu_status.PC );
             break;
 
         case 7: /* GOSUB */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             offset = Get3Nibbles2C( cpu_status.PC );
             cpu_status.PC += 3;
             PushRSTK( cpu_status.PC );
@@ -2937,7 +2942,6 @@ void OneStep( void )
             break;
 
         default:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_OPCODES, CPU_I_EXECUTING, n );
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
