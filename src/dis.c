@@ -151,7 +151,7 @@ static Address Get4Nibbles2C( Address pc )
     return ( v & 0x8000 ) ? v - 0x10000 : v;
 }
 
-/* Read four nibbles in absolute form, starting from pc */
+/* Read five nibbles in absolute form, starting from pc */
 static Address Get5NibblesAbs( Address pc )
 {
     Address v = ( Address )GetNibble( pc ) | ( ( Address )GetNibble( pc + 1 ) << 4 ) | ( ( Address )GetNibble( pc + 2 ) << 8 ) |
