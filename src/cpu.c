@@ -316,36 +316,6 @@ static void Addr2RS( Nibble* d, Address a )
     d[ 3 ] = ( Nibble )( a & NIBBLE_MASK );
 }
 
-/* Copy the 12 low-order bits of ST into C */
-static void St2C( void )
-{
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "St2C" );
-    cpu_status.C[ 0 ] = ( Nibble )( cpu_status.ST & NIBBLE_MASK );
-    cpu_status.C[ 1 ] = ( Nibble )( ( cpu_status.ST >> 4 ) & NIBBLE_MASK );
-    cpu_status.C[ 2 ] = ( Nibble )( ( cpu_status.ST >> 8 ) & NIBBLE_MASK );
-}
-
-/* Copy the 12 low-order bits of C into ST */
-static void C2St( void )
-{
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "C2St" );
-    cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
-                    ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
-}
-
-/* Exchange the 12 low-order bits of C with the 12 low-order bits of ST */
-static void CStExch( void )
-{
-    ProgramStatusRegister tst = cpu_status.ST;
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CStExch" );
-    cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
-                    ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
-
-    cpu_status.C[ 0 ] = ( Nibble )( tst & NIBBLE_MASK );
-    cpu_status.C[ 1 ] = ( Nibble )( ( tst >> 4 ) & NIBBLE_MASK );
-    cpu_status.C[ 2 ] = ( Nibble )( ( tst >> 8 ) & NIBBLE_MASK );
-}
-
 /*---------------------------------------------------------------------------
         Private functions: data memory read/write
   ---------------------------------------------------------------------------*/
@@ -1515,15 +1485,32 @@ static void ExecGroup_0( void )
             break;
 
         case 9: /* C=ST */
-            St2C();
+            /* Copy the 12 low-order bits of ST into C */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "St2C" );
+            cpu_status.C[ 0 ] = ( Nibble )( cpu_status.ST & NIBBLE_MASK );
+            cpu_status.C[ 1 ] = ( Nibble )( ( cpu_status.ST >> 4 ) & NIBBLE_MASK );
+            cpu_status.C[ 2 ] = ( Nibble )( ( cpu_status.ST >> 8 ) & NIBBLE_MASK );
             break;
 
         case 0xA: /* ST=C */
-            C2St();
+            /* Copy the 12 low-order bits of C into ST */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "C2St" );
+            cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
+                            ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
             break;
 
         case 0xB: /* CSTEX */
-            CStExch();
+            /* Exchange the 12 low-order bits of C with the 12 low-order bits of ST */
+            {
+                ProgramStatusRegister tst = cpu_status.ST;
+                debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CStExch" );
+                cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
+                                ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
+
+                cpu_status.C[ 0 ] = ( Nibble )( tst & NIBBLE_MASK );
+                cpu_status.C[ 1 ] = ( Nibble )( ( tst >> 4 ) & NIBBLE_MASK );
+                cpu_status.C[ 2 ] = ( Nibble )( ( tst >> 8 ) & NIBBLE_MASK );
+            }
             break;
 
         case 0xC: /* P=P+1 */
