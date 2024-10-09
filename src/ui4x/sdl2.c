@@ -361,6 +361,7 @@ static int sdlkey_to_hpkey( SDL_Keycode k )
         case SDLK_PLUS:
             return ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS );
         case SDLK_KP_PLUS:
+        case SDLK_EQUALS:
             return ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS );
         case SDLK_MINUS:
             return ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS );
@@ -397,7 +398,6 @@ static int sdlkey_to_hpkey( SDL_Keycode k )
             return ( config.model == MODEL_49G ? HP49_KEY_ALPHA : HP48_KEY_ALPHA );
         case SDLK_F7:
         case SDLK_F10:
-            // please_exit = true;
             close_and_exit();
             return -1;
         default:
