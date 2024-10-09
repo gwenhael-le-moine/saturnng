@@ -287,8 +287,7 @@ static int InvokeCommand( char* tk )
 /* Print help information */
 static int Help( void )
 {
-    int i;
-    for ( i = 0; i < ( int )TableSize( table ); i++ )
+    for ( int i = 0; i < ( int )TableSize( table ); i++ )
         printf( "%s\t\t%s\n", table[ i ].name, table[ i ].desc );
 
     return OK;
@@ -335,7 +334,7 @@ void Monitor( void )
     signal( SIGINT, sigint_handler );
 
     /* Infinite loop; it's exited only when a condition is signalled */
-    while ( 1 ) {
+    while ( true ) {
         /* Write prompt */
         fputs( PROMPT, stdout );
         fflush( stdout );
