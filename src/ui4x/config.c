@@ -11,9 +11,16 @@
 
 #include <getopt.h>
 
+#include <lua.h>
+#include <lauxlib.h>
+
 #include "config.h"
 
 #include "../debug.h"
+
+#ifndef LUA_OK
+#  define LUA_OK 0
+#endif
 
 static config_t config = {
     .progname = ( char* )"saturn4xxx",
@@ -37,65 +44,136 @@ static config_t config = {
     .tiny = false,
     .small = false,
 
-    /* .wire_name = ( char* )"/dev/wire", */
-    /* .ir_name = ( char* )"/dev/ir", */
-
     /* from args.h */
     .reset = false,
     .monitor = false,
     .batchXfer = false,
     .state_dir_path = ".",
-    /* .mod_file_name, */
-    /* .cpu_file_name, */
-    /* .hdw_file_name, */
-    /* .rom_file_name, */
-    /* .ram_file_name, */
-    /* .port_1_file_name, */
-    /* .port_2_file_name, */
 
     .debug_level = DEBUG_C_NONE,
 };
 
+lua_State* config_lua_values;
+
+static inline bool config_read( const char* filename )
+{
+    int rc;
+
+    assert( filename != NULL );
+
+    /*---------------------------------------------------
+    ; Create the Lua state, which includes NO predefined
+    ; functions or values.  This is literally an empty
+    ; slate.
+    ;----------------------------------------------------*/
+    config_lua_values = luaL_newstate();
+    if ( config_lua_values == NULL ) {
+        fprintf( stderr, "cannot create Lua state\n" );
+        return false;
+    }
+
+    /*-----------------------------------------------------
+    ; For the truly paranoid about sandboxing, enable the
+    ; following code, which removes the string library,
+    ; which some people find problematic to leave un-sand-
+    ; boxed. But in my opinion, if you are worried about
+    ; such attacks in a configuration file, you have bigger
+    ; security issues to worry about than this.
+    ;------------------------------------------------------*/
+#ifdef PARANOID
+    lua_pushliteral( config_lua_values, "x" );
+    lua_pushnil( config_lua_values );
+    lua_setmetatable( config_lua_values, -2 );
+    lua_pop( config_lua_values, 1 );
+#endif
+
+    /*-----------------------------------------------------
+    ; Lua 5.2+ can restrict scripts to being text only,
+    ; to avoid a potential problem with loading pre-compiled
+    ; Lua scripts that may have malformed Lua VM code that
+    ; could possibly lead to an exploit, but again, if you
+    ; have to worry about that, you have bigger security
+    ; issues to worry about.  But in any case, here I'm
+    ; restricting the file to "text" only.
+    ;------------------------------------------------------*/
+    rc = luaL_loadfile( config_lua_values, filename );
+    if ( rc != LUA_OK ) {
+        fprintf( stderr, "Lua error: (%d) %s\n", rc, lua_tostring( config_lua_values, -1 ) );
+        return false;
+    }
+
+    rc = lua_pcall( config_lua_values, 0, 0, 0 );
+    if ( rc != LUA_OK ) {
+        fprintf( stderr, "Lua error: (%d) %s\n", rc, lua_tostring( config_lua_values, -1 ) );
+        return false;
+    }
+
+    return true;
+}
+
 static void print_config( void )
 {
-    fprintf( stderr, "--- config\n" );
-    fprintf( stderr, "-- progname = %s\n", config.progname );
-    fprintf( stderr, "state_dir_path = %s\n", config.state_dir_path );
-    fprintf( stderr, "-- mod_file_name = %s\n", config.mod_file_name );
-    fprintf( stderr, "-- cpu_file_name = %s\n", config.cpu_file_name );
-    fprintf( stderr, "-- hdw_file_name = %s\n", config.hdw_file_name );
-    fprintf( stderr, "-- rom_file_name = %s\n", config.rom_file_name );
-    fprintf( stderr, "-- ram_file_name = %s\n", config.ram_file_name );
-    fprintf( stderr, "-- port_1_file_name = %s\n", config.port_1_file_name );
-    fprintf( stderr, "-- port_2_file_name = %s\n", config.port_2_file_name );
+    fprintf( stdout, "--------------------------------------------------------------------------------\n" );
+    fprintf( stdout, "-- Configuration file for saturnng\n" );
+    fprintf( stdout, "-- This is a comment\n" );
 
-    fprintf( stderr, "model = %i\n", config.model );
-    fprintf( stderr, "throttle = %s\n", config.throttle ? "true" : "false" );
-    fprintf( stderr, "verbose = %s\n", config.verbose ? "true" : "false" );
-    fprintf( stderr, "shiftless = %s\n", config.shiftless ? "true" : "false" );
+    fprintf( stdout, "model = \"" );
+    switch ( config.model ) {
+        case MODEL_48GX:
+            fprintf( stdout, "48gx" );
+            break;
+        case MODEL_48SX:
+            fprintf( stdout, "48sx" );
+            break;
+        case MODEL_40G:
+            fprintf( stdout, "40g" );
+            break;
+        case MODEL_49G:
+            fprintf( stdout, "49g" );
+            break;
+    }
+    fprintf( stdout, "\" -- possible values: \"48gx\", \"48sx\", \"40g\", \"49g\"\n" );
+    fprintf( stdout, "\n" );
 
-    fprintf( stderr, "frontend = %s\n", ( config.frontend == FRONTEND_SDL ? "sdl" : "tui" ) );
+    fprintf( stdout, "verbose = %s\n", config.verbose ? "true" : "false" );
+    fprintf( stdout, "throttle = %s\n", config.throttle ? "true" : "false" );
+    fprintf( stdout, "\n" );
+    fprintf( stdout, "monitor = %s\n", config.monitor ? "true" : "false" );
+    fprintf( stdout, "\n" );
 
-    fprintf( stderr, "big_screen = %s\n", config.big_screen ? "true" : "false" );
-    fprintf( stderr, "black_lcd = %s\n", config.black_lcd ? "true" : "false" );
+    fprintf( stdout, "--------------------\n" );
+    fprintf( stdout, "-- User Interface --\n" );
+    fprintf( stdout, "--------------------\n" );
+    fprintf( stdout, "frontend = \"" );
+    switch ( config.frontend ) {
+        case FRONTEND_SDL:
+            fprintf( stdout, "sdl" );
+            break;
+        case FRONTEND_NCURSES:
+            fprintf( stdout, "tui" );
+            if ( config.small )
+                fprintf( stdout, "-small" );
+            else if ( config.tiny )
+                fprintf( stdout, "-tiny" );
+            break;
+    }
+    fprintf( stdout, "\" -- possible values: \"sdl\", \"tui\", \"tui-small\", \"tui-tiny\"\n" );
+    fprintf( stdout, "\n" );
 
-    fprintf( stderr, "mono = %s\n", config.mono ? "true" : "false" );
-    fprintf( stderr, "gray = %s\n", config.gray ? "true" : "false" );
+    fprintf( stdout, "gray = %s\n", config.gray ? "true" : "false" );
+    fprintf( stdout, "mono = %s\n", config.mono ? "true" : "false" );
 
-    fprintf( stderr, "chromeless = %s\n", config.chromeless ? "true" : "false" );
-    fprintf( stderr, "fullscreen = %s\n", config.fullscreen ? "true" : "false" );
-    fprintf( stderr, "scale = %f\n", config.scale );
+    fprintf( stdout, "\n" );
+    fprintf( stdout, " -- Following options are specific to sdl frontend\n" );
+    fprintf( stdout, "big_screen = %s\n", config.big_screen ? "true" : "false" );
+    fprintf( stdout, "black_lcd = %s\n", config.black_lcd ? "true" : "false" );
+    fprintf( stdout, "chromeless = %s\n", config.chromeless ? "true" : "false" );
+    fprintf( stdout, "fullscreen = %s\n", config.fullscreen ? "true" : "false" );
+    fprintf( stdout, "scale = %f\n", config.scale );
+    fprintf( stdout, "shiftless = %s\n", config.shiftless ? "true" : "false" );
 
-    fprintf( stderr, "tiny = %s\n", config.tiny ? "true" : "false" );
-    fprintf( stderr, "small = %s\n", config.small ? "true" : "false" );
-
-    fprintf( stderr, "wire_name = %s\n", config.wire_name );
-    fprintf( stderr, "ir_name = %s\n", config.ir_name );
-
-    fprintf( stderr, "reset = %s\n", config.reset ? "true" : "false" );
-    fprintf( stderr, "monitor = %s\n", config.monitor ? "true" : "false" );
-    fprintf( stderr, "-- batchXfer = %s\n", config.batchXfer ? "true" : "false" );
-    fprintf( stderr, "--- /config\n" );
+    fprintf( stdout, "\n" );
+    fprintf( stdout, "--- End of saturnng configuration ----------------------------------------------\n" );
 }
 
 /* Path/name dynamic allocator */
@@ -114,6 +192,17 @@ config_t* config_init( int argc, char* argv[] )
 {
     int option_index;
     int c = '?';
+
+    char* config_file_name = "config.lua";
+    char* mod_file_name = "mod";
+    char* cpu_file_name = "cpu";
+    char* hdw_file_name = "hdw";
+    char* rom_file_name = "rom";
+    char* ram_file_name = "ram";
+    char* port_1_file_name = "port1";
+    char* port_2_file_name = "port2";
+
+    int print_config_and_exit = false;
 
     int clopt_model = -1;
     int clopt_verbose = -1;
@@ -135,103 +224,92 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_monitor = -1;
     /* int clopt_batchXfer = -1; */
     char* clopt_state_dir_path = ".";
-    char* clopt_mod_file_name = "mod";
-    char* clopt_cpu_file_name = "cpu";
-    char* clopt_hdw_file_name = "hdw";
-    char* clopt_rom_file_name = "rom";
-    char* clopt_ram_file_name = "ram";
-    char* clopt_port_1_file_name = "port1";
-    char* clopt_port_2_file_name = "port2";
 
     const char* optstring = "h";
     struct option long_options[] = {
-        {"help",                 no_argument,       NULL,              'h'             },
-        {"verbose",              no_argument,       &clopt_verbose,    true            },
+        {"help",                 no_argument,       NULL,                   'h'             },
+        {"verbose",              no_argument,       &clopt_verbose,         true            },
+        {"print-config",         no_argument,       &print_config_and_exit, true            },
 
-        {"throttle",             no_argument,       &clopt_throttle,   true            },
-        {"big-screen",           no_argument,       &clopt_big_screen, true            },
-        {"black-lcd",            no_argument,       &clopt_black_lcd,  true            },
+        {"throttle",             no_argument,       &clopt_throttle,        true            },
+        {"big-screen",           no_argument,       &clopt_big_screen,      true            },
+        {"black-lcd",            no_argument,       &clopt_black_lcd,       true            },
 
-        {"48sx",                 no_argument,       &clopt_model,      MODEL_48SX      },
-        {"48gx",                 no_argument,       &clopt_model,      MODEL_48GX      },
-        {"40g",                  no_argument,       &clopt_model,      MODEL_40G       },
-        {"49g",                  no_argument,       &clopt_model,      MODEL_49G       },
+        {"48sx",                 no_argument,       &clopt_model,           MODEL_48SX      },
+        {"48gx",                 no_argument,       &clopt_model,           MODEL_48GX      },
+        {"40g",                  no_argument,       &clopt_model,           MODEL_40G       },
+        {"49g",                  no_argument,       &clopt_model,           MODEL_49G       },
 
-        {"reset",                no_argument,       &clopt_reset,      true            },
-        {"monitor",              no_argument,       &clopt_monitor,    true            },
+        {"reset",                no_argument,       &clopt_reset,           true            },
+        {"monitor",              no_argument,       &clopt_monitor,         true            },
         /* {"batchXfer",  no_argument,       &clopt_batchXfer,  true            }, */
-        {"state-dir",            required_argument, NULL,              8999            },
-        /* {"mod",        required_argument, NULL,              8000            }, */
-        /* {"cpu",        required_argument, NULL,              8010            }, */
-        /* {"hdw",        required_argument, NULL,              8020            }, */
-        /* {"rom",        required_argument, NULL,              8030            }, */
-        /* {"ram",        required_argument, NULL,              8040            }, */
-        /* {"port1",      required_argument, NULL,              8050            }, */
-        /* {"port2",      required_argument, NULL,              8060            }, */
+        {"state-dir",            required_argument, NULL,                   8999            },
 
-        {"shiftless",            no_argument,       &clopt_shiftless,  true            },
+        {"shiftless",            no_argument,       &clopt_shiftless,       true            },
 
-        {"gui",                  no_argument,       &clopt_frontend,   FRONTEND_SDL    },
-        {"chromeless",           no_argument,       &clopt_chromeless, true            },
-        {"fullscreen",           no_argument,       &clopt_fullscreen, true            },
-        {"scale",                required_argument, NULL,              7110            },
+        {"gui",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    },
+        {"chromeless",           no_argument,       &clopt_chromeless,      true            },
+        {"fullscreen",           no_argument,       &clopt_fullscreen,      true            },
+        {"scale",                required_argument, NULL,                   7110            },
 
-        {"tui",                  no_argument,       &clopt_frontend,   FRONTEND_NCURSES},
-        {"tui-small",            no_argument,       NULL,              6110            },
-        {"tui-tiny",             no_argument,       NULL,              6120            },
+        {"tui",                  no_argument,       &clopt_frontend,        FRONTEND_NCURSES},
+        {"tui-small",            no_argument,       NULL,                   6110            },
+        {"tui-tiny",             no_argument,       NULL,                   6120            },
 
-        {"mono",                 no_argument,       &clopt_mono,       true            },
-        {"gray",                 no_argument,       &clopt_gray,       true            },
+        {"mono",                 no_argument,       &clopt_mono,            true            },
+        {"gray",                 no_argument,       &clopt_gray,            true            },
 
-        {"debug-opcodes",        no_argument,       NULL,              38601           },
-        {"debug-revision",       no_argument,       NULL,              38602           },
-        {"debug-x-func",         no_argument,       NULL,              38603           },
-        {"debug-flash",          no_argument,       NULL,              38604           },
-        {"debug-implementation", no_argument,       NULL,              38605           },
-        {"debug-mod-cache",      no_argument,       NULL,              38606           },
-        {"debug-serial",         no_argument,       NULL,              38607           },
-        {"debug-timers",         no_argument,       NULL,              38608           },
-        {"debug-interruptions",  no_argument,       NULL,              38609           },
-        {"debug-display",        no_argument,       NULL,              38610           },
-        {"debug-modules",        no_argument,       NULL,              38611           },
-        {"debug-trace",          no_argument,       NULL,              38612           },
+        {"debug-opcodes",        no_argument,       NULL,                   38601           },
+        {"debug-revision",       no_argument,       NULL,                   38602           },
+        {"debug-x-func",         no_argument,       NULL,                   38603           },
+        {"debug-flash",          no_argument,       NULL,                   38604           },
+        {"debug-implementation", no_argument,       NULL,                   38605           },
+        {"debug-mod-cache",      no_argument,       NULL,                   38606           },
+        {"debug-serial",         no_argument,       NULL,                   38607           },
+        {"debug-timers",         no_argument,       NULL,                   38608           },
+        {"debug-interruptions",  no_argument,       NULL,                   38609           },
+        {"debug-display",        no_argument,       NULL,                   38610           },
+        {"debug-modules",        no_argument,       NULL,                   38611           },
+        {"debug-trace",          no_argument,       NULL,                   38612           },
 
-        {0,                      0,                 0,                 0               }
+        {0,                      0,                 0,                      0               }
     };
 
     const char* help_text = "usage: %s [options]\n"
                             "options:\n"
-                            "  -h --help       what you are reading\n"
-                            "     --verbose    display more informations\n"
-                            "     --throttle   throttle CPU speed\n"
-                            "     --big-screen 131×80 screen (default: false)\n"
-                            "     --black-lcd  (default: false)\n"
-                            "     --48gx       emulate a HP 48GX\n"
-                            "     --48sx       emulate a HP 48SX\n"
-                            "     --40g        emulate a HP 40G\n"
-                            "     --49g        emulate a HP 49G\n"
+                            "  -h --help         what you are reading\n"
+                            "     --print-config output current configuration to stdout and exit (in config.lua formatting)\n"
+                            "     --verbose      display more informations\n"
+                            "     --throttle     throttle CPU speed\n"
+                            "     --big-screen   131×80 screen (default: false)\n"
+                            "     --black-lcd    (default: false)\n"
+                            "     --48gx         emulate a HP 48GX\n"
+                            "     --48sx         emulate a HP 48SX\n"
+                            "     --40g          emulate a HP 40G\n"
+                            "     --49g          emulate a HP 49G\n"
                             "     --state-dir=<path> use a different data directory "
                             "(default: ~/.config/saturnMODEL/)\n"
-                            "     --gui        graphical (SDL2) front-end (default: true)\n"
-                            "     --tui        text front-end (default: false)\n"
-                            "     --tui-small  text small front-end (2×2 pixels per character) (default: "
+                            "     --gui          graphical (SDL2) front-end (default: true)\n"
+                            "     --tui          text front-end (default: false)\n"
+                            "     --tui-small    text small front-end (2×2 pixels per character) (default: "
                             "false)\n"
-                            "     --tui-tiny   text tiny front-end (2×4 pixels per character) (default: "
+                            "     --tui-tiny     text tiny front-end (2×4 pixels per character) (default: "
                             "false)\n"
-                            "     --chromeless only show display (default: "
+                            "     --chromeless   only show display (default: "
                             "false)\n"
-                            "     --fullscreen make the UI fullscreen "
+                            "     --fullscreen   make the UI fullscreen "
                             "(default: false)\n"
-                            "     --scale=<n>  make the UI scale <n> times "
+                            "     --scale=<n>    make the UI scale <n> times "
                             "(default: 1.0)\n"
-                            "     --mono       make the UI monochrome (default: "
+                            "     --mono         make the UI monochrome (default: "
                             "false)\n"
-                            "     --gray       make the UI grayscale (default: "
+                            "     --gray         make the UI grayscale (default: "
                             "false)\n"
-                            "     --shiftless  don't map the shift keys to let them free for numbers (default: "
+                            "     --shiftless    don't map the shift keys to let them free for numbers (default: "
                             "false)\n"
-                            "     --reset      force a reset\n"
-                            "     --monitor    start with monitor\n"
+                            "     --reset        force a reset\n"
+                            "     --monitor      start with monitor (default: no)\n"
+                            "\n"
                             "     --debug-opcodes        enables debugging opcodes (default: no)\n"
                             "     --debug-revision       enables debugging revision (default: no)\n"
                             "     --debug-x-func         enables debugging extended functions (default: no)\n"
@@ -251,7 +329,7 @@ config_t* config_init( int argc, char* argv[] )
         switch ( c ) {
             case 'h':
                 fprintf( stderr, help_text, config.progname );
-                exit( 0 );
+                exit( EXIT_SUCCESS );
                 break;
             case 6110:
                 clopt_frontend = FRONTEND_NCURSES;
@@ -267,27 +345,6 @@ config_t* config_init( int argc, char* argv[] )
             case 8999:
                 clopt_state_dir_path = optarg;
                 break;
-                /* case 8000: */
-                /*     clopt_mod_file_name = optarg; */
-                /*     break; */
-                /* case 8010: */
-                /*     clopt_cpu_file_name = optarg; */
-                /*     break; */
-                /* case 8020: */
-                /*     clopt_hdw_file_name = optarg; */
-                /*     break; */
-                /* case 8030: */
-                /*     clopt_rom_file_name = optarg; */
-                /*     break; */
-                /* case 8040: */
-                /*     clopt_ram_file_name = optarg; */
-                /*     break; */
-                /* case 8050: */
-                /*     clopt_port_1_file_name = optarg; */
-                /*     break; */
-                /* case 8060: */
-                /*     clopt_port_2_file_name = optarg; */
-                /*     break; */
 
             case 38601:
                 config.debug_level |= DEBUG_C_OPCODES;
@@ -331,6 +388,92 @@ config_t* config_init( int argc, char* argv[] )
         }
     }
 
+    if ( clopt_state_dir_path != NULL )
+        config.state_dir_path = strdup( clopt_state_dir_path );
+
+    config.config_file_name = normalize_filename( config.state_dir_path, config_file_name );
+    config.mod_file_name = normalize_filename( config.state_dir_path, mod_file_name );
+    config.cpu_file_name = normalize_filename( config.state_dir_path, cpu_file_name );
+    config.hdw_file_name = normalize_filename( config.state_dir_path, hdw_file_name );
+    config.rom_file_name = normalize_filename( config.state_dir_path, rom_file_name );
+    config.ram_file_name = normalize_filename( config.state_dir_path, ram_file_name );
+    config.port_1_file_name = normalize_filename( config.state_dir_path, port_1_file_name );
+    config.port_2_file_name = normalize_filename( config.state_dir_path, port_2_file_name );
+
+    /**********************/
+    /* 1. read config.lua */
+    /**********************/
+    bool haz_config_file = config_read( config.config_file_name );
+    if ( haz_config_file ) {
+        lua_getglobal( config_lua_values, "verbose" );
+        config.verbose = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "throttle" );
+        config.throttle = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "big_screen" );
+        config.big_screen = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "black_lcd" );
+        config.black_lcd = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "chromeless" );
+        config.chromeless = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "fullscreen" );
+        config.fullscreen = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "gray" );
+        config.gray = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "mono" );
+        config.mono = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "shiftless" );
+        config.shiftless = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "monitor" );
+        config.monitor = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "model" );
+        const char* svalue_model = luaL_optstring( config_lua_values, -1, "49g" );
+        if ( svalue_model != NULL ) {
+            if ( strcmp( svalue_model, "49g" ) == 0 )
+                config.model = MODEL_49G;
+            if ( strcmp( svalue_model, "40g" ) == 0 )
+                config.model = MODEL_40G;
+            if ( strcmp( svalue_model, "48gx" ) == 0 )
+                config.model = MODEL_48GX;
+            if ( strcmp( svalue_model, "48sx" ) == 0 )
+                config.model = MODEL_48SX;
+        }
+
+        lua_getglobal( config_lua_values, "frontend" );
+        const char* svalue = luaL_optstring( config_lua_values, -1, "sdl" );
+        if ( svalue != NULL ) {
+            if ( strcmp( svalue, "sdl" ) == 0 )
+                config.frontend = FRONTEND_SDL;
+            if ( strcmp( svalue, "tui" ) == 0 ) {
+                config.frontend = FRONTEND_NCURSES;
+                config.small = false;
+                config.tiny = false;
+            }
+            if ( strcmp( svalue, "tui-small" ) == 0 ) {
+                config.frontend = FRONTEND_NCURSES;
+                config.small = true;
+                config.tiny = false;
+            }
+            if ( strcmp( svalue, "tui-tiny" ) == 0 ) {
+                config.frontend = FRONTEND_NCURSES;
+                config.small = false;
+                config.tiny = true;
+            }
+        }
+
+        lua_getglobal( config_lua_values, "scale" );
+        config.scale = luaL_optnumber( config_lua_values, -1, 1.0 );
+    }
+
     /****************************************************/
     /* 2. treat command-line params which have priority */
     /****************************************************/
@@ -369,33 +512,9 @@ config_t* config_init( int argc, char* argv[] )
         config.monitor = clopt_monitor;
     /* if ( clopt_batchXfer != -1 ) */
     /*     config.batchXfer = clopt_batchXfer; */
-    if ( clopt_state_dir_path != NULL )
-        config.state_dir_path = strdup( clopt_state_dir_path );
-    /* if ( clopt_mod_file_name != NULL ) */
-    /*     config.mod_file_name = strdup( clopt_mod_file_name ); */
-    /* if ( clopt_cpu_file_name != NULL ) */
-    /*     config.cpu_file_name = strdup( clopt_cpu_file_name ); */
-    /* if ( clopt_hdw_file_name != NULL ) */
-    /*     config.hdw_file_name = strdup( clopt_hdw_file_name ); */
-    /* if ( clopt_rom_file_name != NULL ) */
-    /*     config.rom_file_name = strdup( clopt_rom_file_name ); */
-    /* if ( clopt_ram_file_name != NULL ) */
-    /*     config.ram_file_name = strdup( clopt_ram_file_name ); */
-    /* if ( clopt_port_1_file_name != NULL ) */
-    /*     config.port_1_file_name = strdup( clopt_port_1_file_name ); */
-    /* if ( clopt_port_2_file_name != NULL ) */
-    /*     config.port_2_file_name = strdup( clopt_port_2_file_name ); */
 
     if ( config.model == MODEL_49G )
         config.black_lcd = true;
-
-    config.mod_file_name = normalize_filename( config.state_dir_path, clopt_mod_file_name );
-    config.cpu_file_name = normalize_filename( config.state_dir_path, clopt_cpu_file_name );
-    config.hdw_file_name = normalize_filename( config.state_dir_path, clopt_hdw_file_name );
-    config.rom_file_name = normalize_filename( config.state_dir_path, clopt_rom_file_name );
-    config.ram_file_name = normalize_filename( config.state_dir_path, clopt_ram_file_name );
-    config.port_1_file_name = normalize_filename( config.state_dir_path, clopt_port_1_file_name );
-    config.port_2_file_name = normalize_filename( config.state_dir_path, clopt_port_2_file_name );
 
     config.progname = basename( strdup( argv[ 0 ] ) );
     switch ( config.model ) {
@@ -414,7 +533,8 @@ config_t* config_init( int argc, char* argv[] )
     }
 
     if ( config.verbose ) {
-        print_config();
+        if ( !print_config_and_exit )
+            print_config();
 
         if ( optind < argc ) {
             fprintf( stderr, "%i invalid arguments : ", argc - optind );
@@ -422,6 +542,18 @@ config_t* config_init( int argc, char* argv[] )
                 fprintf( stderr, "%s\n", argv[ optind++ ] );
             fprintf( stderr, "\n" );
         }
+    }
+
+    if ( print_config_and_exit ) {
+        print_config();
+        exit( EXIT_SUCCESS );
+    }
+
+    if ( !haz_config_file ) {
+        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", config.config_file_name );
+
+        fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", config.state_dir_path,
+                 config.progname, config.config_file_name );
     }
 
     return &config;

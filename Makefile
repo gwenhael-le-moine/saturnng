@@ -8,13 +8,16 @@
 
 NAME = saturn
 
+VERSION_MAJOR = 5
+VERSION_MINOR = 4
+PATCHLEVEL = 0
+
 PREFIX ?= /usr
 DOCDIR ?= $(PREFIX)/doc/$(NAME)
 INFODIR ?= $(PREFIX)/info
 
-VERSION_MAJOR = 5
-VERSION_MINOR = 3
-PATCHLEVEL = 2
+LUA_VERSION ?= lua
+PKG_CONFIG ?= pkg-config
 
 OPTIM ?= 2
 
@@ -29,11 +32,15 @@ override CFLAGS := -O$(OPTIM) \
 
 LIBS = -L./src/libChf -lChf
 
-SDLCFLAGS = $(shell pkg-config --cflags sdl2)
-SDLLIBS = $(shell pkg-config --libs sdl2)
+SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl2)
+SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl2)
 
-NCURSESCFLAGS = $(shell pkg-config --cflags ncursesw)
-NCURSESLIBS = $(shell pkg-config --libs ncursesw)
+NCURSESCFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
+NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
+
+### lua
+LUACFLAGS = $(shell "$(PKG_CONFIG)" --cflags $(LUA_VERSION))
+LUALIBS = $(shell "$(PKG_CONFIG)" --libs $(LUA_VERSION))
 
 FULL_WARNINGS = no
 
@@ -123,6 +130,7 @@ override CFLAGS := -std=c11 \
 	$(EXTRA_WARNING_FLAGS) \
 	$(SDLCFLAGS) \
 	$(NCURSESCFLAGS) \
+	$(LUACFLAGS) \
 	$(CFLAGS)
 
 override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
@@ -137,7 +145,7 @@ src/libChf/libChf.a:
 	make -C src/libChf #MT=yes
 
 dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) $(HEADERS) src/libChf/libChf.a
-	$(CC) $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS)
+	$(CC) $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS) $(LUALIBS)
 
 dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
 	# UNUSED

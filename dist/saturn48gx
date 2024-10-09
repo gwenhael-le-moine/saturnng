@@ -36,6 +36,10 @@ if [ ! -e "$CONFIGDIR"/ram ]; then
     RESET=--reset
 fi
 
+if [ ! -e "$CONFIGDIR"/config.lua ]; then
+    ./saturn --48gx --state-dir "$CONFIGDIR" --print-config > "$CONFIGDIR"/config.lua
+fi
+
 if echo "$@" | grep -q "\--verbose"; then
     ./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@"
 else

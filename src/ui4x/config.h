@@ -40,6 +40,8 @@ typedef struct {
     bool monitor;   /* 2.1: Call monitor() on startup */
     bool batchXfer; /* 3.15: Non-interactive file transfers */
     char* state_dir_path;
+    char* config_file_name;
+
     char* mod_file_name;
     char* cpu_file_name;
     char* hdw_file_name;
