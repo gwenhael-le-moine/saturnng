@@ -3,201 +3,157 @@
 color_t colors_49g[ NB_COLORS ] = {
     /* UI4X_COLOR_HP_LOGO */
     {
-     .r = 0xB0,
-     .g = 0xB0,
-     .b = 0xB8,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xB0,
+     .rgb = 0xB0B0B8,
      },
     /* UI4X_COLOR_HP_LOGO_BG */
     {
-     .r = 0x13,
-     .g = 0x13,
-     .b = 0x13,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x68,
+     .rgb = 0x131313,
      },
     /* UI4X_COLOR_48GX_128K_RAM */
     {
-     .r = 0xF0,
-     .g = 0xF0,
-     .b = 0xF0,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xF0,
+     .rgb = 0xF0F0F0,
      },
     /* UI4X_COLOR_FRAME */
     {
-     .r = 0x00,
-     .g = 0x00,
-     .b = 0x00,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0x00,
+     .rgb = 0x000000,
      },
     /* UI4X_COLOR_UPPER_FACEPLATE_EDGE_TOP */
     {
-     .r = 0x00,
-     .g = 0x00,
-     .b = 0x00,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x80,
+     .rgb = 0x000000,
      },
     /* UI4X_COLOR_UPPER_FACEPLATE */
     {
-     .r = 0x26,
-     .g = 0x26,
-     .b = 0x26,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x68,
+     .rgb = 0x262626,
      },
     /* UI4X_COLOR_UPPER_FACEPLATE_EDGE_BOTTOM */
     {
-     .r = 0x00,
-     .g = 0x00,
-     .b = 0x00,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x54,
+     .rgb = 0x000000,
      },
     /* UI4X_COLOR_FACEPLATE_EDGE_TOP */
     {
-     .r = 0x58,
-     .g = 0x58,
-     .b = 0x58,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x58,
+     .rgb = 0x585858,
      },
     /* UI4X_COLOR_FACEPLATE */
     {
-     .r = 0x27,
-     .g = 0x27,
-     .b = 0x27,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x4A,
+     .rgb = 0x272727,
      },
     /* UI4X_COLOR_FACEPLATE_EDGE_BOTTOM */
     {
-     .r = 0x40,
-     .g = 0x40,
-     .b = 0x40,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x40,
+     .rgb = 0x404040,
      },
     /* UI4X_COLOR_KEYPAD_HIGHLIGHT */
     {
-     .r = 0x4f,
-     .g = 0x61,
-     .b = 0x65,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x68,
+     .rgb = 0x4f6165,
      },
     /* UI4X_COLOR_BUTTON_EDGE_TOP */
     {
-     .r = 0x4b,
-     .g = 0x4b,
-     .b = 0x4b,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x68,
+     .rgb = 0x4b4b4b,
      },
     /* UI4X_COLOR_BUTTON */
     {
-     .r = 0x3f,
-     .g = 0x3f,
-     .b = 0x3f,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x58,
+     .rgb = 0x3f3f3f,
      },
     /* UI4X_COLOR_BUTTON_EDGE_BOTTOM */
     {
-     .r = 0x3d,
-     .g = 0x3d,
-     .b = 0x3d,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x4A,
+     .rgb = 0x3d3d3d,
      },
     /* UI4X_COLOR_PIXEL_OFF */
     {
-     .r = 0xcd,
-     .g = 0xcd,
-     .b = 0xcd,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xCD,
+     .rgb = 0xcdcdcd,
      },
     /* UI4X_COLOR_PIXEL_ON */
     {
-     .r = 0x00,
-     .g = 0x00,
-     .b = 0x00,
      .a = 0xff,
      .mono_rgb = 0x00,
      .gray_rgb = 0x14,
+     .rgb = 0x000000,
      },
     /* UI4X_COLOR_BLACK_PIXEL_OFF */
     {
-     .r = 0xf5,
-     .g = 0xf5,
-     .b = 0xf5,
      .a = 0xFF,
      .mono_rgb = 0xFF,
      .gray_rgb = 0xCD,
+     .rgb = 0xf5f5f5,
      },
     /* UI4X_COLOR_BLACK_PIXEL_ON */
     {
-     .r = 0x0,
-     .g = 0x0,
-     .b = 0x0,
      .a = 0xFF,
      .mono_rgb = 0x0,
      .gray_rgb = 0x14,
+     .rgb = 0x000000,
      },
     /* UI4X_COLOR_LABEL */
     {
-     .r = 0xff,
-     .g = 0xff,
-     .b = 0xff,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xff,
+     .rgb = 0xffffff,
      },
     /* UI4X_COLOR_ALPHA */
     {
-     .r = 0x67,
-     .g = 0xc1,
-     .b = 0x84,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xDC,
+     .rgb = 0x67c184,
      },
     /* UI4X_COLOR_SHIFT_LEFT */
     {
-     .r = 0x82,
-     .g = 0xb1,
-     .b = 0xff,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xDC,
+     .rgb = 0x82b1ff,
      },
     /* UI4X_COLOR_SHIFT_RIGHT */
     {
-     .r = 0xff,
-     .g = 0x8a,
-     .b = 0x80,
      .a = 0xff,
      .mono_rgb = 0xff,
      .gray_rgb = 0xA9,
+     .rgb = 0xff8a80,
      },
 };
 

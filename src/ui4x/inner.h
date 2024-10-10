@@ -50,6 +50,7 @@ typedef struct color_t {
     int r, g, b, a;
     int mono_rgb;
     int gray_rgb;
+    int rgb;
 } color_t;
 
 typedef struct button_t {

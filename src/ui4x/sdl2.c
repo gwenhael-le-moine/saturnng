@@ -973,6 +973,10 @@ static void apply_contrast( void )
             colors[ i ].r = colors[ i ].gray_rgb;
             colors[ i ].g = colors[ i ].gray_rgb;
             colors[ i ].b = colors[ i ].gray_rgb;
+        } else {
+            colors[ i ].r = ( colors[ i ].rgb >> 16 ) & 0xff;
+            colors[ i ].g = ( colors[ i ].rgb >> 8 ) & 0xff;
+            colors[ i ].b = colors[ i ].rgb & 0xff;
         }
 
         if ( !config.mono && i == COLOR_PIXEL_ON ) {

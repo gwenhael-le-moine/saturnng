@@ -479,9 +479,10 @@ void ui_start_ncurses( config_t* conf )
             init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_PIXEL_ON ].gray_rgb, COLORS[ UI4X_COLOR_PIXEL_ON ].gray_rgb,
                         COLORS[ UI4X_COLOR_PIXEL_ON ].gray_rgb );
         } else {
-            init_color( LCD_COLOR_BG, COLORS[ UI4X_COLOR_PIXEL_OFF ].r, COLORS[ UI4X_COLOR_PIXEL_OFF ].g,
-                        COLORS[ UI4X_COLOR_PIXEL_OFF ].b );
-            init_color( LCD_COLOR_FG, COLORS[ UI4X_COLOR_PIXEL_ON ].r, COLORS[ UI4X_COLOR_PIXEL_ON ].g, COLORS[ UI4X_COLOR_PIXEL_ON ].b );
+            init_color( LCD_COLOR_BG, ( COLORS[ UI4X_COLOR_PIXEL_OFF ].rgb >> 16 ) & 0xff,
+                        ( COLORS[ UI4X_COLOR_PIXEL_OFF ].rgb >> 8 ) & 0xff, COLORS[ UI4X_COLOR_PIXEL_OFF ].rgb & 0xff );
+            init_color( LCD_COLOR_BG, ( COLORS[ UI4X_COLOR_PIXEL_ON ].rgb >> 16 ) & 0xff, ( COLORS[ UI4X_COLOR_PIXEL_ON ].rgb >> 8 ) & 0xff,
+                        COLORS[ UI4X_COLOR_PIXEL_ON ].rgb & 0xff );
         }
 
         init_pair( LCD_PIXEL_OFF, LCD_COLOR_BG, LCD_COLOR_BG );
