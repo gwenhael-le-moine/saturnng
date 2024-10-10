@@ -144,9 +144,7 @@ void RomInit( void )
     }
 
     if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
-        /* ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL ); */
-        /* ChfSignal( MOD_CHF_MODULE_ID ); */
-        // HACK: To load 48SX ROM, try again with half the size this time.
+        // To load 48SX ROM, try again with half the size this time.
         if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE / 2, mod_status_rom ) ) {
             ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL );
             ChfSignal( MOD_CHF_MODULE_ID );
@@ -233,7 +231,7 @@ void RomWrite( Address rel_address, Nibble datum )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite" );
 
     // FIXME: 48gx: saturn48gx-Mid <12>d (src/romram.c,235)-E-Write into ROM A[1B632] D[9]
-    DEBUG_print_cpu_instruction();
+    // DEBUG_print_cpu_instruction();
 
     ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_ROM_WRITE, CHF_ERROR, rel_address, datum );
     ChfSignal( MOD_CHF_MODULE_ID );

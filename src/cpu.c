@@ -2057,7 +2057,7 @@ static void ExecGroup_80( void )
         case 0xB: /* BUSCC */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
             // FIXME: 49g bugs here on display change
-            DEBUG_print_cpu_instruction();
+            // DEBUG_print_cpu_instruction();
 
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC" );
             ChfSignal( CPU_CHF_MODULE_ID );
@@ -2818,7 +2818,7 @@ void DEBUG_print_cpu_instruction( void )
 
         /* Dump PC and current instruction */
         ( void )Disassemble( cpu_status.PC, dob );
-        fprintf( stderr, "\n%s\n\n", dob );
+        fprintf( stderr, "%s\n", dob );
     }
 }
 
@@ -2853,6 +2853,7 @@ void OneStep( void )
     Address offset;
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_EXECUTING, cpu_status.PC );
+    DEBUG_print_cpu_instruction();
 
     /* Get first instruction nibble */
     n = GetNibble( cpu_status.PC++ );
