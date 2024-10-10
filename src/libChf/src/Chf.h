@@ -122,9 +122,9 @@ typedef struct ChfDescriptor_S {
 
 /* Standalone message table */
 typedef struct ChfTable_S {
-    int module;         /* Module identifier */
-    int code;           /* Condition code */
-    char* msg_template; /* Message template */
+    int module;               /* Module identifier */
+    int code;                 /* Condition code */
+    const char* msg_template; /* Message template */
 } ChfTable;
 
 /* Condition handler */

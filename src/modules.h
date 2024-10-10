@@ -229,7 +229,7 @@ typedef void ( *ModWriteFunction )( Address rel_addr, Nibble data );
 enum ModConfig { MOD_UNCONFIGURED, MOD_SIZE_CONFIGURED, MOD_CONFIGURED };
 
 struct ModDescriptionEntry {
-    char* name;
+    const char* name;
     Address id;
     int access_prio;
 #define MOD_MIN_ACCESS_PRIO ( -1 )

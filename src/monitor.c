@@ -250,8 +250,8 @@ static int mon_quit( void )
   ---------------------------------------------------------------------------*/
 
 struct TEntry {
-    char* name;
-    char* desc;
+    const char* name;
+    const char* desc;
     int ( *function )( void );
 };
 
