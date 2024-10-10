@@ -66,7 +66,7 @@ int main( int argc, char** argv )
 
     /* 3.9: Print out MAIN_M_COPYRIGHT and MAIN_M_LICENSE on stdout now */
     fprintf( stdout,
-             "%s %i.%i.%i - A poor-man's emulator of HP48GX, HP49, HP39/40\nCopyright (C) 1998-2000 Ivan Cibrario "
+             "%s %i.%i.%i - A poor-man's emulator of HP48GX/SX, HP49, HP39/40\nCopyright (C) 1998-2000 Ivan Cibrario "
              "Bertolotti\nCopyright (C) Gwenhael Le Moine\n",
              config.progname, VERSION_MAJOR, VERSION_MINOR, PATCHLEVEL );
     fprintf( stdout,
