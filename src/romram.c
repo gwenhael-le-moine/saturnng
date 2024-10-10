@@ -83,15 +83,14 @@
 #include <string.h>
 #include <unistd.h> /* access() */
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID MOD_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
    a private struct ModStatus_48. The dynamic allocation is performed during

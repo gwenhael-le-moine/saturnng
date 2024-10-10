@@ -95,6 +95,8 @@
 #include <string.h>
 #include <unistd.h> /* access() */
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -102,9 +104,6 @@
 #include "flash49.h"
 #include "disk_io.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID MOD_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 #define FLASH_VIEW_SELECTOR 0x40000
 #define FLASH_BANK_MASK 0x3FFFF

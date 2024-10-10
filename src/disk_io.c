@@ -64,14 +64,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "disk_io.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID DISK_IO_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /* .+
 

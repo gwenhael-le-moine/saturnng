@@ -69,15 +69,14 @@
 
 .- */
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID FLASH_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Private Macro/Data type definitions

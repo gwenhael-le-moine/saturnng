@@ -84,14 +84,13 @@
 #include <stdlib.h>
 #include <string.h> /* 3.1: strcpy(), strcat(), strlen() */
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID CPU_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Private functions/macros/variables

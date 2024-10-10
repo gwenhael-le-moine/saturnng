@@ -88,6 +88,8 @@
 #include <ctype.h>
 #include <string.h>
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -95,9 +97,6 @@
 #include "disk_io.h"
 #include "x_func.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID X_FUNC_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Private functions: CPU access

@@ -70,14 +70,12 @@
 #include <string.h>
 #include <signal.h>
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
-#include "debug.h"
-
-#define CHF_MODULE_ID CPU_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Macro & Data type definitions

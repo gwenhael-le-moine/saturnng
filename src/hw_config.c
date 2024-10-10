@@ -72,16 +72,13 @@
 
 .- */
 
-#include <stdio.h>
+#include "libChf/src/Chf.h"
 
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID MOD_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Module description tables

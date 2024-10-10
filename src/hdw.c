@@ -101,6 +101,8 @@
 
 #include <string.h> /* 3.1: memset() */
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -109,9 +111,6 @@
 #include "serial.h" /* 2.5: Serial port emulation module */
 #include "x_func.h" /* 3.13: Extended emulator functions */
 #include "debug.h"
-
-#define CHF_MODULE_ID MOD_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 static const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
 

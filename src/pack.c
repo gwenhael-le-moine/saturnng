@@ -72,6 +72,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -88,9 +90,6 @@
 #define UTIL_F_PACK_OPEN 6
 #define UTIL_F_PACK_READ 7
 #define UTIL_F_PACK_WRITE_NIBBLES 8
-
-#define CHF_MODULE_ID UTIL_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /* Maximum size of source ROM (bytes) handled by this utility; set to
    a reasonable value

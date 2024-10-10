@@ -114,15 +114,14 @@
 #include <unistd.h>
 #include <sys/time.h>
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "serial.h"
 #include "debug.h"
-
-#define CHF_MODULE_ID CPU_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 /*---------------------------------------------------------------------------
         Private macros / variables / functions
@@ -264,7 +263,7 @@ static ChfAction do_SHUTDN( void )
        has just executed a shutdown instruction.
        Let's do something a little tricky here:
 
-       1- redraw the LCD
+       //1- redraw the LCD
 
        2- handle serial port activities
 

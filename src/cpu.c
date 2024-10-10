@@ -101,6 +101,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "libChf/src/Chf.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -108,9 +110,6 @@
 #include "keyb.h"
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
 #include "debug.h"
-
-#define CHF_MODULE_ID CPU_CHF_MODULE_ID
-#include "libChf/src/Chf.h"
 
 #define GetNibble FetchNibble
 
