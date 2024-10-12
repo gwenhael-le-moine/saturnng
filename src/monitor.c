@@ -253,7 +253,7 @@ struct TEntry {
     int ( *function )( void );
 };
 
-#define TableSize( t ) ( sizeof( t ) / sizeof( struct TEntry ) )
+#define TABLE_SIZE( t ) ( sizeof( t ) / sizeof( struct TEntry ) )
 
 /* Forward declaration for the Help funcion */
 static int Help( void );
@@ -277,15 +277,15 @@ static const struct TEntry table[] = {
 static int InvokeCommand( char* tk )
 {
     int i;
-    for ( i = 0; i < ( int )TableSize( table ) && strcmp( tk, table[ i ].name ); i++ )
+    for ( i = 0; i < ( int )TABLE_SIZE( table ) && strcmp( tk, table[ i ].name ); i++ )
         ;
-    return i == TableSize( table ) ? FAILED : table[ i ].function();
+    return i == TABLE_SIZE( table ) ? FAILED : table[ i ].function();
 }
 
 /* Print help information */
 static int Help( void )
 {
-    for ( int i = 0; i < ( int )TableSize( table ); i++ )
+    for ( int i = 0; i < ( int )TABLE_SIZE( table ); i++ )
         printf( "%s\t\t%s\n", table[ i ].name, table[ i ].desc );
 
     return OK;

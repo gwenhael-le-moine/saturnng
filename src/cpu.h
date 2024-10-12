@@ -136,48 +136,48 @@
 #define CPU_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
 
 /* Instruction opcode access macros:
-     GetFS(f)		returns the short field-selector value from the
+     GET_FS(f)		returns the short field-selector value from the
                         given nibble (bits 2..0)
 
-     GetImmFS(f)	returns the immediate-field-selector flag from the
+     GET_IMMEDIATE_FS_FLAG(f)	returns the immediate-field-selector flag from the
                         given nibble (bit 3)
                          =0: regular field selector
                         !=0: immediate field selector
 
-     GetOC_1(o)		returns the short operation code from the given
+     GET_OC_1(o)		returns the short operation code from the given
                         nibble (bits 3..2 >>2)
 
-     GetOC_2(f, o)	returns the long operation code from the given
+     GET_OC_2(f, o)	returns the long operation code from the given
                         nibbles (f bit 3, o bits 3..2)
 
-     GetOC_3b(o)	returns the long operation code from the given
+     GET_OC_3b(o)	returns the long operation code from the given
                         nibble (bits 2..0)
 
-     GetRP(o)		returns the register-pair identifier from the given
+     GET_RP(o)		returns the register-pair identifier from the given
                         nibble (bits 1..0)
 
-     GetRn(r)		returns the R register index from the given nibble
+     GET_Rn(r)		returns the R register index from the given nibble
                         (bits 2..0)
 
-     GetAC(r)		returns the A/C register flag from the given nibble
+     GET_AC(r)		returns the A/C register flag from the given nibble
                         (bit 3)
                          =0: register A
                         !=0: register C
 
-     GetAS(r)		returns the add/subtract flag from the given nibble
+     GET_AS(r)		returns the add/subtract flag from the given nibble
                         (bit 3)
                          =0: add
                         !=0: subtract
 */
-#define GetFS( f ) ( ( f ) & 0x7 )
-#define GetImmFS( o ) ( ( o ) & 0x8 )
-#define GetOC_1( o ) ( ( ( o ) & 0xC ) >> 2 )
-#define GetOC_2( f, o ) ( ( ( ( f ) & 0x8 ) >> 1 ) | ( ( ( o ) & 0xC ) >> 2 ) )
-#define GetOC_3b( o ) ( ( o ) & 0x7 )
-#define GetRP( o ) ( ( o ) & 0x3 )
-#define GetRn( r ) ( ( r ) & 0x7 )
-#define GetAC( r ) ( ( r ) & 0x8 )
-#define GetAS( r ) ( ( r ) & 0x8 )
+#define GET_FS( f ) ( ( f ) & 0x7 )
+#define GET_IMMEDIATE_FS_FLAG( o ) ( ( o ) & 0x8 )
+#define GET_OC_1( o ) ( ( ( o ) & 0xC ) >> 2 )
+#define GET_OC_2( f, o ) ( ( ( ( f ) & 0x8 ) >> 1 ) | ( ( ( o ) & 0xC ) >> 2 ) )
+#define GET_OC_3b( o ) ( ( o ) & 0x7 )
+#define GET_RP( o ) ( ( o ) & 0x3 )
+#define GET_Rn( r ) ( ( r ) & 0x7 )
+#define GET_AC( r ) ( ( r ) & 0x8 )
+#define GET_AS( r ) ( ( r ) & 0x8 )
 
 /* Field selector codes */
 #define FS_P 0
