@@ -108,6 +108,8 @@
 
 .- */
 
+#include <stdbool.h>
+
 /*---------------------------------------------------------------------------
         Macro/Data type definitions - require machdep.h
 
@@ -252,12 +254,12 @@ struct CpuStatus {
 
     int fs_idx_lo[ N_FS ];
     int fs_idx_hi[ N_FS ];
-    int hexmode;                 /* DEC/HEX mode, 1=HEX */
-    int carry;                   /* Carry bit 1=set */
-    int shutdn;                  /* SHUTDN flag, 1=executed */
-    int halt;                    /* 3.13: # of pending Halt */
-    int int_enable;              /* Int. enable, 1=enabled */
-    int int_service;             /* Int. service, 1=service */
+    bool hexmode;                /* DEC/HEX mode */
+    bool carry;                  /* Carry bit */
+    bool shutdn;                 /* SHUTDN flag */
+    bool halt;                   /* Halt flag */
+    bool int_enable;             /* Int. enable */
+    bool int_service;            /* Int. service */
     enum IntRequest int_pending; /* Pending interrupt request */
 
     /* 3.13: inner_loop_max gives the upper limit of the CPU speed if the

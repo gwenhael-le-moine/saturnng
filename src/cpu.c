@@ -253,7 +253,7 @@ static void ExecSHUTDN( void )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "SHUTDN" );
 
     /* Set shutdown flag */
-    cpu_status.shutdn = 1;
+    cpu_status.shutdn = true;
 
     /* the CPU module implements SHUTDN signalling the condition CPU_I_SHUTDN */
     ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_I_SHUTDN, CHF_INFO );
@@ -459,11 +459,11 @@ static void TestRREq( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRREq" );
     for ( n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             return;
         };
 
-    cpu_status.carry = 1;
+    cpu_status.carry = true;
 }
 
 /* ?r=0 */
@@ -477,11 +477,11 @@ static void TestRZ( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRZ" );
     for ( n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             return;
         };
 
-    cpu_status.carry = 1;
+    cpu_status.carry = true;
 }
 
 /* ?r#s */
@@ -496,11 +496,11 @@ static void TestRRNe( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRNe" );
     for ( n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             return;
         };
 
-    cpu_status.carry = 0;
+    cpu_status.carry = false;
 }
 
 /* ?r#0 */
@@ -514,11 +514,11 @@ static void TestRNZ( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRNZ" );
     for ( n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             return;
         };
 
-    cpu_status.carry = 0;
+    cpu_status.carry = false;
 }
 
 /* ?r>s */
@@ -533,16 +533,16 @@ static void TestRRGt( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGt" );
     for ( n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             return;
         };
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = 0;
+    cpu_status.carry = false;
 }
 
 /* ?r>=s */
@@ -557,16 +557,16 @@ static void TestRRGe( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGe" );
     for ( n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             return;
         };
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = 1;
+    cpu_status.carry = true;
 }
 
 /* ?r<s */
@@ -581,16 +581,16 @@ static void TestRRLt( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLt" );
     for ( n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             return;
         };
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = 0;
+    cpu_status.carry = false;
 }
 
 /* ?r<=s */
@@ -605,16 +605,16 @@ static void TestRRLe( int rp, int fs )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLe" );
     for ( n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             return;
         };
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = 1;
+    cpu_status.carry = true;
 }
 
 /*---------------------------------------------------------------------------
@@ -648,7 +648,7 @@ static void AddRR( register Nibble* d, register const Nibble* a, register const 
         }
     }
 
-    cpu_status.carry = carry;
+    cpu_status.carry = ( bool )carry;
 }
 
 /* r=r+1 */
@@ -678,7 +678,7 @@ static void IncrR( register Nibble* d, int fs )
         }
     }
 
-    cpu_status.carry = carry;
+    cpu_status.carry = ( bool )carry;
 }
 
 /* r=r-r */
@@ -708,7 +708,7 @@ static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, i
         }
     }
 
-    cpu_status.carry = carry;
+    cpu_status.carry = ( bool )carry;
 }
 
 /* r=r-1 */
@@ -738,7 +738,7 @@ static void DecrR( register Nibble* d, int fs )
         }
     }
 
-    cpu_status.carry = carry;
+    cpu_status.carry = ( bool )carry;
 }
 
 /* r=0 */
@@ -919,7 +919,7 @@ static void OneComplR( register Nibble* d, int fs )
             d[ n ] = dec_one_c[ ( int )d[ n ] ];
     }
 
-    cpu_status.carry = 0;
+    cpu_status.carry = false;
 }
 
 /* r=r&r */
@@ -967,7 +967,7 @@ static void AddRImm( Nibble* r, int fs, Nibble v )
         carry = ( ( s & ~NIBBLE_MASK ) != 0 );
     }
 
-    cpu_status.carry = carry;
+    cpu_status.carry = ( bool )carry;
 }
 
 /* Subtract immediate value 'v'+1 from the DataRegister 'r',
@@ -991,7 +991,7 @@ static void SubRImm( register Nibble* r, int fs, Nibble v )
         carry = ( ( s & ~NIBBLE_MASK ) != 0 );
     }
 
-    cpu_status.carry = carry;
+    cpu_status.carry = ( bool )carry;
 }
 
 /*---------------------------------------------------------------------------
@@ -1453,21 +1453,21 @@ static void ExecGroup_0( void )
             break;
 
         case 2: /* RTNSC */
-            cpu_status.carry = 1;
+            cpu_status.carry = true;
             cpu_status.PC = PopRSTK();
             break;
 
         case 3: /* RTNCC */
-            cpu_status.carry = 0;
+            cpu_status.carry = false;
             cpu_status.PC = PopRSTK();
             break;
 
         case 4: /* SETHEX */
-            cpu_status.hexmode = 1;
+            cpu_status.hexmode = true;
             break;
 
         case 5: /* SETDEC */
-            cpu_status.hexmode = 0;
+            cpu_status.hexmode = false;
             break;
 
         case 6: /* RSTK=C */
@@ -1515,10 +1515,10 @@ static void ExecGroup_0( void )
             {
                 if ( cpu_status.P == NIBBLE_MASK ) {
                     SetP( 0 );
-                    cpu_status.carry = 1;
+                    cpu_status.carry = true;
                 } else {
                     SetP( cpu_status.P + 1 );
-                    cpu_status.carry = 0;
+                    cpu_status.carry = false;
                 }
                 break;
             }
@@ -1527,10 +1527,10 @@ static void ExecGroup_0( void )
             {
                 if ( cpu_status.P == ( Nibble )0 ) {
                     SetP( NIBBLE_MASK );
-                    cpu_status.carry = 1;
+                    cpu_status.carry = true;
                 } else {
                     SetP( cpu_status.P - 1 );
-                    cpu_status.carry = 0;
+                    cpu_status.carry = false;
                 }
                 break;
             }
@@ -1546,14 +1546,14 @@ static void ExecGroup_0( void )
                 debug1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
 
                 /* Service immediately any pending interrupt request */
-                cpu_status.int_service = 1;
+                cpu_status.int_service = true;
                 cpu_status.int_pending = INT_REQUEST_NONE;
                 cpu_status.PC = INT_HANDLER_PC;
             } else {
                 /* Reenable interrupts and return */
                 debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_END );
 
-                cpu_status.int_service = 0;
+                cpu_status.int_service = false;
                 cpu_status.PC = PopRSTK();
             }
             break;
@@ -1907,7 +1907,7 @@ static void ExecGroup_808( void )
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTON" );
 
             /* Enable maskable interrupts */
-            cpu_status.int_enable = 1;
+            cpu_status.int_enable = true;
             break;
 
         case 1: /* RSI */
@@ -1985,7 +1985,7 @@ static void ExecGroup_808( void )
             /* INTOFF */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTOFF" );
 
-            cpu_status.int_enable = 0;
+            cpu_status.int_enable = false;
             break;
 
         default:
@@ -1994,6 +1994,17 @@ static void ExecGroup_808( void )
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
     }
+}
+
+/* Instruction Group_80 */
+static void ExecGroup_80B( void )
+{
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
+    // FIXME: 49g bugs here on display change
+    // DEBUG_print_cpu_instruction();
+
+    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC" );
+    ChfSignal( CPU_CHF_MODULE_ID );
 }
 
 /* Instruction Group_80 */
@@ -2054,18 +2065,7 @@ static void ExecGroup_80( void )
             break;
 
         case 0xB: /* BUSCC */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
-            // FIXME: 49g bugs here on display change
-            // DEBUG_print_cpu_instruction();
-
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC" );
-            ChfSignal( CPU_CHF_MODULE_ID );
-            break;
-
-        case 0xE: /* SREQ? */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSREQ" );
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "SREQ" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ExecGroup_80B();
             break;
 
         case 0xC: /* C=P n */
@@ -2074,6 +2074,12 @@ static void ExecGroup_80( void )
 
         case 0xD: /* P=C n */
             SetP( cpu_status.C[ ( int )GetNibble( cpu_status.PC++ ) ] );
+            break;
+
+        case 0xE: /* SREQ? */
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSREQ" );
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "SREQ" );
+            ChfSignal( CPU_CHF_MODULE_ID );
             break;
 
         case 0xF: /* CPEX */
@@ -2413,20 +2419,20 @@ void CpuReset( void )
         cpu_status.return_stack[ n ] = ( Address )0;
 
     /* Set hexmode */
-    cpu_status.hexmode = 1;
+    cpu_status.hexmode = true;
 
     /* Clear carry */
-    cpu_status.carry = 0;
+    cpu_status.carry = false;
 
     /* Disable maskable interrupts */
-    cpu_status.int_enable = 0;
+    cpu_status.int_enable = false;
 
     /* No interrupts are pending (for now) */
-    cpu_status.int_service = 0;
-    cpu_status.int_pending = 0;
+    cpu_status.int_service = false;
+    cpu_status.int_pending = false;
 
     /* The CPU is running */
-    cpu_status.shutdn = cpu_status.halt = 0;
+    cpu_status.shutdn = cpu_status.halt = false;
 
     /* Set inner_loop and inner_loop_max to default values */
     cpu_status.inner_loop = INNER_LOOP_MED;
@@ -2471,7 +2477,7 @@ void CpuInit( void )
     }
 
     /* The CPU is running */
-    cpu_status.shutdn = cpu_status.halt = 0;
+    cpu_status.shutdn = cpu_status.halt = false;
 }
 
 /* .+
@@ -2544,9 +2550,9 @@ void CpuIntRequest( enum IntRequest ireq )
         CpuWake();
 
         /* Check if immediate vectoring is ok */
-        if ( cpu_status.int_service == 0 ) {
+        if ( !cpu_status.int_service ) {
             /* Vector immediately */
-            cpu_status.int_service = 1;
+            cpu_status.int_service = true;
             cpu_status.int_pending = INT_REQUEST_NONE;
             PushRSTK( cpu_status.PC );
             cpu_status.PC = INT_HANDLER_PC;
@@ -2593,11 +2599,11 @@ void CpuWake( void )
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuWake" );
 
     if ( cpu_status.shutdn ) {
-        if ( cpu_status.halt == 0 ) {
+        if ( !cpu_status.halt ) {
             debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE );
 
             /* Clear SHUTDN flag */
-            cpu_status.shutdn = 0;
+            cpu_status.shutdn = false;
 
             /* Clear PC if necessary */
             /* if(cpu_status.OUT == (OutputRegister)0)
@@ -2662,9 +2668,10 @@ int CpuHaltRequest( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuHaltRequest" );
 
-    if ( cpu_status.halt++ == 0 ) {
+    if ( !cpu_status.halt ) {
         debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_HALT );
 
+        cpu_status.halt = true;
         /* CPU must actually be halted: call ExecSHUTDN() to simulate
            the execution of a regular SHUTDN instruction.
 
@@ -2708,13 +2715,13 @@ int CpuRunRequest( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuRunRequest" );
 
-    if ( cpu_status.halt > 0 )
-        if ( --cpu_status.halt == 0 ) {
-            debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN );
+    if ( cpu_status.halt ) {
+        debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN );
 
-            /* CPU must actually be awoken: call CpuWake() */
-            CpuWake();
-        }
+        cpu_status.halt = false;
+        /* CPU must actually be awoken: call CpuWake() */
+        CpuWake();
+    }
 
     return cpu_status.halt;
 }
