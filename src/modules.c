@@ -942,7 +942,6 @@ void ModInit( void )
     int mod;
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModInit" );
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_REVISION, MOD_I_REVISION, MOD_RCS_INFO );
 
     /* First, a little sanity check on mod_description: ensure that
        ModRegisterDescription() has been called at least once with a

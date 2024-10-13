@@ -48,7 +48,7 @@ static config_t config = {
     .reset = false,
     .monitor = false,
     .batchXfer = false,
-    .state_dir_path = ".",
+    .state_dir_path = ( char* )".",
 
     .debug_level = DEBUG_C_NONE,
 };
@@ -193,14 +193,14 @@ config_t* config_init( int argc, char* argv[] )
     int option_index;
     int c = '?';
 
-    char* config_file_name = "config.lua";
-    char* mod_file_name = "mod";
-    char* cpu_file_name = "cpu";
-    char* hdw_file_name = "hdw";
-    char* rom_file_name = "rom";
-    char* ram_file_name = "ram";
-    char* port_1_file_name = "port1";
-    char* port_2_file_name = "port2";
+    char* config_file_name = ( char* )"config.lua";
+    char* mod_file_name = ( char* )"mod";
+    char* cpu_file_name = ( char* )"cpu";
+    char* hdw_file_name = ( char* )"hdw";
+    char* rom_file_name = ( char* )"rom";
+    char* ram_file_name = ( char* )"ram";
+    char* port_1_file_name = ( char* )"port1";
+    char* port_2_file_name = ( char* )"port2";
 
     int print_config_and_exit = false;
 
@@ -223,7 +223,7 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_reset = -1;
     int clopt_monitor = -1;
     /* int clopt_batchXfer = -1; */
-    char* clopt_state_dir_path = ".";
+    char* clopt_state_dir_path = ( char* )".";
 
     const char* optstring = "h";
     struct option long_options[] = {
@@ -260,7 +260,7 @@ config_t* config_init( int argc, char* argv[] )
         {"gray",                 no_argument,       &clopt_gray,            true            },
 
         {"debug-opcodes",        no_argument,       NULL,                   38601           },
-        {"debug-revision",       no_argument,       NULL,                   38602           },
+        /* {"debug-xx",       no_argument,       NULL,                   38602           }, */
         {"debug-x-func",         no_argument,       NULL,                   38603           },
         {"debug-flash",          no_argument,       NULL,                   38604           },
         {"debug-implementation", no_argument,       NULL,                   38605           },
@@ -311,15 +311,15 @@ config_t* config_init( int argc, char* argv[] )
                             "     --monitor      start with monitor (default: no)\n"
                             "\n"
                             "     --debug-opcodes        enables debugging opcodes (default: no)\n"
-                            "     --debug-revision       enables debugging revision (default: no)\n"
+                            /* "     --debug-        enables debugging something (default: no)\n" */
                             "     --debug-x-func         enables debugging extended functions (default: no)\n"
                             "     --debug-flash          enables debugging flash (default: no)\n"
-                            "     --debug-implementation enables debugging implementation (default: no)\n"
+                            "     --debug-implementation enables debugging implementation (default: no) (UNUSED)\n"
                             "     --debug-mod-cache      enables debugging mod cache (default: no)\n"
                             "     --debug-serial         enables debugging serial (default: no)\n"
                             "     --debug-timers         enables debugging timers (default: no)\n"
                             "     --debug-interruptions  enables debugging interruptions (default: no)\n"
-                            "     --debug-display        enables debugging display (default: no)\n"
+                            "     --debug-display        enables debugging display (default: no) (UNUSED)\n"
                             "     --debug-modules        enables debugging modules (default: no)\n"
                             "     --debug-trace          enables debugging trace (default: no)\n";
 
@@ -349,9 +349,9 @@ config_t* config_init( int argc, char* argv[] )
             case 38601:
                 config.debug_level |= DEBUG_C_OPCODES;
                 break;
-            case 38602:
-                config.debug_level |= DEBUG_C_REVISION;
-                break;
+            /* case 38602: */
+            /*     config.debug_level |= DEBUG_C_XX; */
+            /*     break; */
             case 38603:
                 config.debug_level |= DEBUG_C_X_FUNC;
                 break;

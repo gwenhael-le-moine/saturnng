@@ -2472,7 +2472,6 @@ void CpuReset( void )
 void CpuInit( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuInit" );
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_REVISION, CPU_I_REVISION, CPU_RCS_INFO );
 
     if ( ReadStructFromFile( config.cpu_file_name, sizeof( cpu_status ), &cpu_status ) ) {
         ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_RESETTING, CHF_WARNING );

@@ -133,8 +133,8 @@
 #define DEBUG_C_IMPLEMENTATION 0x0100 /* Feature implementation */
 #define DEBUG_C_FLASH 0x0080          /* 3.3: Flash ROM */
 #define DEBUG_C_X_FUNC 0x0040         /* 3.13: Extended functions */
-#define DEBUG_C_REVISION 0x0010       /* Revision information */
-#define DEBUG_C_OPCODES 0x0001        /* OpCodes */
+#define DEBUG_C_XX 0x0010
+#define DEBUG_C_OPCODES 0x0001 /* OpCodes */
 #define DEBUG_C_NONE 0
 
 /*---------------------------------------------------------------------------
