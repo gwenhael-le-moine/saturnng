@@ -375,7 +375,7 @@ char* ChfBuildMessage( const ChfDescriptor* descriptor )
     if ( descriptor->line_number != CHF_UNKNOWN_LINE_NUMBER ) {
         tmp_p = scopy( tmp_p, " ", tmp_end );
 
-        sprintf( def_message, "(%s,%)", descriptor->file_name, descriptor->line_number );
+        sprintf( def_message, "(%s:%i)", descriptor->file_name, descriptor->line_number );
 
         tmp_p = scopy( tmp_p, def_message, tmp_end );
     }
