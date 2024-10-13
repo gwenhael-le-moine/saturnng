@@ -90,6 +90,8 @@
 
 #include "libChf/src/Chf.h"
 
+#include "ui4x/config.h"
+
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -148,12 +150,10 @@ static void SetSpeed( Nibble function_code )
 {
     debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetSpeed" );
 
-#ifndef REAL_CPU_SPEED
-    ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_SPEED, CHF_ERROR );
-    ChfSignal( X_FUNC_CHF_MODULE_ID );
-
-#else
-    {
+    if ( !config.throttle ) {
+        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_SPEED, CHF_ERROR );
+        ChfSignal( X_FUNC_CHF_MODULE_ID );
+    } else {
         int new_speed;
 
         /* Get new_speed from A field of C register */
@@ -174,8 +174,6 @@ static void SetSpeed( Nibble function_code )
 
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
-
-#endif
 }
 
 /*---------------------------------------------------------------------------*/
