@@ -714,16 +714,11 @@ static void _draw_keypad( void )
 
         // Letter (small character bottom right of key)
         if ( BUTTONS[ i ].letter != ( char* )0 ) {
-            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x + BUTTONS[ i ].w;
-            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h;
+            x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x + BUTTONS[ i ].w + 3;
+            y = OFFSET_Y_KEYBOARD + BUTTONS[ i ].y + BUTTONS[ i ].h + 1;
 
-            if ( config.model == MODEL_48SX ) {
-                x -= SmallTextWidth( BUTTONS[ i ].letter, 1 ) / 2 + 5;
+            if ( config.model == MODEL_48SX )
                 y -= 2;
-            } else {
-                x += 3;
-                y += 1;
-            }
 
             write_with_small_font( x, y, BUTTONS[ i ].letter, UI4X_COLOR_ALPHA,
                                    ( ( config.model == MODEL_48GX || config.model == MODEL_48SX ) && i < HP48_KEY_MTH )
@@ -1073,9 +1068,6 @@ void ui_update_display_sdl( void )
 
 void ui_start_sdl( config_t* conf )
 {
-    if ( config.verbose )
-        fprintf( stderr, "UI is sdl2\n" );
-
     config = *conf;
 
     ui_init_LCD();

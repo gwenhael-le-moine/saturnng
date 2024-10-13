@@ -456,9 +456,6 @@ void ui_stop_ncurses( void )
 
 void ui_start_ncurses( config_t* conf )
 {
-    if ( config.verbose )
-        fprintf( stderr, "UI is ncurses\n" );
-
     config = *conf;
 
     setlocale( LC_ALL, "" );

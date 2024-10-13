@@ -972,10 +972,9 @@ void ModInit( void )
 
         /* Reset all modules */
         ModReset();
-    } else {
+    } else
         /* Rebuild page table (not saved on disk) */
         RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
-    }
 }
 
 /* .+
