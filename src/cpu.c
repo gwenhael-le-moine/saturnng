@@ -1563,13 +1563,243 @@ static void ExecGroup_0( void )
     }
 }
 
+/* Instruction Group_13 */
+static void ExecGroup_13( void )
+{
+    Address ta;
+    /* Copy/Exchange A/C and D0/D1 */
+    switch ( FetchNibble( cpu_status.PC++ ) ) {
+        case 0: /* D0=A */
+            cpu_status.D0 = R2Addr( cpu_status.A );
+            break;
+
+        case 1: /* D1=A */
+            cpu_status.D1 = R2Addr( cpu_status.A );
+            break;
+
+        case 2: /* AD0EX */
+            ta = cpu_status.D0;
+            cpu_status.D0 = R2Addr( cpu_status.A );
+            Addr2R( cpu_status.A, ta );
+            break;
+
+        case 3: /* AD1EX */
+            ta = cpu_status.D1;
+            cpu_status.D1 = R2Addr( cpu_status.A );
+            Addr2R( cpu_status.A, ta );
+            break;
+
+        case 4: /* D0=C */
+            cpu_status.D0 = R2Addr( cpu_status.C );
+            break;
+
+        case 5: /* D1=C */
+            cpu_status.D1 = R2Addr( cpu_status.C );
+            break;
+
+        case 6: /* CD0EX */
+            ta = cpu_status.D0;
+            cpu_status.D0 = R2Addr( cpu_status.C );
+            Addr2R( cpu_status.C, ta );
+            break;
+
+        case 7: /* CD1EX */
+            ta = cpu_status.D1;
+            cpu_status.D1 = R2Addr( cpu_status.C );
+            Addr2R( cpu_status.C, ta );
+            break;
+
+        case 8: /* D0=AS */
+            cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
+            break;
+
+        case 9: /* D1=AS */
+            cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
+            break;
+
+        case 0xA: /* AD0XS */
+            ta = cpu_status.D0;
+            cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
+            Addr2RS( cpu_status.A, ta );
+            break;
+
+        case 0xB: /* AD1XS */
+            ta = cpu_status.D1;
+            cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
+            Addr2RS( cpu_status.A, ta );
+            break;
+
+        case 0xC: /* D0=CS */
+            cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
+            break;
+
+        case 0xD: /* D1=CS */
+            cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
+            break;
+
+        case 0xE: /* CD0XS */
+            ta = cpu_status.D0;
+            cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
+            Addr2RS( cpu_status.C, ta );
+            break;
+
+        case 0xF: /* CD1XS */
+            ta = cpu_status.D1;
+            cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
+            Addr2RS( cpu_status.C, ta );
+            break;
+    }
+}
+
+/* Instruction Group_14 */
+static void ExecGroup_14( void )
+{
+    /* Load/Store A/C to @D0/@D1, Field selector A or B */
+    switch ( FetchNibble( cpu_status.PC++ ) ) {
+        case 0: /* DAT0=A A */
+            WriteDAT( cpu_status.D0, cpu_status.A, FS_A );
+            break;
+
+        case 1: /* DAT1=A A */
+            WriteDAT( cpu_status.D1, cpu_status.A, FS_A );
+            break;
+
+        case 2: /* A=DAT0 A */
+            ReadDAT( cpu_status.A, cpu_status.D0, FS_A );
+            break;
+
+        case 3: /* A=DAT1 A */
+            ReadDAT( cpu_status.A, cpu_status.D1, FS_A );
+            break;
+
+        case 4: /* DAT0=C A */
+            WriteDAT( cpu_status.D0, cpu_status.C, FS_A );
+            break;
+
+        case 5: /* DAT1=C A */
+            WriteDAT( cpu_status.D1, cpu_status.C, FS_A );
+            break;
+
+        case 6: /* C=DAT0 A */
+            ReadDAT( cpu_status.C, cpu_status.D0, FS_A );
+            break;
+
+        case 7: /* C=DAT1 A */
+            ReadDAT( cpu_status.C, cpu_status.D1, FS_A );
+            break;
+
+        case 8: /* DAT0=A B */
+            WriteDAT( cpu_status.D0, cpu_status.A, FS_B );
+            break;
+
+        case 9: /* DAT1=A B */
+            WriteDAT( cpu_status.D1, cpu_status.A, FS_B );
+            break;
+
+        case 0xA: /* A=DAT0 B */
+            ReadDAT( cpu_status.A, cpu_status.D0, FS_B );
+            break;
+
+        case 0xB: /* A=DAT1 B */
+            ReadDAT( cpu_status.A, cpu_status.D1, FS_B );
+            break;
+
+        case 0xC: /* DAT0=C B */
+            WriteDAT( cpu_status.D0, cpu_status.C, FS_B );
+            break;
+
+        case 0xD: /* DAT1=C B */
+            WriteDAT( cpu_status.D1, cpu_status.C, FS_B );
+            break;
+
+        case 0xE: /* C=DAT0 B */
+            ReadDAT( cpu_status.C, cpu_status.D0, FS_B );
+            break;
+
+        case 0xF: /* C=DAT1 B */
+            ReadDAT( cpu_status.C, cpu_status.D1, FS_B );
+            break;
+    }
+}
+
+/* Instruction Group_15 */
+static void ExecGroup_15( void )
+{
+    /* Load/Store A/C to @D0/@D1, Other Field Selectors */
+    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble f = FetchNibble( cpu_status.PC++ );
+    int oc = GET_OC_3b( n );
+    int is = GET_IMMEDIATE_FS_FLAG( n );
+
+    switch ( oc ) {
+        case 0: /* DAT0=A */
+            if ( is )
+                WriteDATImm( cpu_status.D0, cpu_status.A, f );
+            else
+                WriteDAT( cpu_status.D0, cpu_status.A, f );
+            break;
+
+        case 1: /* DAT1=A */
+            if ( is )
+                WriteDATImm( cpu_status.D1, cpu_status.A, f );
+            else
+                WriteDAT( cpu_status.D1, cpu_status.A, f );
+            break;
+
+        case 2: /* A=DAT0 */
+            if ( is )
+                ReadDATImm( cpu_status.A, cpu_status.D0, f );
+            else
+                ReadDAT( cpu_status.A, cpu_status.D0, f );
+            break;
+
+        case 3: /* A=DAT1 */
+            if ( is )
+                ReadDATImm( cpu_status.A, cpu_status.D1, f );
+            else
+                ReadDAT( cpu_status.A, cpu_status.D1, f );
+            break;
+
+        case 4: /* DAT0=C */
+            if ( is )
+                WriteDATImm( cpu_status.D0, cpu_status.C, f );
+            else
+                WriteDAT( cpu_status.D0, cpu_status.C, f );
+            break;
+
+        case 5: /* DAT1=C */
+            if ( is )
+                WriteDATImm( cpu_status.D1, cpu_status.C, f );
+            else
+                WriteDAT( cpu_status.D1, cpu_status.C, f );
+            break;
+
+        case 6: /* C=DAT0 */
+            if ( is )
+                ReadDATImm( cpu_status.C, cpu_status.D0, f );
+            else
+                ReadDAT( cpu_status.C, cpu_status.D0, f );
+            break;
+
+        case 7: /* C=DAT1 */
+            if ( is )
+                ReadDATImm( cpu_status.C, cpu_status.D1, f );
+            else
+                ReadDAT( cpu_status.C, cpu_status.D1, f );
+            break;
+
+        default:
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
 /* Instruction Group_1 */
 static void ExecGroup_1( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
-    Nibble f;
     int rn, ac;
-    int oc, is;
     Address ta;
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_1" );
@@ -1590,8 +1820,7 @@ static void ExecGroup_1( void )
             CopyRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], FS_W );
             break;
 
-        case 2:
-            /* ARnEX, CRnEX */
+        case 2: /* ARnEX, CRnEX */
             n = FetchNibble( cpu_status.PC++ );
             rn = GET_Rn( n );
             ac = GET_AC( n );
@@ -1600,289 +1829,66 @@ static void ExecGroup_1( void )
             break;
 
         case 3:
-            /* Copy/Exchange A/C and D0/D1 */
-            switch ( FetchNibble( cpu_status.PC++ ) ) {
-                case 0: /* D0=A */
-                    cpu_status.D0 = R2Addr( cpu_status.A );
-                    break;
-
-                case 1: /* D1=A */
-                    cpu_status.D1 = R2Addr( cpu_status.A );
-                    break;
-
-                case 2: /* AD0EX */
-                    ta = cpu_status.D0;
-                    cpu_status.D0 = R2Addr( cpu_status.A );
-                    Addr2R( cpu_status.A, ta );
-                    break;
-
-                case 3: /* AD1EX */
-                    ta = cpu_status.D1;
-                    cpu_status.D1 = R2Addr( cpu_status.A );
-                    Addr2R( cpu_status.A, ta );
-                    break;
-
-                case 4: /* D0=C */
-                    cpu_status.D0 = R2Addr( cpu_status.C );
-                    break;
-
-                case 5: /* D1=C */
-                    cpu_status.D1 = R2Addr( cpu_status.C );
-                    break;
-
-                case 6: /* CD0EX */
-                    ta = cpu_status.D0;
-                    cpu_status.D0 = R2Addr( cpu_status.C );
-                    Addr2R( cpu_status.C, ta );
-                    break;
-
-                case 7: /* CD1EX */
-                    ta = cpu_status.D1;
-                    cpu_status.D1 = R2Addr( cpu_status.C );
-                    Addr2R( cpu_status.C, ta );
-                    break;
-
-                case 8: /* D0=AS */
-                    cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
-                    break;
-
-                case 9: /* D1=AS */
-                    cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
-                    break;
-
-                case 0xA: /* AD0XS */
-                    ta = cpu_status.D0;
-                    cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
-                    Addr2RS( cpu_status.A, ta );
-                    break;
-
-                case 0xB: /* AD1XS */
-                    ta = cpu_status.D1;
-                    cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
-                    Addr2RS( cpu_status.A, ta );
-                    break;
-
-                case 0xC: /* D0=CS */
-                    cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
-                    break;
-
-                case 0xD: /* D1=CS */
-                    cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
-                    break;
-
-                case 0xE: /* CD0XS */
-                    ta = cpu_status.D0;
-                    cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
-                    Addr2RS( cpu_status.C, ta );
-                    break;
-
-                case 0xF: /* CD1XS */
-                    ta = cpu_status.D1;
-                    cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
-                    Addr2RS( cpu_status.C, ta );
-                    break;
-            }
+            ExecGroup_13();
             break;
 
         case 4:
-            /* Load/Store A/C to @D0/@D1, Field selector A or B */
-            switch ( FetchNibble( cpu_status.PC++ ) ) {
-                case 0: /* DAT0=A A */
-                    WriteDAT( cpu_status.D0, cpu_status.A, FS_A );
-                    break;
-
-                case 1: /* DAT1=A A */
-                    WriteDAT( cpu_status.D1, cpu_status.A, FS_A );
-                    break;
-
-                case 2: /* A=DAT0 A */
-                    ReadDAT( cpu_status.A, cpu_status.D0, FS_A );
-                    break;
-
-                case 3: /* A=DAT1 A */
-                    ReadDAT( cpu_status.A, cpu_status.D1, FS_A );
-                    break;
-
-                case 4: /* DAT0=C A */
-                    WriteDAT( cpu_status.D0, cpu_status.C, FS_A );
-                    break;
-
-                case 5: /* DAT1=C A */
-                    WriteDAT( cpu_status.D1, cpu_status.C, FS_A );
-                    break;
-
-                case 6: /* C=DAT0 A */
-                    ReadDAT( cpu_status.C, cpu_status.D0, FS_A );
-                    break;
-
-                case 7: /* C=DAT1 A */
-                    ReadDAT( cpu_status.C, cpu_status.D1, FS_A );
-                    break;
-
-                case 8: /* DAT0=A B */
-                    WriteDAT( cpu_status.D0, cpu_status.A, FS_B );
-                    break;
-
-                case 9: /* DAT1=A B */
-                    WriteDAT( cpu_status.D1, cpu_status.A, FS_B );
-                    break;
-
-                case 0xA: /* A=DAT0 B */
-                    ReadDAT( cpu_status.A, cpu_status.D0, FS_B );
-                    break;
-
-                case 0xB: /* A=DAT1 B */
-                    ReadDAT( cpu_status.A, cpu_status.D1, FS_B );
-                    break;
-
-                case 0xC: /* DAT0=C B */
-                    WriteDAT( cpu_status.D0, cpu_status.C, FS_B );
-                    break;
-
-                case 0xD: /* DAT1=C B */
-                    WriteDAT( cpu_status.D1, cpu_status.C, FS_B );
-                    break;
-
-                case 0xE: /* C=DAT0 B */
-                    ReadDAT( cpu_status.C, cpu_status.D0, FS_B );
-                    break;
-
-                case 0xF: /* C=DAT1 B */
-                    ReadDAT( cpu_status.C, cpu_status.D1, FS_B );
-                    break;
-            }
+            ExecGroup_14();
             break;
 
         case 5:
-            /* Load/Store A/C to @D0/@D1, Other Field Selectors */
-            n = FetchNibble( cpu_status.PC++ );
-            f = FetchNibble( cpu_status.PC++ );
-            oc = GET_OC_3b( n );
-            is = GET_IMMEDIATE_FS_FLAG( n );
-
-            switch ( oc ) {
-                case 0: /* DAT0=A */
-                    if ( is )
-                        WriteDATImm( cpu_status.D0, cpu_status.A, f );
-                    else
-                        WriteDAT( cpu_status.D0, cpu_status.A, f );
-                    break;
-
-                case 1: /* DAT1=A */
-                    if ( is )
-                        WriteDATImm( cpu_status.D1, cpu_status.A, f );
-                    else
-                        WriteDAT( cpu_status.D1, cpu_status.A, f );
-                    break;
-
-                case 2: /* A=DAT0 */
-                    if ( is )
-                        ReadDATImm( cpu_status.A, cpu_status.D0, f );
-                    else
-                        ReadDAT( cpu_status.A, cpu_status.D0, f );
-                    break;
-
-                case 3: /* A=DAT1 */
-                    if ( is )
-                        ReadDATImm( cpu_status.A, cpu_status.D1, f );
-                    else
-                        ReadDAT( cpu_status.A, cpu_status.D1, f );
-                    break;
-
-                case 4: /* DAT0=C */
-                    if ( is )
-                        WriteDATImm( cpu_status.D0, cpu_status.C, f );
-                    else
-                        WriteDAT( cpu_status.D0, cpu_status.C, f );
-                    break;
-
-                case 5: /* DAT1=C */
-                    if ( is )
-                        WriteDATImm( cpu_status.D1, cpu_status.C, f );
-                    else
-                        WriteDAT( cpu_status.D1, cpu_status.C, f );
-                    break;
-
-                case 6: /* C=DAT0 */
-                    if ( is )
-                        ReadDATImm( cpu_status.C, cpu_status.D0, f );
-                    else
-                        ReadDAT( cpu_status.C, cpu_status.D0, f );
-                    break;
-
-                case 7: /* C=DAT1 */
-                    if ( is )
-                        ReadDATImm( cpu_status.C, cpu_status.D1, f );
-                    else
-                        ReadDAT( cpu_status.C, cpu_status.D1, f );
-                    break;
-
-                default:
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-                    ChfSignal( CPU_CHF_MODULE_ID );
-                    break;
-            }
+            ExecGroup_15();
             break;
 
-        case 6:
-            /* D0=D0+n+1 */
+        case 6: /* D0=D0+n+1 */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D0 + n + 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta < cpu_status.D0 );
             cpu_status.D0 = ta;
             break;
 
-        case 7:
-            /* D1=D1+n+1 */
+        case 7: /* D1=D1+n+1 */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D1 + n + 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta < cpu_status.D1 );
             cpu_status.D1 = ta;
             break;
 
-        case 8:
-            /* D0=D0-(n+1) */
+        case 8: /* D0=D0-(n+1) */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D0 - n - 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta > cpu_status.D0 );
             cpu_status.D0 = ta;
             break;
 
-        case 9:
-            /* D0=(2) nn */
+        case 9: /* D0=(2) nn */
             FetchD( &cpu_status.D0, 2 );
             break;
 
-        case 0xA:
-            /* D0=(4) nn */
+        case 0xA: /* D0=(4) nn */
             FetchD( &cpu_status.D0, 4 );
             break;
 
-        case 0xB:
-            /* D0=(5) nn */
+        case 0xB: /* D0=(5) nn */
             FetchD( &cpu_status.D0, 5 );
             break;
 
-        case 0xC:
-            /* D1=D1-(n+1) */
+        case 0xC: /* D1=D1-(n+1) */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D1 - n - 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta > cpu_status.D1 );
             cpu_status.D1 = ta;
             break;
 
-        case 0xD:
-            /* D1=(2) nn */
+        case 0xD: /* D1=(2) nn */
             FetchD( &cpu_status.D1, 2 );
             break;
 
-        case 0xE:
-            /* D1=(4) nn */
+        case 0xE: /* D1=(4) nn */
             FetchD( &cpu_status.D1, 4 );
             break;
 
-        case 0xF:
-            /* D1=(5) nn */
+        case 0xF: /* D1=(5) nn */
             FetchD( &cpu_status.D1, 5 );
             break;
 
@@ -1997,12 +2003,13 @@ static void ExecGroup_808( void )
 /* Instruction Group_80 */
 static void ExecGroup_80B( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCC" );
     // FIXME: 49g bugs here on display change
     // DEBUG_print_cpu_instruction();
 
-    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC" );
+    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC not implemented" );
     ChfSignal( CPU_CHF_MODULE_ID );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
 }
 
 /* Instruction Group_80 */
