@@ -161,9 +161,7 @@ static Address Get5NibblesAbs( Address pc )
 */
 static Address DisHexConstant( Address start, char* ob, int m )
 {
-    int i;
-
-    for ( i = 0; i < m; i++ )
+    for ( int i = 0; i < m; i++ )
         strcat( ob, hex_digit[ ( int )FetchNibble( start + m - i - 1 ) ] );
 
     return start + m;
@@ -2213,14 +2211,12 @@ static Address DisGroup_8( Address pc, char* ob )
 .- */
 Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] )
 {
-    Nibble n;
-
     /* Disassemble current program counter */
     sprintf( ob, "A_%05X\t", pc );
     ob += strlen( ob );
 
     /* Get first instruction nibble */
-    n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc++ );
 
     switch ( n ) {
         case 0:
