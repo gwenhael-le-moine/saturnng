@@ -368,35 +368,35 @@ static Address DisTest_9( Address pc, char* ob )
 
     /* Decode test code */
     switch ( tc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "?%c=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "?%c#%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "?%c=0", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "?%c#0", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 4:
+        case 0x4:
             sprintf( ob, "?%c>%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 5:
+        case 0x5:
             sprintf( ob, "?%c<%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 6:
+        case 0x6:
             sprintf( ob, "?%c>=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 7:
+        case 0x7:
             sprintf( ob, "?%c<=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
@@ -501,35 +501,35 @@ static Address DisRegOp_A( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%c=%c+%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%c=%c+%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=%c+%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c=%c-1", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 4:
+        case 0x4:
             sprintf( ob, "%c=0", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 5:
+        case 0x5:
             sprintf( ob, "%c=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 6:
+        case 0x6:
             sprintf( ob, "%c=%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 7:
+        case 0x7:
             sprintf( ob, "%c%cEX", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
@@ -633,35 +633,35 @@ static Address DisRegOp_B( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%c=%c-%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%c=%c+1", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=%c-%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c=%c-%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 4:
+        case 0x4:
             sprintf( ob, "%cSL", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 5:
+        case 0x5:
             sprintf( ob, "%cSR", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 6:
+        case 0x6:
             sprintf( ob, "%c=-%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 7:
+        case 0x7:
             sprintf( ob, "%c=-%c-1", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
@@ -728,19 +728,19 @@ static Address DisRegOp_C( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%c=%c+%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%c=%c+%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=%c+%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c=%c-1", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
@@ -807,19 +807,19 @@ static Address DisRegOp_D( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%c=0", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%c=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c%cEX", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
@@ -887,19 +887,19 @@ static Address DisRegOp_E( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%c=%c-%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%c=%c+1", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=%c-%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c=%c-%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
@@ -967,19 +967,19 @@ static Address DisRegOp_F( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%cSL", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%cSR", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=-%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c=-%c-1", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ] );
             break;
 
@@ -1059,19 +1059,19 @@ static Address DisAND_OR( Address pc, char* ob )
 
     /* Decode operation code */
     switch ( oc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "%c=%c&%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "%c=%c&%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "%c=%c!%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "%c=%c!%c", reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 1 ], reg_pair[ rp ][ 0 ] );
             break;
 
@@ -1095,25 +1095,25 @@ static Address DisGroup_0( Address pc, char* ob )
     Nibble n = FetchNibble( pc++ );
 
     switch ( n ) {
-        case 0:
+        case 0x0:
             /* RTNSXM */
-        case 1:
+        case 0x1:
             /* RTN */
-        case 2:
+        case 0x2:
             /* RTNSC */
-        case 3:
+        case 0x3:
             /* RTNCC */
-        case 4:
+        case 0x4:
             /* SETHEX */
-        case 5:
+        case 0x5:
             /* SETDEC */
-        case 6:
+        case 0x6:
             /* RSTK=C */
-        case 7:
+        case 0x7:
             /* C=RSTK */
-        case 8:
+        case 0x8:
             /* CLRST */
-        case 9:
+        case 0x9:
             /* C=ST */
         case 0xA:
             /* ST=C */
@@ -1286,7 +1286,7 @@ static Address DisGroup_1( Address pc, char* ob )
     int oc, is;
 
     switch ( n ) {
-        case 0:
+        case 0x0:
             /* Rn=A/C */
             n = FetchNibble( pc++ );
             rn = GET_Rn( n );
@@ -1295,7 +1295,7 @@ static Address DisGroup_1( Address pc, char* ob )
             sprintf( ob, "%s=%s", rn_name[ rn ], ( ac ? "C" : "A" ) );
             break;
 
-        case 1:
+        case 0x1:
             /* A/C=Rn */
             n = FetchNibble( pc++ );
             rn = GET_Rn( n );
@@ -1304,7 +1304,7 @@ static Address DisGroup_1( Address pc, char* ob )
             sprintf( ob, "%s=%s", ( ac ? "C" : "A" ), rn_name[ rn ] );
             break;
 
-        case 2:
+        case 0x2:
             /* ARnEX, CRnEX */
             n = FetchNibble( pc++ );
             rn = GET_Rn( n );
@@ -1313,19 +1313,19 @@ static Address DisGroup_1( Address pc, char* ob )
             sprintf( ob, "%s%sEX", ( ac ? "C" : "A" ), rn_name[ rn ] );
             break;
 
-        case 3:
+        case 0x3:
             /* Copy/Exchange A/C and D0/D1 */
             n = FetchNibble( pc++ );
             strcpy( ob, group_13_opc[ ( int )n ] );
             break;
 
-        case 4:
+        case 0x4:
             /* Load/Store A/C to @D0/@D1, Field selector A or B */
             n = FetchNibble( pc++ );
             strcpy( ob, group_14_opc[ ( int )n ] );
             break;
 
-        case 5:
+        case 0x5:
             /* Load/Store A/C to @D0/@D1, Other Field Selectors */
             n = FetchNibble( pc++ );
             f = FetchNibble( pc++ );
@@ -1344,25 +1344,25 @@ static Address DisGroup_1( Address pc, char* ob )
 
             break;
 
-        case 6:
+        case 0x6:
             /* D0=D0+n+1 */
             n = FetchNibble( pc++ );
             sprintf( ob, "D0=D0+%d", n + 1 );
             break;
 
-        case 7:
+        case 0x7:
             /* D1=D1+n+1 */
             n = FetchNibble( pc++ );
             sprintf( ob, "D1=D1+%d", n + 1 );
             break;
 
-        case 8:
+        case 0x8:
             /* D0=D0-(n+1) */
             n = FetchNibble( pc++ );
             sprintf( ob, "D0=D0-%d", n + 1 );
             break;
 
-        case 9:
+        case 0x9:
             /* D0=(2) nn */
             strcpy( ob, "D0=(2)\t" );
             pc = DisHexConstant( pc, ob, 2 );
@@ -1424,62 +1424,62 @@ static Address DisGroup_808( Address pc, char* ob )
     Nibble m;
 
     switch ( n ) {
-        case 0:
+        case 0x0:
             /* INTON */
             strcpy( ob, "INTON" );
             break;
 
-        case 1:
+        case 0x1:
             /* RSI */
             strcpy( ob, "RSI" );
             pc++;
             break;
 
-        case 2:
+        case 0x2:
             /* LA(m) n..n */
             m = FetchNibble( pc++ ) + 1;
             sprintf( ob, "LA(%d)\t", m );
             pc = DisHexConstant( pc, ob, m );
             break;
 
-        case 3:
+        case 0x3:
             /* BUSCB */
             strcpy( ob, "BUSCB" );
             break;
 
-        case 4:
+        case 0x4:
             /* ABIT=0 d */
             m = FetchNibble( pc++ );
             sprintf( ob, "ABIT=0 %d", m );
             break;
 
-        case 5:
+        case 0x5:
             /* ABIT=1 d */
             m = FetchNibble( pc++ );
             sprintf( ob, "ABIT=1 %d", m );
             break;
 
-        case 6:
+        case 0x6:
             /* ?ABIT=0 d */
             m = FetchNibble( pc++ );
             sprintf( ob, "?ABIT=0 %d", m );
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
-        case 7:
+        case 0x7:
             /* ?ABIT=1 d */
             m = FetchNibble( pc++ );
             sprintf( ob, "?ABIT=1 %d", m );
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
-        case 8:
+        case 0x8:
             /* CBIT=0 d */
             m = FetchNibble( pc++ );
             sprintf( ob, "CBIT=0 %d", m );
             break;
 
-        case 9:
+        case 0x9:
             /* CBIT=1 d */
             m = FetchNibble( pc++ );
             sprintf( ob, "CBIT=1 %d", m );
@@ -1538,23 +1538,23 @@ static Address DisGroup_80( Address pc, char* ob )
     Nibble n = FetchNibble( pc++ );
 
     switch ( n ) {
-        case 0:
+        case 0x0:
             /* OUT=CS */
-        case 1:
+        case 0x1:
             /* OUT=C */
-        case 2:
+        case 0x2:
             /* A=IN */
-        case 3:
+        case 0x3:
             /* C=IN */
-        case 4:
+        case 0x4:
             /* UNCNFG */
-        case 5:
+        case 0x5:
             /* CONFIG */
-        case 6:
+        case 0x6:
             /* C=ID */
-        case 7:
+        case 0x7:
             /* SHUTDN */
-        case 9:
+        case 0x9:
             /* C+P+1 */
         case 0xA:
             /* RESET */
@@ -1565,7 +1565,7 @@ static Address DisGroup_80( Address pc, char* ob )
             strcpy( ob, group_80_opc[ ( int )n ] );
             break;
 
-        case 8:
+        case 0x8:
             /* Group 808 */
             pc = DisGroup_808( pc, ob );
             break;
@@ -1678,7 +1678,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
     int rn, ac;
 
     switch ( rp ) {
-        case 0:
+        case 0x0:
             /* r=r+-CON fs, d */
             f = FetchNibble( pc++ );
             n = FetchNibble( pc++ );
@@ -1695,7 +1695,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
             sprintf( ob, ", %d", m + 1 );
             break;
 
-        case 1:
+        case 0x1:
             /* rSRB.f fs */
             f = FetchNibble( pc++ );
             n = FetchNibble( pc++ );
@@ -1707,7 +1707,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
             DisFIELD_SEL( f, ob );
             break;
 
-        case 2:
+        case 0x2:
             /* Rn=r.F fs, r=R0.F fs, rRnEX.F fs */
             f = FetchNibble( pc++ );
             n = FetchNibble( pc++ );
@@ -1716,19 +1716,19 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
             ac = GET_AC( m );
 
             switch ( n ) {
-                case 0:
+                case 0x0:
                     /* Rn=r.F fs */
                     sprintf( ob, "%s=%s.F", rn_name[ rn ], ( ac ? "C" : "A" ) );
                     DisFIELD_SEL( f, ob );
                     break;
 
-                case 1:
+                case 0x1:
                     /* r=R0.F fs */
                     sprintf( ob, "%s=%s.F", ( ac ? "C" : "A" ), rn_name[ rn ] );
                     DisFIELD_SEL( f, ob );
                     break;
 
-                case 2:
+                case 0x2:
                     /* rRnEX.F fs */
                     sprintf( ob, "%s%sEX.F", ( ac ? "C" : "A" ), rn_name[ rn ] );
                     DisFIELD_SEL( f, ob );
@@ -1742,7 +1742,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
 
             break;
 
-        case 3:
+        case 0x3:
             /* Group 81B */
             n = FetchNibble( pc++ );
             strcpy( ob, group_81B_opc[ ( int )n ] );
@@ -1809,19 +1809,19 @@ static Address DisTest_8A( Address pc, char* ob )
 
     /* Decode test code */
     switch ( tc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "?%c=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "?%c#%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "?%c=0", reg_pair[ rp ][ 0 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "?%c#0", reg_pair[ rp ][ 0 ] );
             break;
 
@@ -1890,19 +1890,19 @@ static Address DisTest_8B( Address pc, char* ob )
 
     /* Decode test code */
     switch ( tc ) {
-        case 0:
+        case 0x0:
             sprintf( ob, "?%c>%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 1:
+        case 0x1:
             sprintf( ob, "?%c<%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 2:
+        case 0x2:
             sprintf( ob, "?%c>=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
-        case 3:
+        case 0x3:
             sprintf( ob, "?%c<=%c", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 1 ] );
             break;
 
@@ -1973,33 +1973,33 @@ static Address DisGroup_8( Address pc, char* ob )
     int oc, rp;
 
     switch ( n ) {
-        case 0:
+        case 0x0:
             pc = DisGroup_80( pc, ob );
             break;
 
-        case 1:
+        case 0x1:
             /* rSLC, rSRC, rSRB, Special Group_81 */
             n = FetchNibble( pc++ );
             oc = GET_OC_1( n );
             rp = GET_RP( n );
 
             switch ( oc ) {
-                case 0:
+                case 0x0:
                     /* rSLC */
                     sprintf( ob, "%cSLC", reg_pair[ rp ][ 0 ] );
                     break;
 
-                case 1:
+                case 0x1:
                     /* rSRC */
                     sprintf( ob, "%cSRC", reg_pair[ rp ][ 0 ] );
                     break;
 
-                case 2:
+                case 0x2:
                     /* Special Group_81 */
                     pc = DisSpecialGroup_81( pc, ob, rp );
                     break;
 
-                case 3:
+                case 0x3:
                     /* rSRB */
                     sprintf( ob, "%cSRB", reg_pair[ rp ][ 0 ] );
                     break;
@@ -2011,24 +2011,24 @@ static Address DisGroup_8( Address pc, char* ob )
             }
             break;
 
-        case 2:
+        case 0x2:
             /* CLRHSn */
             n = FetchNibble( pc++ );
 
             switch ( n ) {
-                case 1:
+                case 0x1:
                     strcpy( ob, "XM=0" );
                     break;
 
-                case 2:
+                case 0x2:
                     strcpy( ob, "SB=0" );
                     break;
 
-                case 4:
+                case 0x4:
                     strcpy( ob, "SR=0" );
                     break;
 
-                case 8:
+                case 0x8:
                     strcpy( ob, "MP=0" );
                     break;
 
@@ -2042,24 +2042,24 @@ static Address DisGroup_8( Address pc, char* ob )
             }
             break;
 
-        case 3:
+        case 0x3:
             /* ?HS=0 */
             n = FetchNibble( pc++ );
 
             switch ( n ) {
-                case 1:
+                case 0x1:
                     strcpy( ob, "?XM=0" );
                     break;
 
-                case 2:
+                case 0x2:
                     strcpy( ob, "?SB=0" );
                     break;
 
-                case 4:
+                case 0x4:
                     strcpy( ob, "?SR=0" );
                     break;
 
-                case 8:
+                case 0x8:
                     strcpy( ob, "?MP=0" );
                     break;
 
@@ -2072,21 +2072,21 @@ static Address DisGroup_8( Address pc, char* ob )
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
-        case 4:
+        case 0x4:
             /* ST=0 n */
             n = FetchNibble( pc++ );
 
             sprintf( ob, "ST=0\t%d", n );
             break;
 
-        case 5:
+        case 0x5:
             /* ST=1 n */
             n = FetchNibble( pc++ );
 
             sprintf( ob, "ST=1\t%d", n );
             break;
 
-        case 6:
+        case 0x6:
             /* ?ST=0 n */
             n = FetchNibble( pc++ );
 
@@ -2097,7 +2097,7 @@ static Address DisGroup_8( Address pc, char* ob )
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
-        case 7:
+        case 0x7:
             /* ?ST=1 n */
             n = FetchNibble( pc++ );
 
@@ -2108,7 +2108,7 @@ static Address DisGroup_8( Address pc, char* ob )
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
-        case 8:
+        case 0x8:
             /* ?P#n */
             n = FetchNibble( pc++ );
 
@@ -2119,7 +2119,7 @@ static Address DisGroup_8( Address pc, char* ob )
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
-        case 9:
+        case 0x9:
             /* ?P=n */
             n = FetchNibble( pc++ );
 
@@ -2219,52 +2219,52 @@ Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] )
     Nibble n = FetchNibble( pc++ );
 
     switch ( n ) {
-        case 0:
+        case 0x0:
             /* Group_0 */
             pc = DisGroup_0( pc, ob );
             break;
 
-        case 1:
+        case 0x1:
             /* Group_1 */
             pc = DisGroup_1( pc, ob );
             break;
 
-        case 2:
+        case 0x2:
             /* P=n */
             pc = DisPEqn( pc, ob );
             break;
 
-        case 3:
+        case 0x3:
             /* LC(m) n...n */
             pc = DisLC( pc, ob );
             break;
 
-        case 4:
+        case 0x4:
             /* RTNC/GOC */
             pc = DisRTNC_GOC( pc, ob );
             break;
 
-        case 5:
+        case 0x5:
             /* RTNNC/GONC */
             pc = DisRTNNC_GONC( pc, ob );
             break;
 
-        case 6:
+        case 0x6:
             /* GOTO */
             pc = DisGOTO( pc, ob );
             break;
 
-        case 7:
+        case 0x7:
             /* GOSUB */
             pc = DisGOSUB( pc, ob );
             break;
 
-        case 8:
+        case 0x8:
             /* Group_8 */
             pc = DisGroup_8( pc, ob );
             break;
 
-        case 9:
+        case 0x9:
             /* Test */
             pc = DisTest_9( pc, ob );
             break;
