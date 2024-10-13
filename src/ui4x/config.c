@@ -328,7 +328,7 @@ config_t* config_init( int argc, char* argv[] )
 
         switch ( c ) {
             case 'h':
-                fprintf( stderr, help_text, config.progname );
+                fprintf( stdout, help_text, config.progname );
                 exit( EXIT_SUCCESS );
                 break;
             case 6110:
