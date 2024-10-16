@@ -104,7 +104,7 @@
 
 #define debug_preamble( module_id, debug_class, condition_code )                                                                           \
     {                                                                                                                                      \
-        if ( config.debug_level > 0 && config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
+        if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
 #define debug_postamble( module_id ) );                                                                                                    \
     ChfSignal( module_id );                                                                                                                \
     }                                                                                                                                      \
