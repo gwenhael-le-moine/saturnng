@@ -33,14 +33,16 @@ void signal_handler( int sig )
                 nb_refreshes_since_last_checking_events = 0;
                 ui_get_event();
             }
-            ui_update_display();
-            nb_refreshes_since_last_checking_events++;
 
+            ui_update_display();
+
+            nb_refreshes_since_last_checking_events++;
             break;
+
         case SIGPIPE:
             ui_stop();
             exit_emulator();
-            exit( 0 );
+            exit( EXIT_SUCCESS );
         default:
             break;
     }
