@@ -136,7 +136,7 @@ struct ModStatus mod_status; /* Status information - global */
    points to it.
 */
 static struct ModMap* mod_map_ptr; /* Module mapping information */
-#define mod_map ( *mod_map_ptr )
+#define MOD_MAP ( *mod_map_ptr )
 
 /* 2.7: All dynamically-allocated module mapping structures are linked
    together; cache_head points to the head of the list.  The list
@@ -262,7 +262,7 @@ static void BadWrite( Address addr, Nibble datum )
 .description  :
   This function rebuilds the module page table from page 'lo' to page 'hi',
   inclusive, using the information contained in the current module
-  mapping structure (mod_map.map_info).
+  mapping structure (MOD_MAP.map_info).
 
 .call	      :
                 RebuildPageTable(lo, hi);
@@ -286,9 +286,6 @@ static void BadWrite( Address addr, Nibble datum )
 .- */
 static void RebuildPageTable( int lo, int hi )
 {
-    int page;
-    int mod;
-
     Address page_addr;
     int prio;
     int winner = -1;
@@ -296,7 +293,7 @@ static void RebuildPageTable( int lo, int hi )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RebuildPageTable" );
 
     /* Scan all pages in the [lo, hi] range */
-    for ( page = lo; page <= hi; page++ ) {
+    for ( int page = lo; page <= hi; page++ ) {
         /* Calculate the base page address for the current page */
         page_addr = ModAddress( page );
 
@@ -307,9 +304,9 @@ static void RebuildPageTable( int lo, int hi )
            to MOD_MIN_ACCESS_PRIO.
         */
         prio = MOD_MIN_ACCESS_PRIO;
-        for ( mod = 0; mod < N_MOD; mod++ ) {
-            if ( mod_map.map_info[ mod ].config == MOD_CONFIGURED && page_addr >= mod_map.map_info[ mod ].abs_base_addr &&
-                 page_addr < mod_map.map_info[ mod ].abs_base_addr + mod_map.map_info[ mod ].size &&
+        for ( int mod = 0; mod < N_MOD; mod++ ) {
+            if ( MOD_MAP.map_info[ mod ].config == MOD_CONFIGURED && page_addr >= MOD_MAP.map_info[ mod ].abs_base_addr &&
+                 page_addr < MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size &&
                  prio < mod_description[ mod ].access_prio ) {
                 winner = mod;
                 prio = mod_description[ mod ].access_prio;
@@ -322,10 +319,10 @@ static void RebuildPageTable( int lo, int hi )
                read/write functions to BadRead/BadWrite, to catch accesses to
                unmapped addresses.
             */
-            mod_map.page_table[ page ].index = MOD_NO_MOD_INDEX;
-            mod_map.page_table[ page ].rel_base_addr = 0x00000;
-            mod_map.page_table[ page ].read = BadRead;
-            mod_map.page_table[ page ].write = BadWrite;
+            MOD_MAP.page_table[ page ].index = MOD_NO_MOD_INDEX;
+            MOD_MAP.page_table[ page ].rel_base_addr = 0x00000;
+            MOD_MAP.page_table[ page ].read = BadRead;
+            MOD_MAP.page_table[ page ].write = BadWrite;
         } else {
             /* The page is mapped
                3.3: If the MOD_MAP_FLAGS_ABS is set in the winner's module
@@ -333,12 +330,13 @@ static void RebuildPageTable( int lo, int hi )
                     absolute address; this way, the module read/write functions
                     will receive absolute addresses instead of relative ones.
             */
-            mod_map.page_table[ page ].index = winner;
-            mod_map.page_table[ page ].rel_base_addr = ( mod_description[ winner ].map_flags & MOD_MAP_FLAGS_ABS )
+            MOD_MAP.page_table[ page ].index = winner;
+            MOD_MAP.page_table[ page ].rel_base_addr = ( mod_description[ winner ].map_flags & MOD_MAP_FLAGS_ABS )
                                                            ? page_addr
-                                                           : page_addr - mod_map.map_info[ winner ].abs_base_addr;
-            mod_map.page_table[ page ].read = mod_description[ winner ].read;
-            mod_map.page_table[ page ].write = mod_description[ winner ].write;
+                                                           : page_addr - MOD_MAP.map_info[ winner ].abs_base_addr;
+            MOD_MAP.page_table[ page ].read = mod_description[ winner ].read;
+            // FIXME: 48gx VERSION bug: This is the place where the RomWrite fonction is set. Should we avoid ROM being able to win?
+            MOD_MAP.page_table[ page ].write = mod_description[ winner ].write;
         }
     }
 }
@@ -612,8 +610,8 @@ static struct ModMap* AccessConfigCache( Address tag )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache" );
 
     for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
-        if ( mod_map.cache.config[ i ].tag == tag )
-            return mod_map.cache.config[ i ].map_ptr;
+        if ( MOD_MAP.cache.config[ i ].tag == tag )
+            return MOD_MAP.cache.config[ i ].map_ptr;
 
     return ( struct ModMap* )NULL;
 }
@@ -649,7 +647,7 @@ static struct ModMap* AccessUnconfigCache( int i )
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
-    p = mod_map.cache.unconfig[ i ];
+    p = MOD_MAP.cache.unconfig[ i ];
 
     while ( p != ( struct ModMap* )NULL && !p->cache.config_point )
         p = p->cache.unconfig[ i ];
@@ -693,7 +691,7 @@ static struct ModMap* AccessUnconfigCache( int i )
 .- */
 struct ModCacheTableEntry* SelectConfigVictim( int retry )
 {
-    int v = mod_map.cache.victim;
+    int v = MOD_MAP.cache.victim;
     struct ModCacheTableEntry* victim = ( struct ModCacheTableEntry* )NULL;
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
@@ -706,11 +704,11 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
            - it is empty (map_ptr == NULL)
            - or the reference count of the associated map is 0
         */
-        if ( ( mod_map.cache.config[ v ].map_ptr == ( struct ModMap* )NULL ) || mod_map.cache.config[ v ].map_ptr->cache.ref_count == 0 )
-            victim = &( mod_map.cache.config[ v ] );
+        if ( ( MOD_MAP.cache.config[ v ].map_ptr == ( struct ModMap* )NULL ) || MOD_MAP.cache.config[ v ].map_ptr->cache.ref_count == 0 )
+            victim = &( MOD_MAP.cache.config[ v ] );
 
         v = ( v + 1 ) % N_MOD_CACHE_ENTRIES;
-    } while ( victim == ( struct ModCacheTableEntry* )NULL && v != mod_map.cache.victim );
+    } while ( victim == ( struct ModCacheTableEntry* )NULL && v != MOD_MAP.cache.victim );
 
     if ( victim == ( struct ModCacheTableEntry* )NULL ) {
         if ( retry ) {
@@ -728,7 +726,7 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
         }
     } else
         /* Found a victim; update next-victim index */
-        mod_map.cache.victim = v;
+        MOD_MAP.cache.victim = v;
 
     return victim;
 }
@@ -959,14 +957,14 @@ void ModInit( void )
     }
 
     /* Allocate the root struct ModMap and set it as the current one;
-       the structure can be accessed using either mod_map_ptr or mod_map.
+       the structure can be accessed using either mod_map_ptr or MOD_MAP.
     */
     mod_map_ptr = ClearCachingInfo( NewModMap() );
 
     /* Attempt to restore the mod_map from file; reset modules if the read
        fails.
     */
-    if ( ReadStructFromFile( config.mod_file_name, sizeof( mod_map.map_info ), &mod_map.map_info ) ) {
+    if ( ReadStructFromFile( config.mod_file_name, sizeof( MOD_MAP.map_info ), &MOD_MAP.map_info ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RESETTING_ALL, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -1020,7 +1018,7 @@ void ModSave( void )
     }
 
     /* Attempt to save the mod_map from file */
-    if ( WriteStructToFile( &mod_map.map_info, sizeof( mod_map.map_info ), config.mod_file_name ) ) {
+    if ( WriteStructToFile( &MOD_MAP.map_info, sizeof( MOD_MAP.map_info ), config.mod_file_name ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MAP_SAVE, CHF_FATAL );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -1072,7 +1070,7 @@ Address ModGetID( void )
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
     */
-    for ( mod = 0; mod < N_MOD && mod_map.map_info[ mod ].config == MOD_CONFIGURED; mod++ )
+    for ( mod = 0; mod < N_MOD && MOD_MAP.map_info[ mod ].config == MOD_CONFIGURED; mod++ )
         ;
 
     if ( mod == N_MOD )
@@ -1080,9 +1078,9 @@ Address ModGetID( void )
         id = ( Address )0x00000;
     else
         /* Build the module id */
-        id = ( mod_map.map_info[ mod ].abs_base_addr & 0xFFF00 ) |
-             ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
-             ( mod_description[ mod ].id + ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ? 0 : 1 ) );
+        id = ( MOD_MAP.map_info[ mod ].abs_base_addr & 0xFFF00 ) |
+             ( MOD_MAP.map_info[ mod ].config == MOD_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
+             ( mod_description[ mod ].id + ( MOD_MAP.map_info[ mod ].config == MOD_UNCONFIGURED ? 0 : 1 ) );
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_GET_ID, id );
     return id;
@@ -1120,15 +1118,15 @@ void ModReset( void )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModReset" );
 
     /* Scan the mod_description table, initializing the module
-       mapping information mod_map.map_info.
+       mapping information MOD_MAP.map_info.
     */
     for ( mod = 0; mod < N_MOD; mod++ ) {
         debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[ mod ].name );
 
         /* Set the module configuration status */
-        mod_map.map_info[ mod ].config = mod_description[ mod ].r_config;
-        mod_map.map_info[ mod ].abs_base_addr = mod_description[ mod ].r_abs_base_addr;
-        mod_map.map_info[ mod ].size = mod_description[ mod ].r_size;
+        MOD_MAP.map_info[ mod ].config = mod_description[ mod ].r_config;
+        MOD_MAP.map_info[ mod ].abs_base_addr = mod_description[ mod ].r_abs_base_addr;
+        MOD_MAP.map_info[ mod ].size = mod_description[ mod ].r_size;
     }
 
     /* Rebuild the module page table */
@@ -1141,7 +1139,7 @@ void ModReset( void )
        this flag is used by the unconfig cache code to correctly
        undo the last config
     */
-    mod_map.cache.config_point = 1;
+    MOD_MAP.cache.config_point = 1;
 }
 
 /* .+
@@ -1153,7 +1151,7 @@ void ModReset( void )
   This function configures a module, using the given 'config_info'.
 
   The target module will be the first unconfigured or partially configured
-  module found in the mod_map.map_info table.
+  module found in the MOD_MAP.map_info table.
 
   If the target module is unconfigured, ModConfig sets the size of its
   address space to 0x100000 - 'config_info'; the module then becomes
@@ -1242,7 +1240,7 @@ void ModConfig( Address config_info )
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
     */
-    for ( mod = 0; mod < N_MOD && mod_map.map_info[ mod ].config == MOD_CONFIGURED; mod++ )
+    for ( mod = 0; mod < N_MOD && MOD_MAP.map_info[ mod ].config == MOD_CONFIGURED; mod++ )
         ;
 
     if ( mod == N_MOD ) {
@@ -1253,34 +1251,34 @@ void ModConfig( Address config_info )
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_CONFIG, CHF_WARNING, config_info );
         ChfSignal( MOD_CHF_MODULE_ID );
     } else {
-        if ( mod_map.map_info[ mod ].config == MOD_UNCONFIGURED ) {
+        if ( MOD_MAP.map_info[ mod ].config == MOD_UNCONFIGURED ) {
             /* The module was unconfigured; configure its size */
-            mod_map.map_info[ mod ].size = 0x100000 - config_info;
-            mod_map.map_info[ mod ].config = MOD_SIZE_CONFIGURED;
+            MOD_MAP.map_info[ mod ].size = 0x100000 - config_info;
+            MOD_MAP.map_info[ mod ].config = MOD_SIZE_CONFIGURED;
         } else {
             /* The module size was already configured; configure its base address */
-            mod_map.map_info[ mod ].abs_base_addr = config_info;
-            mod_map.map_info[ mod ].config = MOD_CONFIGURED;
+            MOD_MAP.map_info[ mod ].abs_base_addr = config_info;
+            MOD_MAP.map_info[ mod ].config = MOD_CONFIGURED;
 
             /* Rebuild the page table */
-            RebuildPageTable( ModPage( mod_map.map_info[ mod ].abs_base_addr ),
-                              ModPage( mod_map.map_info[ mod ].abs_base_addr + mod_map.map_info[ mod ].size - 1 ) );
+            RebuildPageTable( ModPage( MOD_MAP.map_info[ mod ].abs_base_addr ),
+                              ModPage( MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size - 1 ) );
 
             /* Mark the current struct ModMap to be a configuration point;
                this flag is used by the unconfig cache code to correctly
                undo the last config
             */
-            mod_map.cache.config_point = 1;
+            MOD_MAP.cache.config_point = 1;
 
             debug3( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_CONFIG, mod_description[ mod ].name,
-                    mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size );
+                    MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size );
         }
 
         /* Set the unconfig cache pointer of module 'mod' to the old ModMap,
            and increment its reference counter, to avoid freeing it
            improperly.
         */
-        mod_map.cache.unconfig[ mod ] = old;
+        MOD_MAP.cache.unconfig[ mod ] = old;
         old->cache.ref_count++;
     }
 }
@@ -1325,7 +1323,7 @@ void ModUnconfig( Address unconfig_info )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig" );
 
     /* Determine the module to unconfigure */
-    if ( ( mod = mod_map.page_table[ ModPage( unconfig_info ) ].index ) == MOD_NO_MOD_INDEX ) {
+    if ( ( mod = MOD_MAP.page_table[ ModPage( unconfig_info ) ].index ) == MOD_NO_MOD_INDEX ) {
         /* There isn't any module configured at the given address -
            Signal a warning
         */
@@ -1369,18 +1367,18 @@ void ModUnconfig( Address unconfig_info )
         mod_map_ptr = CopyModMap( NewModMap(), mod_map_ptr );
 
         /* Update the mapping information table */
-        mod_map.map_info[ mod ].config = mod_description[ mod ].r_config;
+        MOD_MAP.map_info[ mod ].config = mod_description[ mod ].r_config;
 
         /* Rebuild the page table */
-        RebuildPageTable( ModPage( mod_map.map_info[ mod ].abs_base_addr ),
-                          ModPage( mod_map.map_info[ mod ].abs_base_addr + mod_map.map_info[ mod ].size - 1 ) );
+        RebuildPageTable( ModPage( MOD_MAP.map_info[ mod ].abs_base_addr ),
+                          ModPage( MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size - 1 ) );
 
         /* Reset the module configuration status; the abs_base_addr of the module
            is not reset because its old value is still needed by ModGetId()
            The size is reset for the modules that are already MOD_SIZE_CONFIGURED
            immediately after reset.
         */
-        mod_map.map_info[ mod ].size = mod_description[ mod ].r_size;
+        MOD_MAP.map_info[ mod ].size = mod_description[ mod ].r_size;
 
         if ( ( nxt = CheckForLateHit() ) != ( struct ModMap* )NULL ) {
             /* Update pointer from the old map to the new one, and increment
@@ -1405,14 +1403,14 @@ void ModUnconfig( Address unconfig_info )
                this flag is used by the unconfig cache code to correctly
                undo the last config
             */
-            mod_map.cache.config_point = 1;
+            MOD_MAP.cache.config_point = 1;
 
             IncPerfCtr( miss_c );
 
             debug0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS );
 
             debug3( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG, mod_description[ mod ].name,
-                    mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size );
+                    MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size );
         }
     }
 }
@@ -1444,7 +1442,7 @@ Nibble FetchNibble( Address addr )
 {
     register int page = ModPage( addr );
 
-    return mod_map.page_table[ page ].read( mod_map.page_table[ page ].rel_base_addr | ModOffset( addr ) );
+    return MOD_MAP.page_table[ page ].read( MOD_MAP.page_table[ page ].rel_base_addr | ModOffset( addr ) );
 }
 
 /* .+
@@ -1480,10 +1478,10 @@ Nibble ReadNibble( Address addr )
     register Nibble d;
 
     /* Read the nibble from the peripheral module */
-    d = mod_map.page_table[ page ].read( mod_map.page_table[ page ].rel_base_addr | ModOffset( addr ) );
+    d = MOD_MAP.page_table[ page ].read( MOD_MAP.page_table[ page ].rel_base_addr | ModOffset( addr ) );
 
     /* Update the crc register, if appropriate */
-    if ( mod_map.page_table[ page ].index != MOD_HDW_INDEX )
+    if ( MOD_MAP.page_table[ page ].index != MOD_HDW_INDEX )
         mod_status.hdw.crc = ( mod_status.hdw.crc >> 4 ) ^ ( ( ( mod_status.hdw.crc ^ d ) & 0x0F ) * 0x1081 );
 
     /* Return to the caller */
@@ -1518,7 +1516,7 @@ void WriteNibble( Address addr, Nibble datum )
 {
     register int page = ModPage( addr );
 
-    mod_map.page_table[ page ].write( mod_map.page_table[ page ].rel_base_addr | ModOffset( addr ), datum );
+    MOD_MAP.page_table[ page ].write( MOD_MAP.page_table[ page ].rel_base_addr | ModOffset( addr ), datum );
 }
 
 /*---------------------------------------------------------------------------
@@ -1555,11 +1553,11 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
     page = ModPage( addr );
     offset = ModOffset( addr );
 
-    if ( ( mod = mod_map.page_table[ page ].index ) == MOD_NO_MOD_INDEX )
+    if ( ( mod = MOD_MAP.page_table[ page ].index ) == MOD_NO_MOD_INDEX )
         sprintf( ob, "A[%05X] -> *Not Mapped*", addr );
     else {
         Address rel_addr;
-        rel_addr = mod_map.page_table[ page ].rel_base_addr | offset;
+        rel_addr = MOD_MAP.page_table[ page ].rel_base_addr | offset;
 
         sprintf( ob, "A[%05X] -> M[%s] R[%05X]", addr, mod_description[ mod ].name, rel_addr );
     }
@@ -1596,10 +1594,10 @@ void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] )
     ob += strlen( ob );
 
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        sprintf( ob, "%s\t%05X\t%05X\t%s", mod_description[ mod ].name, mod_map.map_info[ mod ].abs_base_addr, mod_map.map_info[ mod ].size,
-                 mod_map.map_info[ mod ].config == MOD_CONFIGURED
+        sprintf( ob, "%s\t%05X\t%05X\t%s", mod_description[ mod ].name, MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size,
+                 MOD_MAP.map_info[ mod ].config == MOD_CONFIGURED
                      ? "Configured"
-                     : ( mod_map.map_info[ mod ].config == MOD_SIZE_CONFIGURED ? "Size_configured" : "*Unconfigured*" ) );
+                     : ( MOD_MAP.map_info[ mod ].config == MOD_SIZE_CONFIGURED ? "Size_configured" : "*Unconfigured*" ) );
 
         strcat( ob, "\n" );
         ob += strlen( ob );

@@ -582,15 +582,15 @@ void ChfExit( void )
     }
 #endif
 
-        /* Destroy the context associated with this thread now; this is necessary
-           to ensure that the context is actually destroyed when a single-threaded
-           application links with the multithreaded version of Chf: in this case,
-           pthread_exit() is called *after* ChfExit(), the Chf data key no longer
-           exists when pthread_exit() is called and the destructor registered
-           with pthread_key_create() does not take place.
-           The data pointer associated with the Chf data key is set to NULL to
-           avoid any subsequent reactivation of the destructor.
-        */
+    /* Destroy the context associated with this thread now; this is necessary
+       to ensure that the context is actually destroyed when a single-threaded
+       application links with the multithreaded version of Chf: in this case,
+       pthread_exit() is called *after* ChfExit(), the Chf data key no longer
+       exists when pthread_exit() is called and the destructor registered
+       with pthread_key_create() does not take place.
+       The data pointer associated with the Chf data key is set to NULL to
+       avoid any subsequent reactivation of the destructor.
+    */
 #ifdef _REENTRANT
     DestroyContext( &chf_context );
     if ( pthread_setspecific( data_key, ( void* )NULL ) ) {

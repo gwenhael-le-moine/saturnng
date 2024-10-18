@@ -1045,31 +1045,24 @@ static void ExecTest_9( void )
         case 0x0:
             TestRREq( rp, fs );
             break;
-
         case 0x1:
             TestRRNe( rp, fs );
             break;
-
         case 0x2:
             TestRZ( rp, fs );
             break;
-
         case 0x3:
             TestRNZ( rp, fs );
             break;
-
         case 0x4:
             TestRRGt( rp, fs );
             break;
-
         case 0x5:
             TestRRLt( rp, fs );
             break;
-
         case 0x6:
             TestRRGe( rp, fs );
             break;
-
         case 0x7:
             TestRRLe( rp, fs );
             break;
@@ -1098,15 +1091,12 @@ static void ExecTest_8A( void )
         case 0x0:
             TestRREq( rp, FS_A );
             break;
-
         case 0x1:
             TestRRNe( rp, FS_A );
             break;
-
         case 0x2:
             TestRZ( rp, FS_A );
             break;
-
         case 0x3:
             TestRNZ( rp, FS_A );
             break;
@@ -1135,15 +1125,12 @@ static void ExecTest_8B( void )
         case 0x0:
             TestRRGt( rp, FS_A );
             break;
-
         case 0x1:
             TestRRLt( rp, FS_A );
             break;
-
         case 0x2:
             TestRRGe( rp, FS_A );
             break;
-
         case 0x3:
             TestRRLe( rp, FS_A );
             break;
@@ -1174,31 +1161,24 @@ static void ExecRegOp_A( void )
         case 0x0:
             AddRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_1[ rp ], fs );
             break;
-
         case 0x1:
             AddRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_0[ rp ], fs );
             break;
-
         case 0x2:
             AddRR( reg_pair_1[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], fs );
             break;
-
         case 0x3:
             DecrR( reg_pair_0[ rp ], fs );
             break;
-
         case 0x4:
             ClearR( reg_pair_0[ rp ], fs );
             break;
-
         case 0x5:
             CopyRR( reg_pair_0[ rp ], reg_pair_1[ rp ], fs );
             break;
-
         case 0x6:
             CopyRR( reg_pair_1[ rp ], reg_pair_0[ rp ], fs );
             break;
-
         case 0x7:
             ExchRR( reg_pair_0[ rp ], reg_pair_1[ rp ], fs );
             break;
@@ -1226,31 +1206,24 @@ static void ExecRegOp_B( void )
         case 0x0:
             SubRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_1[ rp ], fs );
             break;
-
         case 0x1:
             IncrR( reg_pair_0[ rp ], fs );
             break;
-
         case 0x2:
             SubRR( reg_pair_1[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], fs );
             break;
-
         case 0x3:
             SubRR( reg_pair_0[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], fs );
             break;
-
         case 0x4:
             ShiftLeftR( reg_pair_0[ rp ], fs );
             break;
-
         case 0x5:
             ShiftRightR( reg_pair_0[ rp ], fs );
             break;
-
         case 0x6:
             TwoComplR( reg_pair_0[ rp ], fs );
             break;
-
         case 0x7:
             OneComplR( reg_pair_0[ rp ], fs );
             break;
@@ -1276,15 +1249,12 @@ static void ExecRegOp_C( void )
         case 0x0:
             AddRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_1[ rp ], FS_A );
             break;
-
         case 0x1:
             AddRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x2:
             AddRR( reg_pair_1[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x3:
             DecrR( reg_pair_0[ rp ], FS_A );
             break;
@@ -1310,15 +1280,12 @@ static void ExecRegOp_D( void )
         case 0x0:
             ClearR( reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x1:
             CopyRR( reg_pair_0[ rp ], reg_pair_1[ rp ], FS_A );
             break;
-
         case 0x2:
             CopyRR( reg_pair_1[ rp ], reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x3:
             ExchRR( reg_pair_0[ rp ], reg_pair_1[ rp ], FS_A );
             break;
@@ -1344,15 +1311,12 @@ static void ExecRegOp_E( void )
         case 0x0:
             SubRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_1[ rp ], FS_A );
             break;
-
         case 0x1:
             IncrR( reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x2:
             SubRR( reg_pair_1[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x3:
             SubRR( reg_pair_0[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], FS_A );
             break;
@@ -1378,15 +1342,12 @@ static void ExecRegOp_F( void )
         case 0x0:
             ShiftLeftR( reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x1:
             ShiftRightR( reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x2:
             TwoComplR( reg_pair_0[ rp ], FS_A );
             break;
-
         case 0x3:
             OneComplR( reg_pair_0[ rp ], FS_A );
             break;
@@ -1413,15 +1374,12 @@ static void ExecAND_OR( void )
         case 0x0:
             AndRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_1[ rp ], f );
             break;
-
         case 0x1:
             AndRR( reg_pair_1[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], f );
             break;
-
         case 0x2:
             OrRR( reg_pair_0[ rp ], reg_pair_0[ rp ], reg_pair_1[ rp ], f );
             break;
-
         case 0x3:
             OrRR( reg_pair_1[ rp ], reg_pair_1[ rp ], reg_pair_0[ rp ], f );
             break;
@@ -1444,41 +1402,32 @@ static void ExecGroup_0( void )
             cpu_status.HST |= HST_XM_MASK;
             cpu_status.PC = PopRSTK();
             break;
-
         case 0x1: /* RTN */
             cpu_status.PC = PopRSTK();
             break;
-
         case 0x2: /* RTNSC */
             cpu_status.carry = true;
             cpu_status.PC = PopRSTK();
             break;
-
         case 0x3: /* RTNCC */
             cpu_status.carry = false;
             cpu_status.PC = PopRSTK();
             break;
-
         case 0x4: /* SETHEX */
             cpu_status.hexmode = true;
             break;
-
         case 0x5: /* SETDEC */
             cpu_status.hexmode = false;
             break;
-
         case 0x6: /* RSTK=C */
             PushRSTK( R2Addr( cpu_status.C ) );
             break;
-
         case 0x7: /* C=RSTK */
             Addr2R( cpu_status.C, PopRSTK() );
             break;
-
         case 0x8: /* CLRST */
             cpu_status.ST &= CLRST_MASK;
             break;
-
         case 0x9: /* C=ST */
             /* Copy the 12 low-order bits of ST into C */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "St2C" );
@@ -1486,14 +1435,12 @@ static void ExecGroup_0( void )
             cpu_status.C[ 1 ] = ( Nibble )( ( cpu_status.ST >> 4 ) & NIBBLE_MASK );
             cpu_status.C[ 2 ] = ( Nibble )( ( cpu_status.ST >> 8 ) & NIBBLE_MASK );
             break;
-
         case 0xA: /* ST=C */
             /* Copy the 12 low-order bits of C into ST */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "C2St" );
             cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
                             ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
             break;
-
         case 0xB: /* CSTEX */
             /* Exchange the 12 low-order bits of C with the 12 low-order bits of ST */
             {
@@ -1507,7 +1454,6 @@ static void ExecGroup_0( void )
                 cpu_status.C[ 2 ] = ( Nibble )( ( tst >> 8 ) & NIBBLE_MASK );
             }
             break;
-
         case 0xC: /* P=P+1 */
             {
                 if ( cpu_status.P == NIBBLE_MASK ) {
@@ -1535,7 +1481,6 @@ static void ExecGroup_0( void )
         case 0xE: /* AND_OR */
             ExecAND_OR();
             break;
-
         case 0xF: /* RTI */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRTI" );
 
@@ -1571,77 +1516,62 @@ static void ExecGroup_13( void )
         case 0x0: /* D0=A */
             cpu_status.D0 = R2Addr( cpu_status.A );
             break;
-
         case 0x1: /* D1=A */
             cpu_status.D1 = R2Addr( cpu_status.A );
             break;
-
         case 0x2: /* AD0EX */
             ta = cpu_status.D0;
             cpu_status.D0 = R2Addr( cpu_status.A );
             Addr2R( cpu_status.A, ta );
             break;
-
         case 0x3: /* AD1EX */
             ta = cpu_status.D1;
             cpu_status.D1 = R2Addr( cpu_status.A );
             Addr2R( cpu_status.A, ta );
             break;
-
         case 0x4: /* D0=C */
             cpu_status.D0 = R2Addr( cpu_status.C );
             break;
-
         case 0x5: /* D1=C */
             cpu_status.D1 = R2Addr( cpu_status.C );
             break;
-
         case 0x6: /* CD0EX */
             ta = cpu_status.D0;
             cpu_status.D0 = R2Addr( cpu_status.C );
             Addr2R( cpu_status.C, ta );
             break;
-
         case 0x7: /* CD1EX */
             ta = cpu_status.D1;
             cpu_status.D1 = R2Addr( cpu_status.C );
             Addr2R( cpu_status.C, ta );
             break;
-
         case 0x8: /* D0=AS */
             cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
             break;
-
         case 0x9: /* D1=AS */
             cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
             break;
-
         case 0xA: /* AD0XS */
             ta = cpu_status.D0;
             cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
             Addr2RS( cpu_status.A, ta );
             break;
-
         case 0xB: /* AD1XS */
             ta = cpu_status.D1;
             cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
             Addr2RS( cpu_status.A, ta );
             break;
-
         case 0xC: /* D0=CS */
             cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
             break;
-
         case 0xD: /* D1=CS */
             cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
             break;
-
         case 0xE: /* CD0XS */
             ta = cpu_status.D0;
             cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
             Addr2RS( cpu_status.C, ta );
             break;
-
         case 0xF: /* CD1XS */
             ta = cpu_status.D1;
             cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
@@ -1658,63 +1588,48 @@ static void ExecGroup_14( void )
         case 0x0: /* DAT0=A A */
             WriteDAT( cpu_status.D0, cpu_status.A, FS_A );
             break;
-
         case 0x1: /* DAT1=A A */
             WriteDAT( cpu_status.D1, cpu_status.A, FS_A );
             break;
-
         case 0x2: /* A=DAT0 A */
             ReadDAT( cpu_status.A, cpu_status.D0, FS_A );
             break;
-
         case 0x3: /* A=DAT1 A */
             ReadDAT( cpu_status.A, cpu_status.D1, FS_A );
             break;
-
         case 0x4: /* DAT0=C A */
             WriteDAT( cpu_status.D0, cpu_status.C, FS_A );
             break;
-
         case 0x5: /* DAT1=C A */
             WriteDAT( cpu_status.D1, cpu_status.C, FS_A );
             break;
-
         case 0x6: /* C=DAT0 A */
             ReadDAT( cpu_status.C, cpu_status.D0, FS_A );
             break;
-
         case 0x7: /* C=DAT1 A */
             ReadDAT( cpu_status.C, cpu_status.D1, FS_A );
             break;
-
         case 0x8: /* DAT0=A B */
             WriteDAT( cpu_status.D0, cpu_status.A, FS_B );
             break;
-
         case 0x9: /* DAT1=A B */
             WriteDAT( cpu_status.D1, cpu_status.A, FS_B );
             break;
-
         case 0xA: /* A=DAT0 B */
             ReadDAT( cpu_status.A, cpu_status.D0, FS_B );
             break;
-
         case 0xB: /* A=DAT1 B */
             ReadDAT( cpu_status.A, cpu_status.D1, FS_B );
             break;
-
         case 0xC: /* DAT0=C B */
             WriteDAT( cpu_status.D0, cpu_status.C, FS_B );
             break;
-
         case 0xD: /* DAT1=C B */
             WriteDAT( cpu_status.D1, cpu_status.C, FS_B );
             break;
-
         case 0xE: /* C=DAT0 B */
             ReadDAT( cpu_status.C, cpu_status.D0, FS_B );
             break;
-
         case 0xF: /* C=DAT1 B */
             ReadDAT( cpu_status.C, cpu_status.D1, FS_B );
             break;
@@ -1737,49 +1652,42 @@ static void ExecGroup_15( void )
             else
                 WriteDAT( cpu_status.D0, cpu_status.A, f );
             break;
-
         case 0x1: /* DAT1=A */
             if ( is )
                 WriteDATImm( cpu_status.D1, cpu_status.A, f );
             else
                 WriteDAT( cpu_status.D1, cpu_status.A, f );
             break;
-
         case 0x2: /* A=DAT0 */
             if ( is )
                 ReadDATImm( cpu_status.A, cpu_status.D0, f );
             else
                 ReadDAT( cpu_status.A, cpu_status.D0, f );
             break;
-
         case 0x3: /* A=DAT1 */
             if ( is )
                 ReadDATImm( cpu_status.A, cpu_status.D1, f );
             else
                 ReadDAT( cpu_status.A, cpu_status.D1, f );
             break;
-
         case 0x4: /* DAT0=C */
             if ( is )
                 WriteDATImm( cpu_status.D0, cpu_status.C, f );
             else
                 WriteDAT( cpu_status.D0, cpu_status.C, f );
             break;
-
         case 0x5: /* DAT1=C */
             if ( is )
                 WriteDATImm( cpu_status.D1, cpu_status.C, f );
             else
                 WriteDAT( cpu_status.D1, cpu_status.C, f );
             break;
-
         case 0x6: /* C=DAT0 */
             if ( is )
                 ReadDATImm( cpu_status.C, cpu_status.D0, f );
             else
                 ReadDAT( cpu_status.C, cpu_status.D0, f );
             break;
-
         case 0x7: /* C=DAT1 */
             if ( is )
                 ReadDATImm( cpu_status.C, cpu_status.D1, f );
@@ -1810,7 +1718,6 @@ static void ExecGroup_1( void )
 
             CopyRR( cpu_status.R[ rn ], ( ac ? cpu_status.C : cpu_status.A ), FS_W );
             break;
-
         case 0x1: /* A/C=Rn */
             n = FetchNibble( cpu_status.PC++ );
             rn = GET_Rn( n );
@@ -1818,7 +1725,6 @@ static void ExecGroup_1( void )
 
             CopyRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], FS_W );
             break;
-
         case 0x2: /* ARnEX, CRnEX */
             n = FetchNibble( cpu_status.PC++ );
             rn = GET_Rn( n );
@@ -1826,67 +1732,54 @@ static void ExecGroup_1( void )
 
             ExchRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], FS_W );
             break;
-
         case 0x3:
             ExecGroup_13();
             break;
-
         case 0x4:
             ExecGroup_14();
             break;
-
         case 0x5:
             ExecGroup_15();
             break;
-
         case 0x6: /* D0=D0+n+1 */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D0 + n + 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta < cpu_status.D0 );
             cpu_status.D0 = ta;
             break;
-
         case 0x7: /* D1=D1+n+1 */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D1 + n + 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta < cpu_status.D1 );
             cpu_status.D1 = ta;
             break;
-
         case 0x8: /* D0=D0-(n+1) */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D0 - n - 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta > cpu_status.D0 );
             cpu_status.D0 = ta;
             break;
-
         case 0x9: /* D0=(2) nn */
             FetchD( &cpu_status.D0, 2 );
             break;
-
         case 0xA: /* D0=(4) nn */
             FetchD( &cpu_status.D0, 4 );
             break;
-
         case 0xB: /* D0=(5) nn */
             FetchD( &cpu_status.D0, 5 );
             break;
-
         case 0xC: /* D1=D1-(n+1) */
             n = FetchNibble( cpu_status.PC++ );
             ta = ( cpu_status.D1 - n - 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta > cpu_status.D1 );
             cpu_status.D1 = ta;
             break;
-
         case 0xD: /* D1=(2) nn */
             FetchD( &cpu_status.D1, 2 );
             break;
-
         case 0xE: /* D1=(4) nn */
             FetchD( &cpu_status.D1, 4 );
             break;
-
         case 0xF: /* D1=(5) nn */
             FetchD( &cpu_status.D1, 5 );
             break;
@@ -1912,7 +1805,6 @@ static void ExecGroup_808( void )
             /* Enable maskable interrupts */
             cpu_status.int_enable = true;
             break;
-
         case 0x1: /* RSI */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRSI" );
 
@@ -1921,67 +1813,53 @@ static void ExecGroup_808( void )
 
             KeybRSI();
             break;
-
         case 0x2: /* LA(m) n..n */
             FetchR( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0x3: /* BUSCB */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCB" );
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCB" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
-
         case 0x4: /* ABIT=0 d */
             ExecBIT0( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0x5: /* ABIT=1 d */
             ExecBIT1( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0x6: /* ?ABIT=0 d */
             TestBIT0( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
             ExecGOYES_RTNYES();
             break;
-
         case 0x7: /* ?ABIT=1 d */
             TestBIT1( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
             ExecGOYES_RTNYES();
             break;
-
         case 0x8: /* CBIT=0 d */
             ExecBIT0( cpu_status.C, FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0x9: /* CBIT=1 d */
             ExecBIT1( cpu_status.C, FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0xA: /* ?CBIT=0 d */
             TestBIT0( cpu_status.C, FetchNibble( cpu_status.PC++ ) );
             ExecGOYES_RTNYES();
             break;
-
         case 0xB: /* ?CBIT=1 d */
             TestBIT1( cpu_status.C, FetchNibble( cpu_status.PC++ ) );
             ExecGOYES_RTNYES();
             break;
-
         case 0xC: /* PC=(A) */
             cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.A ) );
             break;
-
         case 0xD: /* BUSCD */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCD" );
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCD" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
-
         case 0xE: /* PC=(C) */
             cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.C ) );
             break;
-
         case 0xF: /* INTOFF */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTOFF" );
 
@@ -1996,16 +1874,619 @@ static void ExecGroup_808( void )
     }
 }
 
-/* Instruction Group_80 */
-static void ExecGroup_80B( void )
+/* Instruction Group_80B */
+// FIXME: 49g bugs here on display change
+static void ExecGroup_80B0( void )
 {
-    // FIXME: 49g bugs here on display change
-    // DEBUG_print_cpu_instruction();
+    Nibble n = FetchNibble( cpu_status.PC++ );
 
-    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC not implemented" );
-    ChfSignal( CPU_CHF_MODULE_ID );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B0" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RPL2 (preserve carry)" );
+            break;
+        case 0x3:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: FALSE" );
+            break;
+        case 0x4:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: DOFALSE" );
+            break;
+        case 0x5:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: BEEP2" );
+            break;
+        case 0x6:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: MOVEDOWN" );
+            break;
+        case 0x7:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: MOVEUP" );
+            break;
+        case 0x8:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: CREATETEMP" );
+            break;
+        case 0x9:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RCKBp" );
+            break;
+        case 0xA:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: KEYDN" );
+            break;
+        case 0xB:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: doslow" );
+            break;
+
+        case 0x1:
+        case 0x2:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B1( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B1" );
+    switch ( n ) {
+        case 0x0: // simulate off function
+            break;
+        case 0x1:
+            cpu_status.PC += 2;
+            // do not do gettime, just skip the RTN after it to fall in the normal gettime function (only valid in untouched ROM)
+            break;
+        case 0x2:
+            // do not do settime, fall in the normal settime function (only valid in untouched ROM)
+            break;
+        case 0x3:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RESETOS" );
+            break;
+        case 0x4:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: AUTOTEST" );
+            break;
+        case 0x5:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: NATIVE?" );
+            break;
+        case 0x7:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: SERIAL" );
+            break;
+
+        case 0x6:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B2( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
 
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
+    switch ( n ) {
+        case 0x8:
+            // cpu_status.HST |= I[5]; // Emu48:apple.c:500
+            cpu_status.PC += 1;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: HST=1.x" );
+            break;
+        case 0x9: // screen height = 0x50 = 80 or 0x40 = 64
+            cpu_status.A[ 4 ] = cpu_status.A[ 3 ] = cpu_status.A[ 2 ] = cpu_status.A[ 0 ] = 0;
+            cpu_status.A[ 1 ] = config.model == MODEL_49G ? 5 : 4;
+            break;
+        case 0xA: // screen width = 0x83 = 131
+            cpu_status.A[ 4 ] = cpu_status.A[ 3 ] = cpu_status.A[ 2 ] = 0;
+            cpu_status.A[ 1 ] = 8;
+            cpu_status.A[ 0 ] = 3;
+            break;
+        case 0xB: // it is medium apple
+            cpu_status.carry = false;
+            break;
+        case 0xC: // it is big apple
+            cpu_status.carry = config.model == MODEL_49G;
+            break;
+        case 0xE: // it is big apple V2
+            cpu_status.carry = config.model == MODEL_49G;
+            break;
+
+        case 0x0:
+        case 0x1:
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0xd:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B3( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B3" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: config_disp0 Ca:address 4K data" );
+            break;
+        case 0x1:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: unconfig_disp0 does the refresh" );
+            break;
+        case 0x2:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: refresh_disp0 force refresh" );
+            break;
+        case 0x3:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: set_lines_disp0 nb in Cb" );
+            break;
+        case 0x4:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: set_offset_disp0 offset to disp in disp0" );
+            /* w.d0offset = Npack(w.C, 5); */
+            /* w.d0offset &= 0x7FF; */
+            break;
+        case 0x5:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: native_get_line_disp0" );
+            /* Nunpack(w.C, w.d0offset, 5); */
+            break;
+        case 0x8:
+            // cpu_status.HST |= I[5]; // Emu48:apple.c:500
+            cpu_status.PC += 3;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ?HST=1.x" );
+            break;
+
+        case 0x6:
+        case 0x7:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B4( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B4" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: setup basic memory configuration" );
+            break;
+        case 0x1:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: erase Flash bank" );
+            break;
+        case 0x2:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: write byte into Flash bank" );
+            break;
+        case 0x3:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: format Flash bank" );
+            break;
+
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B5( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B5" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMON" );
+            break;
+        case 0x1:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMOFF" );
+            break;
+        case 0x6:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: OUTBYT" );
+            break;
+        case 0x7:
+            cpu_status.D0 = cpu_status.D1 = 0;
+            break;
+
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B6( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B6" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ACCESSSD" );
+            break;
+        case 0x1:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: PORTTAG?" );
+            break;
+        case 0x4:
+            cpu_status.carry = false; /* There is no SD card present */
+            break;
+        case 0x6:
+            cpu_status.carry = false; /* Could not format SD (non-existent) card */
+            break;
+
+        case 0x2:
+        case 0x3:
+        case 0x5:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B7( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B7" );
+    switch ( n ) {
+        case 0xF:
+            cpu_status.carry = false;
+            cpu_status.PC++;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: SETFLDn" );
+            break;
+
+        case 0x0:
+        case 0x1:
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B8( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B8" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=s" );
+            break;
+        case 0x1:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r+s" );
+            break;
+        case 0x2:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r-s" );
+            break;
+        case 0x3:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r*s" );
+            break;
+        case 0x4:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r/s" );
+            break;
+        case 0x5:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r%s" );
+            break;
+        case 0x6:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=-r-1" );
+            break;
+        case 0x7:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=-r" );
+            break;
+        case 0x8:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r<s" );
+            break;
+        case 0x9:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r>s" );
+            break;
+        case 0xA:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r^s" );
+            break;
+
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B9( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B9" );
+    switch ( n ) {
+        case 0x0:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: Data streamer" );
+            break;
+
+        case 0x1:
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+        case 0xf:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80BE( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BE" );
+    switch ( n ) {
+        case 0xE:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMFLUSH" );
+            break;
+        case 0xF:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSYS" );
+            break;
+
+        case 0x0:
+        case 0x1:
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80BF( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BF" );
+    switch ( n ) {
+        case 0xF:
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSAT" );
+            break;
+
+        case 0x0:
+        case 0x1:
+        case 0x2:
+        case 0x3:
+        case 0x4:
+        case 0x5:
+        case 0x6:
+        case 0x7:
+        case 0x8:
+        case 0x9:
+        case 0xa:
+        case 0xb:
+        case 0xc:
+        case 0xd:
+        case 0xe:
+            cpu_status.PC--;
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            break;
+
+        default:
+            /* Unknown opcode */
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+            ChfSignal( CPU_CHF_MODULE_ID );
+            break;
+    }
+}
+
+static void ExecGroup_80B( void )
+{
+    bool enable_BUSCC = false;
+    if ( enable_BUSCC ) {
+        Nibble n = FetchNibble( cpu_status.PC++ );
+
+        debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
+        switch ( n ) {
+            case 0x0:
+                ExecGroup_80B0();
+                break;
+            case 0x1:
+                ExecGroup_80B1();
+                break;
+            case 0x2:
+                ExecGroup_80B2();
+                break;
+            case 0x3:
+                ExecGroup_80B3();
+                break;
+            case 0x4:
+                ExecGroup_80B4();
+                break;
+            case 0x5:
+                ExecGroup_80B5();
+                break;
+            case 0x6:
+                ExecGroup_80B6();
+                break;
+            case 0x7:
+                ExecGroup_80B7();
+                break;
+            case 0x8:
+                ExecGroup_80B8();
+                break;
+            case 0x9:
+                ExecGroup_80B9();
+                break;
+            case 0xE:
+                ExecGroup_80BE();
+                break;
+            case 0xF:
+                ExecGroup_80BF();
+                break;
+
+            case 0xA:
+            case 0xB:
+            case 0xC:
+            case 0xD:
+                cpu_status.PC--;
+                debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+                break;
+
+            default:
+                /* Unknown opcode */
+                ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
+                ChfSignal( CPU_CHF_MODULE_ID );
+                break;
+        }
+    } else {
+        ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC not implemented" );
+        ChfSignal( CPU_CHF_MODULE_ID );
+    }
 }
 
 /* Instruction Group_80 */
@@ -2021,68 +2502,53 @@ static void ExecGroup_80( void )
 
             cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( cpu_status.OUT & 0xFF0 );
             break;
-
         case 0x1: /* OUT=C */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTC" );
 
             cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( ( OutputRegister )cpu_status.C[ 1 ] << 4 ) |
                              ( ( OutputRegister )cpu_status.C[ 2 ] << 8 );
             break;
-
         case 0x2: /* A=IN */
             ExecIN( cpu_status.A );
             break;
-
         case 0x3: /* C=IN */
             ExecIN( cpu_status.C );
             break;
-
         case 0x4: /* UNCNFG */
             ModUnconfig( R2Addr( cpu_status.C ) );
             break;
-
         case 0x5: /* CONFIG */
             ModConfig( R2Addr( cpu_status.C ) );
             break;
-
         case 0x6: /* C=ID */
             Addr2R( cpu_status.C, ModGetID() );
             break;
-
         case 0x7: /* SHUTDN */
             ExecSHUTDN();
             break;
-
         case 0x8: /* Group 808 */
             ExecGroup_808();
             break;
-
         case 0x9: /* C+P+1 */
             AddRImm( cpu_status.C, FS_A, cpu_status.P );
             break;
-
         case 0xA: /* RESET */
             ModReset();
             break;
-
         case 0xB: /* BUSCC */
             ExecGroup_80B();
             break;
-
         case 0xC: /* C=P n */
             cpu_status.C[ ( int )FetchNibble( cpu_status.PC++ ) ] = cpu_status.P;
             break;
-
         case 0xD: /* P=C n */
             SetP( cpu_status.C[ ( int )FetchNibble( cpu_status.PC++ ) ] );
             break;
-
         case 0xE: /* SREQ? */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSREQ" );
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "SREQ" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
-
         case 0xF: /* CPEX */
             t = cpu_status.P;
             n = FetchNibble( cpu_status.PC++ );
@@ -2116,14 +2582,12 @@ static void ExecSpecialGroup_81( int rp )
             else /* Add */
                 AddRImm( reg_pair_0[ rp ], f, m );
             break;
-
         case 0x1: /* rSRB.f fs */
             f = FetchNibble( cpu_status.PC++ );
             n = FetchNibble( cpu_status.PC++ );
             rp = GET_RP( n );
             ShiftRightBitR( reg_pair_0[ rp ], f );
             break;
-
         case 0x2: /* Rn=r.F fs, r=R0.F fs, rRnEX.F fs */
             f = FetchNibble( cpu_status.PC++ );
             n = FetchNibble( cpu_status.PC++ );
@@ -2150,7 +2614,6 @@ static void ExecSpecialGroup_81( int rp )
                     break;
             }
             break;
-
         case 0x3: /* Group 81B */
             switch ( n = FetchNibble( cpu_status.PC++ ) ) {
                 case 0x2: /* PC=A */
@@ -2213,7 +2676,6 @@ static void ExecGroup_8( void )
         case 0x0:
             ExecGroup_80();
             break;
-
         case 0x1: /* rSLC, rSRC, rSRB, Special Group_81 */
             n = FetchNibble( cpu_status.PC++ );
             oc = GET_OC_1( n );
@@ -2242,69 +2704,55 @@ static void ExecGroup_8( void )
                     break;
             }
             break;
-
         case 0x2: /* CLRHSn */
             cpu_status.HST &= ~FetchNibble( cpu_status.PC++ );
             break;
-
         case 0x3: /* ?HS=0 */
             n = FetchNibble( cpu_status.PC++ );
             cpu_status.carry = ( ( cpu_status.HST & n ) == 0 );
             ExecGOYES_RTNYES();
             break;
-
         case 0x4: /* ST=0 n */
             cpu_status.ST &= ~st_bit_mask[ ( int )FetchNibble( cpu_status.PC++ ) ];
             break;
-
         case 0x5: /* ST=1 n */
             cpu_status.ST |= st_bit_mask[ ( int )FetchNibble( cpu_status.PC++ ) ];
             break;
-
         case 0x6: /* ?ST=0 n */
             cpu_status.carry = ( ( cpu_status.ST & st_bit_mask[ ( int )FetchNibble( cpu_status.PC++ ) ] ) == 0 );
             ExecGOYES_RTNYES();
             break;
-
         case 0x7: /* ?ST=1 n */
             cpu_status.carry = ( ( cpu_status.ST & st_bit_mask[ ( int )FetchNibble( cpu_status.PC++ ) ] ) != 0 );
             ExecGOYES_RTNYES();
             break;
-
         case 0x8: /* ?P#n */
             cpu_status.carry = ( cpu_status.P != FetchNibble( cpu_status.PC++ ) );
             ExecGOYES_RTNYES();
             break;
-
         case 0x9: /* ?P=n */
             cpu_status.carry = ( cpu_status.P == FetchNibble( cpu_status.PC++ ) );
             ExecGOYES_RTNYES();
             break;
-
         case 0xA: /* Test */
             ExecTest_8A();
             break;
-
         case 0xB: /* Test */
             ExecTest_8B();
             break;
-
         case 0xC: /* GOLONG */
             addr = Get4Nibbles2C( cpu_status.PC );
             cpu_status.PC += addr;
             break;
-
         case 0xD: /* GOVLNG */
             cpu_status.PC = Get5NibblesAbs( cpu_status.PC );
             break;
-
         case 0xE: /* GOSUBL */
             addr = Get4Nibbles2C( cpu_status.PC );
             cpu_status.PC += 4;
             PushRSTK( cpu_status.PC );
             cpu_status.PC += addr;
             break;
-
         case 0xF: /* GOSBVL */
             PushRSTK( cpu_status.PC + 5 );
             cpu_status.PC = Get5NibblesAbs( cpu_status.PC );
@@ -2865,19 +3313,15 @@ void OneStep( void )
         case 0x0: /* Group_0 */
             ExecGroup_0();
             break;
-
         case 0x1: /* Group_1 */
             ExecGroup_1();
             break;
-
         case 0x2: /* P=n */
             SetP( FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0x3: /* LC(m) n...n */
             FetchR( cpu_status.C, FetchNibble( cpu_status.PC++ ) );
             break;
-
         case 0x4: /* RTNC/GOC */
             if ( cpu_status.carry ) {
                 offset = Get2Nibbles2C( cpu_status.PC );
@@ -2889,7 +3333,6 @@ void OneStep( void )
                 cpu_status.PC += 2;
 
             break;
-
         case 0x5: /* RTNNC/GONC */
             if ( !cpu_status.carry ) {
                 offset = Get2Nibbles2C( cpu_status.PC );
@@ -2901,46 +3344,36 @@ void OneStep( void )
                 cpu_status.PC += 2;
 
             break;
-
         case 0x6: /* GOTO */
             cpu_status.PC += Get3Nibbles2C( cpu_status.PC );
             break;
-
         case 0x7: /* GOSUB */
             offset = Get3Nibbles2C( cpu_status.PC );
             cpu_status.PC += 3;
             PushRSTK( cpu_status.PC );
             cpu_status.PC += offset;
             break;
-
         case 0x8: /* Group_8 */
             ExecGroup_8();
             break;
-
         case 0x9: /* Test */
             ExecTest_9();
             break;
-
         case 0xA: /* Register Operation, group A */
             ExecRegOp_A();
             break;
-
         case 0xB: /* Register Operation, group B */
             ExecRegOp_B();
             break;
-
         case 0xC: /* Register Operation, group C */
             ExecRegOp_C();
             break;
-
         case 0xD: /* Register Operation, group D */
             ExecRegOp_D();
             break;
-
         case 0xE: /* Register Operation, group E */
             ExecRegOp_E();
             break;
-
         case 0xF: /* Register Operation, group F */
             ExecRegOp_F();
             break;
