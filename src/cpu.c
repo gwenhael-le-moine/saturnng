@@ -177,6 +177,7 @@ static const int dec_one_c[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0 };
 static void PushRSTK( const Address r )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "PushRSTK" );
+
     cpu_status.return_stack[ cpu_status.return_sp ] = r;
     cpu_status.return_sp = ( cpu_status.return_sp + 1 ) & RETURN_SP_MASK;
 }
@@ -184,11 +185,14 @@ static void PushRSTK( const Address r )
 /* PopRSTK */
 static Address PopRSTK( void )
 {
-    Address r;
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "PopRSTK" );
+
     cpu_status.return_sp = ( cpu_status.return_sp - 1 ) & RETURN_SP_MASK;
-    r = cpu_status.return_stack[ cpu_status.return_sp ];
+
+    Address r = cpu_status.return_stack[ cpu_status.return_sp ];
+
     cpu_status.return_stack[ cpu_status.return_sp ] = ( Address )0;
+
     return r;
 }
 
@@ -268,6 +272,7 @@ static void ExecSHUTDN( void )
 static Address R2Addr( const Nibble* r )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "R2Addr" );
+
     return ( ( ( Address )r[ 0 ] ) | ( ( Address )r[ 1 ] << 4 ) | ( ( Address )r[ 2 ] << 8 ) | ( ( Address )r[ 3 ] << 12 ) |
              ( ( Address )r[ 4 ] << 16 ) );
 }
@@ -278,6 +283,7 @@ static Address R2Addr( const Nibble* r )
 static Address R2AddrS( const Nibble* r )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "R2AddrS" );
+
     return ( ( ( Address )r[ 0 ] ) | ( ( Address )r[ 1 ] << 4 ) | ( ( Address )r[ 2 ] << 8 ) | ( ( Address )r[ 3 ] << 12 ) );
 }
 
@@ -287,6 +293,7 @@ static Address R2AddrS( const Nibble* r )
 static void Addr2R( Nibble* d, Address a )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "Addr2R" );
+
     d[ 0 ] = ( Nibble )( a & NIBBLE_MASK );
     a >>= 4;
     d[ 1 ] = ( Nibble )( a & NIBBLE_MASK );
@@ -304,6 +311,7 @@ static void Addr2R( Nibble* d, Address a )
 static void Addr2RS( Nibble* d, Address a )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "Addr2RS" );
+
     d[ 0 ] = ( Nibble )( a & NIBBLE_MASK );
     a >>= 4;
     d[ 1 ] = ( Nibble )( a & NIBBLE_MASK );
@@ -322,18 +330,15 @@ void ReadDAT( Nibble* d, Address s, int fs )
 {
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         d[ n ] = ReadNibble( s++ );
 }
 
 /* Read a field of a DataRegister from memory, with immediate fs */
 void ReadDATImm( Nibble* d, Address s, int imm_fs )
 {
-    register int n;
-
-    for ( n = 0; n <= imm_fs; n++ )
+    for ( register int n = 0; n <= imm_fs; n++ )
         d[ n ] = ReadNibble( s++ );
 }
 
@@ -342,18 +347,15 @@ void WriteDAT( Address d, const Nibble* r, int fs )
 {
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         WriteNibble( d++, r[ n ] );
 }
 
 /* Write a field of a DataRegister into memory, with immediate fs */
 void WriteDATImm( Address d, const Nibble* r, int imm_fs )
 {
-    register int n;
-
-    for ( n = 0; n <= imm_fs; n++ )
+    for ( register int n = 0; n <= imm_fs; n++ )
         WriteNibble( d++, r[ n ] );
 }
 
@@ -403,9 +405,8 @@ void FetchD( Address* d, register int n )
     register Address mask = ADDRESS_MASK;
     register Address v = 0x00000;
     register int shift = 0;
-    register int i;
 
-    for ( i = 0; i < n; i++ ) {
+    for ( register int i = 0; i < n; i++ ) {
         v |= ( ( Address )FetchNibble( cpu_status.PC++ ) << shift );
         mask <<= 4;
         shift += 4;
@@ -420,9 +421,8 @@ void FetchD( Address* d, register int n )
 void FetchR( Nibble* r, register int n )
 {
     register int p = ( int )cpu_status.P;
-    register int i;
 
-    for ( i = 0; i <= n; i++ ) {
+    for ( register int i = 0; i <= n; i++ ) {
         r[ p++ ] = FetchNibble( cpu_status.PC++ );
         if ( p >= NIBBLE_PER_REGISTER )
             p = 0;
@@ -448,14 +448,14 @@ void SetP( Nibble n )
 /* ?r=s */
 static void TestRREq( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRREq" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRREq" );
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
             cpu_status.carry = false;
             return;
@@ -467,13 +467,13 @@ static void TestRREq( int rp, int fs )
 /* ?r=0 */
 static void TestRZ( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRZ" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRZ" );
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
             cpu_status.carry = false;
             return;
@@ -485,14 +485,14 @@ static void TestRZ( int rp, int fs )
 /* ?r#s */
 static void TestRRNe( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRNe" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRNe" );
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
             cpu_status.carry = true;
             return;
@@ -504,13 +504,13 @@ static void TestRRNe( int rp, int fs )
 /* ?r#0 */
 static void TestRNZ( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRNZ" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRNZ" );
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
             cpu_status.carry = true;
             return;
@@ -522,14 +522,14 @@ static void TestRNZ( int rp, int fs )
 /* ?r>s */
 static void TestRRGt( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGt" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGt" );
-    for ( n = hi; n >= lo; n-- ) {
+    for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
             cpu_status.carry = true;
             return;
@@ -546,14 +546,14 @@ static void TestRRGt( int rp, int fs )
 /* ?r>=s */
 static void TestRRGe( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGe" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGe" );
-    for ( n = hi; n >= lo; n-- ) {
+    for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
             cpu_status.carry = true;
             return;
@@ -570,14 +570,14 @@ static void TestRRGe( int rp, int fs )
 /* ?r<s */
 static void TestRRLt( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLt" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLt" );
-    for ( n = hi; n >= lo; n-- ) {
+    for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
             cpu_status.carry = true;
             return;
@@ -594,14 +594,14 @@ static void TestRRLt( int rp, int fs )
 /* ?r<=s */
 static void TestRRLe( int rp, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLe" );
+
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLe" );
-    for ( n = hi; n >= lo; n-- ) {
+    for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
             cpu_status.carry = true;
             return;
@@ -622,55 +622,44 @@ static void TestRRLe( int rp, int fs )
 /* r=r+r */
 static void AddRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AddRR" );
+
+    register int carry = 0;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AddRR" );
-    carry = 0;
+    for ( register int n = lo; n <= hi; n++ ) {
+        s = a[ n ] + b[ n ] + carry;
 
-    if ( cpu_status.hexmode ) {
-        for ( n = lo; n <= hi; n++ ) {
-            s = a[ n ] + b[ n ] + carry;
-
+        if ( cpu_status.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
-        }
-    } else {
-        for ( n = lo; n <= hi; n++ ) {
-            s = a[ n ] + b[ n ] + carry;
+        } else {
             d[ n ] = dec_sum[ s ];
             carry = dec_carry[ s ];
         }
     }
-
     cpu_status.carry = ( bool )carry;
 }
 
 /* r=r+1 */
 static void IncrR( register Nibble* d, int fs )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "IncrR" );
+
+    register int carry = 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "IncrR" );
-    carry = 1;
+    for ( register int n = lo; n <= hi; n++ ) {
+        s = d[ n ] + carry;
 
-    if ( cpu_status.hexmode ) {
-        for ( n = lo; n <= hi; n++ ) {
-            s = d[ n ] + carry;
-
+        if ( cpu_status.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
-        }
-    } else {
-        for ( n = lo; n <= hi; n++ ) {
-            s = d[ n ] + carry;
+        } else {
             d[ n ] = dec_sum[ s ];
             carry = dec_carry[ s ];
         }
@@ -682,25 +671,20 @@ static void IncrR( register Nibble* d, int fs )
 /* r=r-r */
 static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, int fs )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "SubRR" );
+
+    register int carry = 0;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "SubRR" );
-    carry = 0;
+    for ( register int n = lo; n <= hi; n++ ) {
+        s = a[ n ] - b[ n ] - carry;
 
-    if ( cpu_status.hexmode ) {
-        for ( n = lo; n <= hi; n++ ) {
-            s = a[ n ] - b[ n ] - carry;
-
+        if ( cpu_status.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
-        }
-    } else {
-        for ( n = lo; n <= hi; n++ ) {
-            s = a[ n ] - b[ n ] - carry;
+        } else {
             d[ n ] = dec_sub[ s ];
             carry = dec_borrow[ s ];
         }
@@ -712,25 +696,20 @@ static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, i
 /* r=r-1 */
 static void DecrR( register Nibble* d, int fs )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "DecrR" );
+
+    register int carry = 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "DecrR" );
-    carry = 1;
+    for ( register int n = lo; n <= hi; n++ ) {
+        s = d[ n ] - carry;
 
-    if ( cpu_status.hexmode ) {
-        for ( n = lo; n <= hi; n++ ) {
-            s = d[ n ] - carry;
-
+        if ( cpu_status.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
-        }
-    } else {
-        for ( n = lo; n <= hi; n++ ) {
-            s = d[ n ] - carry;
+        } else {
             d[ n ] = dec_sub[ s ];
             carry = dec_borrow[ s ];
         }
@@ -742,39 +721,37 @@ static void DecrR( register Nibble* d, int fs )
 /* r=0 */
 static void ClearR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ClearR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ClearR" );
-    for ( n = lo; n <= hi; n++ ) {
+    for ( register int n = lo; n <= hi; n++ )
         d[ n ] = ( Nibble )0;
-    }
 }
 
 /* r=r */
 static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CopyRR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CopyRR" );
-    for ( n = lo; n <= hi; n++ ) {
+    for ( register int n = lo; n <= hi; n++ )
         d[ n ] = s[ n ];
-    }
 }
 
 /* rrEX */
 static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExchRR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
     register Nibble t;
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExchRR" );
-    for ( n = lo; n <= hi; n++ ) {
+    for ( register int n = lo; n <= hi; n++ ) {
         t = d[ n ];
         d[ n ] = s[ n ];
         s[ n ] = t;
@@ -784,12 +761,12 @@ static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 /* rSL */
 static void ShiftLeftR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftLeftR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftLeftR" );
-    for ( n = hi; n > lo; n-- )
+    for ( register int n = hi; n > lo; n-- )
         d[ n ] = d[ n - 1 ];
 
     d[ lo ] = ( Nibble )0;
@@ -798,15 +775,15 @@ static void ShiftLeftR( register Nibble* d, int fs )
 /* rSR */
 static void ShiftRightR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightR" );
     if ( d[ lo ] != ( Nibble )0 )
         cpu_status.HST |= HST_SB_MASK;
 
-    for ( n = lo; n < hi; n++ )
+    for ( register int n = lo; n < hi; n++ )
         d[ n ] = d[ n + 1 ];
 
     d[ hi ] = ( Nibble )0;
@@ -815,15 +792,15 @@ static void ShiftRightR( register Nibble* d, int fs )
 /* rSRB */
 static void ShiftRightBitR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightBitR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightBitR" );
     if ( ( d[ lo ] & nibble_bit_mask[ 0 ] ) != ( Nibble )0 )
         cpu_status.HST |= HST_SB_MASK;
 
-    for ( n = lo; n < hi; n++ ) {
+    for ( register int n = lo; n < hi; n++ ) {
         d[ n ] >>= 1;
         d[ n ] |= ( ( d[ n + 1 ] & nibble_bit_mask[ 0 ] ) ? nibble_bit_mask[ 3 ] : 0 );
     }
@@ -834,14 +811,13 @@ static void ShiftRightBitR( register Nibble* d, int fs )
 /* rSLC */
 static void ShiftLeftCircR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftLeftCircR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register Nibble s;
-    register int n;
+    register Nibble s = d[ hi ];
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftLeftCircR" );
-    s = d[ hi ];
-    for ( n = hi; n > lo; n-- )
+    for ( register int n = hi; n > lo; n-- )
         d[ n ] = d[ n - 1 ];
 
     d[ lo ] = s;
@@ -850,16 +826,16 @@ static void ShiftLeftCircR( register Nibble* d, int fs )
 /* rSRC */
 static void ShiftRightCircR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightCircR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
     register Nibble s;
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightCircR" );
     if ( ( s = d[ lo ] ) != ( Nibble )0 )
         cpu_status.HST |= HST_SB_MASK;
 
-    for ( n = lo; n < hi; n++ )
+    for ( register int n = lo; n < hi; n++ )
         d[ n ] = d[ n + 1 ];
 
     d[ hi ] = s;
@@ -868,34 +844,26 @@ static void ShiftRightCircR( register Nibble* d, int fs )
 /* r=-r */
 static void TwoComplR( register Nibble* d, int fs )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TwoComplR" );
+
+    register int carry = 0;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
-    register int nz;
+    register int nz = 0;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TwoComplR" );
-    carry = 0;
-    nz = 0;
+    for ( register int n = lo; n <= hi; n++ ) {
+        s = -d[ n ] - carry;
 
-    if ( cpu_status.hexmode ) {
-        for ( n = lo; n <= hi; n++ ) {
-            s = -d[ n ] - carry;
-
+        if ( cpu_status.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
-
-            nz = nz || ( d[ n ] != ( Nibble )0 );
-        }
-    } else {
-        for ( n = lo; n <= hi; n++ ) {
-            s = -d[ n ] - carry;
+        } else {
             d[ n ] = dec_sub[ s ];
             carry = dec_borrow[ s ];
-
-            nz = nz || ( d[ n ] != ( Nibble )0 );
         }
+
+        nz = nz || ( d[ n ] != ( Nibble )0 );
     }
 
     cpu_status.carry = nz;
@@ -904,16 +872,15 @@ static void TwoComplR( register Nibble* d, int fs )
 /* r=-r-1 */
 static void OneComplR( register Nibble* d, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "OneComplR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "OneComplR" );
-    if ( cpu_status.hexmode ) {
-        for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ ) {
+        if ( cpu_status.hexmode )
             d[ n ] = ( 0xF - d[ n ] ) & NIBBLE_MASK;
-    } else {
-        for ( n = lo; n <= hi; n++ )
+        else
             d[ n ] = dec_one_c[ ( int )d[ n ] ];
     }
 
@@ -923,24 +890,24 @@ static void OneComplR( register Nibble* d, int fs )
 /* r=r&r */
 static void AndRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AndRR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AndRR" );
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         d[ n ] = a[ n ] & b[ n ];
 }
 
 /* r=r!r */
 static void OrRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "OrRR" );
+
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "OrRR" );
-    for ( n = lo; n <= hi; n++ )
+    for ( register int n = lo; n <= hi; n++ )
         d[ n ] = a[ n ] | b[ n ];
 }
 
@@ -949,16 +916,14 @@ static void OrRR( register Nibble* d, register const Nibble* a, register const N
 */
 static void AddRImm( Nibble* r, int fs, Nibble v )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AddRImm" );
+
+    register int carry = ( int )v + 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AddRImm" );
-    carry = ( int )v + 1;
-
-    for ( n = lo; n <= hi; n++ ) {
+    for ( register int n = lo; n <= hi; n++ ) {
         s = r[ n ] + carry;
 
         r[ n ] = ( Nibble )( s & NIBBLE_MASK );
@@ -973,16 +938,14 @@ static void AddRImm( Nibble* r, int fs, Nibble v )
 */
 static void SubRImm( register Nibble* r, int fs, Nibble v )
 {
-    register int carry;
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "DecrR" );
+
+    register int carry = ( int )v + 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
-    register int n;
     register int s;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "DecrR" );
-    carry = ( int )v + 1;
-
-    for ( n = lo; n <= hi; n++ ) {
+    for ( register int n = lo; n <= hi; n++ ) {
         s = r[ n ] - carry;
 
         r[ n ] = ( Nibble )( s & NIBBLE_MASK );
@@ -1011,6 +974,7 @@ void TestBIT1( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibbl
 static void ExecGOYES_RTNYES( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGOYES_RTNYES" );
+
     if ( cpu_status.carry ) {
         /* Taken */
         Address offset = Get2Nibbles2C( cpu_status.PC );
@@ -1032,14 +996,14 @@ static void ExecGOYES_RTNYES( void )
 /* ?..., GOYES/RTNYES, Test with Field Selector, opcode 9ftyy, length 5 */
 static void ExecTest_9( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_9" );
+
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble t = FetchNibble( cpu_status.PC++ );
-
     int fs = GET_FS( f );
     int tc = GET_OC_2( f, t );
     int rp = GET_RP( t );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_9" );
     /* Decode test code */
     switch ( tc ) {
         case 0x0:
@@ -1080,12 +1044,12 @@ static void ExecTest_9( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Atyy, length 5 */
 static void ExecTest_8A( void )
 {
-    Nibble t = FetchNibble( cpu_status.PC++ );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_8A" );
 
+    Nibble t = FetchNibble( cpu_status.PC++ );
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_8A" );
     /* Decode test code */
     switch ( tc ) {
         case 0x0:
@@ -1114,12 +1078,12 @@ static void ExecTest_8A( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Btyy, length 5 */
 static void ExecTest_8B( void )
 {
-    Nibble t = FetchNibble( cpu_status.PC++ );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_8B" );
 
+    Nibble t = FetchNibble( cpu_status.PC++ );
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_8B" );
     /* Decode test code */
     switch ( tc ) {
         case 0x0:
@@ -1148,14 +1112,14 @@ static void ExecTest_8B( void )
 /* ..., Register Operation with Field Selector, opcode Afo, length 3 */
 static void ExecRegOp_A( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_A" );
+
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble o = FetchNibble( cpu_status.PC++ );
-
     int fs = GET_FS( f );
     int oc = GET_OC_2( f, o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_A" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1193,14 +1157,14 @@ static void ExecRegOp_A( void )
 /* ..., Register Operation with Field Selector, opcode Bfo, length 3 */
 static void ExecRegOp_B( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_B" );
+
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble o = FetchNibble( cpu_status.PC++ );
-
     int fs = GET_FS( f );
     int oc = GET_OC_2( f, o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_B" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1238,12 +1202,12 @@ static void ExecRegOp_B( void )
 /* ..., Register Operation on A Fields, opcode Co, length 2 */
 static void ExecRegOp_C( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_C" );
 
+    Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_C" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1269,12 +1233,12 @@ static void ExecRegOp_C( void )
 /* ..., Register Operation on A Fields, opcode Do, length 2 */
 static void ExecRegOp_D( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_D" );
 
+    Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_D" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1300,12 +1264,12 @@ static void ExecRegOp_D( void )
 /* ..., Register Operation on A Fields, opcode Eo, length 2 */
 static void ExecRegOp_E( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_E" );
 
+    Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_E" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1331,12 +1295,12 @@ static void ExecRegOp_E( void )
 /* ..., Register Operation on A Fields, opcode Fo, length 2 */
 static void ExecRegOp_F( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_F" );
 
+    Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_F" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1362,13 +1326,13 @@ static void ExecRegOp_F( void )
 /* .&., .!., AND/OR Operations, opcode 0Efo, length 4 */
 static void ExecAND_OR( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecAND_OR" );
+
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble o = FetchNibble( cpu_status.PC++ );
-
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecAND_OR" );
     /* Decode operation code */
     switch ( oc ) {
         case 0x0:
@@ -1394,9 +1358,10 @@ static void ExecAND_OR( void )
 /* Instruction Group_0 */
 static void ExecGroup_0( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_0" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_0" );
     switch ( n ) {
         case 0x0: /* RTNSXM */
             cpu_status.HST |= HST_XM_MASK;
@@ -1463,9 +1428,8 @@ static void ExecGroup_0( void )
                     SetP( cpu_status.P + 1 );
                     cpu_status.carry = false;
                 }
-                break;
             }
-
+            break;
         case 0xD: /* P=P-1 */
             {
                 if ( cpu_status.P == ( Nibble )0 ) {
@@ -1475,9 +1439,8 @@ static void ExecGroup_0( void )
                     SetP( cpu_status.P - 1 );
                     cpu_status.carry = false;
                 }
-                break;
             }
-
+                break;
         case 0xE: /* AND_OR */
             ExecAND_OR();
             break;
@@ -1705,11 +1668,12 @@ static void ExecGroup_15( void )
 /* Instruction Group_1 */
 static void ExecGroup_1( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_1" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
     int rn, ac;
     Address ta;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_1" );
     switch ( n ) {
         case 0x0: /* Rn=A/C */
             n = FetchNibble( cpu_status.PC++ );
@@ -1795,9 +1759,10 @@ static void ExecGroup_1( void )
 /* Instruction Group_808 */
 static void ExecGroup_808( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_808" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_808" );
     switch ( n ) {
         case 0x0: /* INTON */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTON" );
@@ -1878,9 +1843,10 @@ static void ExecGroup_808( void )
 // FIXME: 49g bugs here on display change
 static void ExecGroup_80B0( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B0" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B0" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RPL2 (preserve carry)" );
@@ -1933,9 +1899,10 @@ static void ExecGroup_80B0( void )
 
 static void ExecGroup_80B1( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B1" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B1" );
     switch ( n ) {
         case 0x0: // simulate off function
             break;
@@ -1982,9 +1949,10 @@ static void ExecGroup_80B1( void )
 
 static void ExecGroup_80B2( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
     switch ( n ) {
         case 0x8:
             // cpu_status.HST |= I[5]; // Emu48:apple.c:500
@@ -2034,9 +2002,10 @@ static void ExecGroup_80B2( void )
 
 static void ExecGroup_80B3( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B3" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B3" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: config_disp0 Ca:address 4K data" );
@@ -2088,9 +2057,10 @@ static void ExecGroup_80B3( void )
 
 static void ExecGroup_80B4( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B4" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B4" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: setup basic memory configuration" );
@@ -2174,9 +2144,10 @@ static void ExecGroup_80B5( void )
 
 static void ExecGroup_80B6( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B6" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B6" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ACCESSSD" );
@@ -2217,9 +2188,10 @@ static void ExecGroup_80B6( void )
 
 static void ExecGroup_80B7( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B7" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B7" );
     switch ( n ) {
         case 0xF:
             cpu_status.carry = false;
@@ -2256,9 +2228,10 @@ static void ExecGroup_80B7( void )
 
 static void ExecGroup_80B8( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B8" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B8" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=s" );
@@ -2313,9 +2286,10 @@ static void ExecGroup_80B8( void )
 
 static void ExecGroup_80B9( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B9" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B9" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: Data streamer" );
@@ -2350,9 +2324,10 @@ static void ExecGroup_80B9( void )
 
 static void ExecGroup_80BE( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BE" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BE" );
     switch ( n ) {
         case 0xE:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMFLUSH" );
@@ -2389,9 +2364,10 @@ static void ExecGroup_80BE( void )
 
 static void ExecGroup_80BF( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BF" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BF" );
     switch ( n ) {
         case 0xF:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSAT" );
@@ -2426,10 +2402,11 @@ static void ExecGroup_80BF( void )
 
 static void ExecGroup_80B( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
+
     if ( config.implement_BUSCC ) {
         Nibble n = FetchNibble( cpu_status.PC++ );
 
-        debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
         switch ( n ) {
             case 0x0:
                 ExecGroup_80B0();
@@ -2491,10 +2468,11 @@ static void ExecGroup_80B( void )
 /* Instruction Group_80 */
 static void ExecGroup_80( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
     Nibble t;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80" );
     switch ( n ) {
         case 0x0: /* OUT=CS */
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTCS" );
@@ -2565,10 +2543,11 @@ static void ExecGroup_80( void )
 /* Special functions Group_81 */
 static void ExecSpecialGroup_81( int rp )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSpecialGroup_81" );
+
     Nibble n, f, m;
     int rn, ac;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSpecialGroup_81" );
     switch ( rp ) {
         case 0x0: /* r=r+-CON fs, d */
             f = FetchNibble( cpu_status.PC++ );
@@ -2666,11 +2645,12 @@ static void ExecSpecialGroup_81( int rp )
 /* Instruction Group_8 */
 static void ExecGroup_8( void )
 {
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_8" );
+
     Nibble n = FetchNibble( cpu_status.PC++ );
     Address addr;
     int oc, rp;
 
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_8" );
     switch ( n ) {
         case 0x0:
             ExecGroup_80();
@@ -2772,9 +2752,8 @@ const char* DumpR( Nibble* r )
 {
     static char b[ NIBBLE_PER_REGISTER + 1 ];
     static const char hex_char[ NIBBLE_PER_REGISTER ] = "0123456789ABCDEF";
-    int n;
 
-    for ( n = 0; n < NIBBLE_PER_REGISTER; n++ )
+    for ( int n = 0; n < NIBBLE_PER_REGISTER; n++ )
         b[ n ] = hex_char[ ( int )r[ NIBBLE_PER_REGISTER - 1 - n ] ];
 
     b[ NIBBLE_PER_REGISTER ] = '\0';
@@ -2827,9 +2806,9 @@ const char* DumpR( Nibble* r )
 .- */
 void CpuReset( void )
 {
-    int n;
-
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuReset" );
+
+    int n;
 
     /* Copy field selector index arrays to the cpu_status structure */
     ( void )memcpy( cpu_status.fs_idx_lo, fs_idx_lo, sizeof( fs_idx_lo ) );
@@ -3191,11 +3170,11 @@ int CpuRunRequest( void )
   3.13, 7-Nov-2000, creation
 
 */
-int CpuHaltAllowed( void )
+bool CpuHaltAllowed( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuHaltAllowed" );
 
-    return 1;
+    return true;
 }
 
 /* .+
@@ -3299,11 +3278,11 @@ void DEBUG_print_cpu_instruction( void )
 .- */
 void OneStep( void )
 {
-    Nibble n;
-    Address offset;
-
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_EXECUTING, cpu_status.PC );
     DEBUG_print_cpu_instruction();
+
+    Nibble n;
+    Address offset;
 
     /* Get first instruction nibble */
     n = FetchNibble( cpu_status.PC++ );
