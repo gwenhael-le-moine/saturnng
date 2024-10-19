@@ -1920,7 +1920,7 @@ static void ExecGroup_80B0( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -1969,7 +1969,7 @@ static void ExecGroup_80B1( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2021,7 +2021,7 @@ static void ExecGroup_80B2( void )
         case 0xd:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2075,7 +2075,7 @@ static void ExecGroup_80B3( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2118,7 +2118,7 @@ static void ExecGroup_80B4( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2161,7 +2161,7 @@ static void ExecGroup_80B5( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2204,7 +2204,7 @@ static void ExecGroup_80B6( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2243,7 +2243,7 @@ static void ExecGroup_80B7( void )
         case 0xd:
         case 0xe:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2300,7 +2300,7 @@ static void ExecGroup_80B8( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2337,7 +2337,7 @@ static void ExecGroup_80B9( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2376,7 +2376,7 @@ static void ExecGroup_80BE( void )
         case 0xc:
         case 0xd:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2413,7 +2413,7 @@ static void ExecGroup_80BF( void )
         case 0xd:
         case 0xe:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2426,8 +2426,7 @@ static void ExecGroup_80BF( void )
 
 static void ExecGroup_80B( void )
 {
-    bool enable_BUSCC = false;
-    if ( enable_BUSCC ) {
+    if ( config.implement_BUSCC ) {
         Nibble n = FetchNibble( cpu_status.PC++ );
 
         debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
@@ -2474,7 +2473,7 @@ static void ExecGroup_80B( void )
             case 0xC:
             case 0xD:
                 cpu_status.PC--;
-                debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: <???>" );
+                debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
                 break;
 
             default:
