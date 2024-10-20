@@ -1246,8 +1246,6 @@ void ModConfig( Address config_info )
     if ( mod == N_MOD ) {
         /* All modules are configured - Signal a warning */
         // FIXME: 48gx bugs here when running VERSION
-        // DEBUG_print_cpu_instruction();
-
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_CONFIG, CHF_WARNING, config_info );
         ChfSignal( MOD_CHF_MODULE_ID );
     } else {

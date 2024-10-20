@@ -3240,17 +3240,6 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
     ob += strlen( ob );
 }
 
-void DEBUG_print_cpu_instruction( void )
-{
-    if ( config.debug_level > 0 && config.debug_level & DEBUG_C_OPCODES ) {
-        char dob[ DISASSEMBLE_OB_SIZE ];
-
-        /* Dump PC and current instruction */
-        ( void )Disassemble( cpu_status.PC, dob );
-        fprintf( stderr, "%s\n", dob );
-    }
-}
-
 /* .+
 
 .title	      : OneStep
@@ -3279,13 +3268,18 @@ void DEBUG_print_cpu_instruction( void )
 void OneStep( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_EXECUTING, cpu_status.PC );
-    DEBUG_print_cpu_instruction();
 
-    Nibble n;
+    if ( config.debug_level > 0 && config.debug_level & DEBUG_C_OPCODES ) {
+        char dob[ DISASSEMBLE_OB_SIZE ];
+
+        /* Dump PC and current instruction */
+        ( void )Disassemble( cpu_status.PC, dob );
+        fprintf( stderr, "%s\n", dob );
+    }
+
     Address offset;
-
     /* Get first instruction nibble */
-    n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
         case 0x0: /* Group_0 */
