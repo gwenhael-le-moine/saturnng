@@ -2402,7 +2402,7 @@ static void ExecGroup_80BF( void )
 
 static void ExecGroup_80B( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
+    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B (BUSCC)" );
 
     if ( config.enable_BUSCC ) {
         Nibble n = FetchNibble( cpu_status.PC++ );
