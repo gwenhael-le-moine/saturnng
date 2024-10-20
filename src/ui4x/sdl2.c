@@ -531,7 +531,7 @@ static void _draw_header( void )
         x = OFFSET_X_DISPLAY + WIDTH_DISPLAY - gx_128K_ram_width + gx_silver_x_hot + 2;
         y = 10 + gx_silver_y_hot;
         __draw_bitmap( x, y, gx_silver_width, gx_silver_height, gx_silver_bitmap, UI4X_COLOR_HP_LOGO,
-                       0 ); // Background transparent: draw only silver line
+                       UI4X_COLOR_LABEL ); // Background transparent: draw only silver line
     }
     if ( config.model == MODEL_48SX ) {
         __draw_line( OFFSET_X_DISPLAY, 9, OFFSET_X_DISPLAY + hp_width - 1, 9, UI4X_COLOR_FRAME );
