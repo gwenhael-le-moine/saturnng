@@ -326,7 +326,7 @@ static void Addr2RS( Nibble* d, Address a )
   ---------------------------------------------------------------------------*/
 
 /* Read a field of a DataRegister from memory */
-void ReadDAT( Nibble* d, Address s, int fs )
+static void ReadDAT( Nibble* d, Address s, int fs )
 {
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -336,14 +336,14 @@ void ReadDAT( Nibble* d, Address s, int fs )
 }
 
 /* Read a field of a DataRegister from memory, with immediate fs */
-void ReadDATImm( Nibble* d, Address s, int imm_fs )
+static void ReadDATImm( Nibble* d, Address s, int imm_fs )
 {
     for ( register int n = 0; n <= imm_fs; n++ )
         d[ n ] = ReadNibble( s++ );
 }
 
 /* Write a field of a DataRegister into memory */
-void WriteDAT( Address d, const Nibble* r, int fs )
+static void WriteDAT( Address d, const Nibble* r, int fs )
 {
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -353,7 +353,7 @@ void WriteDAT( Address d, const Nibble* r, int fs )
 }
 
 /* Write a field of a DataRegister into memory, with immediate fs */
-void WriteDATImm( Address d, const Nibble* r, int imm_fs )
+static void WriteDATImm( Address d, const Nibble* r, int imm_fs )
 {
     for ( register int n = 0; n <= imm_fs; n++ )
         WriteNibble( d++, r[ n ] );
@@ -400,7 +400,7 @@ static Address Get5NibblesAbs( Address pc )
 /* Fetch the lower 'n' nibbles of the D register pointed by 'd' from the
    current instruction body
 */
-void FetchD( Address* d, register int n )
+static void FetchD( Address* d, register int n )
 {
     register Address mask = ADDRESS_MASK;
     register Address v = 0x00000;
@@ -418,7 +418,7 @@ void FetchD( Address* d, register int n )
 /* Fetch 'n'+1 nibbles of the DataRegister r from the current instruction body,
    starting from the nibble pointed by the P register.
 */
-void FetchR( Nibble* r, register int n )
+static void FetchR( Nibble* r, register int n )
 {
     register int p = ( int )cpu_status.P;
 
@@ -432,7 +432,7 @@ void FetchR( Nibble* r, register int n )
 /*---------------------------------------------------------------------------
         Private functions: P register setting
   ---------------------------------------------------------------------------*/
-void SetP( Nibble n )
+static void SetP( Nibble n )
 {
     cpu_status.P = n;
 
@@ -958,13 +958,13 @@ static void SubRImm( register Nibble* r, int fs, Nibble v )
 /*---------------------------------------------------------------------------
         Private functions: DataRegister bit operations
   ---------------------------------------------------------------------------*/
-void ExecBIT0( Nibble* r, Nibble n ) { r[ n / 4 ] &= ~nibble_bit_mask[ n % 4 ]; }
+static void ExecBIT0( Nibble* r, Nibble n ) { r[ n / 4 ] &= ~nibble_bit_mask[ n % 4 ]; }
 
-void ExecBIT1( Nibble* r, Nibble n ) { r[ n / 4 ] |= nibble_bit_mask[ n % 4 ]; }
+static void ExecBIT1( Nibble* r, Nibble n ) { r[ n / 4 ] |= nibble_bit_mask[ n % 4 ]; }
 
-void TestBIT0( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) == 0 ); }
+static void TestBIT0( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) == 0 ); }
 
-void TestBIT1( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) != 0 ); }
+static void TestBIT1( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) != 0 ); }
 
 /*---------------------------------------------------------------------------
         Private functions: jumps/subroutine calls
@@ -2748,7 +2748,7 @@ static void ExecGroup_8( void )
         Private functions: dump
   ---------------------------------------------------------------------------*/
 
-const char* DumpR( Nibble* r )
+static const char* DumpR( Nibble* r )
 {
     static char b[ NIBBLE_PER_REGISTER + 1 ];
     static const char hex_char[ NIBBLE_PER_REGISTER ] = "0123456789ABCDEF";
