@@ -1440,7 +1440,7 @@ static void ExecGroup_0( void )
                     cpu_status.carry = false;
                 }
             }
-                break;
+            break;
         case 0xE: /* AND_OR */
             ExecAND_OR();
             break;
