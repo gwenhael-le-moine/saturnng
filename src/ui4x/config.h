@@ -51,7 +51,7 @@ typedef struct {
     char* port_2_file_name;
 
     int debug_level;
-    bool implement_BUSCC;
+    bool enable_BUSCC;
 } config_t;
 
 /*************/

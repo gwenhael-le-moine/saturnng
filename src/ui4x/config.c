@@ -51,7 +51,7 @@ static config_t config = {
     .state_dir_path = ( char* )".",
 
     .debug_level = DEBUG_C_NONE,
-    .implement_BUSCC = false,
+    .enable_BUSCC = false,
 };
 
 lua_State* config_lua_values;
@@ -224,7 +224,7 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_reset = -1;
     int clopt_monitor = -1;
     /* int clopt_batchXfer = -1; */
-    int clopt_implement_BUSCC = -1;
+    int clopt_enable_BUSCC = -1;
 
     char* clopt_state_dir_path = ( char* )".";
 
@@ -275,7 +275,7 @@ config_t* config_init( int argc, char* argv[] )
         {"debug-modules",        no_argument,       NULL,                   38611           },
         {"debug-trace",          no_argument,       NULL,                   38612           },
 
-        {"implement-BUSCC",      no_argument,       &clopt_implement_BUSCC, true            },
+        {"implement-BUSCC",      no_argument,       &clopt_enable_BUSCC,    true            },
 
         {0,                      0,                 0,                      0               }
     };
@@ -517,8 +517,8 @@ config_t* config_init( int argc, char* argv[] )
         config.monitor = clopt_monitor;
     /* if ( clopt_batchXfer != -1 ) */
     /*     config.batchXfer = clopt_batchXfer; */
-    if ( clopt_implement_BUSCC != -1 )
-        config.implement_BUSCC = clopt_implement_BUSCC;
+    if ( clopt_enable_BUSCC != -1 )
+        config.enable_BUSCC = clopt_enable_BUSCC;
 
     if ( config.model == MODEL_49G )
         config.black_lcd = true;
