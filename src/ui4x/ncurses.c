@@ -404,6 +404,7 @@ void ui_get_event_ncurses( void )
             case KEY_ENTER:
             case '\n':
             case ',':
+            case 13:
                 hpkey = ( config.model == MODEL_49G ? HP49_KEY_ENTER : HP48_KEY_ENTER );
                 break;
             case KEY_BACKSPACE:
