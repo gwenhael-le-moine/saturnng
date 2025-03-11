@@ -4,6 +4,15 @@
 
 Original source are available at https://www.hpcalc.org/details/4382
 
+**saturnng** is part of my little collection of HP calculators' emulators' that I took over maintenance :
+
+- (x50ng)[https://codeberg.org/gwh/x50ng]
+- (x48ng)[https://codeberg.org/gwh/x48ng]
+- (saturnng)[https://codeberg.org/gwh/saturnng] ← You are here
+- (hpemung)[https://codeberg.org/gwh/hpemung]
+
+[ The reference public source repository is https://codeberg.org/gwh/saturnng ]
+
 The GUI has been replaced by a new one (taken from x48ng) in SDL2 and/or ncurses.
 
 ## Screenshots
