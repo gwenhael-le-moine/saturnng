@@ -1,0 +1,7 @@
+libChf is used as exception management.
+
+It is managed (in emulator.c:EmulatorLoopHandler()) to
+* for CPU_CHF_MODULE_ID
+** handle SHUTDN
+** interruptions
+* generically to print out errors & warnings
