@@ -10,7 +10,7 @@ NAME = saturn
 
 VERSION_MAJOR = 5
 VERSION_MINOR = 4
-PATCHLEVEL = 0
+PATCHLEVEL = 1
 
 PREFIX ?= /usr
 DOCDIR ?= $(PREFIX)/doc/$(NAME)
@@ -95,7 +95,7 @@ HEADERS = src/ui4x/bitmaps_misc.h \
 MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
-	      then echo $(1); fi)
+		  then echo $(1); fi)
 
 ifeq ($(FULL_WARNINGS), no)
 EXTRA_WARNING_FLAGS := -Wno-unused-function \
