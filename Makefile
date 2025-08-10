@@ -32,8 +32,8 @@ override CFLAGS := -O$(OPTIM) \
 
 LIBS = -L./src/libChf -lChf
 
-SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl2)
-SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl2)
+SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl3)
+SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl3)
 
 NCURSESCFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
 NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
@@ -67,8 +67,9 @@ DOTOS_UI4x = src/ui4x/config.o \
 	src/ui4x/48sx.o \
 	src/ui4x/48gx.o \
 	src/ui4x/49g.o \
+	src/ui4x/50g.o \
 	src/ui4x/common.o \
-	src/ui4x/sdl2.o \
+	src/ui4x/sdl.o \
 	src/ui4x/ncurses.o \
 	src/ui4x/emulator.o
 
@@ -76,7 +77,7 @@ HEADERS = src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \
 	src/ui4x/config.h \
 	src/ui4x/ncurses.h \
-	src/ui4x/sdl2.h \
+	src/ui4x/sdl.h \
 	src/ui4x/inner.h \
 	src/ui4x/emulator.h \
 	src/disk_io.h \
@@ -147,8 +148,8 @@ src/libChf/libChf.a:
 dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) $(HEADERS) src/libChf/libChf.a
 	$(CC) $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS) $(LUALIBS)
 
+# UNUSED
 dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
-	# UNUSED
 	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
 
 doc:
@@ -156,7 +157,7 @@ doc:
 
 # Cleaning
 clean:
-	rm -f src/*.o
+	rm -f src/*.o src/ui4x/*.o
 	make -C src/libChf clean
 	make -C docs clean
 

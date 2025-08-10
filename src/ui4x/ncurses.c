@@ -14,6 +14,8 @@
 
 #include <curses.h>
 
+#include "../config.h"
+
 #include "config.h"
 #include "emulator.h"
 #include "common.h"
@@ -37,7 +39,7 @@
 /*************/
 /* variables */
 /*************/
-static config_t config;
+//static config_t config;
 static int lcd_pixels_buffer[ LCD_WIDTH * 80 ];
 static int last_annunciators = -1;
 // static int last_contrast = -1;
@@ -251,7 +253,7 @@ void ui_get_event_ncurses( void )
     bool new_keyboard_state[ NB_HP49_KEYS ];
     uint32_t k;
 
-    for ( int key = FIRST_HPKEY; key <= LAST_HPKEY; key++ )
+    for ( int key = 0; key <= NB_KEYS; key++ )
         new_keyboard_state[ key ] = false;
 
     /* Iterate over all currently pressed keys and mark them as pressed */
@@ -449,7 +451,7 @@ void ui_get_event_ncurses( void )
         }
     }
 
-    for ( int key = FIRST_HPKEY; key <= LAST_HPKEY; key++ ) {
+    for ( int key = 0; key <= NB_KEYS; key++ ) {
         if ( keyboard_state[ key ] == new_keyboard_state[ key ] )
             continue; /* key hasn't changed state */
 

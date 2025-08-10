@@ -1,6 +1,8 @@
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL.h>
 
 #include "../config.h"
 
@@ -9,16 +11,22 @@
 #include "common.h"
 #include "inner.h"
 
-#define COLORS ( config.model == MODEL_48GX ? colors_48gx : ( config.model == MODEL_49G ? colors_49g : colors_48sx ) )
-#define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : ( config.model == MODEL_49G ? buttons_49g : buttons_48sx ) )
+#define COLORS                                                                                                                             \
+    ( config.model == MODEL_48GX                                                                                                           \
+          ? colors_48gx                                                                                                                    \
+          : ( config.model == MODEL_48SX ? colors_48sx : ( config.model == MODEL_49G ? colors_49g : colors_50g ) ) )
+#define BUTTONS                                                                                                                            \
+    ( config.model == MODEL_48GX                                                                                                           \
+          ? buttons_48gx                                                                                                                   \
+          : ( config.model == MODEL_48SX ? buttons_48sx : ( config.model == MODEL_49G ? buttons_49g : buttons_50g ) ) )
 
 #define COLOR_PIXEL_ON ( config.black_lcd ? UI4X_COLOR_BLACK_PIXEL_ON : UI4X_COLOR_PIXEL_ON )
 #define COLOR_PIXEL_OFF ( config.black_lcd ? UI4X_COLOR_BLACK_PIXEL_OFF : UI4X_COLOR_PIXEL_OFF )
 
-#define PADDING_TOP ( config.model == MODEL_49G ? 48 : 65 )
+#define PADDING_TOP ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? 48 : 65 )
 #define PADDING_SIDE 20
 #define PADDING_BOTTOM 25
-#define PADDING_BETWEEN_DISPLAY_AND_KEYBOARD ( config.model == MODEL_49G ? 32 : 65 )
+#define PADDING_BETWEEN_DISPLAY_AND_KEYBOARD ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? 32 : 65 )
 #define OFFSET_Y_48GSX_INDENT_BELOW_MENU_KEYS 25
 
 #define WIDTH_DISPLAY ( ( ( LCD_WIDTH + 1 ) * 2 ) + 8 )
@@ -72,6 +80,8 @@ static SDL_Renderer* renderer;
 static SDL_Texture* main_texture;
 static SDL_Texture* display_texture;
 
+//static config_t config;
+
 /****************************/
 /* functions implementation */
 /****************************/
@@ -112,7 +122,7 @@ static inline unsigned color2bgra( int color )
 */
 static SDL_Texture* bitmap_to_texture( unsigned int w, unsigned int h, unsigned char* data, int color_fg, int color_bg )
 {
-    SDL_Surface* surf = SDL_CreateRGBSurface( SDL_SWSURFACE, w, h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 );
+    SDL_Surface* surf = SDL_CreateSurface( w, h, SDL_GetPixelFormatForMasks( 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000 ) );
 
     SDL_LockSurface( surf );
 
@@ -137,7 +147,7 @@ static SDL_Texture* bitmap_to_texture( unsigned int w, unsigned int h, unsigned 
     SDL_UnlockSurface( surf );
 
     SDL_Texture* tex = SDL_CreateTextureFromSurface( renderer, surf );
-    SDL_FreeSurface( surf );
+    SDL_DestroySurface( surf );
 
     return tex;
 }
@@ -145,18 +155,18 @@ static SDL_Texture* bitmap_to_texture( unsigned int w, unsigned int h, unsigned 
 static void __draw_pixel( int x, int y, int color )
 {
     SDL_SetRenderDrawColor( renderer, colors[ color ].r, colors[ color ].g, colors[ color ].b, colors[ color ].a );
-    SDL_RenderDrawPoint( renderer, x, y );
+    SDL_RenderPoint( renderer, x, y );
 }
 
 static void __draw_line( int x1, int y1, int x2, int y2, int color )
 {
     SDL_SetRenderDrawColor( renderer, colors[ color ].r, colors[ color ].g, colors[ color ].b, colors[ color ].a );
-    SDL_RenderDrawLine( renderer, x1, y1, x2, y2 );
+    SDL_RenderLine( renderer, x1, y1, x2, y2 );
 }
 
 static void __draw_rect( int x, int y, int w, int h, int color )
 {
-    SDL_Rect rect;
+    SDL_FRect rect;
     rect.x = x;
     rect.y = y;
     rect.w = w;
@@ -168,13 +178,13 @@ static void __draw_rect( int x, int y, int w, int h, int color )
 
 static void __draw_texture( int x, int y, unsigned int w, unsigned int h, SDL_Texture* texture )
 {
-    SDL_Rect drect;
+    SDL_FRect drect;
     drect.x = x;
     drect.y = y;
     drect.w = w;
     drect.h = h;
 
-    SDL_RenderCopy( renderer, texture, NULL, &drect );
+    SDL_RenderTexture( renderer, texture, NULL, &drect );
 }
 
 static void __draw_bitmap( int x, int y, unsigned int w, unsigned int h, unsigned char* data, int color_fg, int color_bg )
@@ -231,7 +241,7 @@ static int mouse_click_to_hpkey( int x, int y )
     x -= OFFSET_X_KEYBOARD;
     y -= OFFSET_Y_KEYBOARD;
 
-    for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ )
+    for ( int i = 0; i < NB_KEYS; i++ )
         if ( ( BUTTONS[ i ].x < x && ( BUTTONS[ i ].x + BUTTONS[ i ].w ) > x ) &&
              ( BUTTONS[ i ].y < y && ( BUTTONS[ i ].y + BUTTONS[ i ].h ) > y ) )
             return i;
@@ -245,157 +255,157 @@ static int sdlkey_to_hpkey( SDL_Keycode k )
 {
     switch ( k ) {
         case SDLK_0:
-            return ( config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_0 : HP48_KEY_0 );
         case SDLK_1:
-            return ( config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_1 : HP48_KEY_1 );
         case SDLK_2:
-            return ( config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_2 : HP48_KEY_2 );
         case SDLK_3:
-            return ( config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_3 : HP48_KEY_3 );
         case SDLK_4:
-            return ( config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_4 : HP48_KEY_4 );
         case SDLK_5:
-            return ( config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_5 : HP48_KEY_5 );
         case SDLK_6:
-            return ( config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_6 : HP48_KEY_6 );
         case SDLK_7:
-            return ( config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_7 : HP48_KEY_7 );
         case SDLK_8:
-            return ( config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_8 : HP48_KEY_8 );
         case SDLK_9:
-            return ( config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_9 : HP48_KEY_9 );
         case SDLK_KP_0:
-            return ( config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_0 : HP48_KEY_0 );
         case SDLK_KP_1:
-            return ( config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_1 : HP48_KEY_1 );
         case SDLK_KP_2:
-            return ( config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_2 : HP48_KEY_2 );
         case SDLK_KP_3:
-            return ( config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_3 : HP48_KEY_3 );
         case SDLK_KP_4:
-            return ( config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_4 : HP48_KEY_4 );
         case SDLK_KP_5:
-            return ( config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_5 : HP48_KEY_5 );
         case SDLK_KP_6:
-            return ( config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_6 : HP48_KEY_6 );
         case SDLK_KP_7:
-            return ( config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_7 : HP48_KEY_7 );
         case SDLK_KP_8:
-            return ( config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8 );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_8 : HP48_KEY_8 );
         case SDLK_KP_9:
-            return ( config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9 );
-        case SDLK_a:
-            return ( config.model == MODEL_49G ? HP49_KEY_A : HP48_KEY_A );
-        case SDLK_b:
-            return ( config.model == MODEL_49G ? HP49_KEY_B : HP48_KEY_B );
-        case SDLK_c:
-            return ( config.model == MODEL_49G ? HP49_KEY_C : HP48_KEY_C );
-        case SDLK_d:
-            return ( config.model == MODEL_49G ? HP49_KEY_D : HP48_KEY_D );
-        case SDLK_e:
-            return ( config.model == MODEL_49G ? HP49_KEY_E : HP48_KEY_E );
-        case SDLK_f:
-            return ( config.model == MODEL_49G ? HP49_KEY_F : HP48_KEY_F );
-        case SDLK_g:
-            return ( config.model == MODEL_49G ? HP49_KEY_APPS : HP48_KEY_MTH );
-        case SDLK_h:
-            return ( config.model == MODEL_49G ? HP49_KEY_MODE : HP48_KEY_PRG );
-        case SDLK_i:
-            return ( config.model == MODEL_49G ? HP49_KEY_TOOL : HP48_KEY_CST );
-        case SDLK_j:
-            return ( config.model == MODEL_49G ? HP49_KEY_VAR : HP48_KEY_VAR );
-        case SDLK_k:
-            return ( config.model == MODEL_49G ? HP49_KEY_STO : HP48_KEY_UP );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_9 : HP48_KEY_9 );
+        case SDLK_A:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_A : HP48_KEY_A );
+        case SDLK_B:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_B : HP48_KEY_B );
+        case SDLK_C:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_C : HP48_KEY_C );
+        case SDLK_D:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_D : HP48_KEY_D );
+        case SDLK_E:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_E : HP48_KEY_E );
+        case SDLK_F:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_F : HP48_KEY_F );
+        case SDLK_G:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_APPS : HP48_KEY_MTH );
+        case SDLK_H:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_MODE : HP48_KEY_PRG );
+        case SDLK_I:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_TOOL : HP48_KEY_CST );
+        case SDLK_J:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_VAR : HP48_KEY_VAR );
+        case SDLK_K:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_STO : HP48_KEY_UP );
         case SDLK_UP:
-            return ( config.model == MODEL_49G ? HP49_KEY_UP : HP48_KEY_UP );
-        case SDLK_l:
-            return ( config.model == MODEL_49G ? HP49_KEY_NXT : HP48_KEY_NXT );
-        case SDLK_m:
-            return ( config.model == MODEL_49G ? HP49_KEY_HIST : HP48_KEY_QUOTE );
-        case SDLK_n:
-            return ( config.model == MODEL_49G ? HP49_KEY_CAT : HP48_KEY_STO );
-        case SDLK_o:
-            return ( config.model == MODEL_49G ? HP49_KEY_EQW : HP48_KEY_EVAL );
-        case SDLK_p:
-            return ( config.model == MODEL_49G ? HP49_KEY_SYMB : HP48_KEY_LEFT );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_UP : HP48_KEY_UP );
+        case SDLK_L:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_NXT : HP48_KEY_NXT );
+        case SDLK_M:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_HIST : HP48_KEY_QUOTE );
+        case SDLK_N:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_CAT : HP48_KEY_STO );
+        case SDLK_O:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_EQW : HP48_KEY_EVAL );
+        case SDLK_P:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SYMB : HP48_KEY_LEFT );
         case SDLK_LEFT:
-            return ( config.model == MODEL_49G ? HP49_KEY_LEFT : HP48_KEY_LEFT );
-        case SDLK_q:
-            return ( config.model == MODEL_49G ? HP49_KEY_POWER : HP48_KEY_DOWN );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_LEFT : HP48_KEY_LEFT );
+        case SDLK_Q:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_POWER : HP48_KEY_DOWN );
         case SDLK_DOWN:
-            return ( config.model == MODEL_49G ? HP49_KEY_DOWN : HP48_KEY_DOWN );
-        case SDLK_r:
-            return ( config.model == MODEL_49G ? HP49_KEY_SQRT : HP48_KEY_RIGHT );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_DOWN : HP48_KEY_DOWN );
+        case SDLK_R:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SQRT : HP48_KEY_RIGHT );
         case SDLK_RIGHT:
-            return ( config.model == MODEL_49G ? HP49_KEY_RIGHT : HP48_KEY_RIGHT );
-        case SDLK_s:
-            return ( config.model == MODEL_49G ? HP49_KEY_SIN : HP48_KEY_SIN );
-        case SDLK_t:
-            return ( config.model == MODEL_49G ? HP49_KEY_COS : HP48_KEY_COS );
-        case SDLK_u:
-            return ( config.model == MODEL_49G ? HP49_KEY_TAN : HP48_KEY_TAN );
-        case SDLK_v:
-            return ( config.model == MODEL_49G ? HP49_KEY_EEX : HP48_KEY_SQRT );
-        case SDLK_w:
-            return ( config.model == MODEL_49G ? HP49_KEY_NEG : HP48_KEY_POWER );
-        case SDLK_x:
-            return ( config.model == MODEL_49G ? HP49_KEY_X : HP48_KEY_INV );
-        case SDLK_y:
-            return ( config.model == MODEL_49G ? HP49_KEY_INV : HP48_KEY_NEG );
-        case SDLK_z:
-            return ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_EEX );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_RIGHT : HP48_KEY_RIGHT );
+        case SDLK_S:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SIN : HP48_KEY_SIN );
+        case SDLK_T:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_COS : HP48_KEY_COS );
+        case SDLK_U:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_TAN : HP48_KEY_TAN );
+        case SDLK_V:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_EEX : HP48_KEY_SQRT );
+        case SDLK_W:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_NEG : HP48_KEY_POWER );
+        case SDLK_X:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_X : HP48_KEY_INV );
+        case SDLK_Y:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_INV : HP48_KEY_NEG );
+        case SDLK_Z:
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_DIV : HP48_KEY_EEX );
         case SDLK_SPACE:
-            return ( config.model == MODEL_49G ? HP49_KEY_SPC : HP48_KEY_SPC );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SPC : HP48_KEY_SPC );
         case SDLK_F1:
         case SDLK_RETURN:
         case SDLK_KP_ENTER:
-            return ( config.model == MODEL_49G ? HP49_KEY_ENTER : HP48_KEY_ENTER );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_ENTER : HP48_KEY_ENTER );
         case SDLK_BACKSPACE:
-            return ( config.model == MODEL_49G ? HP49_KEY_BS : HP48_KEY_BS );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_BS : HP48_KEY_BS );
         case SDLK_DELETE:
-            return ( config.model == MODEL_49G ? -1 : HP48_KEY_DEL );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? -1 : HP48_KEY_DEL );
         case SDLK_PERIOD:
-            return ( config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_PERIOD : HP48_KEY_PERIOD );
         case SDLK_KP_PERIOD:
-            return ( config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_PERIOD : HP48_KEY_PERIOD );
         case SDLK_PLUS:
-            return ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_PLUS : HP48_KEY_PLUS );
         case SDLK_KP_PLUS:
         case SDLK_EQUALS:
-            return ( config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_PLUS : HP48_KEY_PLUS );
         case SDLK_MINUS:
-            return ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_MINUS : HP48_KEY_MINUS );
         case SDLK_KP_MINUS:
-            return ( config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_MINUS : HP48_KEY_MINUS );
         case SDLK_ASTERISK:
-            return ( config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_MUL : HP48_KEY_MUL );
         case SDLK_KP_MULTIPLY:
-            return ( config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_MUL : HP48_KEY_MUL );
         case SDLK_SLASH:
-            return ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_DIV : HP48_KEY_DIV );
         case SDLK_KP_DIVIDE:
-            return ( config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_DIV : HP48_KEY_DIV );
         case SDLK_F5:
         case SDLK_ESCAPE:
-            return ( config.model == MODEL_49G ? HP49_KEY_ON : HP48_KEY_ON );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_ON : HP48_KEY_ON );
         case SDLK_LSHIFT:
             if ( !config.shiftless )
-                return ( config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL );
+                return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SHL : HP48_KEY_SHL );
             break;
         case SDLK_RSHIFT:
             if ( !config.shiftless )
-                return ( config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR );
+                return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SHR : HP48_KEY_SHR );
             break;
         case SDLK_F2:
         case SDLK_RCTRL:
-            return ( config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SHL : HP48_KEY_SHL );
         case SDLK_F3:
         case SDLK_LCTRL:
-            return ( config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_SHR : HP48_KEY_SHR );
         case SDLK_F4:
         case SDLK_LALT:
         case SDLK_RALT:
-            return ( config.model == MODEL_49G ? HP49_KEY_ALPHA : HP48_KEY_ALPHA );
+            return ( ( config.model == MODEL_49G || config.model == MODEL_50G ) ? HP49_KEY_ALPHA : HP48_KEY_ALPHA );
         case SDLK_F7:
         case SDLK_F10:
             close_and_exit();
@@ -512,6 +522,9 @@ static void _draw_header( void )
 
     if ( config.model == MODEL_49G )
         write_with_big_font( WIDTH_DISPLAY - PADDING_SIDE, 10, "HP 49GX", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
+
+    if ( config.model == MODEL_50G )
+        write_with_big_font( WIDTH_DISPLAY - PADDING_SIDE, 10, "HP 50G", UI4X_COLOR_HP_LOGO, UI4X_COLOR_UPPER_FACEPLATE );
 
     // write the name of it
     if ( config.model == MODEL_48GX ) {
@@ -668,7 +681,7 @@ static SDL_Texture* create_button_texture( int hpkey, bool is_up )
 
 static void create_buttons_textures( void )
 {
-    for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ ) {
+    for ( int i = 0; i < NB_KEYS; i++ ) {
         buttons_textures[ i ].up = create_button_texture( i, true );
         buttons_textures[ i ].down = create_button_texture( i, false );
     }
@@ -697,7 +710,7 @@ static void _draw_keypad( void )
     int pw = config.model == MODEL_48GX ? 58 : 44;
     int ph = config.model == MODEL_48GX ? 48 : 9;
 
-    for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ ) {
+    for ( int i = 0; i < NB_KEYS; i++ ) {
         // Background
         if ( BUTTONS[ i ].highlight ) {
             x = OFFSET_X_KEYBOARD + BUTTONS[ i ].x;
@@ -774,7 +787,7 @@ static void _draw_keypad( void )
         }
     }
 
-    for ( int i = FIRST_HPKEY; i <= LAST_HPKEY; i++ )
+    for ( int i = 0; i < NB_KEYS; i++ )
         _draw_key( i );
 }
 
@@ -861,7 +874,7 @@ static void _show_key( int hpkey )
     _draw_key( hpkey );
 
     SDL_SetRenderTarget( renderer, NULL );
-    SDL_RenderCopy( renderer, main_texture, NULL, NULL );
+    SDL_RenderTexture( renderer, main_texture, NULL, NULL );
     SDL_RenderPresent( renderer );
 
     return;
@@ -939,7 +952,7 @@ static void sdl_update_annunciators( void )
 
     // Always immediately update annunciators
     SDL_SetRenderTarget( renderer, NULL );
-    SDL_RenderCopy( renderer, main_texture, NULL, NULL );
+    SDL_RenderTexture( renderer, main_texture, NULL, NULL );
     SDL_RenderPresent( renderer );
 }
 
@@ -958,7 +971,7 @@ static void apply_contrast( void )
     if ( contrast > 19 )
         contrast = 19;
 
-    for ( unsigned i = FIRST_COLOR; i < NB_COLORS; i++ ) {
+    for ( unsigned i = 0; i < NB_COLORS; i++ ) {
         colors[ i ] = COLORS[ i ];
         if ( config.mono ) {
             colors[ i ].r = colors[ i ].mono_rgb;
@@ -1002,12 +1015,12 @@ void ui_get_event_sdl( void )
     // Iterate as long as there are events
     while ( SDL_PollEvent( &event ) ) {
         switch ( event.type ) {
-            case SDL_QUIT:
+            case SDL_EVENT_QUIT:
                 // please_exit = true;
                 close_and_exit();
                 break;
 
-            case SDL_MOUSEBUTTONDOWN:
+            case SDL_EVENT_MOUSE_BUTTON_DOWN:
                 hpkey = mouse_click_to_hpkey( event.button.x, event.button.y );
                 if ( sdl_press_key( hpkey ) != -1 ) {
                     if ( lasthpkey == -1 ) {
@@ -1019,7 +1032,7 @@ void ui_get_event_sdl( void )
                 }
 
                 break;
-            case SDL_MOUSEBUTTONUP:
+            case SDL_EVENT_MOUSE_BUTTON_UP:
                 hpkey = mouse_click_to_hpkey( event.button.x, event.button.y );
                 if ( lasthpkey != hpkey || lastticks == -1 || ( SDL_GetTicks() - lastticks < LONG_PRESS_THR ) )
                     sdl_release_key( hpkey );
@@ -1027,11 +1040,11 @@ void ui_get_event_sdl( void )
                 lasthpkey = lastticks = -1;
                 break;
 
-            case SDL_KEYDOWN:
-                sdl_press_key( sdlkey_to_hpkey( event.key.keysym.sym ) );
+            case SDL_EVENT_KEY_DOWN:
+                sdl_press_key( sdlkey_to_hpkey( event.key.key ) );
                 break;
-            case SDL_KEYUP:
-                sdl_release_key( sdlkey_to_hpkey( event.key.keysym.sym ) );
+            case SDL_EVENT_KEY_UP:
+                sdl_release_key( sdlkey_to_hpkey( event.key.key ) );
                 break;
         }
     }
@@ -1053,14 +1066,15 @@ void ui_update_display_sdl( void )
             __draw_pixel( x, y, lcd_pixels_buffer[ ( y * LCD_WIDTH ) + x ] ? COLOR_PIXEL_ON : COLOR_PIXEL_OFF );
 
     SDL_SetRenderTarget( renderer, NULL );
-    SDL_RenderCopy( renderer, display_texture, NULL, NULL );
+    SDL_SetTextureScaleMode( display_texture, SDL_SCALEMODE_NEAREST );
+    SDL_RenderTexture( renderer, display_texture, NULL, NULL );
 
     SDL_SetRenderTarget( renderer, main_texture );
 
     __draw_texture( OFFSET_X_DISPLAY + 5, OFFSET_Y_DISPLAY + 20, LCD_WIDTH * 2, LCD_HEIGHT * 2, display_texture );
 
     SDL_SetRenderTarget( renderer, NULL );
-    SDL_RenderCopy( renderer, main_texture, NULL, NULL );
+    SDL_RenderTexture( renderer, main_texture, NULL, NULL );
     SDL_RenderPresent( renderer );
 
     sdl_update_annunciators();
@@ -1073,7 +1087,7 @@ void ui_start_sdl( config_t* conf )
     ui_init_LCD();
 
     // Initialize SDL
-    if ( SDL_Init( SDL_INIT_VIDEO ) < 0 ) {
+    if ( !SDL_Init( SDL_INIT_VIDEO ) ) {
         printf( "Couldn't initialize SDL: %s\n", SDL_GetError() );
         exit( 1 );
     }
@@ -1081,29 +1095,29 @@ void ui_start_sdl( config_t* conf )
     // On exit: clean SDL
     atexit( SDL_Quit );
 
-    unsigned int width = config.chromeless ? WIDTH_DISPLAY : ( ( BUTTONS[ LAST_HPKEY ].x + BUTTONS[ LAST_HPKEY ].w ) + 2 * PADDING_SIDE );
+    unsigned int width = config.chromeless ? WIDTH_DISPLAY : ( ( BUTTONS[ NB_KEYS - 1 ].x + BUTTONS[ NB_KEYS - 1 ].w ) + 2 * PADDING_SIDE );
     unsigned int height = config.chromeless ? HEIGHT_DISPLAY
                                             : ( OFFSET_Y_DISPLAY + HEIGHT_DISPLAY + PADDING_BETWEEN_DISPLAY_AND_KEYBOARD +
-                                                BUTTONS[ LAST_HPKEY ].y + BUTTONS[ LAST_HPKEY ].h + PADDING_BOTTOM );
+                                                BUTTONS[ NB_KEYS - 1 ].y + BUTTONS[ NB_KEYS - 1 ].h + PADDING_BOTTOM );
 
-    uint32_t window_flags = SDL_WINDOW_ALLOW_HIGHDPI;
+    uint32_t window_flags = SDL_WINDOW_HIGH_PIXEL_DENSITY;
     if ( config.fullscreen )
-        window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+        window_flags |= SDL_WINDOW_FULLSCREEN;
     else
         window_flags |= SDL_WINDOW_RESIZABLE;
 
-    window = SDL_CreateWindow( config.progname, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, width * config.scale,
-                               height * config.scale, window_flags );
+    window = SDL_CreateWindow( config.progname, width * config.scale, height * config.scale, window_flags );
     if ( window == NULL ) {
         printf( "Couldn't create window: %s\n", SDL_GetError() );
         exit( 1 );
     }
 
-    renderer = SDL_CreateRenderer( window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE );
+    renderer = SDL_CreateRenderer( window, NULL );
     if ( renderer == NULL )
         exit( 2 );
 
-    SDL_RenderSetLogicalSize( renderer, width, height );
+    // SDL_SetRenderLogicalPresentation( renderer, width, height, SDL_LOGICAL_PRESENTATION_INTEGER_SCALE );
+    SDL_SetRenderLogicalPresentation( renderer, width, height, SDL_LOGICAL_PRESENTATION_LETTERBOX );
 
     main_texture = SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, width, height );
 
@@ -1130,7 +1144,7 @@ void ui_start_sdl( config_t* conf )
     _draw_background_LCD();
 
     SDL_SetRenderTarget( renderer, NULL );
-    SDL_RenderCopy( renderer, main_texture, NULL, NULL );
+    SDL_RenderTexture( renderer, main_texture, NULL, NULL );
     SDL_RenderPresent( renderer );
 }
 

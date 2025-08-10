@@ -3,13 +3,9 @@
 
 #include <stdbool.h>
 
-#define FRONTEND_SDL 1
-#define FRONTEND_NCURSES 2
+typedef enum { FRONTEND_SDL, FRONTEND_NCURSES, FRONTEND_GTK } frontends_t;
 
-#define MODEL_48SX 485
-#define MODEL_48GX 486
-#define MODEL_40G 406
-#define MODEL_49G 496
+typedef enum { MODEL_48SX = 485, MODEL_48GX = 486, MODEL_40G = 406, MODEL_49G = 496, MODEL_50G = 506 } models_t;
 
 typedef struct {
     char* progname;

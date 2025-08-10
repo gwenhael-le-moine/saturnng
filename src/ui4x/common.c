@@ -3,7 +3,7 @@
 
 #include "common.h"
 #include "inner.h"
-#include "sdl2.h"
+#include "sdl.h"
 #include "ncurses.h"
 
 void ( *ui_get_event )( void );
