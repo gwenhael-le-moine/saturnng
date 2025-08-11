@@ -35,10 +35,10 @@
 
 .identifier   : $Id: romram49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HPxx emulator
-.title	      : $RCSfile: romram49.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: romram49.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	21-Sep-2000
 .keywords     : *
 .description  :
@@ -62,7 +62,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h
 
-.notes	      :
+.notes        :
   $Log: romram49.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -126,24 +126,24 @@ struct ModStatus_49* mod_status_49;
 
 /* .+
 
-.title	      : RomInit49
-.kind	      : C function
+.title        : RomInit49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function allocates the dynamically-allocated portion of the
   module status structure, and initializes the Flash Rom module.
 
-.call	      :
+.call         :
                 RomInit49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_F_ROM_INIT
                 MOD_F_MOD_STATUS_ALLOC
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -165,22 +165,22 @@ void RomInit49( void )
 
 /* .+
 
-.title	      : RomSave49
-.kind	      : C function
+.title        : RomSave49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Flash Rom.
 
-.call	      :
+.call         :
                 RomSave49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_ROM_SAVE
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
   3.3, 25-Sep-2000, implemented
 
@@ -198,22 +198,22 @@ void RomSave49( void )
 
 /* .+
 
-.title	      : RomRead49
-.kind	      : C function
+.title        : RomRead49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the internal Flash Rom address
   'rel_address' and returns it.
 
-.call	      :
+.call         :
                 d = RomRead49(rel_address);
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -230,8 +230,8 @@ Nibble RomRead49( Address rel_address )
 
 /* .+
 
-.title	      : RomWrite49
-.kind	      : C function
+.title        : RomWrite49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function writes the nibble 'datum' into the address 'rel_address'
@@ -242,16 +242,16 @@ Nibble RomRead49( Address rel_address )
   write cycles through this controller when the ON key is pressed.
   Those cycles are silently ignored.
 
-.call	      :
+.call         :
                 RomWrite49(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
   3.3, 26-Sep-2000, implemented
 
@@ -271,22 +271,22 @@ void RomWrite49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : RamInit49
-.kind	      : C function
+.title        : RamInit49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ram module.
 
-.call	      :
+.call         :
                 RamInit49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_RAM_INIT
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -304,22 +304,22 @@ void RamInit49( void )
 
 /* .+
 
-.title	      : RamSave49
-.kind	      : C function
+.title        : RamSave49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ram module to disk.
 
-.call	      :
+.call         :
                 RamSave49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_RAM_SAVE
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -336,22 +336,22 @@ void RamSave49( void )
 
 /* .+
 
-.title	      : RamRead49
-.kind	      : C function
+.title        : RamRead49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the internal RAM address 'rel_address'
   and returns it.
 
-.call	      :
+.call         :
                 d = RamRead49(rel_address);
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -364,23 +364,23 @@ Nibble RamRead49( Address rel_address )
 
 /* .+
 
-.title	      : RamWrite49
-.kind	      : C function
+.title        : RamWrite49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function writes the nibble 'datum' into the address 'rel_address'
   of the internal RAM.
 
-.call	      :
+.call         :
                 RamWrite49(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -397,22 +397,22 @@ void RamWrite49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : Ce1Init49
-.kind	      : C function
+.title        : Ce1Init49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ce1 module, corresponding to the
   Back Switcher.
 
-.call	      :
+.call         :
                 Ce1Init49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -432,21 +432,21 @@ void Ce1Init49( void )
 
 /* .+
 
-.title	      : Ce1Save49
-.kind	      : C function
+.title        : Ce1Save49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ce1 module.
 
-.call	      :
+.call         :
                 Ce1Save49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -472,8 +472,8 @@ void Ce1Save49( void )
 
 /* .+
 
-.title	      : Ce1Read49
-.kind	      : C function
+.title        : Ce1Read49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce1 module; the address of
@@ -482,16 +482,16 @@ void Ce1Save49( void )
   mod_status_hdw.accel.a49.view[].  They will be used to supply the
   most significant bits of addresses when accessing Flash Rom.
 
-.call	      :
+.call         :
                 d = Ce1Read49(rel_address);
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_BS_ADDRESS
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -511,8 +511,8 @@ Nibble Ce1Read49( Address rel_address )
 
 /* .+
 
-.title	      : Ce1Write49
-.kind	      : C function
+.title        : Ce1Write49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce1 module; the address of
@@ -521,17 +521,17 @@ Nibble Ce1Read49( Address rel_address )
   mod_status_hdw.accel.a49.view[].  They will be used to supply the
   most significant bits of addresses when accessing Flash Rom.
 
-.call	      :
+.call         :
                 Ce1Write49(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory; ignored
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_BS_ADDRESS
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -553,22 +553,22 @@ void Ce1Write49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : Ce2Init49
-.kind	      : C function
+.title        : Ce2Init49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ce2 module, corresponding to
   the first bank of ERAM.
 
-.call	      :
+.call         :
                 Ce2Init49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
   3.4, 27-Sep-2000, update:
     - MP bit in HST no longer set, to avoid spurious warmstarts of the
@@ -596,21 +596,21 @@ void Ce2Init49( void )
 
 /* .+
 
-.title	      : Ce2Save49
-.kind	      : C function
+.title        : Ce2Save49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ce2 module.
 
-.call	      :
+.call         :
                 Ce2Save49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -623,21 +623,21 @@ void Ce2Save49( void )
 
 /* .+
 
-.title	      : Ce2Read49
-.kind	      : C function
+.title        : Ce2Read49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce2 module.
 
-.call	      :
+.call         :
                 d = Ce2Read49(rel_address)
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -650,22 +650,22 @@ Nibble Ce2Read49( Address rel_address )
 
 /* .+
 
-.title	      : Ce2Write49
-.kind	      : C function
+.title        : Ce2Write49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function writes a nibble to the Ce2 module.
 
-.call	      :
+.call         :
                 Ce2Write49(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -682,22 +682,22 @@ void Ce2Write49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : NCe3Init49
-.kind	      : C function
+.title        : NCe3Init49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ce2 module, corresponding to
   the first bank of ERAM.
 
-.call	      :
+.call         :
                 NCe3Init49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
   3.4, 27-Sep-2000, update:
     - MP bit in HST no longer set, to avoid spurious warmstarts of the
@@ -725,21 +725,21 @@ void NCe3Init49( void )
 
 /* .+
 
-.title	      : NCe3Save49
-.kind	      : C function
+.title        : NCe3Save49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the NCe3 module.
 
-.call	      :
+.call         :
                 NCe3Save49();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -752,8 +752,8 @@ void NCe3Save49( void )
 
 /* .+
 
-.title	      : NCe3Read49
-.kind	      : C function
+.title        : NCe3Read49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the NCe3 module.
@@ -766,15 +766,15 @@ void NCe3Save49( void )
   its mod_description[].map_flags; this way, rel_address will be
   the ABSOLUTE address of the memory access.
 
-.call	      :
+.call         :
                 d = NCe3Read49(rel_address)
-.input	      :
+.input        :
                 Address rel_address, memory address (ABSOLUTE)
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
   3.3, 25-Sep-2000, update
     - added vectors into flash49 for FlashROM read ops
@@ -792,8 +792,8 @@ Nibble NCe3Read49( Address rel_address )
 
 /* .+
 
-.title	      : NCe3Write49
-.kind	      : C function
+.title        : NCe3Write49
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function writes a nibble to the NCe3 module.
@@ -807,16 +807,16 @@ Nibble NCe3Read49( Address rel_address )
   the ABSOLUTE address of the memory access.
 
 
-.call	      :
+.call         :
                 NCe3Write49(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address (ABSOLUTE)
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
   3.3, 25-Sep-2000, update
     - added vectors into flash49 for FlashROM write ops
