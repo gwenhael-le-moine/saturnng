@@ -11,9 +11,9 @@ void ( *ui_update_display )( void );
 void ( *ui_start )( config_t* config );
 void ( *ui_stop )( void );
 
-void setup_ui( config_t* config )
+void setup_ui( config_t* conf )
 {
-    switch ( config->frontend ) {
+    switch ( conf->frontend ) {
         case FRONTEND_NCURSES:
             setup_frontend_ncurses();
             break;
