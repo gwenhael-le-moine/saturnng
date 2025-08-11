@@ -35,10 +35,10 @@
 
 .identifier   : $Id: cpu.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: cpu.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: cpu.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	2-Feb-1998
 .keywords     : *
 .description  :
@@ -51,7 +51,7 @@
 
 .include      : config.h, machdep.h, cpu.h
 
-.notes	      :
+.notes        :
   $Log: cpu.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -2767,8 +2767,8 @@ static const char* DumpR( Nibble* r )
 
 /* .+
 
-.title	      : CpuReset
-.kind	      : C function
+.title        : CpuReset
+.kind         : C function
 .creation     : 3-Feb-1998
 .description  :
   This function resets the CPU, performing the following operations:
@@ -2783,17 +2783,17 @@ static const char* DumpR( Nibble* r )
   - Clears carry, int_enable, int_service, int_pending, and shutdn
   - The inner_loop limit is set to INNER_LOOP_MED
 
-.call	      :
+.call         :
                 CpuReset();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_CALLED
                 CPU_E_BAD_OPCODE
                 CPU_F_INTERR
-.notes	      :
+.notes        :
   1.1, 3-Feb-1998, creation
   1.2, 7-Sep-2000, bug fix
     - cpu_status.return_sp and .reset_req were not reset; this gave troubles
@@ -2865,24 +2865,24 @@ void CpuReset( void )
 
 /* .+
 
-.title	      : CpuInit
-.kind	      : C function
+.title        : CpuInit
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function initializes the Saturn CPU, reading its status from disk.
   If something goes wrong with the disk I/O, the function resets the CPU.
 
-.call	      :
+.call         :
                 CpuInit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_CALLED
                 CPU_I_REVISION
                 CPU_W_RESETTING
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
   3.14, 10-Nov-2000, update
     - clear both shutdn and halt cpu flags here; this helps when the CPU
@@ -2905,22 +2905,22 @@ void CpuInit( void )
 
 /* .+
 
-.title	      : CpuSave
-.kind	      : C function
+.title        : CpuSave
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the current Saturn CPU status to disk.
 
-.call	      :
+.call         :
                 CpuSave();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_CALLED
                 CPU_E_SAVE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -2936,8 +2936,8 @@ void CpuSave( void )
 
 /* .+
 
-.title	      : CpuIntRequest
-.kind	      : C function
+.title        : CpuIntRequest
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function posts an interrupt request for the Saturn CPU.
@@ -2949,18 +2949,18 @@ void CpuSave( void )
   NOTE: The interrupt request can be INT_REQUEST_NONE; in this case, this
         function does not post any interrupt request.
 
-.call	      :
+.call         :
                 CpuIntRequest(ireq);
-.input	      :
+.input        :
                 enum IntRequest ireq, interrupt request type, or
                         INT_REQUEST_NONE
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_CALLED
                 CPU_I_INT
                 CPU_I_INT_PENDING
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -2992,8 +2992,8 @@ void CpuIntRequest( enum IntRequest ireq )
 
 /* .+
 
-.title	      : CpuWake
-.kind	      : C function
+.title        : CpuWake
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function awakes the CPU if it has executed a SHUTDN instruction
@@ -3002,16 +3002,16 @@ void CpuIntRequest( enum IntRequest ireq )
 
   If the CPU is running, this function has no effect.
 
-.call	      :
+.call         :
                 CpuWake();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_CALLED
                 CPU_I_WAKE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
   3.13, 2-Nov-2000, update:
     - the CPU must be awoken only if no halt request is pending
@@ -3038,8 +3038,8 @@ void CpuWake( void )
 
 /* .+
 
-.title	      : CpuHaltRequest
-.kind	      : C function
+.title        : CpuHaltRequest
+.kind         : C function
 .creation     : 2-Nov-2000
 .description  :
   This function makes an halt request to the CPU emulator.
@@ -3072,18 +3072,18 @@ void CpuWake( void )
   The function may never return to the caller if the CPU_SPIN_SHUTDN
   is handled locally by the handler, or if an unwind occurs.
 
-.call	      :
+.call         :
                 ph = CpuHaltRequest();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 int ph, updated number of pending halt requests, or
                         -1 if halt/run requests are disabled
 .status_codes :
                 CPU_I_CALLED
                 CPU_I_HALT
                 CPU_E_NO_HALT
-.notes	      :
+.notes        :
   3.13, 2-Nov-2000, creation
 
 */
@@ -3108,8 +3108,8 @@ int CpuHaltRequest( void )
 
 /* .+
 
-.title	      : CpuRunRequest
-.kind	      : C function
+.title        : CpuRunRequest
+.kind         : C function
 .creation     : 2-Nov-2000
 .description  :
   This function undoes exactly one CpuHaltRequest(); it has no effect
@@ -3119,18 +3119,18 @@ int CpuHaltRequest( void )
   or -1 if halt/run requests are disabled; in the latter case,
   the CPU_W_NO_HALT condition is generated, but not signalled, too.
 
-.call	      :
+.call         :
                 ph = CpuRunRequest();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 int ph, updated number of pending halt requests, or
                         -1 if halt requests are disabled
 .status_codes :
                 CPU_I_CALLED
                 CPU_I_RUN
                 CPU_E_NO_HALT
-.notes	      :
+.notes        :
   3.13, 2-Nov-2000, creation
 
 */
@@ -3151,22 +3151,22 @@ int CpuRunRequest( void )
 
 /* .+
 
-.title	      : CpuHaltAllowed
-.kind	      : C function
+.title        : CpuHaltAllowed
+.kind         : C function
 .creation     : 7-Nov-2000
 .description  :
   This function return a non-zero value if CpuHaltRequest()
   is allowed, zero otherwise.
 
-.call	      :
+.call         :
                 s = CpuHaltRequest();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 int s, non-zero if CpuHaltRequest() is allowed, 0 otherwise
 .status_codes :
                 CPU_I_CALLED
-.notes	      :
+.notes        :
   3.13, 7-Nov-2000, creation
 
 */
@@ -3179,21 +3179,21 @@ bool CpuHaltAllowed( void )
 
 /* .+
 
-.title	      : DumpCpuStatus
-.kind	      : C function
+.title        : DumpCpuStatus
+.kind         : C function
 .creation     : 3-Feb-1998
 .description  :
   This function dumps the current CPU status into the string buffer 'ob'.
 
-.call	      :
+.call         :
                 DumpCpuStatus(ob);
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 char ob[DUMP_CPU_STATUS_OB_SIZE];
 .status_codes :
                 *
-.notes	      :
+.notes        :
   1.1, 3-Feb-1998, creation
 
 .- */
@@ -3242,8 +3242,8 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 
 /* .+
 
-.title	      : OneStep
-.kind	      : C function
+.title        : OneStep
+.kind         : C function
 .creation     : 3-Feb-1998
 .description  :
   This function executes a Saturn instruction starting from the current
@@ -3251,17 +3251,17 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 
   The function signals all exceptional situations through Chf conditions.
 
-.call	      :
+.call         :
                 OneStep()
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_EXECUTING
                 CPU_E_BAD_OPCODE
                 CPU_F_INTERR
-.notes	      :
+.notes        :
   1.1, 3-Feb-1998, creation
 
 .- */
