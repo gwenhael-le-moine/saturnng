@@ -20,6 +20,8 @@
 
 #define QUERY_EVENTS_EVERY_X_FRAME 4
 
+config_t config;
+
 void signal_handler( int sig )
 {
     static int nb_refreshes_since_last_checking_events = 0;

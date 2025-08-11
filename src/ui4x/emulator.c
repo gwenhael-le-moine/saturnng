@@ -13,8 +13,6 @@
 #define KEYBOARD ( config.model == MODEL_48GX || config.model == MODEL_48SX ? keyboard48 : keyboard49 )
 #define NB_KEYS ( config.model == MODEL_48GX || config.model == MODEL_48SX ? NB_HP48_KEYS : NB_HP49_KEYS )
 
-config_t config;
-
 typedef struct hpkey_t {
     int code;
     bool pressed;
