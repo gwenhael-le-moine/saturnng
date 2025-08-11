@@ -153,13 +153,6 @@
 */
 #define CPU_SLOW_IN 16
 
-/* 4.1.1.1: When defined, this symbol represents the threshold of the long
-   key pression.  When the mouse button is kept pressed on a calculator's key
-   for more than LONG_PRESS_THR milliseconds, the key stays pressed after
-   release.
-*/
-#define LONG_PRESS_THR 750
-
 /* Chf Module Identifiers:
    Each main module of the emulator has its own Chf Module Identifier; the
    values defined here must match those actually used in the message catalogs.
@@ -174,10 +167,5 @@
 #define UTIL_CHF_MODULE_ID 17   /* 3.6 */
 #define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
 #define DEBUG_CHF_MODULE_ID 30
-
-/*---------------------------------------------------------------------------
-        Global variables
-  ---------------------------------------------------------------------------*/
-extern config_t config;
 
 #endif /*!_CONFIG_H*/

@@ -5,6 +5,13 @@
 
 #include "bitmaps_misc.h"
 
+/* 4.1.1.1: When defined, this symbol represents the threshold of the long
+   key pression.  When the mouse button is kept pressed on a calculator's key
+   for more than LONG_PRESS_THR milliseconds, the key stays pressed after
+   release.
+*/
+#define LONG_PRESS_THR 750
+
 // Colors
 typedef enum {
     UI4X_COLOR_HP_LOGO = 0,

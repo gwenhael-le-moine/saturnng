@@ -4,8 +4,6 @@
 
 #include <SDL3/SDL.h>
 
-#include "../config.h"
-
 #include "config.h"
 #include "emulator.h"
 #include "common.h"

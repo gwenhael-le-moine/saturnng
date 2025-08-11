@@ -14,8 +14,6 @@
 
 #include <curses.h>
 
-#include "../config.h"
-
 #include "config.h"
 #include "emulator.h"
 #include "common.h"

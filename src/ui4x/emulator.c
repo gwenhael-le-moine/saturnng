@@ -5,7 +5,6 @@
 #include "config.h"
 #include "emulator.h"
 
-#include "../config.h"
 #include "../keyb.h"
 #include "../modules.h"
 #include "../serial.h"
