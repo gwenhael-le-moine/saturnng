@@ -2751,7 +2751,7 @@ static void ExecGroup_8( void )
 static const char* DumpR( Nibble* r )
 {
     static char b[ NIBBLE_PER_REGISTER + 1 ];
-    static const char hex_char[ NIBBLE_PER_REGISTER ] = "0123456789ABCDEF";
+    static const char hex_char[ NIBBLE_PER_REGISTER ] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
     for ( int n = 0; n < NIBBLE_PER_REGISTER; n++ )
         b[ n ] = hex_char[ ( int )r[ NIBBLE_PER_REGISTER - 1 - n ] ];
