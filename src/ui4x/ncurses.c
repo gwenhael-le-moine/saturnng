@@ -19,13 +19,19 @@
 #include "common.h"
 #include "inner.h"
 
-#define COLORS ( config.model == MODEL_48GX ? colors_48gx : ( config.model == MODEL_49G ? colors_49g : colors_48sx ) )
-#define BUTTONS ( config.model == MODEL_48GX ? buttons_48gx : ( config.model == MODEL_49G ? buttons_49g : buttons_48sx ) )
+#define COLORS                                                                                                                             \
+    ( __config.model == MODEL_48GX                                                                                                         \
+          ? colors_48gx                                                                                                                    \
+          : ( __config.model == MODEL_48SX ? colors_48sx : ( __config.model == MODEL_49G ? colors_49g : colors_50g ) ) )
+#define BUTTONS                                                                                                                            \
+    ( __config.model == MODEL_48GX                                                                                                         \
+          ? buttons_48gx                                                                                                                   \
+          : ( __config.model == MODEL_48SX ? buttons_48sx : ( __config.model == MODEL_49G ? buttons_49g : buttons_50g ) ) )
 
 #define LCD_OFFSET_X 1
 #define LCD_OFFSET_Y 1
-#define LCD_BOTTOM LCD_OFFSET_Y + ( config.small ? ( LCD_HEIGHT / 2 ) : config.tiny ? ( LCD_HEIGHT / 4 ) : LCD_HEIGHT )
-#define LCD_RIGHT LCD_OFFSET_X + ( ( config.small || config.tiny ) ? ( LCD_WIDTH / 2 ) + 1 : LCD_WIDTH )
+#define LCD_BOTTOM LCD_OFFSET_Y + ( __config.small ? ( LCD_HEIGHT / 2 ) : __config.tiny ? ( LCD_HEIGHT / 4 ) : LCD_HEIGHT )
+#define LCD_RIGHT LCD_OFFSET_X + ( ( __config.small || __config.tiny ) ? ( LCD_WIDTH / 2 ) + 1 : LCD_WIDTH )
 
 #define LCD_COLOR_BG 48
 #define LCD_COLOR_FG 49
@@ -37,12 +43,12 @@
 /*************/
 /* variables */
 /*************/
-static config_t __config;
 static int lcd_pixels_buffer[ LCD_WIDTH * 80 ];
 static int last_annunciators = -1;
-// static int last_contrast = -1;
 
 static bool keyboard_state[ NB_HP49_KEYS ];
+
+static config_t __config;
 
 /****************************/
 /* functions implementation */
@@ -261,145 +267,173 @@ void ui_get_event_ncurses( void )
 
         switch ( k ) {
             case '0':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_0 : HP48_KEY_0 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_0 : HP48_KEY_0 ) ] = true;
                 break;
             case '1':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_1 : HP48_KEY_1 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_1 : HP48_KEY_1 ) ] = true;
                 break;
             case '2':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_2 : HP48_KEY_2 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_2 : HP48_KEY_2 ) ] = true;
                 break;
             case '3':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_3 : HP48_KEY_3 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_3 : HP48_KEY_3 ) ] = true;
                 break;
             case '4':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_4 : HP48_KEY_4 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_4 : HP48_KEY_4 ) ] = true;
                 break;
             case '5':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_5 : HP48_KEY_5 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_5 : HP48_KEY_5 ) ] = true;
                 break;
             case '6':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_6 : HP48_KEY_6 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_6 : HP48_KEY_6 ) ] = true;
                 break;
             case '7':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_7 : HP48_KEY_7 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_7 : HP48_KEY_7 ) ] = true;
                 break;
             case '8':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_8 : HP48_KEY_8 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_8 : HP48_KEY_8 ) ] = true;
                 break;
             case '9':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_9 : HP48_KEY_9 ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_9 : HP48_KEY_9 ) ] = true;
                 break;
             case 'a':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_A : HP48_KEY_A ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_A : HP48_KEY_A ) ] = true;
                 break;
             case 'b':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_B : HP48_KEY_B ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_B : HP48_KEY_B ) ] = true;
                 break;
             case 'c':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_C : HP48_KEY_C ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_C : HP48_KEY_C ) ] = true;
                 break;
             case 'd':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_D : HP48_KEY_D ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_D : HP48_KEY_D ) ] = true;
                 break;
             case 'e':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_E : HP48_KEY_E ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_E : HP48_KEY_E ) ] = true;
                 break;
             case 'f':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_F : HP48_KEY_F ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_F : HP48_KEY_F ) ] = true;
                 break;
             case 'g':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_APPS : HP48_KEY_MTH ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_APPS : HP48_KEY_MTH ) ] =
+                    true;
                 break;
             case 'h':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_MODE : HP48_KEY_PRG ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_MODE : HP48_KEY_PRG ) ] =
+                    true;
                 break;
             case 'i':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_TOOL : HP48_KEY_CST ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_TOOL : HP48_KEY_CST ) ] =
+                    true;
                 break;
             case 'j':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_VAR : HP48_KEY_VAR ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_VAR : HP48_KEY_VAR ) ] =
+                    true;
                 break;
             case 'k':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_STO : HP48_KEY_UP ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_STO : HP48_KEY_UP ) ] =
+                    true;
                 break;
             case KEY_UP:
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_UP : HP48_KEY_UP ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_UP : HP48_KEY_UP ) ] = true;
                 break;
             case 'l':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_NXT : HP48_KEY_NXT ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_NXT : HP48_KEY_NXT ) ] =
+                    true;
                 break;
             case 'm':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_HIST : HP48_KEY_QUOTE ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_HIST : HP48_KEY_QUOTE ) ] =
+                    true;
                 break;
             case 'n':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_CAT : HP48_KEY_STO ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_CAT : HP48_KEY_STO ) ] =
+                    true;
                 break;
             case 'o':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_EQW : HP48_KEY_EVAL ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_EQW : HP48_KEY_EVAL ) ] =
+                    true;
                 break;
             case 'p':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_SYMB : HP48_KEY_LEFT ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_SYMB : HP48_KEY_LEFT ) ] =
+                    true;
                 break;
             case KEY_LEFT:
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_LEFT : HP48_KEY_LEFT ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_LEFT : HP48_KEY_LEFT ) ] =
+                    true;
                 break;
             case 'q':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_POWER : HP48_KEY_DOWN ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_POWER : HP48_KEY_DOWN ) ] =
+                    true;
                 break;
             case KEY_DOWN:
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_DOWN : HP48_KEY_DOWN ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_DOWN : HP48_KEY_DOWN ) ] =
+                    true;
                 break;
             case 'r':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_SQRT : HP48_KEY_RIGHT ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_SQRT : HP48_KEY_RIGHT ) ] =
+                    true;
                 break;
             case KEY_RIGHT:
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_RIGHT : HP48_KEY_RIGHT ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_RIGHT : HP48_KEY_RIGHT ) ] =
+                    true;
                 break;
             case 's':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_SIN : HP48_KEY_SIN ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_SIN : HP48_KEY_SIN ) ] =
+                    true;
                 break;
             case 't':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_COS : HP48_KEY_COS ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_COS : HP48_KEY_COS ) ] =
+                    true;
                 break;
             case 'u':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_TAN : HP48_KEY_TAN ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_TAN : HP48_KEY_TAN ) ] =
+                    true;
                 break;
             case 'v':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_EEX : HP48_KEY_SQRT ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_EEX : HP48_KEY_SQRT ) ] =
+                    true;
                 break;
             case 'w':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_NEG : HP48_KEY_POWER ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_NEG : HP48_KEY_POWER ) ] =
+                    true;
                 break;
             case 'x':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_X : HP48_KEY_INV ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_X : HP48_KEY_INV ) ] = true;
                 break;
             case 'y':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_INV : HP48_KEY_NEG ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_INV : HP48_KEY_NEG ) ] =
+                    true;
                 break;
             case 'z':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_EEX ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_DIV : HP48_KEY_EEX ) ] =
+                    true;
                 break;
             case ' ':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_SPC : HP48_KEY_SPC ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_SPC : HP48_KEY_SPC ) ] =
+                    true;
                 break;
             case KEY_DC:
-                new_keyboard_state[ ( __config.model == MODEL_49G ? -1 : HP48_KEY_DEL ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? -1 : HP48_KEY_DEL ) ] = true;
                 break;
             case '.':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_PERIOD : HP48_KEY_PERIOD ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_PERIOD
+                                                                                                     : HP48_KEY_PERIOD ) ] = true;
                 break;
             case '+':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_PLUS : HP48_KEY_PLUS ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_PLUS : HP48_KEY_PLUS ) ] =
+                    true;
                 break;
             case '-':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_MINUS : HP48_KEY_MINUS ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_MINUS : HP48_KEY_MINUS ) ] =
+                    true;
                 break;
             case '*':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_MUL : HP48_KEY_MUL ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_MUL : HP48_KEY_MUL ) ] =
+                    true;
                 break;
             case '/':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_DIV : HP48_KEY_DIV ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_DIV : HP48_KEY_DIV ) ] =
+                    true;
                 break;
 
             case KEY_F( 1 ):
@@ -407,33 +441,37 @@ void ui_get_event_ncurses( void )
             case '\n':
             case ',':
             case 13:
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_ENTER : HP48_KEY_ENTER ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_ENTER : HP48_KEY_ENTER ) ] =
+                    true;
                 break;
             case KEY_BACKSPACE:
             case 127:
             case '\b':
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_BS : HP48_KEY_BS ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_BS : HP48_KEY_BS ) ] = true;
                 break;
             case KEY_F( 2 ):
             case '[':
             case 339: /* PgUp */
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_SHL : HP48_KEY_SHL ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_SHL : HP48_KEY_SHL ) ] =
+                    true;
                 break;
             case KEY_F( 3 ):
             case ']':
             case 338: /* PgDn */
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_SHR : HP48_KEY_SHR ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_SHR : HP48_KEY_SHR ) ] =
+                    true;
                 break;
             case KEY_F( 4 ):
             case ';':
             case KEY_IC: /* Ins */
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_ALPHA : HP48_KEY_ALPHA ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_ALPHA : HP48_KEY_ALPHA ) ] =
+                    true;
                 break;
             case KEY_F( 5 ):
             case '\\':
             case 27:  /* Esc */
             case 262: /* Home */
-                new_keyboard_state[ ( __config.model == MODEL_49G ? HP49_KEY_ON : HP48_KEY_ON ) ] = true;
+                new_keyboard_state[ ( ( __config.model == MODEL_49G || __config.model == MODEL_50G ) ? HP49_KEY_ON : HP48_KEY_ON ) ] = true;
                 break;
 
             case KEY_F( 7 ):

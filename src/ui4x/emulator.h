@@ -115,7 +115,7 @@ typedef enum {
     NB_HP49_KEYS
 } hp49_keynames_t;
 
-#define NB_KEYS ( config.model == MODEL_48GX || config.model == MODEL_48SX ? NB_HP48_KEYS : NB_HP49_KEYS )
+#define NB_KEYS ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? NB_HP48_KEYS : NB_HP49_KEYS )
 
 #define KEYS_BUFFER_SIZE 9
 
@@ -133,7 +133,7 @@ typedef enum {
 // LCD
 #define NIBBLES_PER_ROW 34
 #define LCD_WIDTH 131
-#define LCD_HEIGHT ( config.big_screen ? 80 : 64 )
+#define LCD_HEIGHT ( __config.big_screen ? 80 : 64 )
 
 /*************************************************/
 /* public API: if it's there it's used elsewhere */

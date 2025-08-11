@@ -9,8 +9,7 @@
 #include "../modules.h"
 #include "../serial.h"
 
-#define KEYBOARD ( config.model == MODEL_48GX || config.model == MODEL_48SX ? keyboard48 : keyboard49 )
-#define NB_KEYS ( config.model == MODEL_48GX || config.model == MODEL_48SX ? NB_HP48_KEYS : NB_HP49_KEYS )
+#define KEYBOARD ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? keyboard48 : keyboard49 )
 
 typedef struct hpkey_t {
     int code;
@@ -144,6 +143,8 @@ static hpkey_t keyboard49[ NB_HP49_KEYS ] = {
     {0x00,   false, "0/01"},
 };
 
+static config_t __config;
+
 void press_key( int hpkey )
 {
     if ( hpkey < 0 || hpkey > NB_KEYS )
@@ -220,7 +221,7 @@ int get_contrast( void ) { return mod_status.hdw.lcd_contrast - 6; }
 
 void init_emulator( config_t* conf )
 {
-    config = *conf;
+    __config = *conf;
 
     EmulatorInit();
 
