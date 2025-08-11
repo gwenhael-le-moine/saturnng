@@ -22,7 +22,7 @@
 #  define LUA_OK 0
 #endif
 
-static config_t config = {
+static config_t __config = {
     .progname = ( char* )"saturn4xxx",
 
     .model = MODEL_48GX,
@@ -119,7 +119,7 @@ static void print_config( void )
     fprintf( stdout, "-- This is a comment\n" );
 
     fprintf( stdout, "model = \"" );
-    switch ( config.model ) {
+    switch ( __config.model ) {
         case MODEL_48GX:
             fprintf( stdout, "48gx" );
             break;
@@ -136,42 +136,42 @@ static void print_config( void )
     fprintf( stdout, "\" -- possible values: \"48gx\", \"48sx\", \"40g\", \"49g\"\n" );
     fprintf( stdout, "\n" );
 
-    fprintf( stdout, "verbose = %s\n", config.verbose ? "true" : "false" );
-    fprintf( stdout, "throttle = %s\n", config.throttle ? "true" : "false" );
+    fprintf( stdout, "verbose = %s\n", __config.verbose ? "true" : "false" );
+    fprintf( stdout, "throttle = %s\n", __config.throttle ? "true" : "false" );
     fprintf( stdout, "\n" );
-    fprintf( stdout, "monitor = %s\n", config.monitor ? "true" : "false" );
+    fprintf( stdout, "monitor = %s\n", __config.monitor ? "true" : "false" );
     fprintf( stdout, "\n" );
 
     fprintf( stdout, "--------------------\n" );
     fprintf( stdout, "-- User Interface --\n" );
     fprintf( stdout, "--------------------\n" );
     fprintf( stdout, "frontend = \"" );
-    switch ( config.frontend ) {
+    switch ( __config.frontend ) {
         case FRONTEND_SDL:
             fprintf( stdout, "sdl" );
             break;
         case FRONTEND_NCURSES:
             fprintf( stdout, "tui" );
-            if ( config.small )
+            if ( __config.small )
                 fprintf( stdout, "-small" );
-            else if ( config.tiny )
+            else if ( __config.tiny )
                 fprintf( stdout, "-tiny" );
             break;
     }
     fprintf( stdout, "\" -- possible values: \"sdl\", \"tui\", \"tui-small\", \"tui-tiny\"\n" );
     fprintf( stdout, "\n" );
 
-    fprintf( stdout, "gray = %s\n", config.gray ? "true" : "false" );
-    fprintf( stdout, "mono = %s\n", config.mono ? "true" : "false" );
+    fprintf( stdout, "gray = %s\n", __config.gray ? "true" : "false" );
+    fprintf( stdout, "mono = %s\n", __config.mono ? "true" : "false" );
 
     fprintf( stdout, "\n" );
     fprintf( stdout, " -- Following options are specific to sdl frontend\n" );
-    fprintf( stdout, "big_screen = %s\n", config.big_screen ? "true" : "false" );
-    fprintf( stdout, "black_lcd = %s\n", config.black_lcd ? "true" : "false" );
-    fprintf( stdout, "chromeless = %s\n", config.chromeless ? "true" : "false" );
-    fprintf( stdout, "fullscreen = %s\n", config.fullscreen ? "true" : "false" );
-    fprintf( stdout, "scale = %f\n", config.scale );
-    fprintf( stdout, "shiftless = %s\n", config.shiftless ? "true" : "false" );
+    fprintf( stdout, "big_screen = %s\n", __config.big_screen ? "true" : "false" );
+    fprintf( stdout, "black_lcd = %s\n", __config.black_lcd ? "true" : "false" );
+    fprintf( stdout, "chromeless = %s\n", __config.chromeless ? "true" : "false" );
+    fprintf( stdout, "fullscreen = %s\n", __config.fullscreen ? "true" : "false" );
+    fprintf( stdout, "scale = %f\n", __config.scale );
+    fprintf( stdout, "shiftless = %s\n", __config.shiftless ? "true" : "false" );
 
     fprintf( stdout, "\n" );
     fprintf( stdout, "--- End of saturnng configuration ----------------------------------------------\n" );
@@ -194,7 +194,7 @@ config_t* config_init( int argc, char* argv[] )
     int option_index;
     int c = '?';
 
-    char* config_file_name = ( char* )"config.lua";
+    char* config_file_name = ( char* )"__config.lua";
     char* mod_file_name = ( char* )"mod";
     char* cpu_file_name = ( char* )"cpu";
     char* hdw_file_name = ( char* )"hdw";
@@ -283,7 +283,7 @@ config_t* config_init( int argc, char* argv[] )
     const char* help_text = "usage: %s [options]\n"
                             "options:\n"
                             "  -h --help         what you are reading\n"
-                            "     --print-config output current configuration to stdout and exit (in config.lua formatting)\n"
+                            "     --print-config output current configuration to stdout and exit (in __config.lua formatting)\n"
                             "     --verbose      display more informations\n"
                             "     --throttle     throttle CPU speed\n"
                             "     --big-screen   131×80 screen (default: false)\n"
@@ -333,7 +333,7 @@ config_t* config_init( int argc, char* argv[] )
 
         switch ( c ) {
             case 'h':
-                fprintf( stdout, help_text, config.progname );
+                fprintf( stdout, help_text, __config.progname );
                 exit( EXIT_SUCCESS );
                 break;
             case 6110:
@@ -352,40 +352,40 @@ config_t* config_init( int argc, char* argv[] )
                 break;
 
             case 38601:
-                config.debug_level |= DEBUG_C_OPCODES;
+                __config.debug_level |= DEBUG_C_OPCODES;
                 break;
             /* case 38602: */
-            /*     config.debug_level |= DEBUG_C_XX; */
+            /*     __config.debug_level |= DEBUG_C_XX; */
             /*     break; */
             case 38603:
-                config.debug_level |= DEBUG_C_X_FUNC;
+                __config.debug_level |= DEBUG_C_X_FUNC;
                 break;
             case 38604:
-                config.debug_level |= DEBUG_C_FLASH;
+                __config.debug_level |= DEBUG_C_FLASH;
                 break;
             case 38605:
-                config.debug_level |= DEBUG_C_IMPLEMENTATION;
+                __config.debug_level |= DEBUG_C_IMPLEMENTATION;
                 break;
             case 38606:
-                config.debug_level |= DEBUG_C_MOD_CACHE;
+                __config.debug_level |= DEBUG_C_MOD_CACHE;
                 break;
             case 38607:
-                config.debug_level |= DEBUG_C_SERIAL;
+                __config.debug_level |= DEBUG_C_SERIAL;
                 break;
             case 38608:
-                config.debug_level |= DEBUG_C_TIMERS;
+                __config.debug_level |= DEBUG_C_TIMERS;
                 break;
             case 38609:
-                config.debug_level |= DEBUG_C_INT;
+                __config.debug_level |= DEBUG_C_INT;
                 break;
             case 38610:
-                config.debug_level |= DEBUG_C_DISPLAY;
+                __config.debug_level |= DEBUG_C_DISPLAY;
                 break;
             case 38611:
-                config.debug_level |= DEBUG_C_MODULES;
+                __config.debug_level |= DEBUG_C_MODULES;
                 break;
             case 38612:
-                config.debug_level |= DEBUG_C_TRACE;
+                __config.debug_level |= DEBUG_C_TRACE;
                 break;
 
             default:
@@ -394,152 +394,152 @@ config_t* config_init( int argc, char* argv[] )
     }
 
     if ( clopt_state_dir_path != NULL )
-        config.state_dir_path = strdup( clopt_state_dir_path );
+        __config.state_dir_path = strdup( clopt_state_dir_path );
 
-    config.config_file_name = normalize_filename( config.state_dir_path, config_file_name );
-    config.mod_file_name = normalize_filename( config.state_dir_path, mod_file_name );
-    config.cpu_file_name = normalize_filename( config.state_dir_path, cpu_file_name );
-    config.hdw_file_name = normalize_filename( config.state_dir_path, hdw_file_name );
-    config.rom_file_name = normalize_filename( config.state_dir_path, rom_file_name );
-    config.ram_file_name = normalize_filename( config.state_dir_path, ram_file_name );
-    config.port_1_file_name = normalize_filename( config.state_dir_path, port_1_file_name );
-    config.port_2_file_name = normalize_filename( config.state_dir_path, port_2_file_name );
+    __config.config_file_name = normalize_filename( __config.state_dir_path, config_file_name );
+    __config.mod_file_name = normalize_filename( __config.state_dir_path, mod_file_name );
+    __config.cpu_file_name = normalize_filename( __config.state_dir_path, cpu_file_name );
+    __config.hdw_file_name = normalize_filename( __config.state_dir_path, hdw_file_name );
+    __config.rom_file_name = normalize_filename( __config.state_dir_path, rom_file_name );
+    __config.ram_file_name = normalize_filename( __config.state_dir_path, ram_file_name );
+    __config.port_1_file_name = normalize_filename( __config.state_dir_path, port_1_file_name );
+    __config.port_2_file_name = normalize_filename( __config.state_dir_path, port_2_file_name );
 
     /**********************/
-    /* 1. read config.lua */
+    /* 1. read __config.lua */
     /**********************/
-    bool haz_config_file = config_read( config.config_file_name );
+    bool haz_config_file = config_read( __config.config_file_name );
     if ( haz_config_file ) {
         lua_getglobal( config_lua_values, "verbose" );
-        config.verbose = lua_toboolean( config_lua_values, -1 );
+        __config.verbose = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "throttle" );
-        config.throttle = lua_toboolean( config_lua_values, -1 );
+        __config.throttle = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "big_screen" );
-        config.big_screen = lua_toboolean( config_lua_values, -1 );
+        __config.big_screen = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "black_lcd" );
-        config.black_lcd = lua_toboolean( config_lua_values, -1 );
+        __config.black_lcd = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "chromeless" );
-        config.chromeless = lua_toboolean( config_lua_values, -1 );
+        __config.chromeless = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "fullscreen" );
-        config.fullscreen = lua_toboolean( config_lua_values, -1 );
+        __config.fullscreen = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "gray" );
-        config.gray = lua_toboolean( config_lua_values, -1 );
+        __config.gray = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "mono" );
-        config.mono = lua_toboolean( config_lua_values, -1 );
+        __config.mono = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "shiftless" );
-        config.shiftless = lua_toboolean( config_lua_values, -1 );
+        __config.shiftless = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "monitor" );
-        config.monitor = lua_toboolean( config_lua_values, -1 );
+        __config.monitor = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "model" );
         const char* svalue_model = luaL_optstring( config_lua_values, -1, "49g" );
         if ( svalue_model != NULL ) {
             if ( strcmp( svalue_model, "49g" ) == 0 )
-                config.model = MODEL_49G;
+                __config.model = MODEL_49G;
             if ( strcmp( svalue_model, "40g" ) == 0 )
-                config.model = MODEL_40G;
+                __config.model = MODEL_40G;
             if ( strcmp( svalue_model, "48gx" ) == 0 )
-                config.model = MODEL_48GX;
+                __config.model = MODEL_48GX;
             if ( strcmp( svalue_model, "48sx" ) == 0 )
-                config.model = MODEL_48SX;
+                __config.model = MODEL_48SX;
         }
 
         lua_getglobal( config_lua_values, "frontend" );
         const char* svalue = luaL_optstring( config_lua_values, -1, "sdl" );
         if ( svalue != NULL ) {
             if ( strcmp( svalue, "sdl" ) == 0 )
-                config.frontend = FRONTEND_SDL;
+                __config.frontend = FRONTEND_SDL;
             if ( strcmp( svalue, "tui" ) == 0 ) {
-                config.frontend = FRONTEND_NCURSES;
-                config.small = false;
-                config.tiny = false;
+                __config.frontend = FRONTEND_NCURSES;
+                __config.small = false;
+                __config.tiny = false;
             }
             if ( strcmp( svalue, "tui-small" ) == 0 ) {
-                config.frontend = FRONTEND_NCURSES;
-                config.small = true;
-                config.tiny = false;
+                __config.frontend = FRONTEND_NCURSES;
+                __config.small = true;
+                __config.tiny = false;
             }
             if ( strcmp( svalue, "tui-tiny" ) == 0 ) {
-                config.frontend = FRONTEND_NCURSES;
-                config.small = false;
-                config.tiny = true;
+                __config.frontend = FRONTEND_NCURSES;
+                __config.small = false;
+                __config.tiny = true;
             }
         }
 
         lua_getglobal( config_lua_values, "scale" );
-        config.scale = luaL_optnumber( config_lua_values, -1, 1.0 );
+        __config.scale = luaL_optnumber( config_lua_values, -1, 1.0 );
     }
 
     /****************************************************/
     /* 2. treat command-line params which have priority */
     /****************************************************/
     if ( clopt_verbose != -1 )
-        config.verbose = clopt_verbose == true;
+        __config.verbose = clopt_verbose == true;
     if ( clopt_model != -1 )
-        config.model = clopt_model;
+        __config.model = clopt_model;
     if ( clopt_throttle != -1 )
-        config.throttle = clopt_throttle == true;
+        __config.throttle = clopt_throttle == true;
     if ( clopt_big_screen != -1 )
-        config.big_screen = clopt_big_screen == true;
+        __config.big_screen = clopt_big_screen == true;
     if ( clopt_black_lcd != -1 )
-        config.black_lcd = clopt_black_lcd == true;
+        __config.black_lcd = clopt_black_lcd == true;
     if ( clopt_frontend != -1 )
-        config.frontend = clopt_frontend;
+        __config.frontend = clopt_frontend;
     if ( clopt_chromeless != -1 )
-        config.chromeless = clopt_chromeless == true;
+        __config.chromeless = clopt_chromeless == true;
     if ( clopt_fullscreen != -1 )
-        config.fullscreen = clopt_fullscreen == true;
+        __config.fullscreen = clopt_fullscreen == true;
     if ( clopt_scale > 0.0 )
-        config.scale = clopt_scale;
+        __config.scale = clopt_scale;
     if ( clopt_mono != -1 )
-        config.mono = clopt_mono == true;
+        __config.mono = clopt_mono == true;
     if ( clopt_small != -1 )
-        config.small = clopt_small == true;
+        __config.small = clopt_small == true;
     if ( clopt_tiny != -1 )
-        config.tiny = clopt_tiny == true;
+        __config.tiny = clopt_tiny == true;
     if ( clopt_gray != -1 )
-        config.gray = clopt_gray == true;
+        __config.gray = clopt_gray == true;
     if ( clopt_shiftless != -1 )
-        config.shiftless = clopt_shiftless == true;
+        __config.shiftless = clopt_shiftless == true;
 
     if ( clopt_reset != -1 )
-        config.reset = clopt_reset;
+        __config.reset = clopt_reset;
     if ( clopt_monitor != -1 )
-        config.monitor = clopt_monitor;
+        __config.monitor = clopt_monitor;
     /* if ( clopt_batchXfer != -1 ) */
-    /*     config.batchXfer = clopt_batchXfer; */
+    /*     __config.batchXfer = clopt_batchXfer; */
     if ( clopt_enable_BUSCC != -1 )
-        config.enable_BUSCC = clopt_enable_BUSCC;
+        __config.enable_BUSCC = clopt_enable_BUSCC;
 
-    if ( config.model == MODEL_49G )
-        config.black_lcd = true;
+    if ( __config.model == MODEL_49G )
+        __config.black_lcd = true;
 
-    config.progname = basename( strdup( argv[ 0 ] ) );
-    switch ( config.model ) {
+    __config.progname = basename( strdup( argv[ 0 ] ) );
+    switch ( __config.model ) {
         case MODEL_48GX:
-            strcat( config.progname, "48gx" );
+            strcat( __config.progname, "48gx" );
             break;
         case MODEL_48SX:
-            strcat( config.progname, "48sx" );
+            strcat( __config.progname, "48sx" );
             break;
         case MODEL_49G:
-            strcat( config.progname, "49g" );
+            strcat( __config.progname, "49g" );
             break;
         case MODEL_40G:
-            strcat( config.progname, "40g" );
+            strcat( __config.progname, "40g" );
             break;
     }
 
-    if ( config.verbose ) {
+    if ( __config.verbose ) {
         if ( !print_config_and_exit )
             print_config();
 
@@ -557,11 +557,11 @@ config_t* config_init( int argc, char* argv[] )
     }
 
     if ( !haz_config_file ) {
-        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", config.config_file_name );
+        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", __config.config_file_name );
 
-        fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", config.state_dir_path,
-                 config.progname, config.config_file_name );
+        fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", __config.state_dir_path,
+                 __config.progname, __config.config_file_name );
     }
 
-    return &config;
+    return &__config;
 }
