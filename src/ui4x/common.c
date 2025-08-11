@@ -8,7 +8,7 @@
 
 void ( *ui_get_event )( void );
 void ( *ui_update_display )( void );
-void ( *ui_start )( config_t* config );
+void ( *ui_start )( config_t* conf );
 void ( *ui_stop )( void );
 
 void setup_ui( config_t* conf )
