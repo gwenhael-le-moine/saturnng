@@ -38,10 +38,10 @@
 
 .identifier   : $Id: debug.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: debug.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: debug.h,v $
+.kind         : C header
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	19-Jan-1998
 .keywords     : *
 .description  :
@@ -72,7 +72,7 @@
 
 .include      : Chf.h
 
-.notes	      :
+.notes        :
   $Log: debug.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -102,22 +102,23 @@
 
 .- */
 
-#define debug_preamble( module_id, debug_class, condition_code )                                                                           \
+#define _debug_preamble( module_id, debug_class, condition_code )                                                                          \
     {                                                                                                                                      \
         if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
-#define debug_postamble( module_id ) );                                                                                                    \
+
+#define _debug_postamble( module_id ) );                                                                                                   \
     ChfSignal( module_id );                                                                                                                \
     }                                                                                                                                      \
     }
 
 #define debug0( module_id, debug_class, condition_code )                                                                                   \
-    debug_preamble( module_id, debug_class, condition_code ) debug_postamble( module_id )
+    _debug_preamble( module_id, debug_class, condition_code ) _debug_postamble( module_id )
 #define debug1( module_id, debug_class, condition_code, arg_1 )                                                                            \
-    debug_preamble( module_id, debug_class, condition_code ), arg_1 debug_postamble( module_id )
+    _debug_preamble( module_id, debug_class, condition_code ), arg_1 _debug_postamble( module_id )
 #define debug2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                     \
-    debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 debug_postamble( module_id )
+    _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 _debug_postamble( module_id )
 #define debug3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                              \
-    debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 debug_postamble( module_id )
+    _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 _debug_postamble( module_id )
 
 /*---------------------------------------------------------------------------
         Debug classes
