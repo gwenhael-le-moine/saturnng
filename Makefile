@@ -60,10 +60,10 @@ DOTOS = src/cpu.o \
 	src/serial.o \
 	src/x_func.o \
 	src/chf_messages.o \
+	src/options.o \
 	src/main.o
 
-DOTOS_UI4x = src/ui4x/config.o \
-	src/ui4x/fonts.o \
+DOTOS_UI4x = src/ui4x/fonts.o \
 	src/ui4x/48sx.o \
 	src/ui4x/48gx.o \
 	src/ui4x/49g.o \
@@ -75,7 +75,7 @@ DOTOS_UI4x = src/ui4x/config.o \
 
 HEADERS = src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \
-	src/ui4x/config.h \
+	src/options.h \
 	src/ui4x/ncurses.h \
 	src/ui4x/sdl.h \
 	src/ui4x/inner.h \

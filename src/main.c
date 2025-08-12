@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
-#include "ui4x/config.h"
+#include "options.h"
 #include "ui4x/emulator.h"
 #include "ui4x/common.h"
 

@@ -15,8 +15,7 @@
 #include <lauxlib.h>
 
 #include "config.h"
-
-#include "../debug.h"
+#include "debug.h"
 
 #ifndef LUA_OK
 #  define LUA_OK 0

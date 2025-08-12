@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "config.h"
-#include "emulator.h"
-
 #include "../keyb.h"
 #include "../modules.h"
+#include "../options.h"
 #include "../serial.h"
+
+#include "emulator.h"
 
 #define KEYBOARD ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? keyboard48 : keyboard49 )
 

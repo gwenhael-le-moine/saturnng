@@ -124,7 +124,7 @@
 
 .- */
 
-#include "ui4x/config.h"
+#include "options.h"
 
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the

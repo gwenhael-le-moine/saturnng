@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-#include "config.h"
+#include "../options.h"
 
 // HP 48{G,S}X Keys
 typedef enum {

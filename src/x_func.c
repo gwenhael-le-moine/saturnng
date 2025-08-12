@@ -90,7 +90,7 @@
 
 #include "libChf/src/Chf.h"
 
-#include "ui4x/config.h"
+#include "options.h"
 
 #include "config.h"
 #include "machdep.h"
