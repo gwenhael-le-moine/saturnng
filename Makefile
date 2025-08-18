@@ -93,7 +93,7 @@ HEADERS = src/ui4x/bitmaps_misc.h \
 	src/cpu.h \
 	src/debug.h
 
-MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
+# MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
 		  then echo $(1); fi)

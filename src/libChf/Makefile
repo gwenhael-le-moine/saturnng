@@ -23,9 +23,9 @@ HEADERS = src/ChfPriv.h \
 OPTIM ?= 2
 
 CFLAGS ?= -O$(OPTIM) -ansi -pedantic -D_POSIX_C_SOURCE=199506L -I.
-ifeq ($(MT), yes)
-	override CFLAGS := -D_REENTRANT $(CFLAGS)
-endif
+# ifeq ($(MT), yes)
+# 	override CFLAGS := -D_REENTRANT $(CFLAGS)
+# endif
 
 LFLAGS ?= $(CFLAGS)
 LDFLAGS = -L.

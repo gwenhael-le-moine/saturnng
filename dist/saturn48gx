@@ -1,4 +1,6 @@
-#!/bin/bash -eu
+#!/usr/bin/env bash
+
+set -eu
 
 cd "$(dirname "$0")" || exit 1
 
@@ -11,9 +13,9 @@ mkdir -p "$CONFIGDIR"
 
 if [ ! -e "$CONFIGDIR"/rom ]; then
     if [ -d ../share/saturn/ROMs/ ]; then
-        cp -R ../share/saturn/ROMs/ "$CONFIGDIR"/
+        cp -r ../share/saturn/ROMs/ "$CONFIGDIR"/ROMs
     elif [ -d ./ROMs/ ]; then
-        cp -R ./ROMs/ "$CONFIGDIR"/
+        cp -r ./ROMs/ "$CONFIGDIR"/ROMs
     fi
     if [ ! -d "$CONFIGDIR"/ROMs ]; then
         echo "Error: No ROMs/ dir found"
