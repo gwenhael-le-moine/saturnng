@@ -60,11 +60,11 @@ HEADERS = src/options.h \
 	src/config.h \
 	src/cpu.h \
 	src/debug.h \
+	src/emulator.h \
 	src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \
 	src/ui4x/ncurses.h \
 	src/ui4x/inner.h \
-	src/ui4x/emulator.h \
 	$(SDLHEADERS) \
 	$(GTKHEADERS)
 
@@ -72,7 +72,7 @@ SRC = src/cpu.c \
 	src/dis.c \
 	src/disk_io.c \
 	src/disk_io_obj.c \
-	src/emulator.c \
+	src/emulator_core.c \
 	src/flash49.c \
 	src/hdw.c \
 	src/hw_config.c \
@@ -85,6 +85,7 @@ SRC = src/cpu.c \
 	src/x_func.c \
 	src/chf_messages.c \
 	src/options.c \
+	src/emulator.c \
 	src/main.c \
 	src/ui4x/fonts.c \
 	src/ui4x/48sx.c \
@@ -93,7 +94,6 @@ SRC = src/cpu.c \
 	src/ui4x/50g.c \
 	src/ui4x/common.c \
 	src/ui4x/ncurses.c \
-	src/ui4x/emulator.c \
 	$(SDLSRC) \
 	$(GTKSRC)
 OBJS = $(SRC:.c=.o)

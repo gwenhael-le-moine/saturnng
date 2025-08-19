@@ -1,7 +1,7 @@
 #ifndef _UI4x_INNER_H
 #define _UI4x_INNER_H 1
 
-#include "emulator.h"
+#include "../emulator.h"
 
 #include "bitmaps_misc.h"
 
