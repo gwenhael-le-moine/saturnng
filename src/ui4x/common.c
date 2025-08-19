@@ -3,7 +3,9 @@
 
 #include "common.h"
 #include "inner.h"
-#include "sdl.h"
+#if defined( HAS_SDL )
+#  include "sdl.h"
+#endif
 #include "ncurses.h"
 
 void ( *ui_get_event )( void );
@@ -15,12 +17,17 @@ void setup_ui( config_t* conf )
 {
     switch ( conf->frontend ) {
         case FRONTEND_NCURSES:
+#if !defined( HAS_SDL )
+        default:
+#endif
             setup_frontend_ncurses();
             break;
+#if defined( HAS_SDL )
         case FRONTEND_SDL:
         default:
             setup_frontend_sdl();
             break;
+#endif
     }
 }
 

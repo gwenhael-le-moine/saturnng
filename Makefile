@@ -20,6 +20,8 @@ LUA_VERSION ?= lua
 PKG_CONFIG ?= pkg-config
 
 OPTIM ?= 2
+WITH_SDL ?= yes
+FULL_WARNINGS ?= no
 
 override CFLAGS := -O$(OPTIM) \
 	-D_GNU_SOURCE=1 \
@@ -30,11 +32,6 @@ override CFLAGS := -O$(OPTIM) \
 	-I./src/libChf/src/ \
 	$(CFLAGS)
 
-LIBS = -L./src/libChf -lChf
-
-SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl3)
-SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl3)
-
 NCURSESCFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
 NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
 
@@ -42,8 +39,24 @@ NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
 LUACFLAGS = $(shell "$(PKG_CONFIG)" --cflags $(LUA_VERSION))
 LUALIBS = $(shell "$(PKG_CONFIG)" --libs $(LUA_VERSION))
 
-FULL_WARNINGS = no
+ifeq ($(WITH_SDL), yes)
+SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl3) -DHAS_SDL=1
+SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl3)
+SDLOBJS = src/ui4x/sdl.o
+SDLHEADERS = src/ui4x/sdl.h
+endif
 
+LIBS = -L./src/libChf -lChf $(SDLLIBS) $(NCURSESLIBS) $(LUALIBS)
+
+DOTOS_UI4x = src/ui4x/fonts.o \
+	src/ui4x/48sx.o \
+	src/ui4x/48gx.o \
+	src/ui4x/49g.o \
+	src/ui4x/50g.o \
+	src/ui4x/common.o \
+	$(SDLOBJS) \
+	src/ui4x/ncurses.o \
+	src/ui4x/emulator.o
 DOTOS = src/cpu.o \
 	src/dis.o \
 	src/disk_io.o \
@@ -61,25 +74,16 @@ DOTOS = src/cpu.o \
 	src/x_func.o \
 	src/chf_messages.o \
 	src/options.o \
-	src/main.o
+	src/main.o \
+	$(DOTOS_UI4x)
 
-DOTOS_UI4x = src/ui4x/fonts.o \
-	src/ui4x/48sx.o \
-	src/ui4x/48gx.o \
-	src/ui4x/49g.o \
-	src/ui4x/50g.o \
-	src/ui4x/common.o \
-	src/ui4x/sdl.o \
-	src/ui4x/ncurses.o \
-	src/ui4x/emulator.o
-
-HEADERS = src/ui4x/bitmaps_misc.h \
+HEADERS_UI4x = src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \
-	src/options.h \
 	src/ui4x/ncurses.h \
-	src/ui4x/sdl.h \
+	$(SDLHEADERS) \
 	src/ui4x/inner.h \
-	src/ui4x/emulator.h \
+	src/ui4x/emulator.h
+HEADERS = src/options.h \
 	src/disk_io.h \
 	src/flash49.h \
 	src/keyb.h \
@@ -91,9 +95,8 @@ HEADERS = src/ui4x/bitmaps_misc.h \
 	src/chf_messages.h \
 	src/config.h \
 	src/cpu.h \
-	src/debug.h
-
-# MAKEFLAGS +=-j$(NUM_CORES) -l$(NUM_CORES)
+	src/debug.h \
+	$(HEADERS_UI4x)
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
 		  then echo $(1); fi)
@@ -145,8 +148,8 @@ all: src/libChf/libChf.a dist/$(NAME) docs
 src/libChf/libChf.a:
 	make -C src/libChf #MT=yes
 
-dist/$(NAME): $(DOTOS) $(DOTOS_UI4x) $(HEADERS) src/libChf/libChf.a
-	$(CC) $(DOTOS) $(DOTOS_UI4x) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS) $(SDLLIBS) $(NCURSESLIBS) $(LUALIBS)
+dist/$(NAME): $(DOTOS) $(HEADERS) src/libChf/libChf.a
+	$(CC) $(DOTOS) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS)
 
 # UNUSED
 dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
