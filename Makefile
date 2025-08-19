@@ -23,15 +23,6 @@ OPTIM ?= 2
 WITH_SDL ?= yes
 FULL_WARNINGS ?= no
 
-override CFLAGS := -O$(OPTIM) \
-	-D_GNU_SOURCE=1 \
-	-DVERSION_MAJOR=$(VERSION_MAJOR) \
-	-DVERSION_MINOR=$(VERSION_MINOR) \
-	-DPATCHLEVEL=$(PATCHLEVEL) \
-	-I./src/ \
-	-I./src/libChf/src/ \
-	$(CFLAGS)
-
 NCURSESCFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
 NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
 
@@ -42,47 +33,12 @@ LUALIBS = $(shell "$(PKG_CONFIG)" --libs $(LUA_VERSION))
 ifeq ($(WITH_SDL), yes)
 SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl3) -DHAS_SDL=1
 SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl3)
-SDLOBJS = src/ui4x/sdl.o
+SDLSRC = src/ui4x/sdl.c
 SDLHEADERS = src/ui4x/sdl.h
 endif
 
 LIBS = -L./src/libChf -lChf $(SDLLIBS) $(NCURSESLIBS) $(LUALIBS)
 
-DOTOS_UI4x = src/ui4x/fonts.o \
-	src/ui4x/48sx.o \
-	src/ui4x/48gx.o \
-	src/ui4x/49g.o \
-	src/ui4x/50g.o \
-	src/ui4x/common.o \
-	$(SDLOBJS) \
-	src/ui4x/ncurses.o \
-	src/ui4x/emulator.o
-DOTOS = src/cpu.o \
-	src/dis.o \
-	src/disk_io.o \
-	src/disk_io_obj.o \
-	src/emulator.o \
-	src/flash49.o \
-	src/hdw.o \
-	src/hw_config.o \
-	src/keyb.o \
-	src/modules.o \
-	src/monitor.o \
-	src/romram.o \
-	src/romram49.o \
-	src/serial.o \
-	src/x_func.o \
-	src/chf_messages.o \
-	src/options.o \
-	src/main.o \
-	$(DOTOS_UI4x)
-
-HEADERS_UI4x = src/ui4x/bitmaps_misc.h \
-	src/ui4x/common.h \
-	src/ui4x/ncurses.h \
-	$(SDLHEADERS) \
-	src/ui4x/inner.h \
-	src/ui4x/emulator.h
 HEADERS = src/options.h \
 	src/disk_io.h \
 	src/flash49.h \
@@ -96,7 +52,41 @@ HEADERS = src/options.h \
 	src/config.h \
 	src/cpu.h \
 	src/debug.h \
-	$(HEADERS_UI4x)
+	src/ui4x/bitmaps_misc.h \
+	src/ui4x/common.h \
+	src/ui4x/ncurses.h \
+	src/ui4x/inner.h \
+	src/ui4x/emulator.h \
+	$(SDLHEADERS)
+
+SRC = src/cpu.c \
+	src/dis.c \
+	src/disk_io.c \
+	src/disk_io_obj.c \
+	src/emulator.c \
+	src/flash49.c \
+	src/hdw.c \
+	src/hw_config.c \
+	src/keyb.c \
+	src/modules.c \
+	src/monitor.c \
+	src/romram.c \
+	src/romram49.c \
+	src/serial.c \
+	src/x_func.c \
+	src/chf_messages.c \
+	src/options.c \
+	src/main.c \
+	src/ui4x/fonts.c \
+	src/ui4x/48sx.c \
+	src/ui4x/48gx.c \
+	src/ui4x/49g.c \
+	src/ui4x/50g.c \
+	src/ui4x/common.c \
+	src/ui4x/ncurses.c \
+	src/ui4x/emulator.c \
+	$(SDLSRC)
+OBJS = $(SRC:.c=.o)
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
 		  then echo $(1); fi)
@@ -108,9 +98,7 @@ EXTRA_WARNING_FLAGS := -Wno-unused-function \
 	$(call cc-option,-Wno-discarded-qualifiers) \
 	$(call cc-option,-Wno-uninitialized) \
 	$(call cc-option,-Wno-ignored-qualifiers)
-endif
-
-ifeq ($(FULL_WARNINGS), yes)
+else
 EXTRA_WARNING_FLAGS := -Wunused-function \
 	-Wredundant-decls \
 	-fsanitize-trap \
@@ -135,10 +123,14 @@ override CFLAGS := -std=c11 \
 	$(SDLCFLAGS) \
 	$(NCURSESCFLAGS) \
 	$(LUACFLAGS) \
+	-O$(OPTIM) \
+	-D_GNU_SOURCE=1 \
+	-DVERSION_MAJOR=$(VERSION_MAJOR) \
+	-DVERSION_MINOR=$(VERSION_MINOR) \
+	-DPATCHLEVEL=$(PATCHLEVEL) \
+	-I./src/ \
+	-I./src/libChf/src/ \
 	$(CFLAGS)
-
-override CPPFLAGS := -I./src/ -D_GNU_SOURCE=1 \
-	$(CPPFLAGS)
 
 .PHONY: all clean clean-all pretty-code install mrproper get-roms install
 
@@ -148,8 +140,8 @@ all: src/libChf/libChf.a dist/$(NAME) docs
 src/libChf/libChf.a:
 	make -C src/libChf #MT=yes
 
-dist/$(NAME): $(DOTOS) $(HEADERS) src/libChf/libChf.a
-	$(CC) $(DOTOS) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS)
+dist/$(NAME): $(OBJS) $(HEADERS) src/libChf/libChf.a
+	$(CC) $(OBJS) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS)
 
 # UNUSED
 dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
@@ -160,7 +152,7 @@ doc:
 
 # Cleaning
 clean:
-	rm -f src/*.o src/ui4x/*.o
+	rm -f $(OBJS)
 	make -C src/libChf clean
 	make -C docs clean
 

@@ -1,7 +1,7 @@
 #
 # Source files
 #
-SRC =	src/chf_init.c \
+SRC = src/chf_init.c \
 	src/chf_gen.c \
 	src/chf_sig.c \
 	src/chf_abrt.c \
@@ -12,7 +12,7 @@ SRC =	src/chf_init.c \
 #
 # Target object files
 #
-OBJS =	$(SRC:.c=.o)
+OBJS = $(SRC:.c=.o)
 
 HEADERS = src/ChfPriv.h \
 	src/Chf.h \
@@ -24,7 +24,7 @@ OPTIM ?= 2
 
 CFLAGS ?= -O$(OPTIM) -ansi -pedantic -D_POSIX_C_SOURCE=199506L -I.
 # ifeq ($(MT), yes)
-# 	override CFLAGS := -D_REENTRANT $(CFLAGS)
+#	override CFLAGS := -D_REENTRANT $(CFLAGS)
 # endif
 
 LFLAGS ?= $(CFLAGS)
