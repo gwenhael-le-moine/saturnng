@@ -24,28 +24,31 @@ FULL_WARNINGS ?= no
 WITH_SDL ?= yes
 WITH_GTK ?= no
 
-NCURSESCFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
-NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
+cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
+		  then echo $(1); fi)
 
 ### lua
-LUACFLAGS = $(shell "$(PKG_CONFIG)" --cflags $(LUA_VERSION))
-LUALIBS = $(shell "$(PKG_CONFIG)" --libs $(LUA_VERSION))
+LUA_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags $(LUA_VERSION))
+LUA_LIBS = $(shell "$(PKG_CONFIG)" --libs $(LUA_VERSION))
+
+NCURSES_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
+NCURSES_LIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
 
 ifeq ($(WITH_SDL), yes)
-SDLCFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl3) -DHAS_SDL=1
-SDLLIBS = $(shell "$(PKG_CONFIG)" --libs sdl3)
-SDLSRC = src/ui4x/sdl.c
-SDLHEADERS = src/ui4x/sdl.h
+	SDL_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags sdl3) -DHAS_SDL=1
+	SDL_LIBS = $(shell "$(PKG_CONFIG)" --libs sdl3)
+	SDL_SRC = src/ui4x/sdl.c
+	SDL_HEADERS = src/ui4x/sdl.h
 endif
 
 ifeq ($(WITH_GTK), yes)
-GTKCFLAGS = -DHAS_GTK=1 $(shell "$(PKG_CONFIG)" --cflags gtk4)
-GTKLIBS = $(shell "$(PKG_CONFIG)" --libs gtk4)
-GTKSRC = src/ui4x/gtk.c
-GTKHEADERS = src/ui4x/gtk.h
+	GTK_CFLAGS = -DHAS_GTK=1 $(shell "$(PKG_CONFIG)" --cflags gtk4)
+	GTK_LIBS = $(shell "$(PKG_CONFIG)" --libs gtk4)
+	GTK_SRC = src/ui4x/gtk.c
+	GTK_HEADERS = src/ui4x/gtk.h
 endif
 
-LIBS = -L./src/libChf -lChf $(NCURSESLIBS) $(LUALIBS) $(SDLLIBS) $(GTKLIBS)
+LIBS = -L./src/libChf -lChf $(NCURSES_LIBS) $(LUA_LIBS) $(SDL_LIBS) $(GTK_LIBS)
 
 HEADERS = src/options.h \
 	src/disk_io.h \
@@ -65,8 +68,8 @@ HEADERS = src/options.h \
 	src/ui4x/common.h \
 	src/ui4x/ncurses.h \
 	src/ui4x/inner.h \
-	$(SDLHEADERS) \
-	$(GTKHEADERS)
+	$(SDL_HEADERS) \
+	$(GTK_HEADERS)
 
 SRC = src/cpu.c \
 	src/dis.c \
@@ -94,12 +97,9 @@ SRC = src/cpu.c \
 	src/ui4x/50g.c \
 	src/ui4x/common.c \
 	src/ui4x/ncurses.c \
-	$(SDLSRC) \
-	$(GTKSRC)
+	$(SDL_SRC) \
+	$(GTK_SRC)
 OBJS = $(SRC:.c=.o)
-
-cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
-		  then echo $(1); fi)
 
 ifeq ($(FULL_WARNINGS), no)
 EXTRA_WARNING_FLAGS := -Wno-unused-function \
@@ -111,7 +111,7 @@ EXTRA_WARNING_FLAGS := -Wno-unused-function \
 else
 EXTRA_WARNING_FLAGS := -Wunused-function \
 	-Wredundant-decls \
-	-fsanitize-trap \
+	-fsanitize=thread \
 	$(call cc-option,-Wunused-variable)
 endif
 
@@ -130,9 +130,9 @@ override CFLAGS := -std=c11 \
 	$(call cc-option,-Wlogical-op) \
 	$(call cc-option,-Wno-unknown-warning-option) \
 	$(EXTRA_WARNING_FLAGS) \
-	$(SDLCFLAGS) \
-	$(NCURSESCFLAGS) \
-	$(LUACFLAGS) \
+	$(SDL_CFLAGS) \
+	$(NCURSES_CFLAGS) \
+	$(LUA_CFLAGS) \
 	-O$(OPTIM) \
 	-D_GNU_SOURCE=1 \
 	-DVERSION_MAJOR=$(VERSION_MAJOR) \
