@@ -31,7 +31,13 @@ static config_t __config = {
     .big_screen = false,
     .black_lcd = false,
 
+#if defined( HAS_SDL )
     .frontend = FRONTEND_SDL,
+#elif defined( HAS_GTK )
+    .frontend = FRONTEND_GTK,
+#else
+    .frontend = FRONTEND_NCURSES,
+#endif
 
     .mono = false,
     .gray = false,
@@ -249,7 +255,13 @@ config_t* config_init( int argc, char* argv[] )
 
         {"shiftless",            no_argument,       &clopt_shiftless,       true            },
 
+#if defined( HAS_GTK )
+        {"gtk",                  no_argument,       &clopt_frontend,        FRONTEND_GTK    },
+#endif
+#if defined( HAS_SDL )
+        {"sdl",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    },
         {"gui",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    },
+#endif
         {"chromeless",           no_argument,       &clopt_chromeless,      true            },
         {"fullscreen",           no_argument,       &clopt_fullscreen,      true            },
         {"scale",                required_argument, NULL,                   7110            },
@@ -293,7 +305,12 @@ config_t* config_init( int argc, char* argv[] )
                             "     --49g          emulate a HP 49G\n"
                             "     --state-dir=<path> use a different data directory "
                             "(default: ~/.config/saturnMODEL/)\n"
-                            "     --gui          graphical (SDL2) front-end (default: true)\n"
+#if defined( HAS_SDL )
+                            "     --sdl          graphical (SDL2) front-end (default: true)\n"
+#endif
+#if defined( HAS_GTK )
+                            "     --gtk          graphical (gtk4) front-end (default: false)\n"
+#endif
                             "     --tui          text front-end (default: false)\n"
                             "     --tui-small    text small front-end (2×2 pixels per character) (default: "
                             "false)\n"

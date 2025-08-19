@@ -20,8 +20,9 @@ LUA_VERSION ?= lua
 PKG_CONFIG ?= pkg-config
 
 OPTIM ?= 2
-WITH_SDL ?= yes
 FULL_WARNINGS ?= no
+WITH_SDL ?= yes
+WITH_GTK ?= no
 
 NCURSESCFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
 NCURSESLIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
@@ -37,7 +38,14 @@ SDLSRC = src/ui4x/sdl.c
 SDLHEADERS = src/ui4x/sdl.h
 endif
 
-LIBS = -L./src/libChf -lChf $(SDLLIBS) $(NCURSESLIBS) $(LUALIBS)
+ifeq ($(WITH_GTK), yes)
+GTKCFLAGS = -DHAS_GTK=1 $(shell "$(PKG_CONFIG)" --cflags gtk4)
+GTKLIBS = $(shell "$(PKG_CONFIG)" --libs gtk4)
+GTKSRC = src/ui4x/gtk.c
+GTKHEADERS = src/ui4x/gtk.h
+endif
+
+LIBS = -L./src/libChf -lChf $(NCURSESLIBS) $(LUALIBS) $(SDLLIBS) $(GTKLIBS)
 
 HEADERS = src/options.h \
 	src/disk_io.h \
@@ -57,7 +65,8 @@ HEADERS = src/options.h \
 	src/ui4x/ncurses.h \
 	src/ui4x/inner.h \
 	src/ui4x/emulator.h \
-	$(SDLHEADERS)
+	$(SDLHEADERS) \
+	$(GTKHEADERS)
 
 SRC = src/cpu.c \
 	src/dis.c \
@@ -85,7 +94,8 @@ SRC = src/cpu.c \
 	src/ui4x/common.c \
 	src/ui4x/ncurses.c \
 	src/ui4x/emulator.c \
-	$(SDLSRC)
+	$(SDLSRC) \
+	$(GTKSRC)
 OBJS = $(SRC:.c=.o)
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
