@@ -1,3 +1,4 @@
+#include <locale.h>
 #include <signal.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -52,6 +53,8 @@ void signal_handler( int sig )
 
 int main( int argc, char** argv )
 {
+    setlocale( LC_ALL, "C" );
+
     config = *config_init( argc, argv );
 
     /* Chf initialization with msgcat subsystem

@@ -131,6 +131,7 @@ override CFLAGS := -std=c11 \
 	$(call cc-option,-Wno-unknown-warning-option) \
 	$(EXTRA_WARNING_FLAGS) \
 	$(SDL_CFLAGS) \
+	$(GTK_CFLAGS) \
 	$(NCURSES_CFLAGS) \
 	$(LUA_CFLAGS) \
 	-O$(OPTIM) \
