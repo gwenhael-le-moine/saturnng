@@ -171,7 +171,7 @@ static void print_config( void )
 
     fprintf( stdout, "\n" );
     fprintf( stdout, " -- Following options are specific to sdl frontend\n" );
-    fprintf( stdout, "big_screen = %s\n", __config.big_screen ? "true" : "false" );
+    /* fprintf( stdout, "big_screen = %s\n", __config.big_screen ? "true" : "false" ); */
     fprintf( stdout, "black_lcd = %s\n", __config.black_lcd ? "true" : "false" );
     fprintf( stdout, "chromeless = %s\n", __config.chromeless ? "true" : "false" );
     fprintf( stdout, "fullscreen = %s\n", __config.fullscreen ? "true" : "false" );
@@ -212,7 +212,7 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_model = -1;
     int clopt_verbose = -1;
-    int clopt_big_screen = -1;
+    /* int clopt_big_screen = -1; */
     int clopt_black_lcd = -1;
     int clopt_throttle = -1;
     int clopt_shiftless = -1;
@@ -240,8 +240,7 @@ config_t* config_init( int argc, char* argv[] )
         {"print-config",         no_argument,       &print_config_and_exit, true            },
 
         {"throttle",             no_argument,       &clopt_throttle,        true            },
-        {"big-screen",           no_argument,       &clopt_big_screen,      true            },
-        {"black-lcd",            no_argument,       &clopt_black_lcd,       true            },
+        /* {"big-screen",           no_argument,       &clopt_big_screen,      true            }, */
 
         {"48sx",                 no_argument,       &clopt_model,           MODEL_48SX      },
         {"48gx",                 no_argument,       &clopt_model,           MODEL_48GX      },
@@ -265,6 +264,7 @@ config_t* config_init( int argc, char* argv[] )
         {"chromeless",           no_argument,       &clopt_chromeless,      true            },
         {"fullscreen",           no_argument,       &clopt_fullscreen,      true            },
         {"scale",                required_argument, NULL,                   7110            },
+        {"black-lcd",            no_argument,       &clopt_black_lcd,       true            },
 
         {"tui",                  no_argument,       &clopt_frontend,        FRONTEND_NCURSES},
         {"tui-small",            no_argument,       NULL,                   6110            },
@@ -297,7 +297,7 @@ config_t* config_init( int argc, char* argv[] )
                             "     --print-config output current configuration to stdout and exit (in __config.lua formatting)\n"
                             "     --verbose      display more informations\n"
                             "     --throttle     throttle CPU speed\n"
-                            "     --big-screen   131×80 screen (default: false)\n"
+                            /* "     --big-screen   131×80 screen (default: false)\n" */
                             "     --black-lcd    (default: false)\n"
                             "     --48gx         emulate a HP 48GX\n"
                             "     --48sx         emulate a HP 48SX\n"
@@ -432,8 +432,8 @@ config_t* config_init( int argc, char* argv[] )
         lua_getglobal( config_lua_values, "throttle" );
         __config.throttle = lua_toboolean( config_lua_values, -1 );
 
-        lua_getglobal( config_lua_values, "big_screen" );
-        __config.big_screen = lua_toboolean( config_lua_values, -1 );
+        /* lua_getglobal( config_lua_values, "big_screen" ); */
+        /* __config.big_screen = lua_toboolean( config_lua_values, -1 ); */
 
         lua_getglobal( config_lua_values, "black_lcd" );
         __config.black_lcd = lua_toboolean( config_lua_values, -1 );
@@ -504,8 +504,8 @@ config_t* config_init( int argc, char* argv[] )
         __config.model = clopt_model;
     if ( clopt_throttle != -1 )
         __config.throttle = clopt_throttle == true;
-    if ( clopt_big_screen != -1 )
-        __config.big_screen = clopt_big_screen == true;
+    /* if ( clopt_big_screen != -1 ) */
+    /*     __config.big_screen = clopt_big_screen == true; */
     if ( clopt_black_lcd != -1 )
         __config.black_lcd = clopt_black_lcd == true;
     if ( clopt_frontend != -1 )
