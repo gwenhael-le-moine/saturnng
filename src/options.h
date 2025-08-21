@@ -3,21 +3,21 @@
 
 #include <stdbool.h>
 
-typedef enum { FRONTEND_SDL, FRONTEND_NCURSES, FRONTEND_GTK } frontends_t;
+typedef enum { FRONTEND_SDL, FRONTEND_NCURSES, FRONTEND_GTK } frontend_t;
 
-typedef enum { MODEL_48SX = 485, MODEL_48GX = 486, MODEL_40G = 406, MODEL_49G = 496, MODEL_50G = 506 } models_t;
+typedef enum { MODEL_48SX = 485, MODEL_48GX = 486, MODEL_40G = 406, MODEL_49G = 496, MODEL_50G = 506 } model_t;
 
 typedef struct {
     char* progname;
 
-    int model;
+    model_t model;
     bool throttle;
     bool verbose;
     bool shiftless;
     bool big_screen;
     bool black_lcd;
 
-    int frontend;
+    frontend_t frontend;
     bool mono;
     bool gray;
 
