@@ -6,7 +6,6 @@
 
 #include "../options.h"
 #include "../emulator.h"
-
 #include "common.h"
 #include "inner.h"
 
