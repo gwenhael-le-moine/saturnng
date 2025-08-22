@@ -199,7 +199,7 @@ config_t* config_init( int argc, char* argv[] )
     int option_index;
     int c = '?';
 
-    char* config_file_name = ( char* )"__config.lua";
+    char* config_file_name = ( char* )"config.lua";
     char* mod_file_name = ( char* )"mod";
     char* cpu_file_name = ( char* )"cpu";
     char* hdw_file_name = ( char* )"hdw";
@@ -294,7 +294,7 @@ config_t* config_init( int argc, char* argv[] )
     const char* help_text = "usage: %s [options]\n"
                             "options:\n"
                             "  -h --help         what you are reading\n"
-                            "     --print-config output current configuration to stdout and exit (in __config.lua formatting)\n"
+                            "     --print-config output current configuration to stdout and exit (in config.lua formatting)\n"
                             "     --verbose      display more informations\n"
                             "     --throttle     throttle CPU speed\n"
                             /* "     --big-screen   131×80 screen (default: false)\n" */
@@ -422,7 +422,7 @@ config_t* config_init( int argc, char* argv[] )
     __config.port_2_file_name = normalize_filename( __config.state_dir_path, port_2_file_name );
 
     /**********************/
-    /* 1. read __config.lua */
+    /* 1. read config.lua */
     /**********************/
     bool haz_config_file = config_read( __config.config_file_name );
     if ( haz_config_file ) {
