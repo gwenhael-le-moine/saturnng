@@ -6,7 +6,7 @@
 #include "modules.h"
 #include "options.h"
 #include "serial.h"
-#include "emulator.h"
+#include "emulator_ui4x_api.h"
 
 #define KEYBOARD ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? keyboard48 : keyboard49 )
 

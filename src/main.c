@@ -6,7 +6,7 @@
 #include <sys/time.h>
 
 #include "options.h"
-#include "emulator.h"
+#include "emulator_ui4x_api.h"
 #include "ui4x/common.h"
 
 #include "config.h"

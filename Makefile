@@ -63,7 +63,7 @@ HEADERS = src/options.h \
 	src/config.h \
 	src/cpu.h \
 	src/debug.h \
-	src/emulator.h \
+	src/emulator_ui4x_api.h \
 	src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \
 	src/ui4x/ncurses.h \
@@ -88,7 +88,7 @@ SRC = src/cpu.c \
 	src/x_func.c \
 	src/chf_messages.c \
 	src/options.c \
-	src/emulator.c \
+	src/emulator_ui4x_api.c \
 	src/main.c \
 	src/ui4x/fonts.c \
 	src/ui4x/48sx.c \
