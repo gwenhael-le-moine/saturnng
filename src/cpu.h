@@ -1,5 +1,5 @@
 #ifndef _CPU_H
-#define _CPU_H 1
+#  define _CPU_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
@@ -108,7 +108,7 @@
 
 .- */
 
-#include <stdbool.h>
+#  include <stdbool.h>
 
 /*---------------------------------------------------------------------------
         Macro/Data type definitions - require machdep.h
@@ -117,23 +117,23 @@
   is larger than necessary to avoid additional checks on the validity of
   the R register index fields during emulation
   ---------------------------------------------------------------------------*/
-#include "machdep.h"
+#  include "machdep.h"
 
 /* General */
-#define NIBBLE_PER_REGISTER 16
-#define N_WORKING_REGISTER 4
-#define N_SCRATCH_REGISTER 5
-#define N_SCRATCH_REGISTER_ALL 8
-#define N_DATA_POINTER_REGISTER 2
-#define RETURN_STACK_SIZE 8
-#define NIBBLE_VALUES 16
+#  define NIBBLE_PER_REGISTER 16
+#  define N_WORKING_REGISTER 4
+#  define N_SCRATCH_REGISTER 5
+#  define N_SCRATCH_REGISTER_ALL 8
+#  define N_DATA_POINTER_REGISTER 2
+#  define RETURN_STACK_SIZE 8
+#  define NIBBLE_VALUES 16
 
-#define INT_HANDLER_PC ( ( Address )0x0000F )
+#  define INT_HANDLER_PC ( ( Address )0x0000F )
 
-#define DISASSEMBLE_OB_SIZE 128
-#define DUMP_CPU_STATUS_OB_SIZE 512
+#  define DISASSEMBLE_OB_SIZE 128
+#  define DUMP_CPU_STATUS_OB_SIZE 512
 
-#define CPU_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
+#  define CPU_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
 
 /* Instruction opcode access macros:
      GET_FS(f)		returns the short field-selector value from the
@@ -169,42 +169,42 @@
                          =0: add
                         !=0: subtract
 */
-#define GET_FS( f ) ( ( f ) & 0x7 )
-#define GET_IMMEDIATE_FS_FLAG( o ) ( ( o ) & 0x8 )
-#define GET_OC_1( o ) ( ( ( o ) & 0xC ) >> 2 )
-#define GET_OC_2( f, o ) ( ( ( ( f ) & 0x8 ) >> 1 ) | ( ( ( o ) & 0xC ) >> 2 ) )
-#define GET_OC_3b( o ) ( ( o ) & 0x7 )
-#define GET_RP( o ) ( ( o ) & 0x3 )
-#define GET_Rn( r ) ( ( r ) & 0x7 )
-#define GET_AC( r ) ( ( r ) & 0x8 )
-#define GET_AS( r ) ( ( r ) & 0x8 )
+#  define GET_FS( f ) ( ( f ) & 0x7 )
+#  define GET_IMMEDIATE_FS_FLAG( o ) ( ( o ) & 0x8 )
+#  define GET_OC_1( o ) ( ( ( o ) & 0xC ) >> 2 )
+#  define GET_OC_2( f, o ) ( ( ( ( f ) & 0x8 ) >> 1 ) | ( ( ( o ) & 0xC ) >> 2 ) )
+#  define GET_OC_3b( o ) ( ( o ) & 0x7 )
+#  define GET_RP( o ) ( ( o ) & 0x3 )
+#  define GET_Rn( r ) ( ( r ) & 0x7 )
+#  define GET_AC( r ) ( ( r ) & 0x8 )
+#  define GET_AS( r ) ( ( r ) & 0x8 )
 
 /* Field selector codes */
-#define FS_P 0
-#define FS_WP 1
-#define FS_XS 2
-#define FS_X 3
-#define FS_S 4
-#define FS_M 5
-#define FS_B 6
-#define FS_W 7
-#define FS_A 15
-#define N_FS 16 /* Total # of FS codes */
+#  define FS_P 0
+#  define FS_WP 1
+#  define FS_XS 2
+#  define FS_X 3
+#  define FS_S 4
+#  define FS_M 5
+#  define FS_B 6
+#  define FS_W 7
+#  define FS_A 15
+#  define N_FS 16 /* Total # of FS codes */
 
 /* Register pair codes */
-#define RP_AB 0
-#define RP_BC 1
-#define RP_CA 2
-#define RP_DC 3
-#define N_RP 4 /* Total # of RP codes */
+#  define RP_AB 0
+#  define RP_BC 1
+#  define RP_CA 2
+#  define RP_DC 3
+#  define N_RP 4 /* Total # of RP codes */
 
 /* Masks */
-#define NIBBLE_MASK ( ( Nibble )0xF )
-#define ADDRESS_MASK ( ( Address )0xFFFFF )
+#  define NIBBLE_MASK ( ( Nibble )0xF )
+#  define ADDRESS_MASK ( ( Address )0xFFFFF )
 
-#define CLRST_MASK ( ( ProgramStatusRegister )0xF000 )
-#define D_S_MASK ( ( Address )0xF0000 )
-#define RETURN_SP_MASK 0x7
+#  define CLRST_MASK ( ( ProgramStatusRegister )0xF000 )
+#  define D_S_MASK ( ( Address )0xF0000 )
+#  define RETURN_SP_MASK 0x7
 
 typedef int1 Bit;
 typedef int4 Nibble;
@@ -221,21 +221,21 @@ enum IntRequest { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI };
 
 struct CpuStatus {
     DataRegister work[ N_WORKING_REGISTER ];
-#define A work[ 0 ]
-#define B work[ 1 ]
-#define C work[ 2 ]
-#define D work[ 3 ]
+#  define A work[ 0 ]
+#  define B work[ 1 ]
+#  define C work[ 2 ]
+#  define D work[ 3 ]
 
     DataRegister R[ N_SCRATCH_REGISTER_ALL ];
-#define R0 R[ 0 ]
-#define R1 R[ 1 ]
-#define R2 R[ 2 ]
-#define R3 R[ 3 ]
-#define R4 R[ 4 ]
+#  define R0 R[ 0 ]
+#  define R1 R[ 1 ]
+#  define R2 R[ 2 ]
+#  define R3 R[ 3 ]
+#  define R4 R[ 4 ]
 
     Address DAT[ N_DATA_POINTER_REGISTER ];
-#define D0 DAT[ 0 ]
-#define D1 DAT[ 1 ]
+#  define D0 DAT[ 0 ]
+#  define D1 DAT[ 1 ]
 
     Nibble P;
     Address PC;
@@ -244,10 +244,10 @@ struct CpuStatus {
     ProgramStatusRegister ST;
 
     Nibble HST;
-#define HST_MP_MASK 0x08
-#define HST_SR_MASK 0x04
-#define HST_SB_MASK 0x02
-#define HST_XM_MASK 0x01
+#  define HST_MP_MASK 0x08
+#  define HST_SR_MASK 0x04
+#  define HST_SB_MASK 0x02
+#  define HST_XM_MASK 0x01
 
     Address return_stack[ RETURN_STACK_SIZE ];
     int return_sp;
@@ -269,9 +269,9 @@ struct CpuStatus {
     */
     int inner_loop;     /* Inner loop multiplier */
     int inner_loop_max; /* Max value of inner_loop */
-#define INNER_LOOP_MAX 26
-#define INNER_LOOP_MED 13
-#define INNER_LOOP_MIN 2
+#  define INNER_LOOP_MAX 26
+#  define INNER_LOOP_MED 13
+#  define INNER_LOOP_MIN 2
 };
 
 enum ExitOption /* 2.1: EmulatorExit() option */
@@ -290,32 +290,32 @@ extern struct CpuStatus cpu_status;
         Chf condition codes
   ---------------------------------------------------------------------------*/
 
-#define CPU_I_CALLED 101          /* Function %s called */
-#define CPU_I_EXECUTING 102       /* Executing @PC %X */
-#define CPU_I_SHUTDN 103          /* Shutdown */
-#define CPU_I_WAKE 104            /* Wake */
-#define CPU_I_INT 105             /* %s request accepted */
-#define CPU_I_INT_PENDING 106     /* %s request pending */
-#define CPU_I_RTI_LOOP 107        /* RTI loop to service %s */
-#define CPU_I_RTI_END 108         /* RTI returning */
-#define CPU_I_INTON 109           /* INTON servicing %s */
-#define CPU_I_REVISION 110        /* CPU emulation revision: %s */
-#define CPU_I_TIMER1_EX 111       /* Timer 1 expired; ctrl=%x */
-#define CPU_I_TIMER2_EX 112       /* Timer 1 expired; ctrl=%x */
-#define CPU_I_EMULATOR_INT 113    /* Emulator interrupt req. detected */
-#define CPU_I_TIMER_ST 114        /* 3.1: Timer %s st: ctrl %x, val %x */
-#define CPU_I_TIMER_EXP 115       /* 3.1: Timer %s expiration %d ms */
-#define CPU_I_IDLE_X_LOOP 116     /* 3.1: Start idle loop, t/out %d ms */
-#define CPU_I_ELAPSED 117         /* 3.1: Spent %d us in idle loop */
-#define CPU_I_HALT 118            /* 3.13: CPU halted */
-#define CPU_I_RUN 119             /* 3.13: CPU running */
-#define CPU_W_RESETTING 201       /* Resetting CPU */
-#define CPU_W_BAD_MONITOR_CMD 202 /* Bad monitor command: %s */
-#define CPU_E_BAD_OPCODE 301      /* Bad opc. pc=%x, value=%x */
-#define CPU_E_SAVE 302            /* Can't save CPU status */
-#define CPU_E_NO_HALT 303         /* 3.13: Halt/Run not allowed */
-#define CPU_F_INTERR 401          /* Internal error %s */
-#define CPU_F_BAD_SHUTDN 402      /* Unexpected CPU shutdown */
+#  define CPU_I_CALLED 101          /* Function %s called */
+#  define CPU_I_EXECUTING 102       /* Executing @PC %X */
+#  define CPU_I_SHUTDN 103          /* Shutdown */
+#  define CPU_I_WAKE 104            /* Wake */
+#  define CPU_I_INT 105             /* %s request accepted */
+#  define CPU_I_INT_PENDING 106     /* %s request pending */
+#  define CPU_I_RTI_LOOP 107        /* RTI loop to service %s */
+#  define CPU_I_RTI_END 108         /* RTI returning */
+#  define CPU_I_INTON 109           /* INTON servicing %s */
+#  define CPU_I_REVISION 110        /* CPU emulation revision: %s */
+#  define CPU_I_TIMER1_EX 111       /* Timer 1 expired; ctrl=%x */
+#  define CPU_I_TIMER2_EX 112       /* Timer 1 expired; ctrl=%x */
+#  define CPU_I_EMULATOR_INT 113    /* Emulator interrupt req. detected */
+#  define CPU_I_TIMER_ST 114        /* 3.1: Timer %s st: ctrl %x, val %x */
+#  define CPU_I_TIMER_EXP 115       /* 3.1: Timer %s expiration %d ms */
+#  define CPU_I_IDLE_X_LOOP 116     /* 3.1: Start idle loop, t/out %d ms */
+#  define CPU_I_ELAPSED 117         /* 3.1: Spent %d us in idle loop */
+#  define CPU_I_HALT 118            /* 3.13: CPU halted */
+#  define CPU_I_RUN 119             /* 3.13: CPU running */
+#  define CPU_W_RESETTING 201       /* Resetting CPU */
+#  define CPU_W_BAD_MONITOR_CMD 202 /* Bad monitor command: %s */
+#  define CPU_E_BAD_OPCODE 301      /* Bad opc. pc=%x, value=%x */
+#  define CPU_E_SAVE 302            /* Can't save CPU status */
+#  define CPU_E_NO_HALT 303         /* 3.13: Halt/Run not allowed */
+#  define CPU_F_INTERR 401          /* Internal error %s */
+#  define CPU_F_BAD_SHUTDN 402      /* Unexpected CPU shutdown */
 
 /*---------------------------------------------------------------------------
         Function prototypes

@@ -1,5 +1,5 @@
 #ifndef _CHF_PRIV_H
-#define _CHF_PRIV_H 1
+#  define _CHF_PRIV_H 1
 
 /* .+
 
@@ -40,31 +40,31 @@
 
 .- */
 
-#include "Chf.h"
+#  include "Chf.h"
 
 /* -------------------------------------------------------------------------
    Macros
    ------------------------------------------------------------------------- */
 
-#define CHF_MODULE_ID CHF_SET
-#define CHF_TMP_MESSAGE_LENGTH ( 2 * CHF_MAX_MESSAGE_LENGTH )
-#define CHF_DEF_MESSAGE_LENGTH 40
+#  define CHF_MODULE_ID CHF_SET
+#  define CHF_TMP_MESSAGE_LENGTH ( 2 * CHF_MAX_MESSAGE_LENGTH )
+#  define CHF_DEF_MESSAGE_LENGTH 40
 
 /* -------------------------------------------------------------------------
    Abort codes used with ChfAbort()
    ------------------------------------------------------------------------- */
 
-#define CHF_ABORT_SILENT 0
-#define CHF_ABORT_INIT 1
-#define CHF_ABORT_MSG_OVF 2
-#define CHF_ABORT_INVALID_ACTION 3
-#define CHF_ABORT_DUP_INIT 4
-#define CHF_ABORT_ALREADY_UNWINDING 5
-#define CHF_ABORT_IMPROPERLY_HANDLED 6
-#define CHF_ABORT_FATAL_UNWINDING 7
-#define CHF_ABORT_COND_STACK_OVF 8
-#define CHF_ABORT_GET_CONTEXT 9
-#define CHF_ABORT_PTHREAD 10
+#  define CHF_ABORT_SILENT 0
+#  define CHF_ABORT_INIT 1
+#  define CHF_ABORT_MSG_OVF 2
+#  define CHF_ABORT_INVALID_ACTION 3
+#  define CHF_ABORT_DUP_INIT 4
+#  define CHF_ABORT_ALREADY_UNWINDING 5
+#  define CHF_ABORT_IMPROPERLY_HANDLED 6
+#  define CHF_ABORT_FATAL_UNWINDING 7
+#  define CHF_ABORT_COND_STACK_OVF 8
+#  define CHF_ABORT_GET_CONTEXT 9
+#  define CHF_ABORT_PTHREAD 10
 
 /* -------------------------------------------------------------------------
    Type definitions
@@ -98,11 +98,11 @@ typedef struct ChfContext_S {
 /* -------------------------------------------------------------------------
    Multithreading support
  ------------------------------------------------------------------------- */
-#ifdef _REENTRANT
-#  define chf_context ( *_ChfGetContext() )
-#else
-#  define chf_context _chf_context
-#endif
+#  ifdef _REENTRANT
+#    define chf_context ( *_ChfGetContext() )
+#  else
+#    define chf_context _chf_context
+#  endif
 
 /* -------------------------------------------------------------------------
    Global variables
@@ -113,9 +113,9 @@ extern ChfContext _chf_context; /* CHF Context */
 /* -------------------------------------------------------------------------
    Private function prototypes
  ------------------------------------------------------------------------- */
-#ifdef _REENTRANT
+#  ifdef _REENTRANT
 ChfContext* _ChfGetContext( void );
-#endif
+#  endif
 
 /* Generic initialization */
 int ChfInit( const int module_id, const char* app_name, /* Application's name */

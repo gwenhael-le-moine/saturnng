@@ -1,5 +1,5 @@
 #ifndef _CONFIG_H
-#define _CONFIG_H 1
+#  define _CONFIG_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
@@ -124,7 +124,7 @@
 
 .- */
 
-#include "options.h"
+#  include "options.h"
 
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the
@@ -133,7 +133,7 @@
    The default value is 8, that is, Port_2 is emulated and its size is 1Mbyte.
 */
 // #define N_PORT_2_BANK ( config.model == MODEL_48GX ? 32 : 1 )
-#define N_PORT_2_BANK 32
+#  define N_PORT_2_BANK 32
 
 /* 2.5: SERIAL_FORCE_OPENPTY, SERIAL_FORCE_STREAMSPTY
    Optionally define exactly one of these symbols to force the use of a
@@ -151,21 +151,21 @@
    The value of the macro determines the gain of the relation between
    CPU speed and slow down ratio.
 */
-#define CPU_SLOW_IN 16
+#  define CPU_SLOW_IN 16
 
 /* Chf Module Identifiers:
    Each main module of the emulator has its own Chf Module Identifier; the
    values defined here must match those actually used in the message catalogs.
 */
-#define MAIN_CHF_MODULE_ID 10
-#define CPU_CHF_MODULE_ID 11
-#define MOD_CHF_MODULE_ID 12
-#define DISK_IO_CHF_MODULE_ID 13
-#define X11_CHF_MODULE_ID 14
-#define SERIAL_CHF_MODULE_ID 15 /* 2.5 */
-#define FLASH_CHF_MODULE_ID 16  /* 3.3 */
-#define UTIL_CHF_MODULE_ID 17   /* 3.6 */
-#define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
-#define DEBUG_CHF_MODULE_ID 30
+#  define MAIN_CHF_MODULE_ID 10
+#  define CPU_CHF_MODULE_ID 11
+#  define MOD_CHF_MODULE_ID 12
+#  define DISK_IO_CHF_MODULE_ID 13
+#  define X11_CHF_MODULE_ID 14
+#  define SERIAL_CHF_MODULE_ID 15 /* 2.5 */
+#  define FLASH_CHF_MODULE_ID 16  /* 3.3 */
+#  define UTIL_CHF_MODULE_ID 17   /* 3.6 */
+#  define X_FUNC_CHF_MODULE_ID 18 /* 3.13 */
+#  define DEBUG_CHF_MODULE_ID 30
 
 #endif /*!_CONFIG_H*/

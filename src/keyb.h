@@ -1,5 +1,5 @@
 #ifndef _KEYB_H
-#define _KEYB_H 1
+#  define _KEYB_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
@@ -79,7 +79,7 @@
 
 .- */
 
-#include "cpu.h"
+#  include "cpu.h"
 
 /*---------------------------------------------------------------------------
         Function prototypes

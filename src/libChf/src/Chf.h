@@ -1,5 +1,5 @@
 #ifndef _CHF_H
-#define _CHF_H 1
+#  define _CHF_H 1
 
 /* .+
 
@@ -54,39 +54,39 @@
 
 .- */
 
-#include <stdlib.h>
-#include <errno.h>
+#  include <stdlib.h>
+#  include <errno.h>
 
 /* -------------------------------------------------------------------------
    CHF implementation limits and other symbolic constants
    ------------------------------------------------------------------------- */
 
-#define CHF_MAX_MESSAGE_LENGTH 256
-#define CHF_UNKNOWN_LINE_NUMBER ( -1 )
-#define CHF_UNKNOWN_FILE_NAME ( char* )NULL
-#define CHF_NULL_DESCRIPTOR ( ChfDescriptor* )NULL
-#define CHF_NULL_CONTEXT ( void* )NULL
-#define CHF_NULL_POINTER ( void** )NULL
-#define CHF_NULL_HANDLER ( ChfHandler ) NULL
+#  define CHF_MAX_MESSAGE_LENGTH 256
+#  define CHF_UNKNOWN_LINE_NUMBER ( -1 )
+#  define CHF_UNKNOWN_FILE_NAME ( char* )NULL
+#  define CHF_NULL_DESCRIPTOR ( ChfDescriptor* )NULL
+#  define CHF_NULL_CONTEXT ( void* )NULL
+#  define CHF_NULL_POINTER ( void** )NULL
+#  define CHF_NULL_HANDLER ( ChfHandler ) NULL
 
-#define CHF_MODULE_NAMES_SET 1
-#define CHF_SET 2
-#define CHF_ERRNO_SET 3
+#  define CHF_MODULE_NAMES_SET 1
+#  define CHF_SET 2
+#  define CHF_ERRNO_SET 3
 
 /* -------------------------------------------------------------------------
    Condition codes
    ------------------------------------------------------------------------- */
 
-#define CHF_S_OK 0
-#define CHF_F_COND_STACK_FULL 1  /* Condition stack is full */
-#define CHF_F_HDLR_STACK_FULL 2  /* Handler stack is full */
-#define CHF_F_HDLR_STACK_EMPTY 3 /* Handler stack is empty */
-#define CHF_F_BAD_STATE 4        /* Bad CHF state for req. operation */
-#define CHF_F_INVALID_ACTION 5   /* Invalid action from handler: %d */
-#define CHF_F_MALLOC 6           /* Dynamic memory allocation failed */
-#define CHF_F_NOT_AVAILABLE 7    /* Function not available */
-#define CHF_F_SETLOCALE 10       /* setlocale() failed */
-#define CHF_F_CATOPEN 11         /* catopen() failed */
+#  define CHF_S_OK 0
+#  define CHF_F_COND_STACK_FULL 1  /* Condition stack is full */
+#  define CHF_F_HDLR_STACK_FULL 2  /* Handler stack is full */
+#  define CHF_F_HDLR_STACK_EMPTY 3 /* Handler stack is empty */
+#  define CHF_F_BAD_STATE 4        /* Bad CHF state for req. operation */
+#  define CHF_F_INVALID_ACTION 5   /* Invalid action from handler: %d */
+#  define CHF_F_MALLOC 6           /* Dynamic memory allocation failed */
+#  define CHF_F_NOT_AVAILABLE 7    /* Function not available */
+#  define CHF_F_SETLOCALE 10       /* setlocale() failed */
+#  define CHF_F_CATOPEN 11         /* catopen() failed */
 
 /* -------------------------------------------------------------------------
    Type definitions
@@ -103,8 +103,8 @@ typedef enum {
     CHF_UNWIND_KEEP /* Unwind, keep last cond. group */
 } ChfAction;
 
-#define CHF_DEFAULT 0x0000 /* default flags */
-#define CHF_ABORT 0x0001   /* use abort() instead of exit() */
+#  define CHF_DEFAULT 0x0000 /* default flags */
+#  define CHF_ABORT 0x0001   /* use abort() instead of exit() */
 
 /* Current CHF state */
 typedef enum { CHF_UNKNOWN, CHF_IDLE, CHF_SIGNALING, CHF_UNWINDING, CHF_SIGNAL_UNWINDING } ChfState;

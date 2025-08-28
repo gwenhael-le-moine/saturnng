@@ -1,5 +1,5 @@
 #ifndef _MONITOR_H
-#define _MONITOR_H 1
+#  define _MONITOR_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators

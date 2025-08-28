@@ -1,5 +1,5 @@
 #ifndef _MACHDEP_H
-#define _MACHDEP_H 1
+#  define _MACHDEP_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators

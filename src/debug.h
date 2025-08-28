@@ -1,5 +1,5 @@
 #ifndef _DEBUG_H
-#define _DEBUG_H 1
+#  define _DEBUG_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
@@ -102,47 +102,47 @@
 
 .- */
 
-#define _debug_preamble( module_id, debug_class, condition_code )                                                                          \
-    {                                                                                                                                      \
-        if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
+#  define _debug_preamble( module_id, debug_class, condition_code )                                                                        \
+      {                                                                                                                                    \
+          if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
 
-#define _debug_postamble( module_id ) );                                                                                                   \
-    ChfSignal( module_id );                                                                                                                \
-    }                                                                                                                                      \
-    }
+#  define _debug_postamble( module_id ) );                                                                                                   \
+      ChfSignal( module_id );                                                                                                              \
+      }                                                                                                                                    \
+      }
 
-#define debug0( module_id, debug_class, condition_code )                                                                                   \
-    _debug_preamble( module_id, debug_class, condition_code ) _debug_postamble( module_id )
-#define debug1( module_id, debug_class, condition_code, arg_1 )                                                                            \
-    _debug_preamble( module_id, debug_class, condition_code ), arg_1 _debug_postamble( module_id )
-#define debug2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                     \
-    _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 _debug_postamble( module_id )
-#define debug3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                              \
-    _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 _debug_postamble( module_id )
+#  define debug0( module_id, debug_class, condition_code )                                                                                 \
+      _debug_preamble( module_id, debug_class, condition_code ) _debug_postamble( module_id )
+#  define debug1( module_id, debug_class, condition_code, arg_1 )                                                                          \
+      _debug_preamble( module_id, debug_class, condition_code ), arg_1 _debug_postamble( module_id )
+#  define debug2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                   \
+      _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 _debug_postamble( module_id )
+#  define debug3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                            \
+      _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 _debug_postamble( module_id )
 
 /*---------------------------------------------------------------------------
         Debug classes
   ---------------------------------------------------------------------------*/
 
-#define DEBUG_C_TRACE 0x8000          /* Function Call trace */
-#define DEBUG_C_MODULES 0x4000        /* Modules configuration */
-#define DEBUG_C_DISPLAY 0x2000        /* Display activity */
-#define DEBUG_C_INT 0x1000            /* Interrupt activity */
-#define DEBUG_C_TIMERS 0x0800         /* Timers activity */
-#define DEBUG_C_SERIAL 0x0400         /* 2.5: Serial port activity */
-#define DEBUG_C_MOD_CACHE 0x0200      /* 2.7: Module cache */
-#define DEBUG_C_IMPLEMENTATION 0x0100 /* Feature implementation */
-#define DEBUG_C_FLASH 0x0080          /* 3.3: Flash ROM */
-#define DEBUG_C_X_FUNC 0x0040         /* 3.13: Extended functions */
-#define DEBUG_C_XX 0x0010
-#define DEBUG_C_OPCODES 0x0001 /* OpCodes */
-#define DEBUG_C_NONE 0
+#  define DEBUG_C_TRACE 0x8000          /* Function Call trace */
+#  define DEBUG_C_MODULES 0x4000        /* Modules configuration */
+#  define DEBUG_C_DISPLAY 0x2000        /* Display activity */
+#  define DEBUG_C_INT 0x1000            /* Interrupt activity */
+#  define DEBUG_C_TIMERS 0x0800         /* Timers activity */
+#  define DEBUG_C_SERIAL 0x0400         /* 2.5: Serial port activity */
+#  define DEBUG_C_MOD_CACHE 0x0200      /* 2.7: Module cache */
+#  define DEBUG_C_IMPLEMENTATION 0x0100 /* Feature implementation */
+#  define DEBUG_C_FLASH 0x0080          /* 3.3: Flash ROM */
+#  define DEBUG_C_X_FUNC 0x0040         /* 3.13: Extended functions */
+#  define DEBUG_C_XX 0x0010
+#  define DEBUG_C_OPCODES 0x0001 /* OpCodes */
+#  define DEBUG_C_NONE 0
 
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
 
-#define DEBUG_W_NOT_SUPPORTED 201 /* Debug not supported */
-#define DEBUG_W_BAD_CMD 202       /* Invalid command */
+#  define DEBUG_W_NOT_SUPPORTED 201 /* Debug not supported */
+#  define DEBUG_W_BAD_CMD 202       /* Invalid command */
 
 #endif /*!_DEBUG_H*/

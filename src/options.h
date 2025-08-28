@@ -1,7 +1,7 @@
 #ifndef _UI4x_CONFIG_H
-#define _UI4x_CONFIG_H 1
+#  define _UI4x_CONFIG_H 1
 
-#include <stdbool.h>
+#  include <stdbool.h>
 
 typedef enum { FRONTEND_SDL, FRONTEND_NCURSES, FRONTEND_GTK } frontend_t;
 
