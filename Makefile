@@ -50,20 +50,20 @@ endif
 
 LIBS = -L./src/libChf -lChf $(NCURSES_LIBS) $(LUA_LIBS) $(SDL_LIBS) $(GTK_LIBS)
 
-HEADERS = src/options.h \
-	src/disk_io.h \
-	src/flash49.h \
-	src/keyb.h \
-	src/machdep.h \
-	src/modules.h \
-	src/monitor.h \
-	src/serial.h \
-	src/x_func.h \
-	src/chf_messages.h \
-	src/config.h \
-	src/cpu.h \
-	src/debug.h \
-	src/emulator_ui4x_api.h \
+HEADERS = src/config.h \
+	src/options.h \
+	src/core/disk_io.h \
+	src/core/flash49.h \
+	src/core/keyb.h \
+	src/core/machdep.h \
+	src/core/modules.h \
+	src/core/monitor.h \
+	src/core/serial.h \
+	src/core/x_func.h \
+	src/core/chf_messages.h \
+	src/core/cpu.h \
+	src/core/debug.h \
+	src/ui4x/api.h \
 	src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \
 	src/ui4x/ncurses.h \
@@ -71,25 +71,25 @@ HEADERS = src/options.h \
 	$(SDL_HEADERS) \
 	$(GTK_HEADERS)
 
-SRC = src/cpu.c \
-	src/dis.c \
-	src/disk_io.c \
-	src/disk_io_obj.c \
-	src/emulator_core.c \
-	src/flash49.c \
-	src/hdw.c \
-	src/hw_config.c \
-	src/keyb.c \
-	src/modules.c \
-	src/monitor.c \
-	src/romram.c \
-	src/romram49.c \
-	src/serial.c \
-	src/x_func.c \
-	src/chf_messages.c \
+SRC = src/main.c \
 	src/options.c \
-	src/emulator_ui4x_api.c \
-	src/main.c \
+	src/ui4x_api_impl.c \
+	src/core/cpu.c \
+	src/core/dis.c \
+	src/core/disk_io.c \
+	src/core/disk_io_obj.c \
+	src/core/emulator.c \
+	src/core/flash49.c \
+	src/core/hdw.c \
+	src/core/hw_config.c \
+	src/core/keyb.c \
+	src/core/modules.c \
+	src/core/monitor.c \
+	src/core/romram.c \
+	src/core/romram49.c \
+	src/core/serial.c \
+	src/core/x_func.c \
+	src/core/chf_messages.c \
 	src/ui4x/fonts.c \
 	src/ui4x/48sx.c \
 	src/ui4x/48gx.c \

@@ -1,8 +1,7 @@
 #ifndef _UI4x_INNER_H
 #  define _UI4x_INNER_H 1
 
-#  include "../emulator_ui4x_api.h"
-
+#  include "api.h"
 #  include "bitmaps_misc.h"
 
 /* 4.1.1.1: When defined, this symbol represents the threshold of the long

@@ -106,7 +106,7 @@
       {                                                                                                                                    \
           if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
 
-#  define _debug_postamble( module_id ) );                                                                                                   \
+#  define _debug_postamble( module_id ) );                                                                                                 \
       ChfSignal( module_id );                                                                                                              \
       }                                                                                                                                    \
       }

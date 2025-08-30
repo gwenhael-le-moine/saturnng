@@ -6,13 +6,14 @@
 #include <sys/time.h>
 
 #include "options.h"
-#include "emulator_ui4x_api.h"
+#include "config.h"
+
+#include "ui4x/api.h"
 #include "ui4x/common.h"
 
-#include "config.h"
-#include "cpu.h"
-#include "monitor.h"
-#include "chf_messages.h"
+#include "core/cpu.h"
+#include "core/monitor.h"
+#include "core/chf_messages.h"
 
 #define UI_REFRESH_RATE_Hz 64
 

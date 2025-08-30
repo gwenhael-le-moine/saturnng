@@ -3,7 +3,7 @@
 
 #  include <stdbool.h>
 
-#  include "options.h"
+#  include "../options.h"
 
 // HP 48{G,S}X Keys
 typedef enum {

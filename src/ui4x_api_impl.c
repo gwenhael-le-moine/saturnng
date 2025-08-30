@@ -2,11 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "keyb.h"
-#include "modules.h"
 #include "options.h"
-#include "serial.h"
-#include "emulator_ui4x_api.h"
+
+#include "core/keyb.h"
+#include "core/modules.h"
+#include "core/serial.h"
+
+#include "ui4x/api.h"
 
 #define KEYBOARD ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? keyboard48 : keyboard49 )
 
