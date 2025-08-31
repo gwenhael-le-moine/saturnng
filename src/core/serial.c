@@ -35,10 +35,10 @@
 
 .identifier   : $Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: serial.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: serial.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	13-Sep-2000
 .keywords     : *
 .description  :
@@ -51,7 +51,7 @@
 
 .include      : config.h, machdep.h, serial.h
 
-.notes	      :
+.notes        :
   $Log: serial.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -100,13 +100,13 @@
 
 .- */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "machdep.h"
 #include "cpu.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
@@ -458,8 +458,8 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 
 /* .+
 
-.title	      : SerialInit
-.kind	      : C function
+.title        : SerialInit
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function opens and initializes the pseudo-terminal that will
@@ -472,11 +472,11 @@ static int slave_pty;  /* File descriptor of pty's slave side */
   Notice that the string returned by SerialInit() shall not be
   modified in any way.
 
-.call	      :
+.call         :
                 slave_pty_name = SerialInit(void);
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 const char *slave_pty_name, name of slave pty or NULL
 .status_codes :
                 SERIAL_I_CALLED
@@ -489,7 +489,7 @@ static int slave_pty;  /* File descriptor of pty's slave side */
                 SERIAL_F_UNLOCKPT
                 SERIAL_F_OPEN_SLAVE
                 SERIAL_F_PUSH
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
   2.6, 15-Sep-2000, update
     - implemented USE_STREAMSPTY
@@ -663,8 +663,8 @@ const char* SerialInit( void )
 
 /* .+
 
-.title	      : SerialClose
-.kind	      : C function
+.title        : SerialClose
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function closes the pseudo-terminal opened by SerialInit(), if
@@ -674,16 +674,16 @@ const char* SerialInit( void )
   because SerialInit() automatically registers it with atexit() upon
   successful completion.
 
-.call	      :
+.call         :
                 SerialClose();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_E_PTY_CLOSE
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
   2.6, 15-Sep-2000, update
     - updated documentation
@@ -702,8 +702,8 @@ void SerialClose( void )
 
 /* .+
 
-.title	      : SerialPtyName
-.kind	      : C function
+.title        : SerialPtyName
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function returns to the caller the name of the slave size of
@@ -713,16 +713,16 @@ void SerialClose( void )
   Notice that the string returned by SerialPtyName() shall not be
   modified in any way.
 
-.call	      :
+.call         :
                 slave_pty_name = SerialPtyName();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 const char *slave_pty_name, name of slave pty opened by
                   SerialInit()
 .status_codes :
                 SERIAL_I_CALLED
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -735,8 +735,8 @@ const char* SerialPtyName( void )
 
 /* .+
 
-.title	      : Serial_IOC_Read
-.kind	      : C function
+.title        : Serial_IOC_Read
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial I/O and interrupt control
@@ -745,16 +745,16 @@ const char* SerialPtyName( void )
   Reading IOC returns the current value of the ioc emulation register
   and does not trigger any ancillary action.
 
-.call	      :
+.call         :
                 n = Serial_IOC_Read();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 Nibble n, current value of emulated register
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_READ
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -768,8 +768,8 @@ Nibble Serial_IOC_Read( void )
 
 /* .+
 
-.title	      : Serial_RCS_Read
-.kind	      : C function
+.title        : Serial_RCS_Read
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial receiver control & status
@@ -778,16 +778,16 @@ Nibble Serial_IOC_Read( void )
   Reading RCS returns the current value of the rcs emulation register
   and does not trigger any ancillary action.
 
-.call	      :
+.call         :
                 n = Serial_RCS_Read();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 Nibble n, current value of emulated register
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_READ
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -801,8 +801,8 @@ Nibble Serial_RCS_Read( void )
 
 /* .+
 
-.title	      : Serial_TCS_Read
-.kind	      : C function
+.title        : Serial_TCS_Read
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial transmitter control & status
@@ -811,16 +811,16 @@ Nibble Serial_RCS_Read( void )
   Reading TCS returns the current value of the tcs emulation register
   and does not trigger any ancillary action.
 
-.call	      :
+.call         :
                 n = Serial_TCS_Read();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 Nibble n, current value of emulated register
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_READ
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -834,8 +834,8 @@ Nibble Serial_TCS_Read( void )
 
 /* .+
 
-.title	      : Serial_RBR_Read
-.kind	      : C function
+.title        : Serial_RBR_Read
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial receiver buffer
@@ -846,17 +846,17 @@ Nibble Serial_TCS_Read( void )
   - UpdateRCS
   - CheckIRQ
 
-.call	      :
+.call         :
                 d = Serial_RBR_Read();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 int8 d, current value of emulated register
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_RBR
                 SERIAL_W_EMPTY_RRB
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
   3.2, 22-Sep-2000, update
     - removed warning message
@@ -889,8 +889,8 @@ int8 Serial_RBR_Read( void )
 
 /* .+
 
-.title	      : Serial_IOC_Write
-.kind	      : C function
+.title        : Serial_IOC_Write
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial I/O and interrupt control
@@ -900,16 +900,16 @@ int8 Serial_RBR_Read( void )
 
   - CheckIRQ is executed
 
-.call	      :
+.call         :
                 Serial_IOC_Write(n);
-.input	      :
+.input        :
                 Nibble n, value to be written into the emulated register
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_WRITE
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -925,8 +925,8 @@ void Serial_IOC_Write( Nibble n )
 
 /* .+
 
-.title	      : Serial_RCS_Write
-.kind	      : C function
+.title        : Serial_RCS_Write
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial receiver control & status
@@ -935,16 +935,16 @@ void Serial_IOC_Write( Nibble n )
   The status is updated and no additional actions are taken; it is not
   so clear when a direct write into RCS could be useful.
 
-.call	      :
+.call         :
                 Serial_RCS_Write(n);
-.input	      :
+.input        :
                 Nibble n, value to be written into the emulated register
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_WRITE
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -958,8 +958,8 @@ void Serial_RCS_Write( Nibble n )
 
 /* .+
 
-.title	      : Serial_TCS_Write
-.kind	      : C function
+.title        : Serial_TCS_Write
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial transmitter control & status
@@ -968,16 +968,16 @@ void Serial_RCS_Write( Nibble n )
   The status is updated and no additional actions are taken; it is not
   so clear when a direct write into TCS could be useful.
 
-.call	      :
+.call         :
                 Serial_TCS_Write(n);
-.input	      :
+.input        :
                 Nibble n, value to be written into the emulated register
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_WRITE
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -991,8 +991,8 @@ void Serial_TCS_Write( Nibble n )
 
 /* .+
 
-.title	      : Serial_CRER_Write
-.kind	      : C function
+.title        : Serial_CRER_Write
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial 'clear receiver error'
@@ -1000,16 +1000,16 @@ void Serial_TCS_Write( Nibble n )
 
   The value written is ignored, and the RCS_RER bit is cleared.
 
-.call	      :
+.call         :
                 Serial_CRER_Write(n);
-.input	      :
+.input        :
                 Nibble n, value to be written into the emulated register
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_WRITE
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -1023,8 +1023,8 @@ void Serial_CRER_Write( Nibble n )
 
 /* .+
 
-.title	      : Serial_TBR_Write
-.kind	      : C function
+.title        : Serial_TBR_Write
+.kind         : C function
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial transmitter buffer
@@ -1035,17 +1035,17 @@ void Serial_CRER_Write( Nibble n )
   - UpdateTCS
   - CheckIRQ
 
-.call	      :
+.call         :
                 Serial_TBR_Write(d);
-.input	      :
+.input        :
                 int8 d, value to be written into the emulated register
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_TBR
                 SERIAL_W_FULL_TRB
-.notes	      :
+.notes        :
   2.5, 13-Sep-2000, creation
 
 .- */
@@ -1072,8 +1072,8 @@ void Serial_TBR_Write( int8 d )
 
 /* .+
 
-.title	      : HandleSerial
-.kind	      : C function
+.title        : HandleSerial
+.kind         : C function
 .creation     : 14-Sep-2000
 .description  :
   This function is called by the emulator loop every 1/16s, and performs
@@ -1089,17 +1089,17 @@ void Serial_TBR_Write( int8 d )
 
   - CheckIRQ
 
-.call	      :
+.call         :
                 HandleSerial();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_E_TRB_DRAIN
                 SERIAL_E_RRB_CHARGE
-.notes	      :
+.notes        :
   2.5, 14-Sep-2000, creation
   2.6, 15-Sep-2000, update
     - enhanced documentation of status_codes

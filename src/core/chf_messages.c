@@ -1,4 +1,5 @@
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+
 #include "chf_messages.h"
 
 ChfTable message_table[] = {

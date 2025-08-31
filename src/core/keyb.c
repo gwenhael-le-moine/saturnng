@@ -35,10 +35,10 @@
 
 .identifier   : $Id: keyb.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: keyb.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: keyb.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	29-Jan-1998
 .keywords     : *
 .description  :
@@ -55,7 +55,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h, keyb.h
 
-.notes	      :
+.notes        :
   $Log: keyb.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -84,10 +84,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "keyb.h"
@@ -103,8 +102,8 @@ static InputRegister cur_in[ OUT_BITS ];
 
 /* .+
 
-.title	      : KeybRSI
-.kind	      : C function
+.title        : KeybRSI
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function is called by the CPU emulator when the RSI instruction is
@@ -114,15 +113,15 @@ static InputRegister cur_in[ OUT_BITS ];
   NOTE: This function currently (r1.1) always posts an IRQ request; perhaps,
         if the ON key is down, a NMI request should be posted instead.
 
-.call	      :
+.call         :
                 KeybRSI();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 *
-.notes	      :
+.notes        :
   1.1, 17-Feb-1998, creation
 
 .- */
@@ -135,23 +134,23 @@ void KeybRSI( void )
 
 /* .+
 
-.title	      : KeybIn
-.kind	      : C function
+.title        : KeybIn
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function is called by the CPU emulator when either a C=IN or a A=IN
   instruction is executed. It scans the keyboard and returns the current
   value of the IN register for the given value of the OUT reguster.
 
-.call	      :
+.call         :
                 in = KeybIN(out);
-.input	      :
+.input        :
                 OutputRegister out, current value of the OUT register
-.output	      :
+.output       :
                 InputRegister in, computed value of the IN register
 .status_codes :
                 *
-.notes	      :
+.notes        :
   1.1, 17-Feb-1998, creation
 
 .- */
@@ -174,24 +173,24 @@ InputRegister KeybIN( OutputRegister out )
 
 /* .+
 
-.title	      : KeybPress
-.kind	      : C function
+.title        : KeybPress
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function tells to the keyboard emulator that key 'key' has been
   pressed. It updates the internal keyboard status information and, if
   necessary, posts an interrupt request to the CPU.
 
-.call	      :
+.call         :
                 KeybPress(key);
-.input	      :
+.input        :
                 const char *key, identifies the key that has been pressed.
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_W_BAD_KEY
                 MOD_W_BAD_OUT_BIT
-.notes	      :
+.notes        :
   1.1, 17-Feb-1998, creation
   2.1, 6-Sep-2000,
     deeply revised to accomodate the new GUI
@@ -228,23 +227,23 @@ void KeybPress( const char* key )
 
 /* .+
 
-.title	      : KeybRelease
-.kind	      : C function
+.title        : KeybRelease
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function tells to the keyboard emulator that key 'key' has been
   released. It updates the internal keyboard status information.
 
-.call	      :
+.call         :
                 KeybRelease(key);
-.input	      :
+.input        :
                 const char *key, identifies the key that has been released.
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_W_BAD_KEY
                 MOD_W_BAD_OUT_BIT
-.notes	      :
+.notes        :
   1.1, 17-Feb-1998, creation
   2.1, 6-Sep-2000,
     deeply revised to accomodate the new GUI
@@ -275,20 +274,20 @@ void KeybRelease( const char* key )
 
 /* .+
 
-.title	      : KeybReset
-.kind	      : C function
+.title        : KeybReset
+.kind         : C function
 .creation     : 7-Nov-2000
 .description  :
   This function resets the emulated keyboard; all keys are released.
 
-.call	      :
+.call         :
                 KeybReset();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
-.notes	      :
+.notes        :
   3.13, 7-Nov-2000, creation
 
 .- */

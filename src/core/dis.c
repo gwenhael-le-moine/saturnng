@@ -35,10 +35,10 @@
 
 .identifier   : $Id: dis.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: dis.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: dis.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	26-Jan-1998
 .keywords     : *
 .description  :
@@ -55,7 +55,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h
 
-.notes	      :
+.notes        :
   $Log: dis.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -84,13 +84,11 @@
 #include <stdlib.h>
 #include <string.h> /* 3.1: strcpy(), strcat(), strlen() */
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
-#include "debug.h"
 
 /*---------------------------------------------------------------------------
         Private functions/macros/variables
@@ -2188,24 +2186,24 @@ static Address DisGroup_8( Address pc, char* ob )
 
 /* .+
 
-.title	      : Disassemble
-.kind	      : C function
+.title        : Disassemble
+.kind         : C function
 .creation     : 28-Jan-1998
 .description  :
   This function disassembles a Saturn instruction starting from 'pc' and
   puts the result into the output buffer 'ob'.
 
-.call	      :
+.call         :
                 new_pc = Disassemble(pc, ob)
-.input	      :
+.input        :
                 Address pc, address of the instruction to disassemble
-.output	      :
+.output       :
                 char ob[DISASSEMBLE_OB_SIZE], text output buffer
                 Address new_pc, address of the next instruction
 .status_codes :
                 CPU_E_BAD_OPCODE
                 CPU_F_INTERR
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */

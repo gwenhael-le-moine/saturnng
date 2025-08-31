@@ -35,10 +35,10 @@
 
 .identifier   : $Id: flash49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HPxx emulator
-.title	      : $RCSfile: flash49.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: flash49.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	25-Sep-2000
 .keywords     : *
 .description  :
@@ -50,7 +50,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h flash49.h
 
-.notes	      :
+.notes        :
   $Log: flash49.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -69,10 +69,10 @@
 
 .- */
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"
@@ -369,8 +369,8 @@ static int FSM( enum FlashCycle cycle, XAddress address, int data )
 
 /* .+
 
-.title	      : FlashRead49
-.kind	      : C function
+.title        : FlashRead49
+.kind         : C function
 .creation     : 25-Sep-2000
 .description  :
   This function reads the nibble @address from Flash Rom and returns it
@@ -379,17 +379,17 @@ static int FSM( enum FlashCycle cycle, XAddress address, int data )
   This function DOES NOT supports even/odd nibble accesses at non-contiguous
   addresses.
 
-.call	      :
+.call         :
                 n = FlashRead49(address);
-.input	      :
+.input        :
                 XAddress address
-.output	      :
+.output       :
                 Nibble n
 .status_codes :
                 FLASH_I_READ
                 FLASH_I_FSM_OP
                 FLASH_W_BAD_CMD
-.notes	      :
+.notes        :
   3.3, 25-Sep-2000, creation
 
 .- */
@@ -413,8 +413,8 @@ Nibble FlashRead49( XAddress address )
 
 /* .+
 
-.title	      : FlashWrite49
-.kind	      : C function
+.title        : FlashWrite49
+.kind         : C function
 .creation     : 25-Sep-2000
 .description  :
   This function writes nibble datum @address into Flash Rom.
@@ -422,19 +422,19 @@ Nibble FlashRead49( XAddress address )
   This function DOES NOT supports even/odd nibble accesses at non-contiguous
   addresses.
 
-.call	      :
+.call         :
                 FlashWrite49(address, datum);
-.input	      :
+.input        :
                 XAddress address
                 Nibble datum
-.output	      :
+.output       :
                 void
 .status_codes :
                 FLASH_I_WRITE
                 FLASH_I_FSM_OP
                 FLASH_W_BAD_CMD
                 FLASH_W_BAD_ADDRESS
-.notes	      :
+.notes        :
   3.3, 25-Sep-2000, creation
 
 .- */

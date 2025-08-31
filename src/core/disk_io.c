@@ -35,10 +35,10 @@
 
 .identifier   : $Id: disk_io.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: disk_io.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: disk_io.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	23-Jan-1998
 .keywords     : *
 .description  :
@@ -47,7 +47,7 @@
 
 .include      : config.h, machdep.h, cpu.h, disk_io.h
 
-.notes	      :
+.notes        :
   $Log: disk_io.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -64,37 +64,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "disk_io.h"
 #include "debug.h"
 
 /* .+
 
-.title	      : ReadNibblesFromFile
-.kind	      : C function
+.title        : ReadNibblesFromFile
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function reads 'size' nibbles from the disk file named 'name',
   and stores them into main memory starting from 'dest'. It returns to the
   caller a status code.
 
-.call	      :
+.call         :
                 st = ReadNibbledFromFile(name, size, dest);
-.input	      :
+.input        :
                 const char *name, file name
                 int size, size of the file (nibbles, NOT bytes)
-.output	      :
+.output       :
                 Nibble *dest, pointer to the destination memory area
                 int st, status code
 .status_codes :
                 DISK_IO_I_CALLED	(signalled)
                 DISK_IO_E_OPEN
                 DISK_IO_E_GETC
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -132,27 +131,27 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 
 /* .+
 
-.title	      : WriteNibblesToFile
-.kind	      : C function
+.title        : WriteNibblesToFile
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function writes 'size' nibbles taken from 'src' into the file 'name'.
   It returns to the caller a status code
 
-.call	      :
+.call         :
                 st = WriteNibblesToFile(src, size, name);
-.input	      :
+.input        :
                 const Nibble *src, pointer to data to be written
                 int size, # of nibble to write
                 const char *name, file name
-.output	      :
+.output       :
                 int st, status code
 .status_codes :
                 DISK_IO_I_CALLED	(signalled)
                 DISK_IO_E_OPEN
                 DISK_IO_E_PUTC
                 DISK_IO_E_CLOSE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -191,25 +190,25 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 
 /* .+
 
-.title	      : ReadStructFromFile
-.kind	      : C function
+.title        : ReadStructFromFile
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function reads the contents of the structure 's', with size 's_size',
   from the disk file 'name' and returns a status code to the caller.
 
-.call	      :
+.call         :
                 st = ReadStructFromFile(name, s_size, s);
-.input	      :
+.input        :
                 const char *name, file name
                 size_t s_size, structure size
-.output	      :
+.output       :
                 void *s, pointer to the structure
 .status_codes :
                 DISK_IO_I_CALLED	(signalled)
                 DISK_IO_E_OPEN
                 DISK_IO_E_READ
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -237,27 +236,27 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
 
 /* .+
 
-.title	      : WriteStructToFile
-.kind	      : C function
+.title        : WriteStructToFile
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function writes the structure 's', with size 's_size', to the file
   'name' and returns to the caller a status code.
 
-.call	      :
+.call         :
                 st =WriteStructToFile(s, s_size, name);
-.input	      :
+.input        :
                 const void *s, pointer to the structure to be written
                 size_t s_size, structure size
                 const char *name, output file name
-.output	      :
+.output       :
                 int st, status code
 .status_codes :
                 DISK_IO_I_CALLED	(signalled)
                 DISK_IO_E_OPEN
                 DISK_IO_E_WRITE
                 DISK_IO_E_CLOSE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */

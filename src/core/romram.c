@@ -35,10 +35,10 @@
 
 .identifier   : $Id: romram.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: romram.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: romram.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	23-Jan-1998
 .keywords     : *
 .description  :
@@ -52,7 +52,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h
 
-.notes	      :
+.notes        :
   $Log: romram.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -78,15 +78,14 @@
 
 .- */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> /* access() */
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
@@ -111,24 +110,24 @@ static struct ModStatus_48* mod_status_48;
 
 /* .+
 
-.title	      : RomInit
-.kind	      : C function
+.title        : RomInit
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function allocates the dynamically-allocated portion of the
   module status structure, and initializes the Rom module.
 
-.call	      :
+.call         :
                 RomInit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_F_ROM_INIT
                 MOD_F_MOD_STATUS_ALLOC
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
 
 .- */
@@ -153,22 +152,22 @@ void RomInit( void )
 
 /* .+
 
-.title	      : RomSave
-.kind	      : C function
+.title        : RomSave
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Rom module; actually it does
   nothing.
 
-.call	      :
+.call         :
                 RomSave();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -176,22 +175,22 @@ void RomSave( void ) { debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "
 
 /* .+
 
-.title	      : RomRead
-.kind	      : C function
+.title        : RomRead
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function reads a nibble from the internal ROM address 'rel_address'
   and returns it.
 
-.call	      :
+.call         :
                 d = RomRead(rel_address);
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -204,24 +203,24 @@ Nibble RomRead( Address rel_address )
 
 /* .+
 
-.title	      : RomWrite
-.kind	      : C function
+.title        : RomWrite
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function is called when the CPU attempt to write into an internal
   ROM location. It signals an error condition and does nothing.
 
-.call	      :
+.call         :
                 RomWrite(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_ROM_WRITE
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -240,22 +239,22 @@ void RomWrite( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : RamInit
-.kind	      : C function
+.title        : RamInit
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the Ram module.
 
-.call	      :
+.call         :
                 RamInit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_RAM_INIT
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
 
 .- */
@@ -273,22 +272,22 @@ void RamInit( void )
 
 /* .+
 
-.title	      : RamSave
-.kind	      : C function
+.title        : RamSave
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Ram module to disk.
 
-.call	      :
+.call         :
                 RamSave();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_RAM_SAVE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
   2.4, 12-Sep-2000, update
     - upon failure, added push of ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR ) to condition stack.
@@ -307,22 +306,22 @@ void RamSave( void )
 
 /* .+
 
-.title	      : RamRead
-.kind	      : C function
+.title        : RamRead
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function reads a nibble from the internal RAM address 'rel_address'
   and returns it.
 
-.call	      :
+.call         :
                 d = RamRead(rel_address);
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -335,23 +334,23 @@ Nibble RamRead( Address rel_address )
 
 /* .+
 
-.title	      : RamWrite
-.kind	      : C function
+.title        : RamWrite
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function writes the nibble 'datum' into the address 'rel_address'
   of the internal RAM.
 
-.call	      :
+.call         :
                 RamWrite(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -368,22 +367,22 @@ void RamWrite( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : Ce1Init
-.kind	      : C function
+.title        : Ce1Init
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the Ce1 module, corresponding to the
   Back Switcher.
 
-.call	      :
+.call         :
                 Ce1Init();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -403,21 +402,21 @@ void Ce1Init( void )
 
 /* .+
 
-.title	      : Ce1Save
-.kind	      : C function
+.title        : Ce1Save
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Ce1 module.
 
-.call	      :
+.call         :
                 Ce1Save();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -433,8 +432,8 @@ void Ce1Save( void )
 
 /* .+
 
-.title	      : Ce1Read
-.kind	      : C function
+.title        : Ce1Read
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function reads a nibble from the Ce1 module; the address of
@@ -442,16 +441,16 @@ void Ce1Save( void )
   mod_status_hdw.accel.a48.bs_address.  It will be used to supply the
   most significant bits of Port_2 addresses when accessing that port.
 
-.call	      :
+.call         :
                 d = Ce1Read(rel_address);
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_BS_ADDRESS
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -474,25 +473,25 @@ Nibble Ce1Read( Address rel_address )
 
 /* .+
 
-.title	      : Ce1Write
-.kind	      : C function
+.title        : Ce1Write
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the Ce1 module; the write attempt
   is ignored and the status code MOD_E_CE1_WRITE is signaled. The
   state of mod_status_hdw.accel.a48.bs_address is *not* changed.
 
-.call	      :
+.call         :
                 Ce1Write(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_CE1_WRITE
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -511,23 +510,23 @@ void Ce1Write( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : Ce2Init
-.kind	      : C function
+.title        : Ce2Init
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the Ce2 module, corresponding to Port 1.
 
-.call	      :
+.call         :
                 Ce2Init();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_PORT_1_INIT
                 MOD_I_PORT_1_WP
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -572,23 +571,23 @@ void Ce2Init( void )
 
 /* .+
 
-.title	      : Ce2Save
-.kind	      : C function
+.title        : Ce2Save
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Ce2 module, if it is
   not write-protected.
 
-.call	      :
+.call         :
                 Ce2Save();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_PORT_1_SAVE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -607,21 +606,21 @@ void Ce2Save( void )
 
 /* .+
 
-.title	      : Ce2Read
-.kind	      : C function
+.title        : Ce2Read
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function reads a nibble from the Ce2 module.
 
-.call	      :
+.call         :
                 d = Ce2Read(rel_address)
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -635,22 +634,22 @@ Nibble Ce2Read( Address rel_address )
 
 /* .+
 
-.title	      : Ce2Write
-.kind	      : C function
+.title        : Ce2Write
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the Ce2 module.
 
-.call	      :
+.call         :
                 Ce2Write(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -668,24 +667,24 @@ void Ce2Write( Address rel_address, Nibble datum )
 
 /* .+
 
-.title	      : NCe3Init
-.kind	      : C function
+.title        : NCe3Init
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the NCe3 module, corresponding to the
   (bank switched) port 2.
 
-.call	      :
+.call         :
                 NCe3Init();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_PORT_2_INIT
                 MOD_I_PORT_2_WP
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -737,22 +736,22 @@ void NCe3Init( void )
 
 /* .+
 
-.title	      : NCe3Save
-.kind	      : C function
+.title        : NCe3Save
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the NCe3 module.
 
-.call	      :
+.call         :
                 NCe3Save();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_PORT_2_SAVE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -774,23 +773,23 @@ void NCe3Save( void )
 
 /* .+
 
-.title	      : NCe3Read
-.kind	      : C function
+.title        : NCe3Read
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function reads a nibble from the NCe3 module.
 
-.call	      :
+.call         :
                 d = NCe3Read(rel_address)
-.input	      :
+.input        :
                 Address rel_address, memory address
-.output	      :
+.output       :
                 Nibble *d, datum read from memory
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_NCE3_READ
 
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
@@ -812,25 +811,25 @@ Nibble NCe3Read( Address rel_address )
 
 /* .+
 
-.title	      : NCe3Write
-.kind	      : C function
+.title        : NCe3Write
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the NCe3 module;
   it is not currently implemented.
 
-.call	      :
+.call         :
                 NCe3Write(rel_address, datum);
-.input	      :
+.input        :
                 Address rel_address, memory address
                 Nibble datum, datum to be written into memory
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_NCE3_WRITE
 
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 

@@ -35,10 +35,10 @@
 
 .identifier   : $Id: monitor.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: monitor.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: monitor.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	28-Jan-1998
 .keywords     : *
 .description  :
@@ -47,7 +47,7 @@
 
 .include      : config.h, machdep.h, cpu.h
 
-.notes	      :
+.notes        :
   $Log: monitor.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -70,10 +70,10 @@
 #include <string.h>
 #include <signal.h>
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "cpu.h"
 #include "modules.h"
 
@@ -300,22 +300,22 @@ static void sigint_handler( int s ) { EmulatorIntRequest(); }
 
 /* .+
 
-.title	      : Monitor
-.kind	      : C function
+.title        : Monitor
+.kind         : C function
 .creation     : 18-Feb-1998
 .description  :
   This function implements a very simple interactive monitor.
 
-.call	      :
+.call         :
                 Monitor();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_W_BAD_MONITOR_CMD
                 From lower level modules
-.notes	      :
+.notes        :
   1.1, 18-Feb-1998, creation
 
 .- */

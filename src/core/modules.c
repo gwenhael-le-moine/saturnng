@@ -35,10 +35,10 @@
 
 .identifier   : $Id: modules.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: modules.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: modules.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	26-Jan-1998
 .keywords     : *
 .description  :
@@ -66,7 +66,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h
 
-.notes	      :
+.notes        :
   $Log: modules.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -114,10 +114,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
@@ -193,8 +192,8 @@ static int repl_c = 0;  /* Entry replacement counter */
 
 /* .+
 
-.title	      : BadRead
-.kind	      : C function
+.title        : BadRead
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function is called when a read access is attempted for an unmapped
@@ -204,15 +203,15 @@ static int repl_c = 0;  /* Entry replacement counter */
   zeros represent a RTNSXM instruction, this is an easy way to detect when
   a gosub transfers control to an unmapped address.
 
-.call	      :
+.call         :
                 d = BadRead(addr);
-.input	      :
+.input        :
                 Address addr, address
-.output	      :
+.output       :
                 Nibble d, datum
 .status_codes :
                 MOD_E_BAD_READ
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -226,8 +225,8 @@ static Nibble BadRead( Address addr )
 
 /* .+
 
-.title	      : BadWrite
-.kind	      : C function
+.title        : BadWrite
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function is called when a write access is attempted for an unmapped
@@ -235,16 +234,16 @@ static Nibble BadRead( Address addr )
 
   It signals a warning and does not execute the write.
 
-.call	      :
+.call         :
                 BadWrite(addr, datum);
-.input	      :
+.input        :
                 Address addr, address
                 Nibble datum, datum to be written
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_E_BAD_WRITE
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -256,24 +255,24 @@ static void BadWrite( Address addr, Nibble datum )
 
 /* .+
 
-.title	      : RebuildPageTable
-.kind	      : C function
+.title        : RebuildPageTable
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function rebuilds the module page table from page 'lo' to page 'hi',
   inclusive, using the information contained in the current module
   mapping structure (MOD_MAP.map_info).
 
-.call	      :
+.call         :
                 RebuildPageTable(lo, hi);
-.input	      :
+.input        :
                 int lo, first page table entry to rebuild
                 int hi, last page table entry to rebuild
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
   3.3, 25-Sep-2000, update
     - implemented MOD_MAP_FLAGS_ABS flag in mod_description[].map_flags,
@@ -343,23 +342,23 @@ static void RebuildPageTable( int lo, int hi )
 
 /* .+
 
-.title	      : ClearCachingInfo
-.kind	      : C function
+.title        : ClearCachingInfo
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function clears all caching information associated with the
   struct ModMap pointed by its argument, and returns a pointer to
   the same structure.
 
-.call	      :
+.call         :
                 d = ClearCachingInfo(d);
-.input	      :
+.input        :
                 struct ModMap *d, ptr to the structure to be wiped off
-.output	      :
+.output       :
                 struct ModMap *d, ptr to affected structure
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -385,8 +384,8 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 
 /* .+
 
-.title	      : NewModMap
-.kind	      : C function
+.title        : NewModMap
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function allocates a new struct ModMap, links it into the list of
@@ -399,17 +398,17 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
   If DEBUG is appropriately enabled, this function prints out the
   current value of all cache performance counters (PrintCacheStats).
 
-.call	      :
+.call         :
                 p = NewModMap();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 struct ModMap *p, pointer to the new struct ModMap
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_PERF_CTR, performance counter: %s value: %d
                 MOD_F_MAP_ALLOC, allocation of new map failed
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -437,8 +436,8 @@ static struct ModMap* NewModMap( void )
 
 /* .+
 
-.title	      : CopyModMap
-.kind	      : C function
+.title        : CopyModMap
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function copies the contents of a struct ModMap into another,
@@ -448,15 +447,15 @@ static struct ModMap* NewModMap( void )
   The linkage of the destination structure in the cached struct ModMap
   list (.link field) is preserved.
 
-.call	      :
+.call         :
                 d = CopyModMap(d, s);
-.input	      :
+.input        :
                 const struct ModMap *s, ptr to source structure
-.output	      :
+.output       :
                 struct ModMap *d, ptr to destination structure
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -473,8 +472,8 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 
 /* .+
 
-.title	      : ReplaceModMap
-.kind	      : C function
+.title        : ReplaceModMap
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function replaces the struct ModMap pointed by *d with a copy of
@@ -489,19 +488,19 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
   This function always clears the caching information in the
   destination structure.
 
-.call	      :
+.call         :
                 ReplaceModMap(d, s);
-.input	      :
+.input        :
                 struct ModMap **d, ptr to destination structure ptr
                 const struct ModMap *s, ptr to source structure
-.output	      :
+.output       :
                 struct ModMap **d, ptr to destination structure ptr;
                 updated when original value of *d was NULL
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_PERF_CTR, performance counter: %s value: %d
                 MOD_F_MAP_ALLOC, allocation of new map failed
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -520,8 +519,8 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 
 /* .+
 
-.title	      : FlushCache
-.kind	      : C function
+.title        : FlushCache
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function flushes the whole cache, freeing all structures previously
@@ -529,16 +528,16 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
   also clears the caching information contained in save, because this
   information is no longer valid after the flush.
 
-.call	      :
+.call         :
                 FlushCache(save);
-.input	      :
+.input        :
                 struct ModMap *save
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -582,8 +581,8 @@ static void FlushCache( struct ModMap* save )
 
 /* .+
 
-.title	      : AccessConfigCache
-.kind	      : C function
+.title        : AccessConfigCache
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function checks if there is an entry in the module configuration cache
@@ -591,15 +590,15 @@ static void FlushCache( struct ModMap* save )
   if this is the case, it returns a pointer to the cached struct ModMap
   just found, otherwise it returns NULL (cache miss).
 
-.call	      :
+.call         :
                 p = AccessConfigCache(tag);
-.input	      :
+.input        :
                 Address tag, cache tag
-.output	      :
+.output       :
                 struct ModMap *p, cached pointer, or NULL
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -618,8 +617,8 @@ static struct ModMap* AccessConfigCache( Address tag )
 
 /* .+
 
-.title	      : AccessUnconfigCache
-.kind	      : C function
+.title        : AccessUnconfigCache
+.kind         : C function
 .creation     : 15-Sep-2000
 .description  :
   This function follows the .unconfig cache links with index i, starting
@@ -629,15 +628,15 @@ static struct ModMap* AccessConfigCache( Address tag )
   When successful, this function returns a pointer to the cached
   struct ModMap just found, otherwise it returns NULL (cache miss).
 
-.call	      :
+.call         :
                 p = AccessUnconfigCache(i);
-.input	      :
+.input        :
                 int i, unconfig cache index (unconfigured module index)
-.output	      :
+.output       :
                 struct ModMap *p, cached pointer, or NULL
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -657,8 +656,8 @@ static struct ModMap* AccessUnconfigCache( int i )
 
 /* .+
 
-.title	      : SelectConfigVictim
-.kind	      : C function
+.title        : SelectConfigVictim
+.kind         : C function
 .creation     : 19-Sep-2000
 .description  :
   This function selects a victim entry in the module configuration
@@ -674,18 +673,18 @@ static struct ModMap* AccessUnconfigCache( int i )
   If the search fails and the 'retry' argument is zero, this
   function immediately signals the fatal condition MOD_F_NO_VICTIM.
 
-.call	      :
+.call         :
                 victim = SelectConfigVictim();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 struct ModCacheTableEntry *victim, pointer to victim entry
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_NO_VICTIM
                 MOD_F_NO_VICTIM
                 MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -733,8 +732,8 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
 
 /* .+
 
-.title	      : CheckForLateHit
-.kind	      : C function
+.title        : CheckForLateHit
+.kind         : C function
 .creation     : 19-Sep-2000
 .description  :
   This function checks if there is in the cache a struct ModMap
@@ -747,15 +746,15 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
   This function should be used after execution of an unconfig instruction
   that encountered an early cache miss.
 
-.call	      :
+.call         :
                 p = CheckForLateHit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 struct ModMap *p, cached pointer, or NULL
 .status_codes :
                 MOD_I_CALLED
-.notes	      :
+.notes        :
   2.7, 19-Sep-2000, creation
 
 .- */
@@ -797,8 +796,8 @@ static struct ModMap* CheckForLateHit( void )
 
 /* .+
 
-.title	      : FreeModMap
-.kind	      : C function
+.title        : FreeModMap
+.kind         : C function
 .creation     : 19-Sep-2000
 .description  :
   This function frees the cached struct ModMap pointed by p, preserving
@@ -807,16 +806,16 @@ static struct ModMap* CheckForLateHit( void )
   It is responsibility of the caller to ensure that the structure is no
   longer referenced.
 
-.call	      :
+.call         :
                 p = CheckForLateHit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 struct ModMap *p, cached pointer, or NULL
 .status_codes :
                 MOD_I_CALLED
                 MOD_F_CHAIN_CORRUPTED
-.notes	      :
+.notes        :
   2.7, 15-Sep-2000, creation
 
 .- */
@@ -862,8 +861,8 @@ static void FreeModMap( struct ModMap* p )
 
 /* .+
 
-.title	      : ModRegisterDescription
-.kind	      : C function
+.title        : ModRegisterDescription
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function registers the ModDescription table pointed by 'p'; all
@@ -876,16 +875,16 @@ static void FreeModMap( struct ModMap* p )
   All error conditions are signalled using the Chf facility; the function
   returns 'void' to the caller.
 
-.call	      :
+.call         :
                 ModRegisterDescription(p);
-.input	      :
+.input        :
                 ModDescription p, module description table to be registered
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
 
-.notes	      :
+.notes        :
   3.2, 21-Sep-2000, creation
 
 .- */
@@ -897,8 +896,8 @@ void ModRegisterDescription( ModDescription p )
 
 /* .+
 
-.title	      : ModInit
-.kind	      : C function
+.title        : ModInit
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function initializes all peripheral modules, calling its initialization
@@ -909,11 +908,11 @@ void ModRegisterDescription( ModDescription p )
   All error conditions are signalled using the Chf facility; the function
   returns 'void' to the caller.
 
-.call	      :
+.call         :
                 ModInit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
@@ -927,7 +926,7 @@ void ModRegisterDescription( ModDescription p )
                 NOTE: This function can also (indirectly) report any condition
                 code generated and/or signalled by the module initialization
                 functions.
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.7, 15-Sep-2000, update
     - revised to implement module config/unconfig cache
@@ -977,8 +976,8 @@ void ModInit( void )
 
 /* .+
 
-.title	      : ModSave
-.kind	      : C function
+.title        : ModSave
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of all peripheral modules, calling its
@@ -987,11 +986,11 @@ void ModInit( void )
   All error conditions are signalled using the Chf facility; the function
   returns 'void' to the caller.
 
-.call	      :
+.call         :
                 ModSave();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
@@ -1001,7 +1000,7 @@ void ModInit( void )
                 NOTE: This function can also (indirectly) report any condition
                 code generated and/or signalled by the module initialization
                 functions.
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -1026,8 +1025,8 @@ void ModSave( void )
 
 /* .+
 
-.title	      : ModGetID
-.kind	      : C function
+.title        : ModGetID
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function returns the ID of the next module to be configured and the
@@ -1047,16 +1046,16 @@ void ModSave( void )
                 If the size of the module has already been configured, the
                 base ID of the module is increased by one.
 
-.call	      :
+.call         :
                 id = ModGetId();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 Address id, ID of the next module to be configured.
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_GET_ID
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -1088,24 +1087,24 @@ Address ModGetID( void )
 
 /* .+
 
-.title	      : ModReset
-.kind	      : C function
+.title        : ModReset
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function resets all peripheral modules and rebuilds the module page
   table used for module access.
 
-.call	      :
+.call         :
                 ModReset();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_I_RESETTING
                 MOD_F_BAD_ALLOC_C, bad alloc_c (%d) after FlushCache()
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
   2.7, 15-Sep-2000, update
     - revised to implement module config/unconfig cache
@@ -1144,8 +1143,8 @@ void ModReset( void )
 
 /* .+
 
-.title	      : ModConfig
-.kind	      : C function
+.title        : ModConfig
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function configures a module, using the given 'config_info'.
@@ -1163,11 +1162,11 @@ void ModReset( void )
   In the latter case, ModConfig rebuilds the page table used for module access
   to reflect the visibility of the new module in the CPU address space.
 
-.call	      :
+.call         :
                 void ModConfig(config_info);
-.input	      :
+.input        :
                 Address config_info, configuration information
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
@@ -1178,7 +1177,7 @@ void ModReset( void )
                 MOD_W_NO_VICTIM
                 MOD_F_MAP_ALLOC
                 MOD_F_NO_VICTIM
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
   2.7, 15-Sep-2000, update
     - implemented module config/unconfig cache
@@ -1283,8 +1282,8 @@ void ModConfig( Address config_info )
 
 /* .+
 
-.title	      : ModUnconfig
-.kind	      : C function
+.title        : ModUnconfig
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function unconfigures the module currently configured at address
@@ -1293,11 +1292,11 @@ void ModConfig( Address config_info )
   ModUnconfig also rebuilds the page table used for module access
   to reflect the loss of visibility of the module in the CPU address space.
 
-.call	      :
+.call         :
                 ModUnconfig(unconfig_info);
-.input	      :
+.input        :
                 Address unconfig_info, Unconfig information
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
@@ -1307,7 +1306,7 @@ void ModConfig( Address config_info )
                 MOD_W_BAD_UNCONFIG
                 MOD_F_MAP_ALLOC
                 MOD_F_CHAIN_CORRUPTED
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
   2.7, 15-Sep-2000, update
     - implemented module config/unconfig cache
@@ -1415,24 +1414,24 @@ void ModUnconfig( Address unconfig_info )
 
 /* .+
 
-.title	      : FetchNibble
-.kind	      : C function
+.title        : FetchNibble
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function fetches a nibble from the address 'addr' and returns it.
 
   NOTE: This function DOES NOT update the hardware CRC register.
 
-.call	      :
+.call         :
                 d = FetchNibble(addr);
-.input	      :
+.input        :
                 Address addr, address
-.output	      :
+.output       :
                 Nibble *d, datum
 .status_codes :
                 NOTE: This function indirectly reports and condition generated
                 and/or signalled by the module read function.
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -1445,8 +1444,8 @@ Nibble FetchNibble( Address addr )
 
 /* .+
 
-.title	      : ReadNibble
-.kind	      : C function
+.title        : ReadNibble
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function reads a nibble from the address 'addr' and returns it.
@@ -1457,16 +1456,16 @@ Nibble FetchNibble( Address addr )
         addressed page must be checked against MOD_HDW_INDEX for each
         access.
 
-.call	      :
+.call         :
                 d = ReadNibble(addr);
-.input	      :
+.input        :
                 Address addr, address
-.output	      :
+.output       :
                 Nibble *d, datum
 .status_codes :
                 NOTE: This function indirectly reports and condition generated
                 and/or signalled by the module read function.
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -1488,25 +1487,25 @@ Nibble ReadNibble( Address addr )
 
 /* .+
 
-.title	      : WriteNibble
-.kind	      : C function
+.title        : WriteNibble
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function writes the nibble 'datum' to the address 'addr'
 
   NOTE: This function DOES NOT update the hardware CRC register.
 
-.call	      :
+.call         :
                 WriteNibble(addr, datum);
-.input	      :
+.input        :
                 Address addr, destination address
                 Nibble datum, nibble to be written
-.output	      :
+.output       :
                 void
 .status_codes :
                 NOTE: This function indirectly reports and condition generated
                 and/or signalled by the module write function.
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -1523,22 +1522,22 @@ void WriteNibble( Address addr, Nibble datum )
 
 /* .+
 
-.title	      : ModMapCheck
-.kind	      : C function
+.title        : ModMapCheck
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function fills the string 'ob' with the current mapping information
   for address 'addr'; it is used by the emulator monitor only.
 
-.call	      :
+.call         :
                 ModMapCheck(addr, char ob[MOD_MAP_CHECK_OB_SIZE]);
-.input	      :
+.input        :
                 Address addr;
-.output	      :
+.output       :
                 void
 .status_codes :
                 *
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
@@ -1565,22 +1564,22 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 
 /* .+
 
-.title	      : ModMapTable
-.kind	      : C function
+.title        : ModMapTable
+.kind         : C function
 .creation     : 26-Jan-1998
 .description  :
   This function fills the string 'ob' with the current mapping table for
   all modules; it is used by the emulator monitor only.
 
-.call	      :
+.call         :
                 ModMapTable(char ob[MOD_MAP_TABLE_OB_SIZE]);
-.input	      :
+.input        :
                 Address addr;
-.output	      :
+.output       :
                 void
 .status_codes :
                 *
-.notes	      :
+.notes        :
   1.1, 26-Jan-1998, creation
 
 .- */

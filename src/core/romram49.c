@@ -90,15 +90,14 @@
 
 .- */
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> /* access() */
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"

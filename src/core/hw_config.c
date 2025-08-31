@@ -35,10 +35,10 @@
 
 .identifier   : $Id: hw_config.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HPxx emulator
-.title	      : $RCSfile: hw_config.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: hw_config.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	21-Sep-2000
 .keywords     : *
 .description  :
@@ -53,7 +53,7 @@
 
 .include      : config.h machdep.h, cpu.h, modules.h
 
-.notes	      :
+.notes        :
   $Log: hw_config.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -72,10 +72,10 @@
 
 .- */
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "cpu.h"
 #include "modules.h"
 #include "debug.h"
@@ -163,24 +163,24 @@ static const ModDescription hw49_description = {
 
 /* .+
 
-.title	      : ModSelectDescription
-.kind	      : C function
+.title        : ModSelectDescription
+.kind         : C function
 .creation     : 21-Sep-2000
 .description  :
   This function selects and registers (invoking ModRegisterDescription())
   a module description table depending on the hardware configuration
   string passed as argument.
 
-.call	      :
+.call         :
                 ModSelectDescription(hw)
-.input	      :
+.input        :
                 const char *hw, hardware configuration string
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_NO_MATCH
-.notes	      :
+.notes        :
   1.1, 28-Jan-1998, creation
 
 .- */

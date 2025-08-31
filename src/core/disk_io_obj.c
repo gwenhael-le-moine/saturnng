@@ -35,10 +35,10 @@
 
 .identifier   : $Id: disk_io_obj.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HPxx emulator
-.title	      : $RCSfile: disk_io_obj.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : IRITI-CNR
+.title        : $RCSfile: disk_io_obj.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : IRITI-CNR
 .creation     :	10-Nov-2000
 .keywords     : *
 .description  :
@@ -47,7 +47,7 @@
 
 .include      : config.h, machdep.h, cpu.h, disk_io.h
 
-.notes	      :
+.notes        :
   $Log: disk_io_obj.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -62,10 +62,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
@@ -73,8 +73,8 @@
 
 /* .+
 
-.title	      : ReadObjectFromFile
-.kind	      : C function
+.title        : ReadObjectFromFile
+.kind         : C function
 .creation     : 10-Nov-2000
 .description  :
   This function reads an object from file 'name' and stores it into
@@ -95,15 +95,15 @@
 
   This function returns to the caller a status code.
 
-.call	      :
+.call         :
                 st = ReadObjectFromFile(name, hdr, start, end);
 
-.input	      :
+.input        :
                 const char *name, input file name
                 const char *hdr, file header
                 Address start, start address (inclusive)
                 Address end, end address (exclusive)
-.output	      :
+.output       :
                 int st, status code
 .status_codes :
                 DISK_IO_I_CALLED	(signalled)
@@ -111,7 +111,7 @@
                 DISK_IO_E_GETC
                 DISK_IO_E_BAD_HDR
                 DISK_IO_E_SIZE
-.notes	      :
+.notes        :
   3.14, 10-Nov-2000, creation
 
 .- */
@@ -188,8 +188,8 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
 /* .+
 
-.title	      : WriteObjectToFile
-.kind	      : C function
+.title        : WriteObjectToFile
+.kind         : C function
 .creation     : 10-Nov-2000
 .description  :
   This function writes an object located in calculator's memory,
@@ -201,21 +201,21 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
   This function returns to the caller a status code.
 
-.call	      :
+.call         :
                 st = WriteObjectToFile(start, end, hdr, name);
-.input	      :
+.input        :
                 Address start, start address (inclusive)
                 Address end, end address (exclusive)
                 const char *hdr, file header
                 const char *name, output file name
-.output	      :
+.output       :
                 int st, status code
 .status_codes :
                 DISK_IO_I_CALLED	(signalled)
                 DISK_IO_E_OPEN
                 DISK_IO_E_PUTC
                 DISK_IO_E_CLOSE
-.notes	      :
+.notes        :
   3.14, 10-Nov-2000, creation
 
 .- */

@@ -35,10 +35,10 @@
 
 .identifier   : $Id: emulator.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: emulator.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: emulator.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	2-Feb-1998
 .keywords     : *
 .description  :
@@ -52,7 +52,7 @@
 
 .include      : config.h, machdep.h, cpu.h
 
-.notes	      :
+.notes        :
   $Log: emulator.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -107,17 +107,13 @@
 
 .- */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <setjmp.h>
-#include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "serial.h"
@@ -479,8 +475,8 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* descriptor, const Chf
 
 /* .+
 
-.title	      : Emulator
-.kind	      : C function
+.title        : Emulator
+.kind         : C function
 .creation     : 17-Feb-1998
 .description  :
   This function implements the main emulator loop. For efficiency reasons,
@@ -491,18 +487,18 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* descriptor, const Chf
   The only way to exit this function (with a non-local jump) is to signal
   a Chf Condition that triggers an unwind operation.
 
-.call	      :
+.call         :
                 Emulator();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 CPU_I_CALLED
                 CPU_I_TIMER1_EX
                 CPU_I_TIMER2_EX
                 Other conditions signalled by lower level modules
-.notes	      :
+.notes        :
   1.1, 17-Feb-1998, creation
 
 .- */
@@ -526,23 +522,23 @@ void Emulator( void )
 
 /* .+
 
-.title	      : EmulatorIntRequest
-.kind	      : C function
+.title        : EmulatorIntRequest
+.kind         : C function
 .creation     : 18-Feb-1998
 .description  :
   This function posts an interrupt request for the running emulator loop.
   The request will be satisfied as soon as possible and Emulator() will
   return to the caller.
 
-.call	      :
+.call         :
                 EmulatorIntRequest();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 *
-.notes	      :
+.notes        :
   1.1, 18-Feb-1998, creation
 
 .- */
@@ -550,24 +546,24 @@ void EmulatorIntRequest( void ) { emulator_int_req = true; }
 
 /* .+
 
-.title	      : EmulatorInit
-.kind	      : C function
+.title        : EmulatorInit
+.kind         : C function
 .creation     : 8-Sep-2000
 .description  :
   This function initializes the cpu and modules emulator subsystems;
   if the reset emulator option is set, a reset is forced on both
   subsystems, too.
 
-.call	      :
+.call         :
                 EmulatorInit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 * Status codes signaled by CpuInit() and CpuReset()
                 * Status codes signaled by ModInit() and ModReset()
-.notes	      :
+.notes        :
   2.1, 8-Sep-2000, creation
   2.4, 12-Sep-2000, update
     - invoke CpuInit() before ModInit() so that interrupt requests
@@ -596,8 +592,8 @@ void EmulatorInit( void )
 
 /* .+
 
-.title	      : EmulatorExit
-.kind	      : C function
+.title        : EmulatorExit
+.kind         : C function
 .creation     : 8-Sep-2000
 .description  :
   This function prepares the emulator to exit.  If 'opt' is SAVE_AND_EXIT,
@@ -605,15 +601,15 @@ void EmulatorInit( void )
   that this function never exits the application directly, but always
   returns to the caller unless an unrecoverable error occurs.
 
-.call	      :
+.call         :
                 EmulatorExit(opt);
-.input	      :
+.input        :
                 enum ExitOption opt, emulator exit option
-.output	      :
+.output       :
                 void
 .status_codes :
                 * Status codes signaled by CpuSave() and ModSave()
-.notes	      :
+.notes        :
   2.1, 8-Sep-2000, creation
 
 .- */

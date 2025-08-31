@@ -101,10 +101,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
 #include "keyb.h"

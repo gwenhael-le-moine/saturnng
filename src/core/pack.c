@@ -35,10 +35,10 @@
 
 .identifier   : $Id: pack.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: pack.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: pack.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	2-Oct-2000
 .keywords     : *
 .description  :
@@ -50,7 +50,7 @@
 
 .include      : *
 
-.notes	      :
+.notes        :
   $Log: pack.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -72,10 +72,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include "libChf/src/Chf.h"
+#include "../libChf/src/Chf.h"
 
-#include "config.h"
-#include "machdep.h"
 #include "cpu.h"
 #include "disk_io.h"
 
@@ -127,13 +125,13 @@ size_t message_table_size = sizeof( message_table ) / sizeof( message_table[ 0 ]
 
 /* .+
 
-.title	      : main
-.kind	      : C function
+.title        : main
+.kind         : C function
 .creation     : 2-Oct-2000
 .description  :
   Main program.
 
-.notes	      :
+.notes        :
   3.6, 2-Oct-2000, creation
 
 .- */

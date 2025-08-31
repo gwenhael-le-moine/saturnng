@@ -35,10 +35,10 @@
 
 .identifier   : $Id: hdw.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
 .context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: hdw.c,v $
-.kind	      : C source
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+.title        : $RCSfile: hdw.c,v $
+.kind         : C source
+.author       : Ivan Cibrario B.
+.site         : CSTV-CNR
 .creation     :	23-Jan-1998
 .keywords     : *
 .description  :
@@ -55,7 +55,7 @@
 
 .include      : config.h, machdep.h, cpu.h, modules.h
 
-.notes	      :
+.notes        :
   $Log: hdw.c,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
@@ -101,9 +101,10 @@
 
 #include <string.h> /* 3.1: memset() */
 
-#include "libChf/src/Chf.h"
 
-#include "config.h"
+#include "../libChf/src/Chf.h"
+#include "../config.h"
+
 #include "machdep.h"
 #include "cpu.h"
 #include "modules.h"
@@ -118,23 +119,23 @@ static const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F0
 
 /* .+
 
-.title	      : HdwInit
-.kind	      : C function
+.title        : HdwInit
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the Hdw module, restoring the status of the
   peripheral devices associated to it from disk.
 
-.call	      :
+.call         :
                 HdwInit();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_HDW_INIT
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, bug fix:
     memset() invocation was improper, and could lead to memory corruption
@@ -154,23 +155,23 @@ void HdwInit( void )
 
 /* .+
 
-.title	      : HdwSave
-.kind	      : C function
+.title        : HdwSave
+.kind         : C function
 .creation     : 11-Feb-1998
 .description  :
   This function saves the current status of the peripheral devices associated
   to the Hdw module to disk.
 
-.call	      :
+.call         :
                 HdwSave();
-.input	      :
+.input        :
                 void
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_E_HDW_SAVE
-.notes	      :
+.notes        :
   1.1, 11-Feb-1998, creation
 
 .- */
@@ -186,22 +187,22 @@ void HdwSave( void )
 
 /* .+
 
-.title	      : HdwRead
-.kind	      : C function
+.title        : HdwRead
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function reads a nibble from the Hdw module.
 
-.call	      :
+.call         :
                 d = HdwRead(rel_address);
-.input	      :
+.input        :
                 Address rel_address, relative address
-.output	      :
+.output       :
                 Nibble d, data
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_HDW_READ
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, update
     - read from rel_address 0x0F now returns the current value of
@@ -332,23 +333,23 @@ Nibble HdwRead( Address rel_address )
 
 /* .+
 
-.title	      : HdwWrite
-.kind	      : C function
+.title        : HdwWrite
+.kind         : C function
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the Hdw module.
 
-.call	      :
+.call         :
                 HdwWrite(rel_address, data);
-.input	      :
+.input        :
                 Address rel_address, relative address
                 Nibble data, data to be written
-.output	      :
+.output       :
                 void
 .status_codes :
                 MOD_I_CALLED
                 MOD_W_HDW_WRITE
-.notes	      :
+.notes        :
   1.1, 23-Jan-1998, creation
   2.5, 14-Sep-2000, update
     - added support for serial port emulation
