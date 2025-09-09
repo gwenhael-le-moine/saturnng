@@ -64,9 +64,9 @@
   the new GUI.  As a consequence, suppressed the definition of
   'enum Key', no longer needed.
 
- * Revision 1.1  1998/02/17  11:53:34  cibrario
- * Initial revision
- *
+  Revision 1.1  1998/02/17  11:53:34  cibrario
+  Initial revision
+ 
 
 .- */
 

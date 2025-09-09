@@ -50,9 +50,9 @@
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
   when -ansi -pedantic -Wall options are selected.
 
- * Revision 1.1  1998/02/18  11:49:53  cibrario
- * Initial revision
- *
+  Revision 1.1  1998/02/18  11:49:53  cibrario
+  Initial revision
+ 
 
 .- */
 

@@ -62,12 +62,12 @@
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
   when -ansi -pedantic -Wall options are selected.
 
- * Revision 1.2  2000/09/07  14:29:39  cibrario
- * Bug fix: Incorrect use of strcpy() when disassembling "?HS=0\t%X"
- *
- * Revision 1.1  1998/02/13  14:05:30  cibrario
- * Initial revision
- *
+  Revision 1.2  2000/09/07  14:29:39  cibrario
+  Bug fix: Incorrect use of strcpy() when disassembling "?HS=0\t%X"
+ 
+  Revision 1.1  1998/02/13  14:05:30  cibrario
+  Initial revision
+ 
 
 .- */
 

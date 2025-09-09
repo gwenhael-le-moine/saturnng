@@ -82,38 +82,38 @@
   Revised to implement Flash ROM write access:
   - Added new Chf module identifier FLASH_CHF_MODULE_ID
 
- * Revision 3.2  2000/09/22  13:34:43  cibrario
- * Implemented preliminary support of HP49 hw architecture:
- * - Re-enabled DEBUG
- * - Documented new HP49_SUPPORT option, and enabled it by default
- *
- * Revision 3.1  2000/09/20  14:15:42  cibrario
- * Revised to implement passive CPU shutdown:
- * - disabled DEBUG option by default
- * - enhanced documentation of CPU_SPIN_SHUTDN; this option is now
- *   disabled by default.
- *
- * Revision 2.6  2000/09/15  09:28:48  cibrario
- * Enhanced documentation of serial emulation options; added
- * template of SERIAL_FORCE_STREAMSPTY definition (commented out
- * by default)
- *
- * Revision 2.5  2000/09/14  15:40:24  cibrario
- * - Added description and default values of configuration options
- *   SERIAL_FORCE_OPENPTY and SERIAL_FORCE_STREAMSPTY.
- * - Added new Chf module identifier SERIAL_CHF_MODULE_ID, used by the
- *   serial port emulation modules.
- *
- * Revision 2.4  2000/09/12  15:50:40  cibrario
- * Added description and default definition of N_PORT_2_BANK
- *
- * Revision 2.1  2000/09/08  15:43:46  cibrario
- * Disabled DEBUG option by default; documented new GUI option
- * FORCE_NONMODAL.
- *
- * Revision 1.1  1998/02/17  14:57:15  cibrario
- * Initial revision
- *
+  Revision 3.2  2000/09/22  13:34:43  cibrario
+  Implemented preliminary support of HP49 hw architecture:
+  - Re-enabled DEBUG
+  - Documented new HP49_SUPPORT option, and enabled it by default
+ 
+  Revision 3.1  2000/09/20  14:15:42  cibrario
+  Revised to implement passive CPU shutdown:
+  - disabled DEBUG option by default
+  - enhanced documentation of CPU_SPIN_SHUTDN; this option is now
+    disabled by default.
+ 
+  Revision 2.6  2000/09/15  09:28:48  cibrario
+  Enhanced documentation of serial emulation options; added
+  template of SERIAL_FORCE_STREAMSPTY definition (commented out
+  by default)
+ 
+  Revision 2.5  2000/09/14  15:40:24  cibrario
+  - Added description and default values of configuration options
+    SERIAL_FORCE_OPENPTY and SERIAL_FORCE_STREAMSPTY.
+  - Added new Chf module identifier SERIAL_CHF_MODULE_ID, used by the
+    serial port emulation modules.
+ 
+  Revision 2.4  2000/09/12  15:50:40  cibrario
+  Added description and default definition of N_PORT_2_BANK
+ 
+  Revision 2.1  2000/09/08  15:43:46  cibrario
+  Disabled DEBUG option by default; documented new GUI option
+  FORCE_NONMODAL.
+ 
+  Revision 1.1  1998/02/17  14:57:15  cibrario
+  Initial revision
+ 
 
 .- */
 

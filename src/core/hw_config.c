@@ -57,9 +57,9 @@
   - updated description of ModDescription table components
   - the HP49 NCE3 controller now has MOD_MAP_FLAGS_ABS set in .map_flags
 
- * Revision 3.2  2000/09/22  14:40:18  cibrario
- * *** empty log message ***
- *
+  Revision 3.2  2000/09/22  14:40:18  cibrario
+  *** empty log message ***
+ 
 
 .- */
 #include "../libChf/src/Chf.h"

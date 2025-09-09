@@ -55,17 +55,17 @@
   Implemented preliminary support of HP49 hw architecture:
   - Revised to handle the split of struct ModStatus in two
 
- * Revision 3.1  2000/09/20  13:57:24  cibrario
- * Minor updates and fixes to avoid gcc compiler warnings on Solaris
- * when -ansi -pedantic -Wall options are selected.
- *
- * Revision 2.4  2000/09/12  15:25:16  cibrario
- * Implemented emulation of Port 1 and 2; write protection and
- * HST/MP interrupt generation has been implemented as well.
- *
- * Revision 1.1  1998/02/17  11:49:40  cibrario
- * Initial revision
- *
+  Revision 3.1  2000/09/20  13:57:24  cibrario
+  Minor updates and fixes to avoid gcc compiler warnings on Solaris
+  when -ansi -pedantic -Wall options are selected.
+ 
+  Revision 2.4  2000/09/12  15:25:16  cibrario
+  Implemented emulation of Port 1 and 2; write protection and
+  HST/MP interrupt generation has been implemented as well.
+ 
+  Revision 1.1  1998/02/17  11:49:40  cibrario
+  Initial revision
+ 
 
 .- */
 

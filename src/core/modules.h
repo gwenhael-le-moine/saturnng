@@ -59,55 +59,55 @@
   - Added .map_flags field to struct ModDescriptionEntry
   - New status code MOD_E_ROM_SAVE
 
- * Revision 3.2  2000/09/22  14:05:32  cibrario
- * Implemented preliminary support of HP49 hw architecture:
- * - moved ROM/RAM storage areas in ModStatus into private,
- *   configuration-specific, dynamically allocated data structures.
- * - added flash-rom access accelerators for the hp49 hw configuration
- * - added new status codes: MOD_E_NO_MATCH, MOD_F_MOD_STATUS_ALLOC,
- *   MOD_F_NO_DESCRIPTION
- * - added prototype of new functions: ModSelectDescription(),
- *   ModRegisterDescription()
- *
- * Revision 3.1  2000/09/20  14:00:40  cibrario
- * Minor updates and fixes to avoid gcc compiler warnings on Solaris
- * when -ansi -pedantic -Wall options are selected.
- *
- * Revision 2.7  2000/09/19  11:12:46  cibrario
- * Deeply revised to implement module config/unconfig cache.
- *
- * Revision 2.5  2000/09/14  15:20:18  cibrario
- * Added serial port buffer registers .serial_rbr and .serial_tbr
- * in struct ModHdw; the hdw module uses them to buffer nibbles
- * to/from multi-nibble registers.
- *
- * Revision 2.4  2000/09/12  15:47:32  cibrario
- * The follwing updates were required to implement emulation of Port 1
- * and 2, and to prepare the support of additional hw configurations:
- * - added an hw configuration-dependent field to struct ModHdw: .accel;
- *   this field holds information useful to accelerate frequently executed
- *   operations on a given hw architecture.
- *   In the current hw configuration, it is used to hold the last
- *   address extension loaded into the bank switcher's F/F.
- *   The .accel_valid field indicates whether .accel is valid or not;
- *   .accel_valid is cleared when the ModHdw structure has not been read
- *   back correctly from mass storage.
- * - added a new member to ModHdw: .card_status;
- *   it represent the current card status (HDW relative address 0x0F).
- * - added storage space in struct ModStatus to accommodate Port 1 and 2.
- * - added new status codes: MOD_I_BS_ADDRESS, MOD_I_PORT_1_WP,
- *   MOD_I_PORT_2_WP, MOD_W_PORT_1_INIT, MOD_W_PORT_2_INIT,
- *   MOD_E_PORT_1_SAVE, MOD_E_CE1_WRITE, MOD_E_PORT_2_SAVE,
- *   MOD_E_NCE3_READ, MOD_E_NCE3_WRITE.
- *
- * Revision 2.1  2000/09/08  15:20:50  cibrario
- * Updated template of MOD_W_BAD_KEY status code; added new status
- * code MOD_W_BAD_OUT_BIT.  Both changes reflect the updates made to
- * the keyboard emulation module in order to accommodate the new GUI.
- *
- * Revision 1.1  1998/02/17  14:55:04  cibrario
- * Initial revision
- *
+  Revision 3.2  2000/09/22  14:05:32  cibrario
+  Implemented preliminary support of HP49 hw architecture:
+  - moved ROM/RAM storage areas in ModStatus into private,
+    configuration-specific, dynamically allocated data structures.
+  - added flash-rom access accelerators for the hp49 hw configuration
+  - added new status codes: MOD_E_NO_MATCH, MOD_F_MOD_STATUS_ALLOC,
+    MOD_F_NO_DESCRIPTION
+  - added prototype of new functions: ModSelectDescription(),
+    ModRegisterDescription()
+ 
+  Revision 3.1  2000/09/20  14:00:40  cibrario
+  Minor updates and fixes to avoid gcc compiler warnings on Solaris
+  when -ansi -pedantic -Wall options are selected.
+ 
+  Revision 2.7  2000/09/19  11:12:46  cibrario
+  Deeply revised to implement module config/unconfig cache.
+ 
+  Revision 2.5  2000/09/14  15:20:18  cibrario
+  Added serial port buffer registers .serial_rbr and .serial_tbr
+  in struct ModHdw; the hdw module uses them to buffer nibbles
+  to/from multi-nibble registers.
+ 
+  Revision 2.4  2000/09/12  15:47:32  cibrario
+  The follwing updates were required to implement emulation of Port 1
+  and 2, and to prepare the support of additional hw configurations:
+  - added an hw configuration-dependent field to struct ModHdw: .accel;
+    this field holds information useful to accelerate frequently executed
+    operations on a given hw architecture.
+    In the current hw configuration, it is used to hold the last
+    address extension loaded into the bank switcher's F/F.
+    The .accel_valid field indicates whether .accel is valid or not;
+    .accel_valid is cleared when the ModHdw structure has not been read
+    back correctly from mass storage.
+  - added a new member to ModHdw: .card_status;
+    it represent the current card status (HDW relative address 0x0F).
+  - added storage space in struct ModStatus to accommodate Port 1 and 2.
+  - added new status codes: MOD_I_BS_ADDRESS, MOD_I_PORT_1_WP,
+    MOD_I_PORT_2_WP, MOD_W_PORT_1_INIT, MOD_W_PORT_2_INIT,
+    MOD_E_PORT_1_SAVE, MOD_E_CE1_WRITE, MOD_E_PORT_2_SAVE,
+    MOD_E_NCE3_READ, MOD_E_NCE3_WRITE.
+ 
+  Revision 2.1  2000/09/08  15:20:50  cibrario
+  Updated template of MOD_W_BAD_KEY status code; added new status
+  code MOD_W_BAD_OUT_BIT.  Both changes reflect the updates made to
+  the keyboard emulation module in order to accommodate the new GUI.
+ 
+  Revision 1.1  1998/02/17  14:55:04  cibrario
+  Initial revision
+ 
 
 .- */
 

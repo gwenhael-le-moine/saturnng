@@ -79,13 +79,13 @@
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
   when -ansi -pedantic -Wall options are selected.
 
- * Revision 1.2  2000/09/07  14:31:34  cibrario
- * Bug fix: cpu_status.return_sp and .reset_req were not reset; this gave
- * troubles when attempting to override a corrupt status with CpuReset().
- *
- * Revision 1.1  1998/02/17  15:25:16  cibrario
- * Initial revision
- *
+  Revision 1.2  2000/09/07  14:31:34  cibrario
+  Bug fix: cpu_status.return_sp and .reset_req were not reset; this gave
+  troubles when attempting to override a corrupt status with CpuReset().
+ 
+  Revision 1.1  1998/02/17  15:25:16  cibrario
+  Initial revision
+ 
 
 .- */
 

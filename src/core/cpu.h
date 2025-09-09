@@ -85,17 +85,17 @@
   - new status codes CPU_I_TIMER_ST, CPU_I_TIMER_EXP, CPU_I_IDLE_X_LOOP,
     CPU_I_ELAPSED
 
- * Revision 2.4  2000/09/12  15:19:47  cibrario
- * Added definition of XAddress (extended address) data type; it is
- * required to implement emulation of Port 1 and 2.
- *
- * Revision 2.1  2000/09/08  14:48:52  cibrario
- * - Declared prototypes of new functions EmulatorInit() and EmulatorExit()
- * - Defined new 'enum ExitOption' data type, used by EmulatorExit()
- *
- * Revision 1.1  1998/02/18  11:50:43  cibrario
- * Initial revision
- *
+  Revision 2.4  2000/09/12  15:19:47  cibrario
+  Added definition of XAddress (extended address) data type; it is
+  required to implement emulation of Port 1 and 2.
+ 
+  Revision 2.1  2000/09/08  14:48:52  cibrario
+  - Declared prototypes of new functions EmulatorInit() and EmulatorExit()
+  - Defined new 'enum ExitOption' data type, used by EmulatorExit()
+ 
+  Revision 1.1  1998/02/18  11:50:43  cibrario
+  Initial revision
+ 
 
 .- */
 

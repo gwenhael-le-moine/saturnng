@@ -62,15 +62,15 @@
   Implemented preliminary support of HP49 hw architecture:
   - New status codes: SERIAL_F_TCGETATTR, SERIAL_F_TCSETATTR
 
- * Revision 2.6  2000/09/15  09:25:06  cibrario
- * Added definition of the following status codes:
- * SERIAL_F_OPEN_MASTER, SERIAL_F_GRANTPT, SERIAL_F_UNLOCKPT,
- * SERIAL_F_OPEN_SLAVE, SERIAL_F_PUSH; the implementation of
- * USE_STREAMSPTY needs them.
- *
- * Revision 2.5  2000/09/14  15:43:57  cibrario
- * *** empty log message ***
- *
+  Revision 2.6  2000/09/15  09:25:06  cibrario
+  Added definition of the following status codes:
+  SERIAL_F_OPEN_MASTER, SERIAL_F_GRANTPT, SERIAL_F_UNLOCKPT,
+  SERIAL_F_OPEN_SLAVE, SERIAL_F_PUSH; the implementation of
+  USE_STREAMSPTY needs them.
+ 
+  Revision 2.5  2000/09/14  15:43:57  cibrario
+  *** empty log message ***
+ 
 
 .- */
 

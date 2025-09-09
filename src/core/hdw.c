@@ -68,25 +68,25 @@
     enabled reads from relative
     addresses 0x30..0x34 without signaling a warning.
 
- * Revision 3.1  2000/09/20  13:48:52  cibrario
- * Minor updates and fixes to avoid gcc compiler warnings on Solaris
- * when -ansi -pedantic -Wall options are selected.
- *
- * Revision 2.5  2000/09/14  15:08:59  cibrario
- * Update HdwRead() and HdwWrite() to support serial port emulation;
- * read/write from/to serial port register are mapped into invocation
- * of functions in the serial port emulation module.  This module
- * merely provides buffering for multi-nibble hdw registers.
- *
- * Revision 2.4  2000/09/12  15:24:27  cibrario
- * Bug fix and update required to implement emulation of Port 1 and 2:
- * - fixed an improper memset() call in HdwInit()
- * - HdwRead() now returns the value of mod_status.hdw_card_status when
- *   relative address 0x0F is read from.
- *
- * Revision 1.1  1998/02/17  11:49:59  cibrario
- * Initial revision
- *
+  Revision 3.1  2000/09/20  13:48:52  cibrario
+  Minor updates and fixes to avoid gcc compiler warnings on Solaris
+  when -ansi -pedantic -Wall options are selected.
+ 
+  Revision 2.5  2000/09/14  15:08:59  cibrario
+  Update HdwRead() and HdwWrite() to support serial port emulation;
+  read/write from/to serial port register are mapped into invocation
+  of functions in the serial port emulation module.  This module
+  merely provides buffering for multi-nibble hdw registers.
+ 
+  Revision 2.4  2000/09/12  15:24:27  cibrario
+  Bug fix and update required to implement emulation of Port 1 and 2:
+  - fixed an improper memset() call in HdwInit()
+  - HdwRead() now returns the value of mod_status.hdw_card_status when
+    relative address 0x0F is read from.
+ 
+  Revision 1.1  1998/02/17  11:49:59  cibrario
+  Initial revision
+ 
 
 .- */
 

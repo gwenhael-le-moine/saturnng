@@ -83,15 +83,15 @@
   Revised to implement Flash ROM write access:
   - Added new debug class: DEBUG_C_FLASH
 
- * Revision 2.7  2000/09/19  10:51:13  cibrario
- * Added new debug class: DEBUG_C_MOD_CACHE
- *
- * Revision 2.5  2000/09/14  14:34:13  cibrario
- * Added new debug class: DEBUG_C_SERIAL
- *
- * Revision 1.1  1998/02/18  11:54:33  cibrario
- * Initial revision
- *
+  Revision 2.7  2000/09/19  10:51:13  cibrario
+  Added new debug class: DEBUG_C_MOD_CACHE
+ 
+  Revision 2.5  2000/09/14  14:34:13  cibrario
+  Added new debug class: DEBUG_C_SERIAL
+ 
+  Revision 1.1  1998/02/18  11:54:33  cibrario
+  Initial revision
+ 
 
 .- */
 

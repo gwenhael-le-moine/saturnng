@@ -79,15 +79,15 @@
   - removed warning message
     when reading from an empty RRB.
 
- * Revision 2.6  2000/09/15  09:23:02  cibrario
- * - Implemented USE_STREAMSPTY (needed to build saturn on Solaris)
- * - Avoided name clash on ADDRESS_MASK when including pty headers
- *   (Digital UNIX platform)
- * - Enhanced documentation of public functions
- *
- * Revision 2.5  2000/09/14  15:44:08  cibrario
- * *** empty log message ***
- *
+  Revision 2.6  2000/09/15  09:23:02  cibrario
+  - Implemented USE_STREAMSPTY (needed to build saturn on Solaris)
+  - Avoided name clash on ADDRESS_MASK when including pty headers
+    (Digital UNIX platform)
+  - Enhanced documentation of public functions
+ 
+  Revision 2.5  2000/09/14  15:44:08  cibrario
+  *** empty log message ***
+ 
 
 .- */
 

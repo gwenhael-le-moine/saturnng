@@ -65,19 +65,19 @@
   Bug fix: MP bit of HST no longer set in Ce2Init49() and NCe3Init49(),
   to avoid spurious warmstarts of the HP39/40 firmware.
 
- * Revision 3.3  2000/09/26  14:56:43  cibrario
- * Revised to implement Flash ROM write access:
- * - mod_status_49 is no longer static; flash49.c needs access to the
- *   Flash ROM array.
- * - implemented RomSave49(), RomWrite49().
- * - NCe3 controller now accesses the Flash ROM when the LCR_LED bit is set;
- *   address translation is done here, the actual access is revectored to
- *   FlashRead49() and FlashWrite49().  Notice that the NCe3 controller
- *   must be registered with the MOD_MAP_FLAGS_ABS bit set in its map_flags.
- *
- * Revision 3.2  2000/09/22  14:48:13  cibrario
- * *** empty log message ***
- *
+  Revision 3.3  2000/09/26  14:56:43  cibrario
+  Revised to implement Flash ROM write access:
+  - mod_status_49 is no longer static; flash49.c needs access to the
+    Flash ROM array.
+  - implemented RomSave49(), RomWrite49().
+  - NCe3 controller now accesses the Flash ROM when the LCR_LED bit is set;
+    address translation is done here, the actual access is revectored to
+    FlashRead49() and FlashWrite49().  Notice that the NCe3 controller
+    must be registered with the MOD_MAP_FLAGS_ABS bit set in its map_flags.
+ 
+  Revision 3.2  2000/09/22  14:48:13  cibrario
+  *** empty log message ***
+ 
 
 .- */
 

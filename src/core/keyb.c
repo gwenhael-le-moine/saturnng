@@ -66,9 +66,9 @@
   because the GUI now does this function itself; KeybPress() and
   KeybRelease() now directly accept an IN/OUT pair as input.
 
- * Revision 1.1  1998/02/17  11:53:23  cibrario
- * Initial revision
- *
+  Revision 1.1  1998/02/17  11:53:23  cibrario
+  Initial revision
+ 
 
 .- */
 

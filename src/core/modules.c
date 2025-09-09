@@ -77,27 +77,27 @@
     algorithm is modified to pass absolute (instead of relative
     addresses to the module read/write functions.
 
- * Revision 3.2  2000/09/22  13:55:33  cibrario
- * Implemented preliminary support of HP49 hw architecture:
- * - The module description table can now be registered dynamically; its
- *   definition has been moved into hw_config.c
- * - New function ModRegisterDescription(), to register a module
- *   description table dynamically.
- * - ModInit() now refuses to work if no module description table has
- *   been registered yet.
- * - enabled forced alignment of
- *   module configuration sizes and addresses in ModConfig()
- *
- * Revision 3.1  2000/09/20  14:00:02  cibrario
- * Minor updates and fixes to avoid gcc compiler warnings on Solaris
- * when -ansi -pedantic -Wall options are selected.
- *
- * Revision 2.7  2000/09/19  11:11:08  cibrario
- * Deeply revised to implement module config/unconfig cache.
- *
- * Revision 1.1  1998/02/18  08:16:35  cibrario
- * Initial revision
- *
+  Revision 3.2  2000/09/22  13:55:33  cibrario
+  Implemented preliminary support of HP49 hw architecture:
+  - The module description table can now be registered dynamically; its
+    definition has been moved into hw_config.c
+  - New function ModRegisterDescription(), to register a module
+    description table dynamically.
+  - ModInit() now refuses to work if no module description table has
+    been registered yet.
+  - enabled forced alignment of
+    module configuration sizes and addresses in ModConfig()
+ 
+  Revision 3.1  2000/09/20  14:00:02  cibrario
+  Minor updates and fixes to avoid gcc compiler warnings on Solaris
+  when -ansi -pedantic -Wall options are selected.
+ 
+  Revision 2.7  2000/09/19  11:11:08  cibrario
+  Deeply revised to implement module config/unconfig cache.
+ 
+  Revision 1.1  1998/02/18  08:16:35  cibrario
+  Initial revision
+ 
 
 .- */
 
