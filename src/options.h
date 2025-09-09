@@ -35,16 +35,17 @@ typedef struct {
     bool reset;     /* 2.1: Force emulator reset */
     bool monitor;   /* 2.1: Call monitor() on startup */
     bool batchXfer; /* 3.15: Non-interactive file transfers */
-    char* state_dir_path;
-    char* config_file_name;
 
-    char* mod_file_name;
-    char* cpu_file_name;
-    char* hdw_file_name;
-    char* rom_file_name;
-    char* ram_file_name;
-    char* port_1_file_name;
-    char* port_2_file_name;
+    char* state_dir_path;
+
+    char* config_path;
+    char* mod_path;
+    char* cpu_path;
+    char* hdw_path;
+    char* rom_path;
+    char* ram_path;
+    char* port1_path;
+    char* port2_path;
 
     int debug_level;
     bool enable_BUSCC;

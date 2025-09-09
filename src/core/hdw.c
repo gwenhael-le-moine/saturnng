@@ -145,7 +145,7 @@ void HdwInit( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "HdwInit" );
 
-    if ( ReadStructFromFile( config.hdw_file_name, sizeof( mod_status.hdw ), &mod_status.hdw ) ) {
+    if ( ReadStructFromFile( config.hdw_path, sizeof( mod_status.hdw ), &mod_status.hdw ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_HDW_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -179,7 +179,7 @@ void HdwSave( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "HdwSave" );
 
-    if ( WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_file_name ) ) {
+    if ( WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_path ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_HDW_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
     }

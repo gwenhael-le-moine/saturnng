@@ -2891,7 +2891,7 @@ void CpuInit( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuInit" );
 
-    if ( ReadStructFromFile( config.cpu_file_name, sizeof( cpu_status ), &cpu_status ) ) {
+    if ( ReadStructFromFile( config.cpu_path, sizeof( cpu_status ), &cpu_status ) ) {
         ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_RESETTING, CHF_WARNING );
         ChfSignal( CPU_CHF_MODULE_ID );
 
@@ -2927,7 +2927,7 @@ void CpuSave( void )
 {
     debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuSave" );
 
-    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_file_name ) ) {
+    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_path ) ) {
         ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_SAVE, CHF_ERROR );
         ChfSignal( CPU_CHF_MODULE_ID );
     }

@@ -14,12 +14,21 @@
 #include <lua.h>
 #include <lauxlib.h>
 
-#include "config.h"
+#include "options.h"
 #include "core/debug.h"
 
 #ifndef LUA_OK
 #  define LUA_OK 0
 #endif
+
+#define CONFIG_FILE_NAME "config.lua"
+#define MOD_FILE_NAME "mod"
+#define CPU_FILE_NAME "cpu"
+#define HDW_FILE_NAME "hdw"
+#define ROM_FILE_NAME "rom"
+#define RAM_FILE_NAME "ram"
+#define PORT1_FILE_NAME "port1"
+#define PORT2_FILE_NAME "port2"
 
 static config_t __config = {
     .progname = ( char* )"saturn4xxx",
@@ -137,6 +146,9 @@ static void print_config( void )
         case MODEL_49G:
             fprintf( stdout, "49g" );
             break;
+        case MODEL_50G:
+            fprintf( stdout, "50g" );
+            break;
     }
     fprintf( stdout, "\" -- possible values: \"48gx\", \"48sx\", \"40g\", \"49g\"\n" );
     fprintf( stdout, "\n" );
@@ -152,6 +164,9 @@ static void print_config( void )
     fprintf( stdout, "--------------------\n" );
     fprintf( stdout, "frontend = \"" );
     switch ( __config.frontend ) {
+        case FRONTEND_GTK:
+            fprintf( stdout, "gtk" );
+            break;
         case FRONTEND_SDL:
             fprintf( stdout, "sdl" );
             break;
@@ -198,15 +213,6 @@ config_t* config_init( int argc, char* argv[] )
 {
     int option_index;
     int c = '?';
-
-    char* config_file_name = ( char* )"config.lua";
-    char* mod_file_name = ( char* )"mod";
-    char* cpu_file_name = ( char* )"cpu";
-    char* hdw_file_name = ( char* )"hdw";
-    char* rom_file_name = ( char* )"rom";
-    char* ram_file_name = ( char* )"ram";
-    char* port_1_file_name = ( char* )"port1";
-    char* port_2_file_name = ( char* )"port2";
 
     int print_config_and_exit = false;
 
@@ -412,19 +418,19 @@ config_t* config_init( int argc, char* argv[] )
     if ( clopt_state_dir_path != NULL )
         __config.state_dir_path = strdup( clopt_state_dir_path );
 
-    __config.config_file_name = normalize_filename( __config.state_dir_path, config_file_name );
-    __config.mod_file_name = normalize_filename( __config.state_dir_path, mod_file_name );
-    __config.cpu_file_name = normalize_filename( __config.state_dir_path, cpu_file_name );
-    __config.hdw_file_name = normalize_filename( __config.state_dir_path, hdw_file_name );
-    __config.rom_file_name = normalize_filename( __config.state_dir_path, rom_file_name );
-    __config.ram_file_name = normalize_filename( __config.state_dir_path, ram_file_name );
-    __config.port_1_file_name = normalize_filename( __config.state_dir_path, port_1_file_name );
-    __config.port_2_file_name = normalize_filename( __config.state_dir_path, port_2_file_name );
+    __config.config_path = normalize_filename( __config.state_dir_path, CONFIG_FILE_NAME );
+    __config.mod_path = normalize_filename( __config.state_dir_path, MOD_FILE_NAME );
+    __config.cpu_path = normalize_filename( __config.state_dir_path, CPU_FILE_NAME );
+    __config.hdw_path = normalize_filename( __config.state_dir_path, HDW_FILE_NAME );
+    __config.rom_path = normalize_filename( __config.state_dir_path, ROM_FILE_NAME );
+    __config.ram_path = normalize_filename( __config.state_dir_path, RAM_FILE_NAME );
+    __config.port1_path = normalize_filename( __config.state_dir_path, PORT1_FILE_NAME );
+    __config.port2_path = normalize_filename( __config.state_dir_path, PORT2_FILE_NAME );
 
     /**********************/
     /* 1. read config.lua */
     /**********************/
-    bool haz_config_file = config_read( __config.config_file_name );
+    bool haz_config_file = config_read( __config.config_path );
     if ( haz_config_file ) {
         lua_getglobal( config_lua_values, "verbose" );
         __config.verbose = lua_toboolean( config_lua_values, -1 );
@@ -553,6 +559,9 @@ config_t* config_init( int argc, char* argv[] )
         case MODEL_40G:
             strcat( __config.progname, "40g" );
             break;
+        case MODEL_50G:
+            strcat( __config.progname, "50g" );
+            break;
     }
 
     if ( __config.verbose ) {
@@ -573,10 +582,10 @@ config_t* config_init( int argc, char* argv[] )
     }
 
     if ( !haz_config_file ) {
-        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", __config.config_file_name );
+        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", __config.config_path );
 
         fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", __config.state_dir_path,
-                 __config.progname, __config.config_file_name );
+                 __config.progname, __config.config_path );
     }
 
     return &__config;

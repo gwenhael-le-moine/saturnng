@@ -156,7 +156,7 @@ void RomInit49( void )
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 
-    if ( ReadNibblesFromFile( config.rom_file_name, N_FLASH_SIZE_49, mod_status_49->flash ) ) {
+    if ( ReadNibblesFromFile( config.rom_path, N_FLASH_SIZE_49, mod_status_49->flash ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -188,7 +188,7 @@ void RomSave49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomSave49" );
 
-    if ( WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_file_name ) ) {
+    if ( WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_path ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_ROM_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
@@ -293,7 +293,7 @@ void RamInit49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamInit49" );
 
-    if ( ReadNibblesFromFile( config.ram_file_name, N_RAM_SIZE_49, mod_status_49->ram ) ) {
+    if ( ReadNibblesFromFile( config.ram_path, N_RAM_SIZE_49, mod_status_49->ram ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RAM_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -326,7 +326,7 @@ void RamSave49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamSave49" );
 
-    if ( WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_file_name ) ) {
+    if ( WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_path ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_RAM_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );

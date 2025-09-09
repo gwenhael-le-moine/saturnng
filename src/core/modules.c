@@ -963,7 +963,7 @@ void ModInit( void )
     /* Attempt to restore the mod_map from file; reset modules if the read
        fails.
     */
-    if ( ReadStructFromFile( config.mod_file_name, sizeof( MOD_MAP.map_info ), &MOD_MAP.map_info ) ) {
+    if ( ReadStructFromFile( config.mod_path, sizeof( MOD_MAP.map_info ), &MOD_MAP.map_info ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RESETTING_ALL, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -1017,7 +1017,7 @@ void ModSave( void )
     }
 
     /* Attempt to save the mod_map from file */
-    if ( WriteStructToFile( &MOD_MAP.map_info, sizeof( MOD_MAP.map_info ), config.mod_file_name ) ) {
+    if ( WriteStructToFile( &MOD_MAP.map_info, sizeof( MOD_MAP.map_info ), config.mod_path ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MAP_SAVE, CHF_FATAL );
         ChfSignal( MOD_CHF_MODULE_ID );
     }

@@ -142,9 +142,9 @@ void RomInit( void )
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 
-    if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE, mod_status_rom ) ) {
+    if ( ReadNibblesFromFile( config.rom_path, N_ROM_SIZE, mod_status_rom ) ) {
         // To load 48SX ROM, try again with half the size this time.
-        if ( ReadNibblesFromFile( config.rom_file_name, N_ROM_SIZE / 2, mod_status_rom ) ) {
+        if ( ReadNibblesFromFile( config.rom_path, N_ROM_SIZE / 2, mod_status_rom ) ) {
             ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL );
             ChfSignal( MOD_CHF_MODULE_ID );
         }
@@ -263,7 +263,7 @@ void RamInit( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamInit" );
 
-    if ( ReadNibblesFromFile( config.ram_file_name, N_RAM_SIZE, mod_status_ram ) ) {
+    if ( ReadNibblesFromFile( config.ram_path, N_RAM_SIZE, mod_status_ram ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RAM_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -298,7 +298,7 @@ void RamSave( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamSave" );
 
-    if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, config.ram_file_name ) ) {
+    if ( WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, config.ram_path ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_RAM_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
@@ -538,7 +538,7 @@ void Ce2Init( void )
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init" );
 
-    if ( ReadNibblesFromFile( config.port_1_file_name, N_PORT_1_SIZE, mod_status_port_1 ) ) {
+    if ( ReadNibblesFromFile( config.port1_path, N_PORT_1_SIZE, mod_status_port_1 ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_PORT_1_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -549,7 +549,7 @@ void Ce2Init( void )
         /* Card present; check write protection */
         new_status = mod_status_hdw.card_status | CE2_CARD_PRESENT;
 
-        if ( access( config.port_1_file_name, W_OK ) == 0 )
+        if ( access( config.port1_path, W_OK ) == 0 )
             new_status |= CE2_CARD_WE;
         else {
             new_status &= ~CE2_CARD_WE;
@@ -598,7 +598,7 @@ void Ce2Save( void )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save" );
 
     /* Attempt to save only if port is write-enabled */
-    if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, config.port_1_file_name ) ) {
+    if ( ( mod_status_hdw.card_status & CE2_CARD_WE ) && WriteNibblesToFile( mod_status_port_1, N_PORT_1_SIZE, config.port1_path ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_PORT_1_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
@@ -697,7 +697,7 @@ void NCe3Init( void )
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init" );
 
 #ifdef N_PORT_2_BANK
-    if ( ReadNibblesFromFile( config.port_2_file_name, N_PORT_2_SIZE, mod_status_port_2 ) ) {
+    if ( ReadNibblesFromFile( config.port2_path, N_PORT_2_SIZE, mod_status_port_2 ) ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_PORT_2_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -708,7 +708,7 @@ void NCe3Init( void )
         /* Card present; check write protection */
         new_status = mod_status_hdw.card_status | NCE3_CARD_PRESENT;
 
-        if ( access( config.port_2_file_name, W_OK ) == 0 )
+        if ( access( config.port2_path, W_OK ) == 0 )
             new_status |= NCE3_CARD_WE;
         else {
             new_status &= ~NCE3_CARD_WE;
@@ -764,7 +764,7 @@ void NCe3Save( void )
 #ifdef N_PORT_2_BANK
     /* Attempt to save only if port is write-enabled */
     if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) &&
-         WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port_2_file_name ) ) {
+         WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port2_path ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_PORT_2_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
