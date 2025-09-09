@@ -1,17 +1,17 @@
 /* .+
 
-.identifier   : $Id: chf_abrt.c,v 2.2 2001/01/25 12:08:24 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_abrt.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 3-May-1996
-.keywords     : *
+
 .description  :
   This module implements the CHF function ChfAbort()
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_abrt.c,v $
@@ -42,8 +42,8 @@
 
 /* .+
 
-.title	      : ChfAbort
-.kind	      : C function
+
+
 .creation     : 13-May-1996
 .description  :
   This function prints the message associated with 'abort_code' and then

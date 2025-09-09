@@ -1,17 +1,17 @@
 /* .+
 
-.identifier   : $Id: chf_gen.c,v 2.2 2001/01/25 12:10:22 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_gen.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 3-May-1996
-.keywords     : *
+
 .description  :
   This module contains the condition generation function of CHF
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_gen.c,v $
@@ -33,8 +33,8 @@
 
 /* .+
 
-.title	      : ChfGenerate
-.kind	      : C function
+
+
 .creation     :  3-May-1996
 .description  :
   This function generates a condition descriptor for the condition described

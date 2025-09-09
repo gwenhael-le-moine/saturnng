@@ -1,17 +1,17 @@
 /* .+
 
-.identifier   : $Id: chf_sig.c,v 2.2 2001/01/25 14:07:42 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_sig.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 3-May-1996
-.keywords     : *
+
 .description  :
   This module implements the condition signalling function of CHF
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_sig.c,v $
@@ -44,8 +44,8 @@
 
 /* .+
 
-.title	      : ChfSignal
-.kind	      : C function
+
+
 .creation     : 10-May-1996
 .description  :
   This function signals the topmost condition group currently in the

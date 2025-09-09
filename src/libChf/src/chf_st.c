@@ -1,17 +1,17 @@
 /* .+
 
-.identifier   : $Id: chf_st.c,v 2.2 2001/01/25 14:08:45 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_st.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	24-May-1996
-.keywords     : *
+
 .description  :
   This module implements the CHF initialization function ChfStaticInit()
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_st.c,v $
@@ -85,8 +85,8 @@ static void ExitMessage( void* private_context ) {}
 
 /* .+
 
-.title	      : ChfStaticInit
-.kind	      : C function
+
+
 .creation     : 24-May-1996
 .description  :
   This function initializes CHF and returns to the caller a condition code;

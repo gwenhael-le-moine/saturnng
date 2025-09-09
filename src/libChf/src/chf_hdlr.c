@@ -1,18 +1,18 @@
 /* .+
 
-.identifier   : $Id: chf_hdlr.c,v 2.2 2001/01/25 12:12:46 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_hdlr.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 3-May-1996
-.keywords     : *
+
 .description  :
   This module implements the CHF functions ChfPushHandler() and
   ChfPopHandler()
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_hdlr.c,v $
@@ -42,8 +42,8 @@
 
 /* .+
 
-.title	      : StructuredHelper
-.kind	      : C function
+
+
 .creation     : 19-May-2000
 .description  :
   This function is the structured condition handling helper of CHF.
@@ -83,8 +83,8 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
 
 /* .+
 
-.title	      : ChfPushHandler
-.kind	      : C function
+
+
 .creation     : 13-May-1996
 .description  :
   This function pushes the new condition handler 'new_handler' with its

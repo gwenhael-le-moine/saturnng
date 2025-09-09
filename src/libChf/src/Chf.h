@@ -3,18 +3,18 @@
 
 /* .+
 
-.identifier   : $Id: Chf.h,v 2.2 2001/01/25 11:56:44 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: Chf.h,v $, main header
-.kind	      : C header
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 2-May-1996
-.keywords     : *
+
 .description  :
   This is the main header of the Condition Handling Facility
 
-.include      : stdio.h setjmp.h (Win32: tchar.h)
+
 
 .notes	      :
   $Log: Chf.h,v $

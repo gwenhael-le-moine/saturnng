@@ -3,18 +3,18 @@
 
 /* .+
 
-.identifier   : $Id: ChfPriv.h,v 2.2 2001/01/25 11:57:57 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: ChfPriv.h,v $, main header
-.kind	      : C header
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 2-May-1996
-.keywords     : *
+
 .description  :
   This is the private header of the Condition Handling Facility
 
-.include      : *
+
 
 .notes	      :
   $Log: ChfPriv.h,v $

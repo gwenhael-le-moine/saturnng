@@ -1,17 +1,17 @@
 /* .+
 
-.identifier   : $Id: chf_init.c,v 2.2 2001/01/25 14:05:23 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_init.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	 3-May-1996
-.keywords     : *
+
 .description  :
   This module implements the CHF initialization function ChfInit()
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_init.c,v $
@@ -98,8 +98,8 @@ static void DestroyContext( void* context )
 
 /* .+
 
-.title	      : DefaultHandler
-.kind	      : C function
+
+
 .creation     : 17-May-1996
 .description  :
   This function is the default condition handler of CHF. It's automatically
@@ -204,8 +204,8 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
 
 /* .+
 
-.title	      : scopy
-.kind	      : C function
+
+
 .creation     : 16-May-1996
 .description  :
   This function writes the NUL-terminated string pointed by 'q' starting
@@ -251,8 +251,8 @@ static char* scopy( char* p, const char* q, char* p_end )
 
 /* .+
 
-.title	      : ChfGetMessage
-.kind	      : C function
+
+
 .creation     : 17-May-1996
 .description  :
   This function retrieves the message associated with the pair
@@ -307,8 +307,8 @@ const char* ChfGetMessage( const int module_id, const int condition_code, const 
 
 /* .+
 
-.title	      : ChfBuildMessage
-.kind	      : C function
+
+
 .creation     : 16-May-1996
 .description  :
   This function builds the message associated with the given condition
@@ -397,8 +397,8 @@ char* ChfBuildMessage( const ChfDescriptor* descriptor )
 
 /* .+
 
-.title	      : ChfInit
-.kind	      : C function
+
+
 .creation     : 13-May-1996
 .description  :
   This function initializes CHF and returns to the caller a condition code;
@@ -536,8 +536,8 @@ int ChfInit( const int module_id, const char* app_name, /* Application's name */
 
 /* .+
 
-.title	      : ChfExit
-.kind	      : C function
+
+
 .creation     : 24-May-1996
 .description  :
   This function shuts down CHF and returns nothing to the caller; after
@@ -624,8 +624,8 @@ void ChfExit( void )
 
 /* .+
 
-.title	      : _ChfGetContext
-.kind	      : C function
+
+
 .creation     : 19-May-2000
 .description  :
   This function dynamically primes a new Chf context for the calling

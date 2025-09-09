@@ -1,17 +1,17 @@
 /* .+
 
-.identifier   : $Id: chf_msgc.c,v 2.2 2001/01/25 14:06:47 cibrario Exp $
-.context      : CHF, Condition Handling Facility
-.title	      : $RCSfile: chf_msgc.c,v $, condition generation
-.kind	      : C source
+
+
+
+
 .author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
 .creation     :	17-May-1996
-.keywords     : *
+
 .description  :
   This module contains the CHF initialization function ChfMsgcatInit()
 
-.include      : Chf.h
+
 
 .notes	      :
   $Log: chf_msgc.c,v $
