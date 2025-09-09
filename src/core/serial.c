@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: serial.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: serial.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	13-Sep-2000
-.keywords     : *
+
 .description  :
 
     SASM.DOC by HP  (HORN disk 4)
@@ -48,8 +48,6 @@
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
     Emu48 source code by Sebastien Cariler
-
-.include      : config.h, machdep.h, serial.h
 
 .notes        :
   $Log: serial.c,v $
@@ -458,8 +456,8 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 
 /* .+
 
-.title        : SerialInit
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function opens and initializes the pseudo-terminal that will
@@ -663,8 +661,8 @@ const char* SerialInit( void )
 
 /* .+
 
-.title        : SerialClose
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function closes the pseudo-terminal opened by SerialInit(), if
@@ -702,8 +700,8 @@ void SerialClose( void )
 
 /* .+
 
-.title        : SerialPtyName
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function returns to the caller the name of the slave size of
@@ -735,8 +733,8 @@ const char* SerialPtyName( void )
 
 /* .+
 
-.title        : Serial_IOC_Read
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial I/O and interrupt control
@@ -768,8 +766,8 @@ Nibble Serial_IOC_Read( void )
 
 /* .+
 
-.title        : Serial_RCS_Read
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial receiver control & status
@@ -801,8 +799,8 @@ Nibble Serial_RCS_Read( void )
 
 /* .+
 
-.title        : Serial_TCS_Read
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial transmitter control & status
@@ -834,8 +832,8 @@ Nibble Serial_TCS_Read( void )
 
 /* .+
 
-.title        : Serial_RBR_Read
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial receiver buffer
@@ -889,8 +887,8 @@ int8 Serial_RBR_Read( void )
 
 /* .+
 
-.title        : Serial_IOC_Write
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial I/O and interrupt control
@@ -925,8 +923,8 @@ void Serial_IOC_Write( Nibble n )
 
 /* .+
 
-.title        : Serial_RCS_Write
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial receiver control & status
@@ -958,8 +956,8 @@ void Serial_RCS_Write( Nibble n )
 
 /* .+
 
-.title        : Serial_TCS_Write
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial transmitter control & status
@@ -991,8 +989,8 @@ void Serial_TCS_Write( Nibble n )
 
 /* .+
 
-.title        : Serial_CRER_Write
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial 'clear receiver error'
@@ -1023,8 +1021,8 @@ void Serial_CRER_Write( Nibble n )
 
 /* .+
 
-.title        : Serial_TBR_Write
-.kind         : C function
+
+
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial transmitter buffer
@@ -1072,8 +1070,8 @@ void Serial_TBR_Write( int8 d )
 
 /* .+
 
-.title        : HandleSerial
-.kind         : C function
+
+
 .creation     : 14-Sep-2000
 .description  :
   This function is called by the emulator loop every 1/16s, and performs

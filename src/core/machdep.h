@@ -36,20 +36,18 @@
 
 /* .+
 
-.identifier   : $Id: machdep.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: machdep.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	28-Jan-1998
-.keywords     : *
+
 .description  :
   Machine-dependent type definitions.
 
-.include      : config.h
-
-.notes	      :
+.notes        :
   $Log: machdep.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

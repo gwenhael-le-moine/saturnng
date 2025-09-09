@@ -36,14 +36,14 @@
 
 /* .+
 
-.identifier   : $Id: cpu.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: cpu.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	*
-.keywords     : *
+
 .description  :
   Main header for the Saturn CPU emulation modules. References:
 
@@ -52,9 +52,7 @@
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
 
-.include      : config.h machdep.h
-
-.notes	      :
+.notes        :
   $Log: cpu.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

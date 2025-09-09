@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: hdw.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: hdw.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	23-Jan-1998
-.keywords     : *
+
 .description  :
   This module emulates the Hdw peripheral module, that controls all
   peripheral devices of the HP48. The Hdw Read/Write functions simply update
@@ -52,8 +52,6 @@
     Guide to the Saturn Processor Rev. 0.00f by Matthew Mastracci
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
-
-.include      : config.h, machdep.h, cpu.h, modules.h
 
 .notes        :
   $Log: hdw.c,v $
@@ -119,8 +117,8 @@ static const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F0
 
 /* .+
 
-.title        : HdwInit
-.kind         : C function
+
+
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the Hdw module, restoring the status of the
@@ -155,8 +153,8 @@ void HdwInit( void )
 
 /* .+
 
-.title        : HdwSave
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function saves the current status of the peripheral devices associated
@@ -187,8 +185,8 @@ void HdwSave( void )
 
 /* .+
 
-.title        : HdwRead
-.kind         : C function
+
+
 .creation     : 23-Jan-1998
 .description  :
   This function reads a nibble from the Hdw module.
@@ -333,8 +331,8 @@ Nibble HdwRead( Address rel_address )
 
 /* .+
 
-.title        : HdwWrite
-.kind         : C function
+
+
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the Hdw module.

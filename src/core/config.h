@@ -36,14 +36,14 @@
 
 /* .+
 
-.identifier   : $Id: config.h,v 4.1.1.1 2002/11/11 16:13:29 cibrario Exp $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: config.h,v $
-.kind         : C header
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	28-Jan-1998
-.keywords     : *
+
 .description  :
   This file configures the Saturn / HP48 emulator.
 

@@ -36,14 +36,14 @@
 
 /* .+
 
-.identifier   : $Id: serial.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: serial.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	13-Sep-2000
-.keywords     : *
+
 .description  :
   This header contains all definitions and declarations related to the
   serial port emulation modules of the HP48. References:
@@ -53,9 +53,7 @@
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
 
-.include      : config.h machdep.h cpu.h
-
-.notes	      :
+.notes        :
   $Log: serial.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

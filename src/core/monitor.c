@@ -33,19 +33,17 @@
 
 /* .+
 
-.identifier   : $Id: monitor.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: monitor.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	28-Jan-1998
-.keywords     : *
+
 .description  :
   This file implements a simple interactive monitor, useful during
   test & debug.
-
-.include      : config.h, machdep.h, cpu.h
 
 .notes        :
   $Log: monitor.c,v $
@@ -301,8 +299,8 @@ static void sigint_handler( int s ) { EmulatorIntRequest(); }
 
 /* .+
 
-.title        : Monitor
-.kind         : C function
+
+
 .creation     : 18-Feb-1998
 .description  :
   This function implements a very simple interactive monitor.

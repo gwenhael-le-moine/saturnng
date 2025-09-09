@@ -36,14 +36,14 @@
 
 /* .+
 
-.identifier   : $Id: keyb.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: keyb.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	17-Feb-1998
-.keywords     : *
+
 .description  :
   Header for the keyboard emulation module. References:
 
@@ -52,9 +52,7 @@
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
 
-.include      : config.h, machdep.h, cpu.h, modules.h
-
-.notes	      :
+.notes        :
   $Log: keyb.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

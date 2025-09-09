@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: romram49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title        : $RCSfile: romram49.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	21-Sep-2000
-.keywords     : *
+
 .description  :
   This module emulates the Internal Flash Rom/Ram peripheral modules of
   the HP49.
@@ -59,8 +59,6 @@
     HP49 Memory Explained, USENET post, by Steve Sousa.
     Emu48 Service Pack 20, by Christoph Giesselink.
     28F160S5/28F320S5 Data Sheet, by Intel Corp.
-
-.include      : config.h, machdep.h, cpu.h, modules.h
 
 .notes        :
   $Log: romram49.c,v $
@@ -125,8 +123,8 @@ struct ModStatus_49* mod_status_49;
 
 /* .+
 
-.title        : RomInit49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function allocates the dynamically-allocated portion of the
@@ -164,8 +162,8 @@ void RomInit49( void )
 
 /* .+
 
-.title        : RomSave49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Flash Rom.
@@ -197,8 +195,8 @@ void RomSave49( void )
 
 /* .+
 
-.title        : RomRead49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the internal Flash Rom address
@@ -229,8 +227,8 @@ Nibble RomRead49( Address rel_address )
 
 /* .+
 
-.title        : RomWrite49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function writes the nibble 'datum' into the address 'rel_address'
@@ -270,8 +268,8 @@ void RomWrite49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title        : RamInit49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ram module.
@@ -303,8 +301,8 @@ void RamInit49( void )
 
 /* .+
 
-.title        : RamSave49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ram module to disk.
@@ -335,8 +333,8 @@ void RamSave49( void )
 
 /* .+
 
-.title        : RamRead49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the internal RAM address 'rel_address'
@@ -363,8 +361,8 @@ Nibble RamRead49( Address rel_address )
 
 /* .+
 
-.title        : RamWrite49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function writes the nibble 'datum' into the address 'rel_address'
@@ -396,8 +394,8 @@ void RamWrite49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title        : Ce1Init49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ce1 module, corresponding to the
@@ -431,8 +429,8 @@ void Ce1Init49( void )
 
 /* .+
 
-.title        : Ce1Save49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ce1 module.
@@ -471,8 +469,8 @@ void Ce1Save49( void )
 
 /* .+
 
-.title        : Ce1Read49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce1 module; the address of
@@ -510,8 +508,8 @@ Nibble Ce1Read49( Address rel_address )
 
 /* .+
 
-.title        : Ce1Write49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce1 module; the address of
@@ -552,8 +550,8 @@ void Ce1Write49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title        : Ce2Init49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ce2 module, corresponding to
@@ -595,8 +593,8 @@ void Ce2Init49( void )
 
 /* .+
 
-.title        : Ce2Save49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ce2 module.
@@ -622,8 +620,8 @@ void Ce2Save49( void )
 
 /* .+
 
-.title        : Ce2Read49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce2 module.
@@ -649,8 +647,8 @@ Nibble Ce2Read49( Address rel_address )
 
 /* .+
 
-.title        : Ce2Write49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function writes a nibble to the Ce2 module.
@@ -681,8 +679,8 @@ void Ce2Write49( Address rel_address, Nibble datum )
 
 /* .+
 
-.title        : NCe3Init49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ce2 module, corresponding to
@@ -724,8 +722,8 @@ void NCe3Init49( void )
 
 /* .+
 
-.title        : NCe3Save49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the NCe3 module.
@@ -751,8 +749,8 @@ void NCe3Save49( void )
 
 /* .+
 
-.title        : NCe3Read49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the NCe3 module.
@@ -791,8 +789,8 @@ Nibble NCe3Read49( Address rel_address )
 
 /* .+
 
-.title        : NCe3Write49
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function writes a nibble to the NCe3 module.

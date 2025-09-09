@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: modules.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: modules.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	26-Jan-1998
-.keywords     : *
+
 .description  :
   This module contains the peripheral module configuration and access
   functions. All memory and i/o device accesses made by the Saturn CPU
@@ -63,8 +63,6 @@
 
         Moreover, even during intensive calculations, over 30% of the CPU
         time is spent in either FetchNibble() or RomRead() in either case.
-
-.include      : config.h, machdep.h, cpu.h, modules.h
 
 .notes        :
   $Log: modules.c,v $
@@ -192,8 +190,8 @@ static int repl_c = 0;  /* Entry replacement counter */
 
 /* .+
 
-.title        : BadRead
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function is called when a read access is attempted for an unmapped
@@ -225,8 +223,8 @@ static Nibble BadRead( Address addr )
 
 /* .+
 
-.title        : BadWrite
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function is called when a write access is attempted for an unmapped
@@ -255,8 +253,8 @@ static void BadWrite( Address addr, Nibble datum )
 
 /* .+
 
-.title        : RebuildPageTable
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function rebuilds the module page table from page 'lo' to page 'hi',
@@ -342,8 +340,8 @@ static void RebuildPageTable( int lo, int hi )
 
 /* .+
 
-.title        : ClearCachingInfo
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function clears all caching information associated with the
@@ -384,8 +382,8 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 
 /* .+
 
-.title        : NewModMap
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function allocates a new struct ModMap, links it into the list of
@@ -436,8 +434,8 @@ static struct ModMap* NewModMap( void )
 
 /* .+
 
-.title        : CopyModMap
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function copies the contents of a struct ModMap into another,
@@ -472,8 +470,8 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 
 /* .+
 
-.title        : ReplaceModMap
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function replaces the struct ModMap pointed by *d with a copy of
@@ -519,8 +517,8 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 
 /* .+
 
-.title        : FlushCache
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function flushes the whole cache, freeing all structures previously
@@ -581,8 +579,8 @@ static void FlushCache( struct ModMap* save )
 
 /* .+
 
-.title        : AccessConfigCache
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function checks if there is an entry in the module configuration cache
@@ -617,8 +615,8 @@ static struct ModMap* AccessConfigCache( Address tag )
 
 /* .+
 
-.title        : AccessUnconfigCache
-.kind         : C function
+
+
 .creation     : 15-Sep-2000
 .description  :
   This function follows the .unconfig cache links with index i, starting
@@ -656,8 +654,8 @@ static struct ModMap* AccessUnconfigCache( int i )
 
 /* .+
 
-.title        : SelectConfigVictim
-.kind         : C function
+
+
 .creation     : 19-Sep-2000
 .description  :
   This function selects a victim entry in the module configuration
@@ -732,8 +730,8 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
 
 /* .+
 
-.title        : CheckForLateHit
-.kind         : C function
+
+
 .creation     : 19-Sep-2000
 .description  :
   This function checks if there is in the cache a struct ModMap
@@ -796,8 +794,8 @@ static struct ModMap* CheckForLateHit( void )
 
 /* .+
 
-.title        : FreeModMap
-.kind         : C function
+
+
 .creation     : 19-Sep-2000
 .description  :
   This function frees the cached struct ModMap pointed by p, preserving
@@ -861,8 +859,8 @@ static void FreeModMap( struct ModMap* p )
 
 /* .+
 
-.title        : ModRegisterDescription
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function registers the ModDescription table pointed by 'p'; all
@@ -896,8 +894,8 @@ void ModRegisterDescription( ModDescription p )
 
 /* .+
 
-.title        : ModInit
-.kind         : C function
+
+
 .creation     : 23-Jan-1998
 .description  :
   This function initializes all peripheral modules, calling its initialization
@@ -976,8 +974,8 @@ void ModInit( void )
 
 /* .+
 
-.title        : ModSave
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of all peripheral modules, calling its
@@ -1025,8 +1023,8 @@ void ModSave( void )
 
 /* .+
 
-.title        : ModGetID
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function returns the ID of the next module to be configured and the
@@ -1087,8 +1085,8 @@ Address ModGetID( void )
 
 /* .+
 
-.title        : ModReset
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function resets all peripheral modules and rebuilds the module page
@@ -1143,8 +1141,8 @@ void ModReset( void )
 
 /* .+
 
-.title        : ModConfig
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function configures a module, using the given 'config_info'.
@@ -1282,8 +1280,8 @@ void ModConfig( Address config_info )
 
 /* .+
 
-.title        : ModUnconfig
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function unconfigures the module currently configured at address
@@ -1414,8 +1412,8 @@ void ModUnconfig( Address unconfig_info )
 
 /* .+
 
-.title        : FetchNibble
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function fetches a nibble from the address 'addr' and returns it.
@@ -1444,8 +1442,8 @@ Nibble FetchNibble( Address addr )
 
 /* .+
 
-.title        : ReadNibble
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function reads a nibble from the address 'addr' and returns it.
@@ -1487,8 +1485,8 @@ Nibble ReadNibble( Address addr )
 
 /* .+
 
-.title        : WriteNibble
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function writes the nibble 'datum' to the address 'addr'
@@ -1522,8 +1520,8 @@ void WriteNibble( Address addr, Nibble datum )
 
 /* .+
 
-.title        : ModMapCheck
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function fills the string 'ob' with the current mapping information
@@ -1564,8 +1562,8 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 
 /* .+
 
-.title        : ModMapTable
-.kind         : C function
+
+
 .creation     : 26-Jan-1998
 .description  :
   This function fills the string 'ob' with the current mapping table for

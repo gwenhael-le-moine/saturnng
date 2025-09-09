@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: keyb.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: keyb.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	29-Jan-1998
-.keywords     : *
+
 .description  :
   This module emulates the keyboard interface of the Yorke chip.
   References:
@@ -52,8 +52,6 @@
 
   NOTE: In the current (r1.1) implementation,
         the emulation accuracy could be poor.
-
-.include      : config.h, machdep.h, cpu.h, modules.h, keyb.h
 
 .notes        :
   $Log: keyb.c,v $
@@ -102,8 +100,8 @@ static InputRegister cur_in[ OUT_BITS ];
 
 /* .+
 
-.title        : KeybRSI
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function is called by the CPU emulator when the RSI instruction is
@@ -134,8 +132,8 @@ void KeybRSI( void )
 
 /* .+
 
-.title        : KeybIn
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function is called by the CPU emulator when either a C=IN or a A=IN
@@ -173,8 +171,8 @@ InputRegister KeybIN( OutputRegister out )
 
 /* .+
 
-.title        : KeybPress
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function tells to the keyboard emulator that key 'key' has been
@@ -227,8 +225,8 @@ void KeybPress( const char* key )
 
 /* .+
 
-.title        : KeybRelease
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function tells to the keyboard emulator that key 'key' has been
@@ -274,8 +272,8 @@ void KeybRelease( const char* key )
 
 /* .+
 
-.title        : KeybReset
-.kind         : C function
+
+
 .creation     : 7-Nov-2000
 .description  :
   This function resets the emulated keyboard; all keys are released.

@@ -36,23 +36,21 @@
 
 /* .+
 
-.identifier   : $Id: x_func.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title	      : $RCSfile: x_func.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	3-Nov-2000
-.keywords     : *
+
 .description  :
   Main header for the emulator's extended functions. References:
 
     SASM.DOC by HP  (HORN disk 4)
     Guide to the Saturn Processor Rev. 0.00f by Matthew Mastracci
 
-.include      : config.h machdep.h cpu.h
-
-.notes	      :
+.notes        :
   $Log: x_func.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

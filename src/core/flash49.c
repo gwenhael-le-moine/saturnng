@@ -33,22 +33,20 @@
 
 /* .+
 
-.identifier   : $Id: flash49.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title        : $RCSfile: flash49.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	25-Sep-2000
-.keywords     : *
+
 .description  :
   This module emulates the Internal Flash Rom of the HP49.
 
   References:
 
     28F160S5/28F320S5 Data Sheet, by Intel Corp.
-
-.include      : config.h, machdep.h, cpu.h, modules.h flash49.h
 
 .notes        :
   $Log: flash49.c,v $
@@ -369,8 +367,8 @@ static int FSM( enum FlashCycle cycle, XAddress address, int data )
 
 /* .+
 
-.title        : FlashRead49
-.kind         : C function
+
+
 .creation     : 25-Sep-2000
 .description  :
   This function reads the nibble @address from Flash Rom and returns it
@@ -413,8 +411,8 @@ Nibble FlashRead49( XAddress address )
 
 /* .+
 
-.title        : FlashWrite49
-.kind         : C function
+
+
 .creation     : 25-Sep-2000
 .description  :
   This function writes nibble datum @address into Flash Rom.

@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: hw_config.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title        : $RCSfile: hw_config.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	21-Sep-2000
-.keywords     : *
+
 .description  :
   This module contains the module description tables for all HPxx
   hardware configurations currently supported.  Moreover, it implements
@@ -50,8 +50,6 @@
 
     Guide to the Saturn Processor Rev. 1.0b by Matthew Mastracci
     HP49 Memory Explained, USENET post, by Steve Sousa.
-
-.include      : config.h machdep.h, cpu.h, modules.h
 
 .notes        :
   $Log: hw_config.c,v $
@@ -163,8 +161,8 @@ static const ModDescription hw49_description = {
 
 /* .+
 
-.title        : ModSelectDescription
-.kind         : C function
+
+
 .creation     : 21-Sep-2000
 .description  :
   This function selects and registers (invoking ModRegisterDescription())

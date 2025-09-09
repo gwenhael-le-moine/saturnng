@@ -36,14 +36,14 @@
 
 /* .+
 
-.identifier   : $Id: flash49.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title	      : $RCSfile: flash49.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	25-Sep-2000
-.keywords     : *
+
 .description  :
   This header contains all definitions and declarations related to the
   Internal Flash ROM emulation module of the HP49. References:
@@ -58,9 +58,7 @@
 
     28F160S5/28F320S5 Data Sheet, by Intel Corp.
 
-.include      : config.h machdep.h cpu.h modules.h
-
-.notes	      :
+.notes        :
   $Log: flash49.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

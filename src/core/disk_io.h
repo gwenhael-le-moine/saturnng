@@ -36,21 +36,19 @@
 
 /* .+
 
-.identifier   : $Id: disk_io.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title	      : $RCSfile: disk_io.h,v $
-.kind	      : C header
-.author	      : Ivan Cibrario B.
-.site	      : CSTV-CNR
+
+
+
+
+.author       : Ivan Cibrario B.
+
 .creation     :	28-Jan-1998
-.keywords     : *
+
 .description  :
   This header declares the disk I/O functions used by the emulator to
   save/restore the machine stats to/from disk files.
 
-.include      : config.h machdep.h cpu.h
-
-.notes	      :
+.notes        :
   $Log: disk_io.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.

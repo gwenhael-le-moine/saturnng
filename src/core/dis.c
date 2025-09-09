@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: dis.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: dis.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	26-Jan-1998
-.keywords     : *
+
 .description  :
   This module contains a disassembler for the instruction set of the
   Saturn CPU.
@@ -52,8 +52,6 @@
 
   The disassembler is almost not table-driven, because its structure has
   been kept as similar as possible to the actual CPU emulator code.
-
-.include      : config.h, machdep.h, cpu.h, modules.h
 
 .notes        :
   $Log: dis.c,v $
@@ -2186,8 +2184,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
 /* .+
 
-.title        : Disassemble
-.kind         : C function
+
+
 .creation     : 28-Jan-1998
 .description  :
   This function disassembles a Saturn instruction starting from 'pc' and

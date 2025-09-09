@@ -33,19 +33,17 @@
 
 /* .+
 
-.identifier   : $Id: disk_io_obj.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title        : $RCSfile: disk_io_obj.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : IRITI-CNR
+
 .creation     :	10-Nov-2000
-.keywords     : *
+
 .description  :
   This module implements the disk I/O functions used by the emulator to
   save and restore an object to/from disk files.
-
-.include      : config.h, machdep.h, cpu.h, disk_io.h
 
 .notes        :
   $Log: disk_io_obj.c,v $
@@ -73,8 +71,8 @@
 
 /* .+
 
-.title        : ReadObjectFromFile
-.kind         : C function
+
+
 .creation     : 10-Nov-2000
 .description  :
   This function reads an object from file 'name' and stores it into
@@ -188,8 +186,8 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
 /* .+
 
-.title        : WriteObjectToFile
-.kind         : C function
+
+
 .creation     : 10-Nov-2000
 .description  :
   This function writes an object located in calculator's memory,

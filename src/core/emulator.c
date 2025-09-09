@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: emulator.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: emulator.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	2-Feb-1998
-.keywords     : *
+
 .description  :
   This file contains the main loop of the emulator. For efficiency reasons,
   this module also emulates both T1 and T2 timers. References:
@@ -49,8 +49,6 @@
     Guide to the Saturn Processor Rev. 0.00f by Matthew Mastracci
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
-
-.include      : config.h, machdep.h, cpu.h
 
 .notes        :
   $Log: emulator.c,v $
@@ -475,8 +473,8 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* descriptor, const Chf
 
 /* .+
 
-.title        : Emulator
-.kind         : C function
+
+
 .creation     : 17-Feb-1998
 .description  :
   This function implements the main emulator loop. For efficiency reasons,
@@ -522,8 +520,8 @@ void Emulator( void )
 
 /* .+
 
-.title        : EmulatorIntRequest
-.kind         : C function
+
+
 .creation     : 18-Feb-1998
 .description  :
   This function posts an interrupt request for the running emulator loop.
@@ -546,8 +544,8 @@ void EmulatorIntRequest( void ) { emulator_int_req = true; }
 
 /* .+
 
-.title        : EmulatorInit
-.kind         : C function
+
+
 .creation     : 8-Sep-2000
 .description  :
   This function initializes the cpu and modules emulator subsystems;
@@ -592,8 +590,8 @@ void EmulatorInit( void )
 
 /* .+
 
-.title        : EmulatorExit
-.kind         : C function
+
+
 .creation     : 8-Sep-2000
 .description  :
   This function prepares the emulator to exit.  If 'opt' is SAVE_AND_EXIT,

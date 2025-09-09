@@ -36,14 +36,14 @@
 
 /* .+
 
-.identifier   : $Id: debug.h,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: debug.h,v $
-.kind         : C header
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	19-Jan-1998
-.keywords     : *
+
 .description  :
   This header defines the following macros:
 

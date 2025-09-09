@@ -33,19 +33,17 @@
 
 /* .+
 
-.identifier   : $Id: disk_io.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: disk_io.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	23-Jan-1998
-.keywords     : *
+
 .description  :
   This module implements the disk I/O functions used by the emulator to
   save and restore the machine status to/from disk files.
-
-.include      : config.h, machdep.h, cpu.h, disk_io.h
 
 .notes        :
   $Log: disk_io.c,v $
@@ -73,8 +71,8 @@
 
 /* .+
 
-.title        : ReadNibblesFromFile
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function reads 'size' nibbles from the disk file named 'name',
@@ -131,8 +129,8 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 
 /* .+
 
-.title        : WriteNibblesToFile
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function writes 'size' nibbles taken from 'src' into the file 'name'.
@@ -190,8 +188,8 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 
 /* .+
 
-.title        : ReadStructFromFile
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function reads the contents of the structure 's', with size 's_size',
@@ -236,8 +234,8 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
 
 /* .+
 
-.title        : WriteStructToFile
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function writes the structure 's', with size 's_size', to the file

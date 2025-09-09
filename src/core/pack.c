@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: pack.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: pack.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	2-Oct-2000
-.keywords     : *
+
 .description  :
   This file packs a ROM image of emu48/49 (first argument) into a format
   suitable for saturn (second argument).
@@ -125,8 +125,8 @@ size_t message_table_size = sizeof( message_table ) / sizeof( message_table[ 0 ]
 
 /* .+
 
-.title        : main
-.kind         : C function
+
+
 .creation     : 2-Oct-2000
 .description  :
   Main program.

@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: cpu.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HP48 emulator
-.title        : $RCSfile: cpu.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	2-Feb-1998
-.keywords     : *
+
 .description  :
   This file executes the Saturn CPU opcodes. References:
 
@@ -48,8 +48,6 @@
     Guide to the Saturn Processor Rev. 0.00f by Matthew Mastracci
     entries.srt by Mika Heiskanen  (mheiskan@vipunen.hut.fi)
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
-
-.include      : config.h, machdep.h, cpu.h
 
 .notes        :
   $Log: cpu.c,v $
@@ -2766,8 +2764,8 @@ static const char* DumpR( Nibble* r )
 
 /* .+
 
-.title        : CpuReset
-.kind         : C function
+
+
 .creation     : 3-Feb-1998
 .description  :
   This function resets the CPU, performing the following operations:
@@ -2864,8 +2862,8 @@ void CpuReset( void )
 
 /* .+
 
-.title        : CpuInit
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function initializes the Saturn CPU, reading its status from disk.
@@ -2904,8 +2902,8 @@ void CpuInit( void )
 
 /* .+
 
-.title        : CpuSave
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function saves the current Saturn CPU status to disk.
@@ -2935,8 +2933,8 @@ void CpuSave( void )
 
 /* .+
 
-.title        : CpuIntRequest
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function posts an interrupt request for the Saturn CPU.
@@ -2991,8 +2989,8 @@ void CpuIntRequest( enum IntRequest ireq )
 
 /* .+
 
-.title        : CpuWake
-.kind         : C function
+
+
 .creation     : 11-Feb-1998
 .description  :
   This function awakes the CPU if it has executed a SHUTDN instruction
@@ -3037,8 +3035,8 @@ void CpuWake( void )
 
 /* .+
 
-.title        : CpuHaltRequest
-.kind         : C function
+
+
 .creation     : 2-Nov-2000
 .description  :
   This function makes an halt request to the CPU emulator.
@@ -3107,8 +3105,8 @@ int CpuHaltRequest( void )
 
 /* .+
 
-.title        : CpuRunRequest
-.kind         : C function
+
+
 .creation     : 2-Nov-2000
 .description  :
   This function undoes exactly one CpuHaltRequest(); it has no effect
@@ -3150,8 +3148,8 @@ int CpuRunRequest( void )
 
 /* .+
 
-.title        : CpuHaltAllowed
-.kind         : C function
+
+
 .creation     : 7-Nov-2000
 .description  :
   This function return a non-zero value if CpuHaltRequest()
@@ -3178,8 +3176,8 @@ bool CpuHaltAllowed( void )
 
 /* .+
 
-.title        : DumpCpuStatus
-.kind         : C function
+
+
 .creation     : 3-Feb-1998
 .description  :
   This function dumps the current CPU status into the string buffer 'ob'.
@@ -3241,8 +3239,8 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 
 /* .+
 
-.title        : OneStep
-.kind         : C function
+
+
 .creation     : 3-Feb-1998
 .description  :
   This function executes a Saturn instruction starting from the current

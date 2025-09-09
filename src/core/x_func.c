@@ -33,14 +33,14 @@
 
 /* .+
 
-.identifier   : $Id: x_func.c,v 4.1 2000/12/11 09:54:19 cibrario Rel $
-.context      : SATURN, Saturn CPU / HPxx emulator
-.title        : $RCSfile: x_func.c,v $
-.kind         : C source
+
+
+
+
 .author       : Ivan Cibrario B.
-.site         : CSTV-CNR
+
 .creation     :	3-Nov-2000
-.keywords     : *
+
 .description  :
   This module implements the emulator's extended functions, that is,
   functions that the real machine has not.
@@ -48,8 +48,6 @@
   References:
 
     Private communications with Prof. B. Parisse
-
-.include      : config.h, machdep.h, cpu.h, x_func.h
 
 .notes        :
   $Log: x_func.c,v $
@@ -385,8 +383,8 @@ static const XFunc function[] = {
 
 /* .+
 
-.title        : ExtendedFunction
-.kind         : C function
+
+
 .creation     : 3-Nov-2000
 .description  :
   This function executes the emulator's extended function identified
