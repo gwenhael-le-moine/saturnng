@@ -72,8 +72,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> /* access() */
-
-
 #include "../libChf/src/Chf.h"
 #include "../options.h"
 
@@ -101,8 +99,6 @@ static struct ModStatus_48* mod_status_48;
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -144,8 +140,6 @@ void RomInit( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Rom module; actually it does
@@ -166,8 +160,6 @@ void RomInit( void )
 void RomSave( void ) { debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomSave" ); }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -194,8 +186,6 @@ Nibble RomRead( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -231,8 +221,6 @@ void RomWrite( Address rel_address, Nibble datum )
 
 /* .+
 
-
-
 .creation     : 23-Jan-1998
 .description  :
   This function initializes the Ram module.
@@ -263,8 +251,6 @@ void RamInit( void )
 }
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :
@@ -298,8 +284,6 @@ void RamSave( void )
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function reads a nibble from the internal RAM address 'rel_address'
@@ -325,8 +309,6 @@ Nibble RamRead( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -358,8 +340,6 @@ void RamWrite( Address rel_address, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -394,8 +374,6 @@ void Ce1Init( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Ce1 module.
@@ -423,8 +401,6 @@ void Ce1Save( void )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -465,8 +441,6 @@ Nibble Ce1Read( Address rel_address )
 
 /* .+
 
-
-
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the Ce1 module; the write attempt
@@ -501,8 +475,6 @@ void Ce1Write( Address rel_address, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -563,8 +535,6 @@ void Ce2Init( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the Ce2 module, if it is
@@ -598,8 +568,6 @@ void Ce2Save( void )
 
 /* .+
 
-
-
 .creation     : 23-Jan-1998
 .description  :
   This function reads a nibble from the Ce2 module.
@@ -625,8 +593,6 @@ Nibble Ce2Read( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -658,8 +624,6 @@ void Ce2Write( Address rel_address, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -728,8 +692,6 @@ void NCe3Init( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of the NCe3 module.
@@ -764,8 +726,6 @@ void NCe3Save( void )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -802,8 +762,6 @@ Nibble NCe3Read( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :

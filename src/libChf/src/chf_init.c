@@ -1,17 +1,11 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 3-May-1996
 
 .description  :
   This module implements the CHF initialization function ChfInit()
-
-
 
 .notes	      :
   $Log: chf_init.c,v $
@@ -43,8 +37,6 @@
 
   Revision 1.1  1996/05/28  12:54:58  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -97,8 +89,6 @@ static void DestroyContext( void* context )
    ------------------------------------------------------------------------- */
 
 /* .+
-
-
 
 .creation     : 17-May-1996
 .description  :
@@ -204,8 +194,6 @@ static ChfAction DefaultHandler( const ChfDescriptor* desc, const ChfState state
 
 /* .+
 
-
-
 .creation     : 16-May-1996
 .description  :
   This function writes the NUL-terminated string pointed by 'q' starting
@@ -250,8 +238,6 @@ static char* scopy( char* p, const char* q, char* p_end )
    ------------------------------------------------------------------------- */
 
 /* .+
-
-
 
 .creation     : 17-May-1996
 .description  :
@@ -306,8 +292,6 @@ const char* ChfGetMessage( const int module_id, const int condition_code, const 
 }
 
 /* .+
-
-
 
 .creation     : 16-May-1996
 .description  :
@@ -396,8 +380,6 @@ char* ChfBuildMessage( const ChfDescriptor* descriptor )
 }
 
 /* .+
-
-
 
 .creation     : 13-May-1996
 .description  :
@@ -536,8 +518,6 @@ int ChfInit( const int module_id, const char* app_name, /* Application's name */
 
 /* .+
 
-
-
 .creation     : 24-May-1996
 .description  :
   This function shuts down CHF and returns nothing to the caller; after
@@ -623,8 +603,6 @@ void ChfExit( void )
 }
 
 /* .+
-
-
 
 .creation     : 19-May-2000
 .description  :

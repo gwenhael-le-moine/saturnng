@@ -3,18 +3,12 @@
 
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 2-May-1996
 
 .description  :
   This is the main header of the Condition Handling Facility
-
-
 
 .notes	      :
   $Log: Chf.h,v $
@@ -50,8 +44,6 @@
 
   Revision 1.1  1996/05/28  12:56:47  cibrario
   Initial revision
-
-
 .- */
 
 #  include <stdlib.h>

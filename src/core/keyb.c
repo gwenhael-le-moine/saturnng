@@ -93,8 +93,6 @@ static InputRegister cur_in[ OUT_BITS ];
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function is called by the CPU emulator when the RSI instruction is
@@ -124,8 +122,6 @@ void KeybRSI( void )
 }
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :
@@ -163,8 +159,6 @@ InputRegister KeybIN( OutputRegister out )
 }
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :
@@ -218,8 +212,6 @@ void KeybPress( const char* key )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function tells to the keyboard emulator that key 'key' has been
@@ -264,8 +256,6 @@ void KeybRelease( const char* key )
 }
 
 /* .+
-
-
 
 .creation     : 7-Nov-2000
 .description  :

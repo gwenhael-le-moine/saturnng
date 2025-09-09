@@ -1,17 +1,11 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	24-May-1996
 
 .description  :
   This module implements the CHF initialization function ChfStaticInit()
-
-
 
 .notes	      :
   $Log: chf_st.c,v $
@@ -20,8 +14,6 @@
 
   Revision 1.1  1996/05/28  12:56:14  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -84,8 +76,6 @@ static void ExitMessage( void* private_context ) {}
    ------------------------------------------------------------------------- */
 
 /* .+
-
-
 
 .creation     : 24-May-1996
 .description  :

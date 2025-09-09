@@ -56,11 +56,7 @@
 
   Revision 3.3  2000/09/26 15:30:14  cibrario
   *** empty log message ***
-
-
 .- */
-
-
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
@@ -360,8 +356,6 @@ static int FSM( enum FlashCycle cycle, XAddress address, int data )
 
 /* .+
 
-
-
 .creation     : 25-Sep-2000
 .description  :
   This function reads the nibble @address from Flash Rom and returns it
@@ -403,8 +397,6 @@ Nibble FlashRead49( XAddress address )
 }
 
 /* .+
-
-
 
 .creation     : 25-Sep-2000
 .description  :

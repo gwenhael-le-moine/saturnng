@@ -1,17 +1,11 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 3-May-1996
 
 .description  :
   This module implements the CHF function ChfAbort()
-
-
 
 .notes	      :
   $Log: chf_abrt.c,v $
@@ -26,8 +20,6 @@
 
   Revision 1.1  1996/05/28  12:53:26  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -41,8 +33,6 @@
 #endif
 
 /* .+
-
-
 
 .creation     : 13-May-1996
 .description  :

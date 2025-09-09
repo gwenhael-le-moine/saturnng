@@ -60,8 +60,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
-
-
 #include "../libChf/src/Chf.h"
 #include "../options.h"
 
@@ -291,8 +289,6 @@ static void sigint_handler( int s ) { EmulatorIntRequest(); }
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 18-Feb-1998
 .description  :

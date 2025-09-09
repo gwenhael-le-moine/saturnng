@@ -1,17 +1,11 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 3-May-1996
 
 .description  :
   This module implements the condition signalling function of CHF
-
-
 
 .notes	      :
   $Log: chf_sig.c,v $
@@ -33,8 +27,6 @@
 
   Revision 1.1  1996/05/28  12:55:51  cibrario
   Initial revision
-
-
 .- */
 
 #include <setjmp.h>
@@ -43,8 +35,6 @@
 #include "ChfPriv.h"
 
 /* .+
-
-
 
 .creation     : 10-May-1996
 .description  :

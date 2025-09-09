@@ -1,17 +1,11 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	17-May-1996
 
 .description  :
   This module contains the CHF initialization function ChfMsgcatInit()
-
-
 
 .notes	      :
   $Log: chf_msgc.c,v $
@@ -24,8 +18,6 @@
 
   Revision 1.1  1996/05/28  12:55:15  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>

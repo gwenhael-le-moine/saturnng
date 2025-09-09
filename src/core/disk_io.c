@@ -48,8 +48,6 @@
 
   Revision 1.1  1998/02/17 11:54:38  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -63,8 +61,6 @@
 #include "debug.h"
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :
@@ -121,8 +117,6 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 }
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :
@@ -181,8 +175,6 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function reads the contents of the structure 's', with size 's_size',
@@ -226,8 +218,6 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
 }
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :

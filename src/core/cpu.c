@@ -2757,8 +2757,6 @@ static const char* DumpR( Nibble* r )
 
 /* .+
 
-
-
 .creation     : 3-Feb-1998
 .description  :
   This function resets the CPU, performing the following operations:
@@ -2855,8 +2853,6 @@ void CpuReset( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function initializes the Saturn CPU, reading its status from disk.
@@ -2895,8 +2891,6 @@ void CpuInit( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the current Saturn CPU status to disk.
@@ -2925,8 +2919,6 @@ void CpuSave( void )
 }
 
 /* .+
-
-
 
 .creation     : 11-Feb-1998
 .description  :
@@ -2982,8 +2974,6 @@ void CpuIntRequest( enum IntRequest ireq )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function awakes the CPU if it has executed a SHUTDN instruction
@@ -3027,8 +3017,6 @@ void CpuWake( void )
 }
 
 /* .+
-
-
 
 .creation     : 2-Nov-2000
 .description  :
@@ -3098,8 +3086,6 @@ int CpuHaltRequest( void )
 
 /* .+
 
-
-
 .creation     : 2-Nov-2000
 .description  :
   This function undoes exactly one CpuHaltRequest(); it has no effect
@@ -3141,8 +3127,6 @@ int CpuRunRequest( void )
 
 /* .+
 
-
-
 .creation     : 7-Nov-2000
 .description  :
   This function return a non-zero value if CpuHaltRequest()
@@ -3168,8 +3152,6 @@ bool CpuHaltAllowed( void )
 }
 
 /* .+
-
-
 
 .creation     : 3-Feb-1998
 .description  :
@@ -3231,8 +3213,6 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 }
 
 /* .+
-
-
 
 .creation     : 3-Feb-1998
 .description  :

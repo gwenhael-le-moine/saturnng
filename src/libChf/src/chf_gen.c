@@ -1,17 +1,11 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 3-May-1996
 
 .description  :
   This module contains the condition generation function of CHF
-
-
 
 .notes	      :
   $Log: chf_gen.c,v $
@@ -20,8 +14,6 @@
 
   Revision 1.1  1996/05/28  12:53:59  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -32,8 +24,6 @@
 #include "ChfPriv.h"
 
 /* .+
-
-
 
 .creation     :  3-May-1996
 .description  :
@@ -56,8 +46,6 @@
         - there was an attempt to generate a condition while the CHF condition
           CHF_F_COND_STACK_FULL (condition stack full) was being signalled
           (abort code CHF_ABORT_COND_STACK_OVF)
-
-
 .call	      :
                 ChfGenerate(module_id, file_name, line_number,
                         condition_code, severity, ...);

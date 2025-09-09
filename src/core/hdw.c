@@ -91,8 +91,6 @@
 .- */
 
 #include <string.h> /* 3.1: memset() */
-
-
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
@@ -109,8 +107,6 @@ static const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
 static const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F000, 0x000F0000, 0x00F00000, 0x0F000000, 0xF0000000 };
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -146,8 +142,6 @@ void HdwInit( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the current status of the peripheral devices associated
@@ -177,8 +171,6 @@ void HdwSave( void )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -323,8 +315,6 @@ Nibble HdwRead( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :

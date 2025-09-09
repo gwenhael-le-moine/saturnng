@@ -1,9 +1,5 @@
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 3-May-1996
@@ -11,8 +7,6 @@
 .description  :
   This module implements the CHF functions ChfPushHandler() and
   ChfPopHandler()
-
-
 
 .notes	      :
   $Log: chf_hdlr.c,v $
@@ -33,16 +27,12 @@
 
   Revision 1.1  1996/05/28  12:54:28  cibrario
   Initial revision
-
-
 .- */
 
 #include "Chf.h"
 #include "ChfPriv.h"
 
 /* .+
-
-
 
 .creation     : 19-May-2000
 .description  :
@@ -82,8 +72,6 @@ static ChfAction StructuredHelper( const ChfDescriptor* desc, const ChfState sta
 }
 
 /* .+
-
-
 
 .creation     : 13-May-1996
 .description  :

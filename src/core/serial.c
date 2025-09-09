@@ -93,8 +93,6 @@
 
 #include <stdlib.h>
 #include <errno.h>
-
-
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
@@ -449,8 +447,6 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function opens and initializes the pseudo-terminal that will
@@ -654,8 +650,6 @@ const char* SerialInit( void )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function closes the pseudo-terminal opened by SerialInit(), if
@@ -693,8 +687,6 @@ void SerialClose( void )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function returns to the caller the name of the slave size of
@@ -725,8 +717,6 @@ const char* SerialPtyName( void )
 }
 
 /* .+
-
-
 
 .creation     : 13-Sep-2000
 .description  :
@@ -759,8 +749,6 @@ Nibble Serial_IOC_Read( void )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial receiver control & status
@@ -792,8 +780,6 @@ Nibble Serial_RCS_Read( void )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a read of the serial transmitter control & status
@@ -824,8 +810,6 @@ Nibble Serial_TCS_Read( void )
 }
 
 /* .+
-
-
 
 .creation     : 13-Sep-2000
 .description  :
@@ -880,8 +864,6 @@ int8 Serial_RBR_Read( void )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial I/O and interrupt control
@@ -916,8 +898,6 @@ void Serial_IOC_Write( Nibble n )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial receiver control & status
@@ -948,8 +928,6 @@ void Serial_RCS_Write( Nibble n )
 }
 
 /* .+
-
-
 
 .creation     : 13-Sep-2000
 .description  :
@@ -982,8 +960,6 @@ void Serial_TCS_Write( Nibble n )
 
 /* .+
 
-
-
 .creation     : 13-Sep-2000
 .description  :
   This function emulates a write into the serial 'clear receiver error'
@@ -1013,8 +989,6 @@ void Serial_CRER_Write( Nibble n )
 }
 
 /* .+
-
-
 
 .creation     : 13-Sep-2000
 .description  :
@@ -1062,8 +1036,6 @@ void Serial_TBR_Write( int8 d )
 }
 
 /* .+
-
-
 
 .creation     : 14-Sep-2000
 .description  :

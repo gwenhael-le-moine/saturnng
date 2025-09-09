@@ -183,8 +183,6 @@ static int repl_c = 0;  /* Entry replacement counter */
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function is called when a read access is attempted for an unmapped
@@ -216,8 +214,6 @@ static Nibble BadRead( Address addr )
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function is called when a write access is attempted for an unmapped
@@ -245,8 +241,6 @@ static void BadWrite( Address addr, Nibble datum )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -333,8 +327,6 @@ static void RebuildPageTable( int lo, int hi )
 
 /* .+
 
-
-
 .creation     : 15-Sep-2000
 .description  :
   This function clears all caching information associated with the
@@ -374,8 +366,6 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 }
 
 /* .+
-
-
 
 .creation     : 15-Sep-2000
 .description  :
@@ -427,8 +417,6 @@ static struct ModMap* NewModMap( void )
 
 /* .+
 
-
-
 .creation     : 15-Sep-2000
 .description  :
   This function copies the contents of a struct ModMap into another,
@@ -462,8 +450,6 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 }
 
 /* .+
-
-
 
 .creation     : 15-Sep-2000
 .description  :
@@ -509,8 +495,6 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 }
 
 /* .+
-
-
 
 .creation     : 15-Sep-2000
 .description  :
@@ -572,8 +556,6 @@ static void FlushCache( struct ModMap* save )
 
 /* .+
 
-
-
 .creation     : 15-Sep-2000
 .description  :
   This function checks if there is an entry in the module configuration cache
@@ -607,8 +589,6 @@ static struct ModMap* AccessConfigCache( Address tag )
 }
 
 /* .+
-
-
 
 .creation     : 15-Sep-2000
 .description  :
@@ -646,8 +626,6 @@ static struct ModMap* AccessUnconfigCache( int i )
 }
 
 /* .+
-
-
 
 .creation     : 19-Sep-2000
 .description  :
@@ -723,8 +701,6 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
 
 /* .+
 
-
-
 .creation     : 19-Sep-2000
 .description  :
   This function checks if there is in the cache a struct ModMap
@@ -786,8 +762,6 @@ static struct ModMap* CheckForLateHit( void )
 }
 
 /* .+
-
-
 
 .creation     : 19-Sep-2000
 .description  :
@@ -852,8 +826,6 @@ static void FreeModMap( struct ModMap* p )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function registers the ModDescription table pointed by 'p'; all
@@ -886,8 +858,6 @@ void ModRegisterDescription( ModDescription p )
 }
 
 /* .+
-
-
 
 .creation     : 23-Jan-1998
 .description  :
@@ -967,8 +937,6 @@ void ModInit( void )
 
 /* .+
 
-
-
 .creation     : 11-Feb-1998
 .description  :
   This function saves the status of all peripheral modules, calling its
@@ -1015,8 +983,6 @@ void ModSave( void )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -1078,8 +1044,6 @@ Address ModGetID( void )
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function resets all peripheral modules and rebuilds the module page
@@ -1133,8 +1097,6 @@ void ModReset( void )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -1273,8 +1235,6 @@ void ModConfig( Address config_info )
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function unconfigures the module currently configured at address
@@ -1405,8 +1365,6 @@ void ModUnconfig( Address unconfig_info )
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function fetches a nibble from the address 'addr' and returns it.
@@ -1434,8 +1392,6 @@ Nibble FetchNibble( Address addr )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -1478,8 +1434,6 @@ Nibble ReadNibble( Address addr )
 
 /* .+
 
-
-
 .creation     : 26-Jan-1998
 .description  :
   This function writes the nibble 'datum' to the address 'addr'
@@ -1512,8 +1466,6 @@ void WriteNibble( Address addr, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :
@@ -1554,8 +1506,6 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 }
 
 /* .+
-
-
 
 .creation     : 26-Jan-1998
 .description  :

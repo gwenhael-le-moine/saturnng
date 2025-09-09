@@ -3,18 +3,12 @@
 
 /* .+
 
-
-
-
-
 .author	      : Ivan Cibrario B.
 
 .creation     :	 2-May-1996
 
 .description  :
   This is the private header of the Condition Handling Facility
-
-
 
 .notes	      :
   $Log: ChfPriv.h,v $
@@ -36,8 +30,6 @@
 
   Revision 1.1  1996/05/28  12:56:37  cibrario
   Initial revision
-
-
 .- */
 
 #  include "Chf.h"

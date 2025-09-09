@@ -62,8 +62,6 @@
  *
 
 .- */
-
-
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
@@ -153,8 +151,6 @@ static const ModDescription hw49_description = {
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :

@@ -45,15 +45,11 @@
 
   Revision 3.14  2000/11/13 11:24:20  cibrario
   *** empty log message ***
-
-
 .- */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
@@ -63,8 +59,6 @@
 #include "debug.h"
 
 /* .+
-
-
 
 .creation     : 10-Nov-2000
 .description  :
@@ -178,8 +172,6 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 }
 
 /* .+
-
-
 
 .creation     : 10-Nov-2000
 .description  :

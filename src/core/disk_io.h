@@ -58,8 +58,6 @@
 
   Revision 1.1  1998/02/17 11:55:02  cibrario
   Initial revision
-
-
 .- */
 
 #  include <sys/types.h>

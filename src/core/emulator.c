@@ -125,8 +125,6 @@
    values used only to compute e reasonable timeout for IdleXLoop();
    the actual update of timers is carried out using T1_INTERVAL
    and T2_INTERVAL, and should be more accurate.
-
-
    (*) XXX This constraint will be removed when the serial port emulation
        module will support asynchronous selection on pty fd and will
        be able to interact with the GUI's select mechanism.
@@ -466,8 +464,6 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* descriptor, const Chf
 
 /* .+
 
-
-
 .creation     : 17-Feb-1998
 .description  :
   This function implements the main emulator loop. For efficiency reasons,
@@ -513,8 +509,6 @@ void Emulator( void )
 
 /* .+
 
-
-
 .creation     : 18-Feb-1998
 .description  :
   This function posts an interrupt request for the running emulator loop.
@@ -536,8 +530,6 @@ void Emulator( void )
 void EmulatorIntRequest( void ) { emulator_int_req = true; }
 
 /* .+
-
-
 
 .creation     : 8-Sep-2000
 .description  :
@@ -582,8 +574,6 @@ void EmulatorInit( void )
 }
 
 /* .+
-
-
 
 .creation     : 8-Sep-2000
 .description  :

@@ -1201,8 +1201,6 @@ static Address DisGroup_0( Address pc, char* ob )
    D1=CS			13D
    CD0XS			13E
    CD1XS			13F
-
-
    Opcode table for:
      14r
                                 Opcode
@@ -1223,8 +1221,6 @@ static Address DisGroup_0( Address pc, char* ob )
    DAT1=C	B		14D
    C=DAT0	B		14E
    C=DAT1	B		14F
-
-
    Opcode table for:
      15of
 
@@ -1249,8 +1245,6 @@ static Address DisGroup_0( Address pc, char* ob )
    DAT1=C d			D	d-1	5	8
    C=DAT0 d			E	d-1	6	8
    C=DAT1 d			F	d-1	7	8
-
-
    Opcode table for:
      16m,	D0=D0+m+1
      17m,	D1=D1+m+1
@@ -1264,8 +1258,6 @@ static Address DisGroup_0( Address pc, char* ob )
      1Dnn	D1=(2)	nn
      1Ennnn	D1=(4)	nnnn
      1Fnnnnn	D1=(5)	nnnnn
-
-
 */
 static Address DisGroup_1( Address pc, char* ob )
 {
@@ -1654,8 +1646,6 @@ static Address DisGroup_80( Address pc, char* ob )
    CR2EX.F fs		81Af2A
    CR3EX.F fs		81Af2B
    CR4EX.F fs		81Af2C
-
-
    Opcode Table for:
    rp=3, opcode 81Bn
                         Direct execution
@@ -2176,8 +2166,6 @@ static Address DisGroup_8( Address pc, char* ob )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 28-Jan-1998
 .description  :

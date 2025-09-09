@@ -84,8 +84,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> /* access() */
-
-
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
@@ -115,8 +113,6 @@ struct ModStatus_49* mod_status_49;
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -155,8 +151,6 @@ void RomInit49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Flash Rom.
@@ -188,8 +182,6 @@ void RomSave49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the internal Flash Rom address
@@ -219,8 +211,6 @@ Nibble RomRead49( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -261,8 +251,6 @@ void RomWrite49( Address rel_address, Nibble datum )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function initializes the Ram module.
@@ -294,8 +282,6 @@ void RamInit49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ram module to disk.
@@ -326,8 +312,6 @@ void RamSave49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the internal RAM address 'rel_address'
@@ -353,8 +337,6 @@ Nibble RamRead49( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -386,8 +368,6 @@ void RamWrite49( Address rel_address, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -421,8 +401,6 @@ void Ce1Init49( void )
 }
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -462,8 +440,6 @@ void Ce1Save49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce1 module; the address of
@@ -500,8 +476,6 @@ Nibble Ce1Read49( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -542,8 +516,6 @@ void Ce1Write49( Address rel_address, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -586,8 +558,6 @@ void Ce2Init49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the Ce2 module.
@@ -613,8 +583,6 @@ void Ce2Save49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function reads a nibble from the Ce2 module.
@@ -639,8 +607,6 @@ Nibble Ce2Read49( Address rel_address )
 }
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -671,8 +637,6 @@ void Ce2Write49( Address rel_address, Nibble datum )
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -715,8 +679,6 @@ void NCe3Init49( void )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function saves the status of the NCe3 module.
@@ -741,8 +703,6 @@ void NCe3Save49( void )
 }
 
 /* .+
-
-
 
 .creation     : 21-Sep-2000
 .description  :
@@ -782,8 +742,6 @@ Nibble NCe3Read49( Address rel_address )
 
 /* .+
 
-
-
 .creation     : 21-Sep-2000
 .description  :
   This function writes a nibble to the NCe3 module.
@@ -795,8 +753,6 @@ Nibble NCe3Read49( Address rel_address )
   This module must have the MOD_MAP_FLAGS_ABS set in
   its mod_description[].map_flags; this way, rel_address will be
   the ABSOLUTE address of the memory access.
-
-
 .call         :
                 NCe3Write49(rel_address, datum);
 .input        :

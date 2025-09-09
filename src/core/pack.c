@@ -53,8 +53,6 @@
 
   Revision 3.6  2000/10/02 13:55:06  cibrario
   *** empty log message ***
-
-
 .- */
 
 #include <stdio.h>
@@ -117,8 +115,6 @@ size_t message_table_size = sizeof( message_table ) / sizeof( message_table[ 0 ]
   ---------------------------------------------------------------------------*/
 
 /* .+
-
-
 
 .creation     : 2-Oct-2000
 .description  :
