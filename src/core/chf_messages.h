@@ -4,8 +4,8 @@
 #  include <stdlib.h>
 
 #  include "../libChf/src/Chf.h"
-#  include "../config.h"
 
+#  include "config.h"
 #  include "cpu.h"
 #  include "debug.h"
 #  include "disk_io.h"

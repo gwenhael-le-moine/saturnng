@@ -65,8 +65,8 @@
 #include <stdlib.h>
 
 #include "../libChf/src/Chf.h"
-#include "../config.h"
 
+#include "config.h"
 #include "cpu.h"
 #include "disk_io.h"
 #include "debug.h"

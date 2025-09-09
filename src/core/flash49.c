@@ -71,8 +71,8 @@
 
 
 #include "../libChf/src/Chf.h"
-#include "../config.h"
 
+#include "config.h"
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"

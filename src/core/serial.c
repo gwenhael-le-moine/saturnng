@@ -105,8 +105,8 @@
 
 
 #include "../libChf/src/Chf.h"
-#include "../config.h"
 
+#include "config.h"
 #include "machdep.h"
 #include "cpu.h"
 #include "serial.h" /* 2.5: Serial port emulation module */

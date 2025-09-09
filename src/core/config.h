@@ -124,8 +124,6 @@
 
 .- */
 
-#  include "options.h"
-
 /* 2.4: N_PORT_2_BANK
    This symbol is used to dimension the HP48GX Port_2: it denotes the
    number of 128 Kbyte banks the port must have and must be a power of 2

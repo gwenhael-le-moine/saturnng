@@ -6,11 +6,11 @@
 #include <sys/time.h>
 
 #include "options.h"
-#include "config.h"
 
 #include "ui4x/api.h"
 #include "ui4x/common.h"
 
+#include "core/config.h"
 #include "core/cpu.h"
 #include "core/monitor.h"
 #include "core/chf_messages.h"

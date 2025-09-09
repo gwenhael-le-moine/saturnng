@@ -89,9 +89,9 @@
 #include <string.h>
 
 #include "../libChf/src/Chf.h"
-#include "../config.h"
 #include "../options.h"
 
+#include "config.h"
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"

@@ -102,6 +102,8 @@
 
 .- */
 
+#  include "../options.h"
+
 #  define _debug_preamble( module_id, debug_class, condition_code )                                                                        \
       {                                                                                                                                    \
           if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
