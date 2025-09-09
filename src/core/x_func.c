@@ -351,23 +351,6 @@ static void Send( Nibble function_code )
     }
 }
 
-/*---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------
-   Dispatch table of emulator's extended functions, indexed by function code;
-   the function code is propagated to functions in the table.
-  ---------------------------------------------------------------------------*/
-
-typedef void ( *XFunc )( Nibble );
-
-static const XFunc function[] = {
-    SetSpeed, /* Function code 0 */
-    Kget,     /* 1 */
-    Send      /* 2 */
-};
-
-#define N_X_FUNC ( int )( sizeof( function ) / sizeof( function[ 0 ] ) )
-
 /*---------------------------------------------------------------------------
         Public functions
   ---------------------------------------------------------------------------*/
@@ -400,12 +383,19 @@ void ExtendedFunction( Nibble function_code )
     debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "ExtendedFunction" );
     debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_CODE, function_code );
 
-    /* Some sanity checks, first */
-    if ( function_code < 0 || function_code >= N_X_FUNC || function[ ( int )function_code ] == ( XFunc )NULL ) {
+    switch ( function_code ) {
+    case 0:
+        SetSpeed( function_code );
+        break;
+    case 1:
+        Kget( function_code );
+        break;
+    case 2:
+        Send( function_code );
+        break;
+
+    default:
         ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_BAD_CODE, CHF_WARNING, function_code );
         ChfSignal( X_FUNC_CHF_MODULE_ID );
     }
-    /* Dispatch */
-    else
-        function[ ( int )function_code ]( function_code );
 }
