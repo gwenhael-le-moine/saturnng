@@ -124,8 +124,6 @@
 #  define DISASSEMBLE_OB_SIZE 128
 #  define DUMP_CPU_STATUS_OB_SIZE 512
 
-#  define CPU_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
-
 /* Instruction opcode access macros:
      GET_FS(f)		returns the short field-selector value from the
                         given nibble (bits 2..0)

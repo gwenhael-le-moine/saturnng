@@ -137,8 +137,6 @@
 /* 2.7: Number of entries in module config cache */
 #  define N_MOD_CACHE_ENTRIES 8
 
-#  define MOD_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
-
 /*---------------------------------------------------------------------------
         Macros
 

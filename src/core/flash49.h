@@ -69,8 +69,6 @@
         Macro/Data type definitions
   ---------------------------------------------------------------------------*/
 
-#  define FLASH49_RCS_INFO "$Revision: 4.1 $ $State: Rel $"
-
 /* Command Set Definitions, Table 3 on Data Sheet.
    Both BCS and SCS commands are listed here; commands marked with
    (*) are not implemented.
