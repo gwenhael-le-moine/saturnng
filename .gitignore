@@ -1,4 +1,5 @@
 src/*.o
+src/core/*.o
 src/ui4x/*.o
 
 dist/pack
