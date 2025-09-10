@@ -192,19 +192,22 @@ void KeybPress( const char* key )
         CpuIntRequest( INT_REQUEST_NMI );
     } else {
         unsigned int in_val, out_bit;
+        int ret = sscanf( key, "%x/%x", &out_bit, &in_val );
 
-        if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_KEY, CHF_WARNING, key );
-            ChfSignal( MOD_CHF_MODULE_ID );
-            /* } else if ( out_bit < 0 || out_bit >= OUT_BITS ) { */
-            /*     ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ); */
-            /*     ChfSignal( MOD_CHF_MODULE_ID ); */
-        } else {
+        if ( ret == 2 ) {
             /* Update the cur_in array */
             cur_in[ out_bit ] |= in_val;
 
             /* Post an interrupt request to the CPU */
             CpuIntRequest( INT_REQUEST_NMI );
+        } else {
+            if ( ret != 2 ) {
+                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_KEY, CHF_WARNING, key );
+                ChfSignal( MOD_CHF_MODULE_ID );
+            } else if ( out_bit >= OUT_BITS ) {
+                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit );
+                ChfSignal( MOD_CHF_MODULE_ID );
+            }
         }
     }
 }
@@ -240,16 +243,19 @@ void KeybRelease( const char* key )
             cur_in[ i ] &= 0x7FFF;
     } else {
         unsigned int in_val, out_bit;
+        int ret = sscanf( key, "%x/%x", &out_bit, &in_val );
 
-        if ( sscanf( key, "%x/%x", &out_bit, &in_val ) != 2 ) {
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_KEY, CHF_WARNING, key );
-            ChfSignal( MOD_CHF_MODULE_ID );
-            /* } else if ( out_bit < 0 || out_bit >= OUT_BITS ) { */
-            /*     ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit ); */
-            /*     ChfSignal( MOD_CHF_MODULE_ID ); */
-        } else {
+        if ( ret == 2 )
             /* Update the cur_in array */
             cur_in[ out_bit ] &= ~in_val;
+        else {
+            if ( ret != 2 ) {
+                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_KEY, CHF_WARNING, key );
+                ChfSignal( MOD_CHF_MODULE_ID );
+            } else if ( out_bit >= OUT_BITS ) {
+                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit );
+                ChfSignal( MOD_CHF_MODULE_ID );
+            }
         }
     }
 }
@@ -273,9 +279,7 @@ void KeybRelease( const char* key )
 .- */
 void KeybReset( void )
 {
-    int i;
-
     /* Reset all 0x8000 lines */
-    for ( i = 0; i < OUT_BITS; i++ )
+    for ( int i = 0; i < OUT_BITS; i++ )
         cur_in[ i ] = 0;
 }
