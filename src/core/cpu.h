@@ -169,23 +169,27 @@
 #  define GET_AS( r ) ( ( r ) & 0x8 )
 
 /* Field selector codes */
-#  define FS_P 0
-#  define FS_WP 1
-#  define FS_XS 2
-#  define FS_X 3
-#  define FS_S 4
-#  define FS_M 5
-#  define FS_B 6
-#  define FS_W 7
-#  define FS_A 15
-#  define N_FS 16 /* Total # of FS codes */
+typedef enum {
+    FS_P = 0,
+    FS_WP = 1,
+    FS_XS = 2,
+    FS_X = 3,
+    FS_S = 4,
+    FS_M = 5,
+    FS_B = 6,
+    FS_W = 7,
+    FS_A = 15,
+    N_FS = 16, /* Total # of FS codes */
+} field_selector_code_t;
 
 /* Register pair codes */
-#  define RP_AB 0
-#  define RP_BC 1
-#  define RP_CA 2
-#  define RP_DC 3
-#  define N_RP 4 /* Total # of RP codes */
+typedef enum {
+    RP_AB = 0,
+    RP_BC = 1,
+    RP_CA = 2,
+    RP_DC = 3,
+    N_RP = 4, /* Total # of RP codes */
+} register_pair_code_t;
 
 /* Masks */
 #  define NIBBLE_MASK ( ( Nibble )0xF )
@@ -206,7 +210,7 @@ typedef Nibble DataRegister[ NIBBLE_PER_REGISTER ];
 /* The XAddress data type holds extended addresses used to access Port 2 */
 typedef int32 XAddress;
 
-enum IntRequest { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI };
+typedef enum { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI } int_request_t;
 
 struct CpuStatus {
     DataRegister work[ N_WORKING_REGISTER ];
@@ -243,13 +247,13 @@ struct CpuStatus {
 
     int fs_idx_lo[ N_FS ];
     int fs_idx_hi[ N_FS ];
-    bool hexmode;                /* DEC/HEX mode */
-    bool carry;                  /* Carry bit */
-    bool shutdn;                 /* SHUTDN flag */
-    bool halt;                   /* Halt flag */
-    bool int_enable;             /* Int. enable */
-    bool int_service;            /* Int. service */
-    enum IntRequest int_pending; /* Pending interrupt request */
+    bool hexmode;              /* DEC/HEX mode */
+    bool carry;                /* Carry bit */
+    bool shutdn;               /* SHUTDN flag */
+    bool halt;                 /* Halt flag */
+    bool int_enable;           /* Int. enable */
+    bool int_service;          /* Int. service */
+    int_request_t int_pending; /* Pending interrupt request */
 
     /* 3.13: inner_loop_max gives the upper limit of the CPU speed if the
        compile-time option REAL_CPU_SPEED is defined.  When the CPU is reset
@@ -263,11 +267,9 @@ struct CpuStatus {
 #  define INNER_LOOP_MIN 2
 };
 
-enum ExitOption /* 2.1: EmulatorExit() option */
-{
-    IMMEDIATE_EXIT,
-    SAVE_AND_EXIT
-};
+typedef enum /* 2.1: EmulatorExit() option */
+{ IMMEDIATE_EXIT,
+  SAVE_AND_EXIT } exit_option_t;
 
 /*---------------------------------------------------------------------------
         Global variables
@@ -315,15 +317,15 @@ void CpuInit( void );
 void CpuReset( void );
 void CpuSave( void );
 void OneStep( void );
-void CpuIntRequest( enum IntRequest ireq );
+void CpuIntRequest( int_request_t ireq );
 void CpuWake( void );
 void Emulator( void );
 void EmulatorIntRequest( void );
-void EmulatorInit( void );                /* 2.1 */
-void EmulatorExit( enum ExitOption opt ); /* 2.1 */
-int CpuHaltRequest( void );               /* 3.13 */
-int CpuRunRequest( void );                /* 3.13 */
-bool CpuHaltAllowed( void );              /* 3.13 */
+void EmulatorInit( void );              /* 2.1 */
+void EmulatorExit( exit_option_t opt ); /* 2.1 */
+int CpuHaltRequest( void );             /* 3.13 */
+int CpuRunRequest( void );              /* 3.13 */
+bool CpuHaltAllowed( void );            /* 3.13 */
 
 Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] ); /* dis.c */
 void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] );

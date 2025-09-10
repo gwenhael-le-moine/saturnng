@@ -586,7 +586,7 @@ void EmulatorInit( void )
 .call         :
                 EmulatorExit(opt);
 .input        :
-                enum ExitOption opt, emulator exit option
+                exit_option_t opt, emulator exit option
 .output       :
                 void
 .status_codes :
@@ -595,7 +595,7 @@ void EmulatorInit( void )
   2.1, 8-Sep-2000, creation
 
 .- */
-void EmulatorExit( enum ExitOption opt )
+void EmulatorExit( exit_option_t opt )
 {
     switch ( opt ) {
         case SAVE_AND_EXIT:
