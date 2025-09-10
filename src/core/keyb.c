@@ -68,7 +68,7 @@
 
   Revision 1.1  1998/02/17  11:53:23  cibrario
   Initial revision
- 
+
 
 .- */
 
@@ -117,7 +117,6 @@ static InputRegister cur_in[ OUT_BITS ];
 void KeybRSI( void )
 {
     /* Post an IRQ if the IN register is not zero */
-
     CpuIntRequest( KeybIN( ( OutputRegister )0x1FF ) != ( InputRegister )0 ? INT_REQUEST_IRQ : INT_REQUEST_NONE );
 }
 

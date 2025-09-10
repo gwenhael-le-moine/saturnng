@@ -59,7 +59,7 @@
 
   Revision 3.2  2000/09/22  14:40:18  cibrario
   *** empty log message ***
- 
+
 
 .- */
 #include "../libChf/src/Chf.h"

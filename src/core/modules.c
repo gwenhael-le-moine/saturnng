@@ -87,17 +87,17 @@
     been registered yet.
   - enabled forced alignment of
     module configuration sizes and addresses in ModConfig()
- 
+
   Revision 3.1  2000/09/20  14:00:02  cibrario
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
   when -ansi -pedantic -Wall options are selected.
- 
+
   Revision 2.7  2000/09/19  11:11:08  cibrario
   Deeply revised to implement module config/unconfig cache.
- 
+
   Revision 1.1  1998/02/18  08:16:35  cibrario
   Initial revision
- 
+
 
 .- */
 

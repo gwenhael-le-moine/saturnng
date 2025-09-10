@@ -74,10 +74,10 @@
     address translation is done here, the actual access is revectored to
     FlashRead49() and FlashWrite49().  Notice that the NCe3 controller
     must be registered with the MOD_MAP_FLAGS_ABS bit set in its map_flags.
- 
+
   Revision 3.2  2000/09/22  14:48:13  cibrario
   *** empty log message ***
- 
+
 
 .- */
 

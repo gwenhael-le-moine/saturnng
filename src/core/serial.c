@@ -361,10 +361,10 @@ static int ReadAndPush( struct RingBuffer* rbp, int fd )
         Static variables, holding the status of the emulated port
   ---------------------------------------------------------------------------*/
 typedef enum {
-    IOC_SON = 0x08,   /* Serial port enable */
-    IOC_ETBE = 0x04,  /* Enable IRQ on TX buffer empty */
-    IOC_ERBF = 0x02,  /* Enable IRQ on RX buffer full */
-    IOC_ERBZ = 0x01,  /* Enable IRQ on RX buzy (sic) */
+    IOC_SON = 0x08,  /* Serial port enable */
+    IOC_ETBE = 0x04, /* Enable IRQ on TX buffer empty */
+    IOC_ERBF = 0x02, /* Enable IRQ on RX buffer full */
+    IOC_ERBZ = 0x01, /* Enable IRQ on RX buzy (sic) */
 } ioc_t;
 static ioc_t ioc = 0; /* I/O and interrupt control register */
 
@@ -374,13 +374,13 @@ typedef enum {
     RCS_RBZ = 0x02,    /* RX Buzy */
     RCS_RBF = 0x01,    /* RX Buffer full */
 } rcs_t;
-static rcs_t rcs = 0;  /* RX control & status register */
+static rcs_t rcs = 0; /* RX control & status register */
 
 typedef enum {
-    TCS_BRK = 0x08,   /* Unknown (?) */
-    TCS_LPB = 0x04,   /* Unknown (?) */
-    TCS_TBZ = 0x02,   /* TX Buzy */
-    TCS_TBF = 0x01,   /* TX Buffer full */
+    TCS_BRK = 0x08, /* Unknown (?) */
+    TCS_LPB = 0x04, /* Unknown (?) */
+    TCS_TBZ = 0x02, /* TX Buzy */
+    TCS_TBF = 0x01, /* TX Buffer full */
 } tcs_t;
 static tcs_t tcs = 0; /* TX control & status register */
 

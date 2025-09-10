@@ -58,14 +58,14 @@
   Revision 3.1  2000/09/20  13:57:24  cibrario
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
   when -ansi -pedantic -Wall options are selected.
- 
+
   Revision 2.4  2000/09/12  15:25:16  cibrario
   Implemented emulation of Port 1 and 2; write protection and
   HST/MP interrupt generation has been implemented as well.
- 
+
   Revision 1.1  1998/02/17  11:49:40  cibrario
   Initial revision
- 
+
 
 .- */
 
@@ -716,8 +716,7 @@ void NCe3Save( void )
 
 #ifdef N_PORT_2_BANK
     /* Attempt to save only if port is write-enabled */
-    if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) &&
-         WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port2_path ) ) {
+    if ( ( mod_status_hdw.card_status & NCE3_CARD_WE ) && WriteNibblesToFile( mod_status_port_2, N_PORT_2_SIZE, config.port2_path ) ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_PORT_2_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
