@@ -77,7 +77,6 @@ SRC = src/main.c \
 	src/core/cpu.c \
 	src/core/dis.c \
 	src/core/disk_io.c \
-	src/core/disk_io_obj.c \
 	src/core/emulator.c \
 	src/core/flash49.c \
 	src/core/hdw.c \
