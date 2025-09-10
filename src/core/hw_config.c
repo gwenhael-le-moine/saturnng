@@ -59,8 +59,6 @@
 
   Revision 3.2  2000/09/22  14:40:18  cibrario
   *** empty log message ***
-
-
 .- */
 #include "../libChf/src/Chf.h"
 
@@ -173,8 +171,6 @@ static const ModDescription hw49_description = {
 .- */
 void ModSelectDescription( int model )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModSelectDescription" );
-
     switch ( model ) {
         case MODEL_48SX:
         case MODEL_48GX:

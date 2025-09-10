@@ -90,8 +90,6 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 {
     FILE* f = fopen( name, "rb" );
 
-    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile" );
-
     if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
@@ -148,8 +146,6 @@ DISK_IO_E_CLOSE
 int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 {
     FILE* f = fopen( name, "wb" );
-
-    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile" );
 
     if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -212,8 +208,6 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
     FILE* f = fopen( name, "rb" );
     int st = DISK_IO_S_OK;
 
-    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile" );
-
     if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
@@ -262,8 +256,6 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
 {
     FILE* f = fopen( name, "wb" );
     int st = DISK_IO_S_OK;
-
-    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile" );
 
     if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -344,8 +336,6 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
     Nibble save_area[ N_SAVE_AREA ];
 
     int st = DISK_IO_S_OK;
-
-    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadObjectFromFile" );
 
     /* Save first nibbles of target space into save_area */
     for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
@@ -452,8 +442,6 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
     int by;
 
     int st = DISK_IO_S_OK;
-
-    debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile" );
 
     FILE* f = fopen( name, "wb" );
     if ( f == ( FILE* )NULL ) {

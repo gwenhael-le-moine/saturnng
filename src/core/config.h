@@ -113,8 +113,6 @@
 
   Revision 1.1  1998/02/17  14:57:15  cibrario
   Initial revision
-
-
 .- */
 
 /* 2.4: N_PORT_2_BANK

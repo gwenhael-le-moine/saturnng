@@ -278,17 +278,13 @@ config_t* config_init( int argc, char* argv[] )
         {"gray",                 no_argument,       &clopt_gray,            true            },
 
         {"debug-opcodes",        no_argument,       NULL,                   38601           },
-        /* {"debug-xx",       no_argument,       NULL,                   38602           }, */
-        {"debug-x-func",         no_argument,       NULL,                   38603           },
         {"debug-flash",          no_argument,       NULL,                   38604           },
         {"debug-implementation", no_argument,       NULL,                   38605           },
         {"debug-mod-cache",      no_argument,       NULL,                   38606           },
         {"debug-serial",         no_argument,       NULL,                   38607           },
         {"debug-timers",         no_argument,       NULL,                   38608           },
         {"debug-interruptions",  no_argument,       NULL,                   38609           },
-        {"debug-display",        no_argument,       NULL,                   38610           },
         {"debug-modules",        no_argument,       NULL,                   38611           },
-        {"debug-trace",          no_argument,       NULL,                   38612           },
 
         {"implement-BUSCC",      no_argument,       &clopt_enable_BUSCC,    true            },
 
@@ -336,17 +332,13 @@ config_t* config_init( int argc, char* argv[] )
                             "     --monitor      start with monitor (default: no)\n"
                             "\n"
                             "     --debug-opcodes        enables debugging opcodes (default: no)\n"
-                            /* "     --debug-        enables debugging something (default: no)\n" */
-                            "     --debug-x-func         enables debugging extended functions (default: no)\n"
                             "     --debug-flash          enables debugging flash (default: no)\n"
-                            "     --debug-implementation enables debugging implementation (default: no) (UNUSED)\n"
+                            "     --debug-implementation enables debugging implementation (default: no)\n"
                             "     --debug-mod-cache      enables debugging mod cache (default: no)\n"
                             "     --debug-serial         enables debugging serial (default: no)\n"
                             "     --debug-timers         enables debugging timers (default: no)\n"
                             "     --debug-interruptions  enables debugging interruptions (default: no)\n"
-                            "     --debug-display        enables debugging display (default: no) (UNUSED)\n"
-                            "     --debug-modules        enables debugging modules (default: no)\n"
-                            "     --debug-trace          enables debugging trace (default: no)\n";
+                            "     --debug-modules        enables debugging modules (default: no)\n";
 
     while ( c != EOF ) {
         c = getopt_long( argc, argv, optstring, long_options, &option_index );
@@ -374,12 +366,6 @@ config_t* config_init( int argc, char* argv[] )
             case 38601:
                 __config.debug_level |= DEBUG_C_OPCODES;
                 break;
-            /* case 38602: */
-            /*     __config.debug_level |= DEBUG_C_XX; */
-            /*     break; */
-            case 38603:
-                __config.debug_level |= DEBUG_C_X_FUNC;
-                break;
             case 38604:
                 __config.debug_level |= DEBUG_C_FLASH;
                 break;
@@ -398,14 +384,8 @@ config_t* config_init( int argc, char* argv[] )
             case 38609:
                 __config.debug_level |= DEBUG_C_INT;
                 break;
-            case 38610:
-                __config.debug_level |= DEBUG_C_DISPLAY;
-                break;
             case 38611:
                 __config.debug_level |= DEBUG_C_MODULES;
-                break;
-            case 38612:
-                __config.debug_level |= DEBUG_C_TRACE;
                 break;
 
             default:

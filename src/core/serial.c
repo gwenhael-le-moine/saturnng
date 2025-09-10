@@ -87,8 +87,6 @@
 
   Revision 2.5  2000/09/14  15:44:08  cibrario
   *** empty log message ***
-
-
 .- */
 
 #include <stdlib.h>
@@ -497,8 +495,6 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 .- */
 const char* SerialInit( void )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialInit" );
-
     /* Initialize ring buffers */
     InitRingBuffer( rrb );
     InitRingBuffer( trb );
@@ -681,8 +677,6 @@ const char* SerialInit( void )
 .- */
 void SerialClose( void )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialClose" );
-
     bool err = close( slave_pty ) || close( master_pty );
     if ( err ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -715,12 +709,7 @@ void SerialClose( void )
   2.5, 13-Sep-2000, creation
 
 .- */
-const char* SerialPtyName( void )
-{
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialPtyName" );
-
-    return pty_name;
-}
+const char* SerialPtyName( void ) { return pty_name; }
 
 /* .+
 
@@ -747,7 +736,7 @@ const char* SerialPtyName( void )
 .- */
 Nibble Serial_IOC_Read( void )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_IOC_Read" );
+
     debug2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "IOC", ioc );
 
     return ioc;
@@ -778,7 +767,7 @@ Nibble Serial_IOC_Read( void )
 .- */
 Nibble Serial_RCS_Read( void )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RCS_Read" );
+
     debug2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "RCS", rcs );
 
     return rcs;
@@ -809,7 +798,7 @@ Nibble Serial_RCS_Read( void )
 .- */
 Nibble Serial_TCS_Read( void )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TCS_Read" );
+
     debug2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "TCS", tcs );
 
     return tcs;
@@ -846,8 +835,6 @@ Nibble Serial_TCS_Read( void )
 int8 Serial_RBR_Read( void )
 {
     int8 rx;
-
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RBR_Read" );
 
     /* Pull one character from rbr, if not empty */
     if ( FullSlots( rrb ) > 0 ) {
@@ -895,7 +882,7 @@ int8 Serial_RBR_Read( void )
 .- */
 void Serial_IOC_Write( Nibble n )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_IOC_Write" );
+
     debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "IOC", ioc, n );
 
     ioc = n;
@@ -928,7 +915,7 @@ void Serial_IOC_Write( Nibble n )
 .- */
 void Serial_RCS_Write( Nibble n )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_RCS_Write" );
+
     debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "RCS", rcs, n );
 
     rcs = n;
@@ -959,7 +946,7 @@ void Serial_RCS_Write( Nibble n )
 .- */
 void Serial_TCS_Write( Nibble n )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TCS_Write" );
+
     debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "TCS", tcs, n );
 
     tcs = n;
@@ -989,7 +976,7 @@ void Serial_TCS_Write( Nibble n )
 .- */
 void Serial_CRER_Write( Nibble n )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_CRER_Write" );
+
     debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "CRER", 0, n );
 
     rcs &= ~RCS_RER;
@@ -1023,7 +1010,7 @@ void Serial_CRER_Write( Nibble n )
 .- */
 void Serial_TBR_Write( int8 d )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "Serial_TBR_Write" );
+
     debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_TBR, d );
 
     /* Pull one character from rbr, if not empty */
@@ -1080,8 +1067,6 @@ void Serial_TBR_Write( int8 d )
 .- */
 void HandleSerial( void )
 {
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "HandleSerial" );
-
 #ifndef USE_NOPTY
     /* Attempt to drain transmitter buffer even if serial port is closed */
     int result = PullAndWrite( &trb, master_pty );

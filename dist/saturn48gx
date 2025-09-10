@@ -42,8 +42,4 @@ if [ ! -e "$CONFIGDIR"/config.lua ]; then
     ./saturn --48gx --state-dir "$CONFIGDIR" --print-config > "$CONFIGDIR"/config.lua
 fi
 
-if echo "$@" | grep -q "\--verbose"; then
-    ./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@"
-else
-    ./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@" 2> /dev/null
-fi
+./saturn --48gx --state-dir "$CONFIGDIR" "$RESET" "$@"

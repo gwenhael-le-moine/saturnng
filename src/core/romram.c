@@ -65,8 +65,6 @@
 
   Revision 1.1  1998/02/17  11:49:40  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdlib.h>
@@ -121,8 +119,6 @@ static struct ModStatus_48* mod_status_48;
 .- */
 void RomInit( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomInit" );
-
     mod_status_48 = ( struct ModStatus_48* )malloc( sizeof( struct ModStatus_48 ) );
     if ( mod_status_48 == ( struct ModStatus_48* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -160,7 +156,7 @@ void RomInit( void )
   1.1, 11-Feb-1998, creation
 
 .- */
-void RomSave( void ) { debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomSave" ); }
+void RomSave( void ) {}
 
 /* .+
 
@@ -181,12 +177,7 @@ void RomSave( void ) { debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RomRead( Address rel_address )
-{
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomRead" );
-
-    return mod_status_rom[ rel_address ];
-}
+Nibble RomRead( Address rel_address ) { return mod_status_rom[ rel_address ]; }
 
 /* .+
 
@@ -211,8 +202,6 @@ Nibble RomRead( Address rel_address )
 .- */
 void RomWrite( Address rel_address, Nibble datum )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomWrite" );
-
     // FIXME: 48gx: saturn48gx-Mid <12>d (src/romram.c,235)-E-Write into ROM A[1B632] D[9]
     ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_ROM_WRITE, CHF_ERROR, rel_address, datum );
     ChfSignal( MOD_CHF_MODULE_ID );
@@ -243,8 +232,6 @@ void RomWrite( Address rel_address, Nibble datum )
 .- */
 void RamInit( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamInit" );
-
     bool err = ReadNibblesFromFile( config.ram_path, N_RAM_SIZE, mod_status_ram );
     if ( err ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RAM_INIT, CHF_WARNING );
@@ -277,8 +264,6 @@ void RamInit( void )
 .- */
 void RamSave( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamSave" );
-
     bool err = WriteNibblesToFile( mod_status_ram, N_RAM_SIZE, config.ram_path );
     if ( err ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
@@ -306,12 +291,7 @@ void RamSave( void )
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RamRead( Address rel_address )
-{
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamRead" );
-
-    return mod_status_ram[ rel_address ];
-}
+Nibble RamRead( Address rel_address ) { return mod_status_ram[ rel_address ]; }
 
 /* .+
 
@@ -333,12 +313,7 @@ Nibble RamRead( Address rel_address )
   1.1, 26-Jan-1998, creation
 
 .- */
-void RamWrite( Address rel_address, Nibble datum )
-{
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamWrite" );
-
-    mod_status_ram[ rel_address ] = datum;
-}
+void RamWrite( Address rel_address, Nibble datum ) { mod_status_ram[ rel_address ] = datum; }
 
 /*---------------------------------------------------------------------------
         Ce1  module
@@ -366,8 +341,6 @@ void RamWrite( Address rel_address, Nibble datum )
 .- */
 void Ce1Init( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Init" );
-
     /* Check if bank-switcher accelerators are valid; if not, initialize
        them to a reasonable value (that is, select Port_2 bank 0).
     */
@@ -398,8 +371,6 @@ void Ce1Init( void )
 .- */
 void Ce1Save( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Save" );
-
     /* Nothing to be done herel the bank-switcher accelerators are saved
        by the hdw modules
     */
@@ -430,7 +401,7 @@ void Ce1Save( void )
 .- */
 Nibble Ce1Read( Address rel_address )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Read" );
+
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address );
 
     /* Save the read address into the hdw accelerators.
@@ -469,8 +440,6 @@ Nibble Ce1Read( Address rel_address )
 .- */
 void Ce1Write( Address rel_address, Nibble datum )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce1Write" );
-
     ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_CE1_WRITE, CHF_ERROR, rel_address, datum );
     ChfSignal( MOD_CHF_MODULE_ID );
 }
@@ -503,8 +472,6 @@ void Ce1Write( Address rel_address, Nibble datum )
 void Ce2Init( void )
 {
     Nibble new_status;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Init" );
 
     bool err = ReadNibblesFromFile( config.port1_path, N_PORT_1_SIZE, mod_status_port_1 );
     if ( !err ) {
@@ -562,8 +529,6 @@ void Ce2Init( void )
 .- */
 void Ce2Save( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Save" );
-
     /* Attempt to save only if port is write-enabled */
     if ( !( mod_status_hdw.card_status & CE2_CARD_WE ) )
         return;
@@ -595,12 +560,7 @@ void Ce2Save( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble Ce2Read( Address rel_address )
-{
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Read" );
-
-    return mod_status_port_1[ rel_address ];
-}
+Nibble Ce2Read( Address rel_address ) { return mod_status_port_1[ rel_address ]; }
 
 /* .+
 
@@ -622,12 +582,7 @@ Nibble Ce2Read( Address rel_address )
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Write( Address rel_address, Nibble datum )
-{
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "Ce2Write" );
-
-    mod_status_port_1[ rel_address ] = datum;
-}
+void Ce2Write( Address rel_address, Nibble datum ) { mod_status_port_1[ rel_address ] = datum; }
 
 /*---------------------------------------------------------------------------
         NCe3  module
@@ -658,8 +613,6 @@ void Ce2Write( Address rel_address, Nibble datum )
 void NCe3Init( void )
 {
     Nibble new_status;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Init" );
 
 #ifdef N_PORT_2_BANK
     bool err = ReadNibblesFromFile( config.port2_path, N_PORT_2_SIZE, mod_status_port_2 );
@@ -723,8 +676,6 @@ void NCe3Init( void )
 .- */
 void NCe3Save( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Save" );
-
 #ifdef N_PORT_2_BANK
     /* Attempt to save only if port is write-enabled */
     if ( !( mod_status_hdw.card_status & NCE3_CARD_WE ) )
@@ -762,8 +713,6 @@ void NCe3Save( void )
 .- */
 Nibble NCe3Read( Address rel_address )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Read" );
-
 #ifdef N_PORT_2_BANK
     return mod_status_port_2[ rel_address | mod_status_hdw.accel.a48.bs_address ];
 #else
@@ -799,8 +748,6 @@ Nibble NCe3Read( Address rel_address )
 .- */
 void NCe3Write( Address rel_address, Nibble datum )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NCe3Write" );
-
 #ifdef N_PORT_2_BANK
     mod_status_port_2[ rel_address | mod_status_hdw.accel.a48.bs_address ] = datum;
 

@@ -116,8 +116,6 @@ static const char* BinaryHeader( void )
 
 void import_file( char* filename )
 {
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "import_file" );
-
     /* const char* bin_hdr = BinaryHeader(); */
 
     /* if ( bin_hdr == ( const char* )NULL ) */
@@ -137,8 +135,6 @@ void import_file( char* filename )
 */
 void export_file( char* filename )
 {
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "export_file" );
-
     /* const char* bin_hdr = BinaryHeader(); */
 
     /* if ( bin_hdr == ( const char* )NULL ) */

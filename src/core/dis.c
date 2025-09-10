@@ -67,8 +67,6 @@
 
   Revision 1.1  1998/02/13  14:05:30  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>

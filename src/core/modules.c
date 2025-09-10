@@ -97,8 +97,6 @@
 
   Revision 1.1  1998/02/18  08:16:35  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -274,8 +272,6 @@ static void RebuildPageTable( int lo, int hi )
     int prio;
     int winner = -1;
 
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RebuildPageTable" );
-
     /* Scan all pages in the [lo, hi] range */
     for ( int page = lo; page <= hi; page++ ) {
         /* Calculate the base page address for the current page */
@@ -351,8 +347,6 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 
     int i;
 
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ClearCachingInfo" );
-
     for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
         d->cache.config[ i ] = empty;
     d->cache.victim = 0;
@@ -395,8 +389,6 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 .- */
 static struct ModMap* NewModMap( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap" );
-
     struct ModMap* new = ( struct ModMap* )malloc( sizeof( struct ModMap ) );
 
     if ( new == ( struct ModMap* )NULL ) {
@@ -442,8 +434,6 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 {
     struct ModMap* link = d->cache.link; /* Save .link of dest. */
 
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "CopyModMap" );
-
     *d = *s;
     d->cache.link = link; /* Restore .link */
 
@@ -484,8 +474,6 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 .- */
 static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ReplaceModMap" );
-
     if ( *d == ( struct ModMap* )NULL )
         /* Allocation needed; cache cleared after allocation */
         *d = CopyModMap( NewModMap(), s );
@@ -520,8 +508,6 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
 static void FlushCache( struct ModMap* save )
 {
     struct ModMap *p, *n;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "FlushCache" );
 
     /* Scan the cache list; free all elements except that pointed by 'save' */
     p = cache_head;
@@ -578,8 +564,6 @@ static void FlushCache( struct ModMap* save )
 .- */
 static struct ModMap* AccessConfigCache( Address tag )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache" );
-
     for ( int i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
         if ( MOD_MAP.cache.config[ i ].tag == tag )
             return MOD_MAP.cache.config[ i ].map_ptr;
@@ -613,8 +597,6 @@ static struct ModMap* AccessConfigCache( Address tag )
 static struct ModMap* AccessUnconfigCache( int i )
 {
     struct ModMap* p;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     p = MOD_MAP.cache.unconfig[ i ];
 
@@ -660,8 +642,6 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
 {
     int v = MOD_MAP.cache.victim;
     struct ModCacheTableEntry* victim = ( struct ModCacheTableEntry* )NULL;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
 
     /* Scan the config cache entries, starting at .cache.victim,
        until a suitable one is found or the index loops around
@@ -729,8 +709,6 @@ static struct ModMap* CheckForLateHit( void )
     struct ModMap* p;
     int i;
 
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessUnconfigCache" );
-
     p = cache_head;
 
     /* Scan the cache to find an entry with the same modules configuration
@@ -786,8 +764,6 @@ static struct ModMap* CheckForLateHit( void )
 static void FreeModMap( struct ModMap* p )
 {
     struct ModMap* n;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "FreeModMap" );
 
     /* Free the struct ModMap pointed by p, preserving the linkage of
        other entries.  The caller must ensure that the entry is not
@@ -850,11 +826,7 @@ static void FreeModMap( struct ModMap* p )
   3.2, 21-Sep-2000, creation
 
 .- */
-void ModRegisterDescription( ModDescription p )
-{
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModRegisterDescription" );
-    mod_description = p;
-}
+void ModRegisterDescription( ModDescription p ) { mod_description = p; }
 
 /* .+
 
@@ -897,8 +869,6 @@ void ModRegisterDescription( ModDescription p )
 void ModInit( void )
 {
     int mod;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModInit" );
 
     /* First, a little sanity check on mod_description: ensure that
        ModRegisterDescription() has been called at least once with a
@@ -966,8 +936,6 @@ void ModSave( void )
 {
     int mod;
 
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModSave" );
-
     /* Scan the mod_description table, initializing all modules */
     for ( mod = 0; mod < N_MOD; mod++ ) {
         debug1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_SAVING, mod_description[ mod ].name );
@@ -1020,8 +988,6 @@ Address ModGetID( void )
     int mod;
     Address id;
 
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModGetID" );
-
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
     */
@@ -1067,8 +1033,6 @@ Address ModGetID( void )
 void ModReset( void )
 {
     int mod;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModReset" );
 
     /* Scan the mod_description table, initializing the module
        mapping information MOD_MAP.map_info.
@@ -1143,8 +1107,6 @@ void ModConfig( Address config_info )
     struct ModCacheTableEntry* victim;
 
     int mod;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModConfig" );
 
     /* 3.2: The HP49 firmware (1.19-4) can generate misaligned config
             addresses, that is, addresses that are not a multiple of 0x100;
@@ -1266,8 +1228,6 @@ void ModUnconfig( Address unconfig_info )
 {
     struct ModMap *nxt, *old;
     int mod = MOD_MAP.page_table[ ModPage( unconfig_info ) ].index;
-
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig" );
 
     /* Determine the module to unconfigure */
     if ( mod == MOD_NO_MOD_INDEX ) {

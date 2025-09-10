@@ -91,8 +91,6 @@
 
   Revision 1.1  1998/02/18  11:54:33  cibrario
   Initial revision
-
-
 .- */
 
 #  include "../libChf/src/Chf.h"
@@ -121,18 +119,14 @@
         Debug classes
   ---------------------------------------------------------------------------*/
 typedef enum {
-    DEBUG_C_TRACE = 0x8000,          /* Function Call trace */
     DEBUG_C_MODULES = 0x4000,        /* Modules configuration */
-    DEBUG_C_DISPLAY = 0x2000,        /* Display activity */
     DEBUG_C_INT = 0x1000,            /* Interrupt activity */
     DEBUG_C_TIMERS = 0x0800,         /* Timers activity */
     DEBUG_C_SERIAL = 0x0400,         /* 2.5: Serial port activity */
     DEBUG_C_MOD_CACHE = 0x0200,      /* 2.7: Module cache */
     DEBUG_C_IMPLEMENTATION = 0x0100, /* Feature implementation */
     DEBUG_C_FLASH = 0x0080,          /* 3.3: Flash ROM */
-    DEBUG_C_X_FUNC = 0x0040,         /* 3.13: Extended functions */
-    DEBUG_C_XX = 0x0010,
-    DEBUG_C_OPCODES = 0x0001, /* OpCodes */
+    DEBUG_C_OPCODES = 0x0001,        /* OpCodes */
     DEBUG_C_NONE = 0,
 } debug_class_t;
 

@@ -85,8 +85,6 @@
 
   Revision 1.1  1998/02/17  15:25:16  cibrario
   Initial revision
-
-
 .- */
 
 #include <stdio.h>
@@ -166,8 +164,6 @@ static const int dec_one_c[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0 };
 /* PushRSTK */
 static void PushRSTK( const Address r )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "PushRSTK" );
-
     cpu_status.return_stack[ cpu_status.return_sp ] = r;
     cpu_status.return_sp = ( cpu_status.return_sp + 1 ) & RETURN_SP_MASK;
 }
@@ -175,8 +171,6 @@ static void PushRSTK( const Address r )
 /* PopRSTK */
 static Address PopRSTK( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "PopRSTK" );
-
     cpu_status.return_sp = ( cpu_status.return_sp - 1 ) & RETURN_SP_MASK;
 
     Address r = cpu_status.return_stack[ cpu_status.return_sp ];
@@ -194,8 +188,6 @@ static Address PopRSTK( void )
 static void ExecIN( Nibble* r )
 {
     /* In */
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecIN" );
-
 #ifdef CPU_SLOW_IN
     /* We must slow the A=IN and C=IN instruction down a bit, depending
        on the emulated CPU speed.  This is necessary because the HP firmware
@@ -242,8 +234,6 @@ static void ExecIN( Nibble* r )
 
 static void ExecSHUTDN( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "SHUTDN" );
-
     /* Set shutdown flag */
     cpu_status.shutdn = true;
 
@@ -261,8 +251,6 @@ static void ExecSHUTDN( void )
 */
 static Address R2Addr( const Nibble* r )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "R2Addr" );
-
     return ( ( ( Address )r[ 0 ] ) | ( ( Address )r[ 1 ] << 4 ) | ( ( Address )r[ 2 ] << 8 ) | ( ( Address )r[ 3 ] << 12 ) |
              ( ( Address )r[ 4 ] << 16 ) );
 }
@@ -272,8 +260,6 @@ static Address R2Addr( const Nibble* r )
 */
 static Address R2AddrS( const Nibble* r )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "R2AddrS" );
-
     return ( ( ( Address )r[ 0 ] ) | ( ( Address )r[ 1 ] << 4 ) | ( ( Address )r[ 2 ] << 8 ) | ( ( Address )r[ 3 ] << 12 ) );
 }
 
@@ -282,8 +268,6 @@ static Address R2AddrS( const Nibble* r )
 */
 static void Addr2R( Nibble* d, Address a )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "Addr2R" );
-
     d[ 0 ] = ( Nibble )( a & NIBBLE_MASK );
     a >>= 4;
     d[ 1 ] = ( Nibble )( a & NIBBLE_MASK );
@@ -300,8 +284,6 @@ static void Addr2R( Nibble* d, Address a )
 */
 static void Addr2RS( Nibble* d, Address a )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "Addr2RS" );
-
     d[ 0 ] = ( Nibble )( a & NIBBLE_MASK );
     a >>= 4;
     d[ 1 ] = ( Nibble )( a & NIBBLE_MASK );
@@ -438,8 +420,6 @@ static void SetP( Nibble n )
 /* ?r=s */
 static void TestRREq( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRREq" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
@@ -457,8 +437,6 @@ static void TestRREq( int rp, int fs )
 /* ?r=0 */
 static void TestRZ( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRZ" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -475,8 +453,6 @@ static void TestRZ( int rp, int fs )
 /* ?r#s */
 static void TestRRNe( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRNe" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
@@ -494,8 +470,6 @@ static void TestRRNe( int rp, int fs )
 /* ?r#0 */
 static void TestRNZ( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRNZ" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -512,8 +486,6 @@ static void TestRNZ( int rp, int fs )
 /* ?r>s */
 static void TestRRGt( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGt" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
@@ -536,8 +508,6 @@ static void TestRRGt( int rp, int fs )
 /* ?r>=s */
 static void TestRRGe( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRGe" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
@@ -560,8 +530,6 @@ static void TestRRGe( int rp, int fs )
 /* ?r<s */
 static void TestRRLt( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLt" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
@@ -584,8 +552,6 @@ static void TestRRLt( int rp, int fs )
 /* ?r<=s */
 static void TestRRLe( int rp, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TestRRLe" );
-
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
     register int lo = cpu_status.fs_idx_lo[ fs ];
@@ -612,8 +578,6 @@ static void TestRRLe( int rp, int fs )
 /* r=r+r */
 static void AddRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AddRR" );
-
     register int carry = 0;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -636,8 +600,6 @@ static void AddRR( register Nibble* d, register const Nibble* a, register const 
 /* r=r+1 */
 static void IncrR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "IncrR" );
-
     register int carry = 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -661,8 +623,6 @@ static void IncrR( register Nibble* d, int fs )
 /* r=r-r */
 static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "SubRR" );
-
     register int carry = 0;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -686,8 +646,6 @@ static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, i
 /* r=r-1 */
 static void DecrR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "DecrR" );
-
     register int carry = 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -711,8 +669,6 @@ static void DecrR( register Nibble* d, int fs )
 /* r=0 */
 static void ClearR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ClearR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -723,8 +679,6 @@ static void ClearR( register Nibble* d, int fs )
 /* r=r */
 static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CopyRR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -735,8 +689,6 @@ static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 /* rrEX */
 static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExchRR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
     register Nibble t;
@@ -751,8 +703,6 @@ static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 /* rSL */
 static void ShiftLeftR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftLeftR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -765,8 +715,6 @@ static void ShiftLeftR( register Nibble* d, int fs )
 /* rSR */
 static void ShiftRightR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -782,8 +730,6 @@ static void ShiftRightR( register Nibble* d, int fs )
 /* rSRB */
 static void ShiftRightBitR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightBitR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -801,8 +747,6 @@ static void ShiftRightBitR( register Nibble* d, int fs )
 /* rSLC */
 static void ShiftLeftCircR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftLeftCircR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
     register Nibble s = d[ hi ];
@@ -816,8 +760,6 @@ static void ShiftLeftCircR( register Nibble* d, int fs )
 /* rSRC */
 static void ShiftRightCircR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ShiftRightCircR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
     register Nibble s;
@@ -834,8 +776,6 @@ static void ShiftRightCircR( register Nibble* d, int fs )
 /* r=-r */
 static void TwoComplR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "TwoComplR" );
-
     register int carry = 0;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -862,8 +802,6 @@ static void TwoComplR( register Nibble* d, int fs )
 /* r=-r-1 */
 static void OneComplR( register Nibble* d, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "OneComplR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -880,8 +818,6 @@ static void OneComplR( register Nibble* d, int fs )
 /* r=r&r */
 static void AndRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AndRR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -892,8 +828,6 @@ static void AndRR( register Nibble* d, register const Nibble* a, register const 
 /* r=r!r */
 static void OrRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "OrRR" );
-
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
 
@@ -906,8 +840,6 @@ static void OrRR( register Nibble* d, register const Nibble* a, register const N
 */
 static void AddRImm( Nibble* r, int fs, Nibble v )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "AddRImm" );
-
     register int carry = ( int )v + 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -928,8 +860,6 @@ static void AddRImm( Nibble* r, int fs, Nibble v )
 */
 static void SubRImm( register Nibble* r, int fs, Nibble v )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "DecrR" );
-
     register int carry = ( int )v + 1;
     register int lo = cpu_status.fs_idx_lo[ fs ];
     register int hi = cpu_status.fs_idx_hi[ fs ];
@@ -963,8 +893,6 @@ static void TestBIT1( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] 
 /* GOYES/RTNYES */
 static void ExecGOYES_RTNYES( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGOYES_RTNYES" );
-
     if ( cpu_status.carry ) {
         /* Taken */
         Address offset = Get2Nibbles2C( cpu_status.PC );
@@ -986,8 +914,6 @@ static void ExecGOYES_RTNYES( void )
 /* ?..., GOYES/RTNYES, Test with Field Selector, opcode 9ftyy, length 5 */
 static void ExecTest_9( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_9" );
-
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble t = FetchNibble( cpu_status.PC++ );
     int fs = GET_FS( f );
@@ -1034,8 +960,6 @@ static void ExecTest_9( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Atyy, length 5 */
 static void ExecTest_8A( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_8A" );
-
     Nibble t = FetchNibble( cpu_status.PC++ );
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
@@ -1068,8 +992,6 @@ static void ExecTest_8A( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Btyy, length 5 */
 static void ExecTest_8B( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecTest_8B" );
-
     Nibble t = FetchNibble( cpu_status.PC++ );
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
@@ -1102,8 +1024,6 @@ static void ExecTest_8B( void )
 /* ..., Register Operation with Field Selector, opcode Afo, length 3 */
 static void ExecRegOp_A( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_A" );
-
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble o = FetchNibble( cpu_status.PC++ );
     int fs = GET_FS( f );
@@ -1147,8 +1067,6 @@ static void ExecRegOp_A( void )
 /* ..., Register Operation with Field Selector, opcode Bfo, length 3 */
 static void ExecRegOp_B( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_B" );
-
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble o = FetchNibble( cpu_status.PC++ );
     int fs = GET_FS( f );
@@ -1192,8 +1110,6 @@ static void ExecRegOp_B( void )
 /* ..., Register Operation on A Fields, opcode Co, length 2 */
 static void ExecRegOp_C( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_C" );
-
     Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -1223,8 +1139,6 @@ static void ExecRegOp_C( void )
 /* ..., Register Operation on A Fields, opcode Do, length 2 */
 static void ExecRegOp_D( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_D" );
-
     Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -1254,8 +1168,6 @@ static void ExecRegOp_D( void )
 /* ..., Register Operation on A Fields, opcode Eo, length 2 */
 static void ExecRegOp_E( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_E" );
-
     Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -1285,8 +1197,6 @@ static void ExecRegOp_E( void )
 /* ..., Register Operation on A Fields, opcode Fo, length 2 */
 static void ExecRegOp_F( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecRegOp_F" );
-
     Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -1316,8 +1226,6 @@ static void ExecRegOp_F( void )
 /* .&., .!., AND/OR Operations, opcode 0Efo, length 4 */
 static void ExecAND_OR( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecAND_OR" );
-
     Nibble f = FetchNibble( cpu_status.PC++ );
     Nibble o = FetchNibble( cpu_status.PC++ );
     int oc = GET_OC_1( o );
@@ -1348,8 +1256,6 @@ static void ExecAND_OR( void )
 /* Instruction Group_0 */
 static void ExecGroup_0( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_0" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -1385,14 +1291,14 @@ static void ExecGroup_0( void )
             break;
         case 0x9: /* C=ST */
             /* Copy the 12 low-order bits of ST into C */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "St2C" );
+
             cpu_status.C[ 0 ] = ( Nibble )( cpu_status.ST & NIBBLE_MASK );
             cpu_status.C[ 1 ] = ( Nibble )( ( cpu_status.ST >> 4 ) & NIBBLE_MASK );
             cpu_status.C[ 2 ] = ( Nibble )( ( cpu_status.ST >> 8 ) & NIBBLE_MASK );
             break;
         case 0xA: /* ST=C */
             /* Copy the 12 low-order bits of C into ST */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "C2St" );
+
             cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
                             ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
             break;
@@ -1400,7 +1306,7 @@ static void ExecGroup_0( void )
             /* Exchange the 12 low-order bits of C with the 12 low-order bits of ST */
             {
                 ProgramStatusRegister tst = cpu_status.ST;
-                debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CStExch" );
+
                 cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
                                 ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
 
@@ -1435,8 +1341,6 @@ static void ExecGroup_0( void )
             ExecAND_OR();
             break;
         case 0xF: /* RTI */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRTI" );
-
             if ( cpu_status.int_pending != INT_REQUEST_NONE ) {
                 debug1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
 
@@ -1658,8 +1562,6 @@ static void ExecGroup_15( void )
 /* Instruction Group_1 */
 static void ExecGroup_1( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_1" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
     int rn, ac;
     Address ta;
@@ -1749,20 +1651,14 @@ static void ExecGroup_1( void )
 /* Instruction Group_808 */
 static void ExecGroup_808( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_808" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
         case 0x0: /* INTON */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTON" );
-
             /* Enable maskable interrupts */
             cpu_status.int_enable = true;
             break;
         case 0x1: /* RSI */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecRSI" );
-
             /* Discard last nibble of RSI opcode */
             cpu_status.PC++;
 
@@ -1772,7 +1668,7 @@ static void ExecGroup_808( void )
             FetchR( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
             break;
         case 0x3: /* BUSCB */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCB" );
+
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCB" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
@@ -1808,7 +1704,7 @@ static void ExecGroup_808( void )
             cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.A ) );
             break;
         case 0xD: /* BUSCD */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecBUSCD" );
+
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCD" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
@@ -1816,8 +1712,6 @@ static void ExecGroup_808( void )
             cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.C ) );
             break;
         case 0xF: /* INTOFF */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "ExecINTOFF" );
-
             cpu_status.int_enable = false;
             break;
 
@@ -1833,8 +1727,6 @@ static void ExecGroup_808( void )
 // FIXME: 49g bugs here on display change
 static void ExecGroup_80B0( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B0" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -1889,8 +1781,6 @@ static void ExecGroup_80B0( void )
 
 static void ExecGroup_80B1( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B1" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -1939,8 +1829,6 @@ static void ExecGroup_80B1( void )
 
 static void ExecGroup_80B2( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -1992,8 +1880,6 @@ static void ExecGroup_80B2( void )
 
 static void ExecGroup_80B3( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B3" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2047,8 +1933,6 @@ static void ExecGroup_80B3( void )
 
 static void ExecGroup_80B4( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B4" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2092,8 +1976,6 @@ static void ExecGroup_80B4( void )
 static void ExecGroup_80B5( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
-
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B5" );
     switch ( n ) {
         case 0x0:
             debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMON" );
@@ -2134,8 +2016,6 @@ static void ExecGroup_80B5( void )
 
 static void ExecGroup_80B6( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B6" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2178,8 +2058,6 @@ static void ExecGroup_80B6( void )
 
 static void ExecGroup_80B7( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B7" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2218,8 +2096,6 @@ static void ExecGroup_80B7( void )
 
 static void ExecGroup_80B8( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B8" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2276,8 +2152,6 @@ static void ExecGroup_80B8( void )
 
 static void ExecGroup_80B9( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B9" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2314,8 +2188,6 @@ static void ExecGroup_80B9( void )
 
 static void ExecGroup_80BE( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BE" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2354,8 +2226,6 @@ static void ExecGroup_80BE( void )
 
 static void ExecGroup_80BF( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80BF" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
 
     switch ( n ) {
@@ -2392,8 +2262,6 @@ static void ExecGroup_80BF( void )
 
 static void ExecGroup_80B( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80B (BUSCC)" );
-
     if ( config.enable_BUSCC ) {
         Nibble n = FetchNibble( cpu_status.PC++ );
 
@@ -2449,29 +2317,20 @@ static void ExecGroup_80B( void )
                 ChfSignal( CPU_CHF_MODULE_ID );
                 break;
         }
-    } else {
-        ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCC not implemented" );
-        ChfSignal( CPU_CHF_MODULE_ID );
-    }
+    } else
+        debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "BUSCC not implemented" );
 }
 
 /* Instruction Group_80 */
 static void ExecGroup_80( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_80" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
-    Nibble t;
 
     switch ( n ) {
         case 0x0: /* OUT=CS */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTCS" );
-
             cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( cpu_status.OUT & 0xFF0 );
             break;
         case 0x1: /* OUT=C */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecOUTC" );
-
             cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( ( OutputRegister )cpu_status.C[ 1 ] << 4 ) |
                              ( ( OutputRegister )cpu_status.C[ 2 ] << 8 );
             break;
@@ -2512,15 +2371,17 @@ static void ExecGroup_80( void )
             SetP( cpu_status.C[ ( int )FetchNibble( cpu_status.PC++ ) ] );
             break;
         case 0xE: /* SREQ? */
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSREQ" );
+
             ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "SREQ" );
             ChfSignal( CPU_CHF_MODULE_ID );
             break;
         case 0xF: /* CPEX */
-            t = cpu_status.P;
-            n = FetchNibble( cpu_status.PC++ );
-            SetP( cpu_status.C[ ( int )n ] );
-            cpu_status.C[ ( int )n ] = t;
+            {
+                Nibble tmp = cpu_status.P;
+                n = FetchNibble( cpu_status.PC++ );
+                SetP( cpu_status.C[ ( int )n ] );
+                cpu_status.C[ ( int )n ] = tmp;
+            }
             break;
 
         default:
@@ -2533,8 +2394,6 @@ static void ExecGroup_80( void )
 /* Special functions Group_81 */
 static void ExecSpecialGroup_81( int rp )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecSpecialGroup_81" );
-
     Nibble n, f, m;
     int rn, ac;
 
@@ -2635,8 +2494,6 @@ static void ExecSpecialGroup_81( int rp )
 /* Instruction Group_8 */
 static void ExecGroup_8( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "ExecGroup_8" );
-
     Nibble n = FetchNibble( cpu_status.PC++ );
     Address addr;
     int oc, rp;
@@ -2794,8 +2651,6 @@ static const char* DumpR( Nibble* r )
 .- */
 void CpuReset( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuReset" );
-
     int n;
 
     /* Copy field selector index arrays to the cpu_status structure */
@@ -2876,8 +2731,6 @@ void CpuReset( void )
 .- */
 void CpuInit( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuInit" );
-
     if ( ReadStructFromFile( config.cpu_path, sizeof( cpu_status ), &cpu_status ) ) {
         ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_RESETTING, CHF_WARNING );
         ChfSignal( CPU_CHF_MODULE_ID );
@@ -2910,8 +2763,6 @@ void CpuInit( void )
 .- */
 void CpuSave( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "CpuSave" );
-
     if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_path ) ) {
         ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_SAVE, CHF_ERROR );
         ChfSignal( CPU_CHF_MODULE_ID );
@@ -2946,10 +2797,8 @@ void CpuSave( void )
   1.1, 11-Feb-1998, creation
 
 .- */
-void CpuIntRequest( enum IntRequest ireq )
+void CpuIntRequest( int_request_t ireq )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuIntRequest" );
-
     if ( ( ireq == INT_REQUEST_IRQ && cpu_status.int_enable ) || ireq == INT_REQUEST_NMI ) {
         /* Wake the CPU if it's sleeping */
         CpuWake();
@@ -2999,8 +2848,6 @@ void CpuIntRequest( enum IntRequest ireq )
 .- */
 void CpuWake( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuWake" );
-
     if ( cpu_status.shutdn ) {
         if ( !cpu_status.halt ) {
             debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE );
@@ -3067,8 +2914,6 @@ void CpuWake( void )
 */
 int CpuHaltRequest( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuHaltRequest" );
-
     if ( !cpu_status.halt ) {
         debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_HALT );
 
@@ -3112,8 +2957,6 @@ int CpuHaltRequest( void )
 */
 int CpuRunRequest( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuRunRequest" );
-
     if ( cpu_status.halt ) {
         debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN );
 
@@ -3144,12 +2987,7 @@ int CpuRunRequest( void )
   3.13, 7-Nov-2000, creation
 
 */
-bool CpuHaltAllowed( void )
-{
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_INT, CPU_I_CALLED, "CpuHaltAllowed" );
-
-    return true;
-}
+bool CpuHaltAllowed( void ) { return true; }
 
 /* .+
 
@@ -3237,8 +3075,6 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 .- */
 void OneStep( void )
 {
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_EXECUTING, cpu_status.PC );
-
     if ( config.debug_level > 0 && config.debug_level & DEBUG_C_OPCODES ) {
         char dob[ DISASSEMBLE_OB_SIZE ];
 

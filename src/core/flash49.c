@@ -393,8 +393,6 @@ Nibble FlashRead49( XAddress address )
         result = LowNibble( r_buffer );
     }
 
-    debug2( FLASH_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_FLASH, FLASH_I_READ, address, result );
-
     return result;
 }
 
@@ -425,8 +423,6 @@ Nibble FlashRead49( XAddress address )
 .- */
 void FlashWrite49( XAddress address, Nibble datum )
 {
-    debug2( FLASH_CHF_MODULE_ID, DEBUG_C_TRACE | DEBUG_C_FLASH, FLASH_I_WRITE, address, datum );
-
     if ( IsOdd( address ) )
         /* Odd address, invoke FSM; ignore result */
         FSM( FLASH_CYCLE_WRITE, ByteAddress( address ), w_buffer | ShiftHigh( datum ) );

@@ -86,8 +86,6 @@
 
   Revision 1.1  1998/02/17  11:49:59  cibrario
   Initial revision
-
-
 .- */
 
 #include <string.h> /* 3.1: memset() */
@@ -130,8 +128,6 @@ static const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F0
 .- */
 void HdwInit( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "HdwInit" );
-
     bool err = ReadStructFromFile( config.hdw_path, sizeof( mod_status.hdw ), &mod_status.hdw );
     if ( err ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_HDW_INIT, CHF_WARNING );
@@ -163,8 +159,6 @@ void HdwInit( void )
 .- */
 void HdwSave( void )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "HdwSave" );
-
     bool err = WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_path );
     if ( err ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_HDW_SAVE, CHF_ERROR );
@@ -199,8 +193,6 @@ void HdwSave( void )
 .- */
 Nibble HdwRead( Address rel_address )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "HdwRead" );
-
     /* In the following switch, each case corresponds to one hdw register.
        If the register must be read from the shadow space mod_status.hdw.hdw[],
        simply put a break in the case, otherwise code any special action for
@@ -340,8 +332,6 @@ Nibble HdwRead( Address rel_address )
 .- */
 void HdwWrite( Address rel_address, Nibble data )
 {
-    debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "HdwWrite" );
-
     /* This switch has a case for each 'known' hdw register. The code inside the
        case performs the actions specific for that register; the code following
        the switch, instead, simply takes care to shadow the hdw register into

@@ -95,8 +95,6 @@
 
   Revision 1.1  1998/02/18  11:50:43  cibrario
   Initial revision
-
-
 .- */
 
 #  include <stdbool.h>

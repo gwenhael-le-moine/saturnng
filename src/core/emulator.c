@@ -94,8 +94,6 @@
 
   Revision 1.1  1998/02/18  11:49:21  cibrario
   Initial revision
-
-
 .- */
 
 #include <setjmp.h>
@@ -151,8 +149,6 @@ static void EmulatorLoop( void )
     int ela;
     int inner_loop = cpu_status.inner_loop;
     int t1_count = 0;
-
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "EmulatorLoop" );
 
     /* Ignore past interrupt requests */
     emulator_int_req = false;
@@ -493,8 +489,6 @@ static ChfAction EmulatorLoopHandler( const ChfDescriptor* descriptor, const Chf
 void Emulator( void )
 {
     jmp_buf unwind_context;
-
-    debug1( CPU_CHF_MODULE_ID, DEBUG_C_TRACE, CPU_I_CALLED, "Emulator" );
 
     /* Setup unwind_context */
     if ( setjmp( unwind_context ) == 0 ) {
