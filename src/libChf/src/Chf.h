@@ -3,14 +3,14 @@
 
 /* .+
 
-.author	      : Ivan Cibrario B.
+.author       : Ivan Cibrario B.
 
 .creation     :	 2-May-1996
 
 .description  :
   This is the main header of the Condition Handling Facility
 
-.notes	      :
+.notes        :
   $Log: Chf.h,v $
   Revision 2.2  2001/01/25 11:56:44  cibrario
   Added partial Win32 support (Windows CE only).
@@ -61,24 +61,23 @@
 #  define CHF_NULL_POINTER ( void** )NULL
 #  define CHF_NULL_HANDLER ( ChfHandler ) NULL
 
-#  define CHF_MODULE_NAMES_SET 1
-#  define CHF_SET 2
-#  define CHF_ERRNO_SET 3
+typedef enum { CHF_MODULE_NAMES_SET = 1, CHF_SET = 2, CHF_ERRNO_SET = 3 } chf_set_t;
 
 /* -------------------------------------------------------------------------
    Condition codes
    ------------------------------------------------------------------------- */
-
-#  define CHF_S_OK 0
-#  define CHF_F_COND_STACK_FULL 1  /* Condition stack is full */
-#  define CHF_F_HDLR_STACK_FULL 2  /* Handler stack is full */
-#  define CHF_F_HDLR_STACK_EMPTY 3 /* Handler stack is empty */
-#  define CHF_F_BAD_STATE 4        /* Bad CHF state for req. operation */
-#  define CHF_F_INVALID_ACTION 5   /* Invalid action from handler: %d */
-#  define CHF_F_MALLOC 6           /* Dynamic memory allocation failed */
-#  define CHF_F_NOT_AVAILABLE 7    /* Function not available */
-#  define CHF_F_SETLOCALE 10       /* setlocale() failed */
-#  define CHF_F_CATOPEN 11         /* catopen() failed */
+typedef enum {
+    CHF_S_OK = 0,
+    CHF_F_COND_STACK_FULL = 1,  /* Condition stack is full */
+    CHF_F_HDLR_STACK_FULL = 2,  /* Handler stack is full */
+    CHF_F_HDLR_STACK_EMPTY = 3, /* Handler stack is empty */
+    CHF_F_BAD_STATE = 4,        /* Bad CHF state for req. operation */
+    CHF_F_INVALID_ACTION = 5,   /* Invalid action from handler: %d */
+    CHF_F_MALLOC = 6,           /* Dynamic memory allocation failed */
+    CHF_F_NOT_AVAILABLE = 7,    /* Function not available */
+    CHF_F_SETLOCALE = 10,       /* setlocale() failed */
+    CHF_F_CATOPEN = 11          /* catopen() failed */
+} chf_condition_code_t;
 
 /* -------------------------------------------------------------------------
    Type definitions

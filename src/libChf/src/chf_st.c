@@ -1,13 +1,13 @@
 /* .+
 
-.author	      : Ivan Cibrario B.
+.author       : Ivan Cibrario B.
 
 .creation     :	24-May-1996
 
 .description  :
   This module implements the CHF initialization function ChfStaticInit()
 
-.notes	      :
+.notes        :
   $Log: chf_st.c,v $
   Revision 2.2  2001/01/25 14:08:45  cibrario
   Added partial Win32 support (Windows CE only).
@@ -89,12 +89,12 @@ static void ExitMessage( void* private_context ) {}
   NOTE: This function will call ChfAbort() with abort code CHF_ABORT_DUP_INIT
         if CHF has already been initialized before.
 
-.call	      :
+.call         :
                 cc = ChfStaticInit(app_name, options,
                         table, table_size,
                         condition_stack_size, handler_stack_size,
                         exit_code);
-.input	      :
+.input        :
                 const char *app_name, Application's name
                 const int options, Options
                 const ChfTable *table, pointer to the static message table
@@ -102,22 +102,23 @@ static void ExitMessage( void* private_context ) {}
                 const int condition_stack_size, Size of the condition stack
                 const int handler_stack_size, Size of the handler stack
                 const int exit_code, Abnormal exit code
-.output	      :
+.output       :
                 int cc, condition code
 .status_codes :
                 CHF_F_MALLOC, FATAL, memory allocation failed
-.notes	      :
+.notes        :
   1.1, 27-May-1996, creation
 
 .- */
 /* Initialization with static message tables */
-int ChfStaticInit( const int module_id, const char* app_name, /* Application's name */
-                   const int options,                         /* Options */
-                   const ChfTable* table,                     /* Static message table */
-                   const size_t table_size,                   /* Size of the message table */
-                   const int condition_stack_size,            /* Size of the condition stack */
-                   const int handler_stack_size,              /* Size of the handler stack */
-                   const int exit_code                        /* Abnormal exit code */
+int ChfStaticInit( const int module_id,            /* module ID */
+                   const char* app_name,           /* Application's name */
+                   const int options,              /* Options */
+                   const ChfTable* table,          /* Static message table */
+                   const size_t table_size,        /* Size of the message table */
+                   const int condition_stack_size, /* Size of the condition stack */
+                   const int handler_stack_size,   /* Size of the handler stack */
+                   const int exit_code             /* Abnormal exit code */
 )
 {
     ChfStaticContext* private_context;

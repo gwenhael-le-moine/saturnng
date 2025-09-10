@@ -3,14 +3,14 @@
 
 /* .+
 
-.author	      : Ivan Cibrario B.
+.author       : Ivan Cibrario B.
 
 .creation     :	 2-May-1996
 
 .description  :
   This is the private header of the Condition Handling Facility
 
-.notes	      :
+.notes        :
   $Log: ChfPriv.h,v $
   Revision 2.2  2001/01/25 11:57:57  cibrario
   Added partial Win32 support (Windows CE only).
@@ -45,18 +45,19 @@
 /* -------------------------------------------------------------------------
    Abort codes used with ChfAbort()
    ------------------------------------------------------------------------- */
-
-#  define CHF_ABORT_SILENT 0
-#  define CHF_ABORT_INIT 1
-#  define CHF_ABORT_MSG_OVF 2
-#  define CHF_ABORT_INVALID_ACTION 3
-#  define CHF_ABORT_DUP_INIT 4
-#  define CHF_ABORT_ALREADY_UNWINDING 5
-#  define CHF_ABORT_IMPROPERLY_HANDLED 6
-#  define CHF_ABORT_FATAL_UNWINDING 7
-#  define CHF_ABORT_COND_STACK_OVF 8
-#  define CHF_ABORT_GET_CONTEXT 9
-#  define CHF_ABORT_PTHREAD 10
+typedef enum {
+    CHF_ABORT_SILENT = 0,
+    CHF_ABORT_INIT = 1,
+    CHF_ABORT_MSG_OVF = 2,
+    CHF_ABORT_INVALID_ACTION = 3,
+    CHF_ABORT_DUP_INIT = 4,
+    CHF_ABORT_ALREADY_UNWINDING = 5,
+    CHF_ABORT_IMPROPERLY_HANDLED = 6,
+    CHF_ABORT_FATAL_UNWINDING = 7,
+    CHF_ABORT_COND_STACK_OVF = 8,
+    CHF_ABORT_GET_CONTEXT = 9,
+    CHF_ABORT_PTHREAD = 10
+} chf_abort_code_t;
 
 /* -------------------------------------------------------------------------
    Type definitions

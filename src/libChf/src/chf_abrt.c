@@ -1,13 +1,13 @@
 /* .+
 
-.author	      : Ivan Cibrario B.
+.author       : Ivan Cibrario B.
 
 .creation     :	 3-May-1996
 
 .description  :
   This module implements the CHF function ChfAbort()
 
-.notes	      :
+.notes        :
   $Log: chf_abrt.c,v $
   Revision 2.2  2001/01/25 12:08:24  cibrario
   Added partial Win32 support (Windows CE only).
@@ -61,15 +61,15 @@
 
   - abort() is not supported and has been replaced by exit(EXIT_FAILURE)
 
-.call	      :
+.call         :
                 ChfAbort(abort_code);
-.input	      :
+.input        :
                 const int abort_code, abort_code
-.output	      :
+.output       :
                 void
 .status_codes :
                 none
-.notes	      :
+.notes        :
   1.1, 13-May-1996, creation
   2.1, 19-May-2000, update:
     - added multithreading support
@@ -80,7 +80,6 @@
 /* Abort application */
 void ChfAbort( const int abort_code )
 {
-
     /* Abort codes message table; the relative position of the messages must
        match the numeric codes CHF_ABORT_xxxx defined in ChfPriv.h
     */
