@@ -29,9 +29,9 @@ void signal_handler( int sig )
     static int nb_refreshes_since_last_checking_events = 0;
 
     switch ( sig ) {
-            /* case SIGINT: /\* Ctrl-C *\/ */
-            /*     enter_debugger |= USER_INTERRUPT; */
-            /*     break; */
+        /* case SIGINT: /\* Ctrl-C *\/ */
+        /*     enter_debugger |= USER_INTERRUPT; */
+        /*     break; */
         case SIGALRM:
             if ( nb_refreshes_since_last_checking_events > QUERY_EVENTS_EVERY_X_FRAME ) {
                 nb_refreshes_since_last_checking_events = 0;
@@ -60,8 +60,9 @@ int main( int argc, char** argv )
 
     /* Chf initialization with msgcat subsystem
      */
-    if ( ( ChfStaticInit( MAIN_CHF_MODULE_ID, config.progname, CHF_DEFAULT, message_table, message_table_size, CONDITION_STACK_SIZE,
-                          HANDLER_STACK_SIZE, EXIT_FAILURE ) ) != CHF_S_OK ) {
+    int ret = ChfStaticInit( MAIN_CHF_MODULE_ID, config.progname, CHF_DEFAULT, message_table, message_table_size, CONDITION_STACK_SIZE,
+                              HANDLER_STACK_SIZE, EXIT_FAILURE );
+    if ( ret != CHF_S_OK ) {
         fprintf( stderr, "saturn-E-Primary Chf initialization failed\n" );
         exit( EXIT_FAILURE );
     }
