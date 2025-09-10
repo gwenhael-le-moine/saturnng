@@ -32,9 +32,8 @@ typedef struct {
     char* ir_name;
 
     /* from args.h */
-    bool reset;     /* 2.1: Force emulator reset */
-    bool monitor;   /* 2.1: Call monitor() on startup */
-    bool batchXfer; /* 3.15: Non-interactive file transfers */
+    bool reset;   /* 2.1: Force emulator reset */
+    bool monitor; /* 2.1: Call monitor() on startup */
 
     char* state_dir_path;
 

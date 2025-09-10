@@ -61,7 +61,6 @@ static config_t __config = {
     /* from args.h */
     .reset = false,
     .monitor = false,
-    .batchXfer = false,
     .state_dir_path = ( char* )".",
 
     .debug_level = DEBUG_C_NONE,
@@ -234,7 +233,6 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_reset = -1;
     int clopt_monitor = -1;
-    int clopt_batchXfer = -1;
     int clopt_enable_BUSCC = -1;
 
     char* clopt_state_dir_path = ( char* )".";
@@ -255,7 +253,7 @@ config_t* config_init( int argc, char* argv[] )
 
         {"reset",                no_argument,       &clopt_reset,           true            },
         {"monitor",              no_argument,       &clopt_monitor,         true            },
-        {"batchXfer",            no_argument,       &clopt_batchXfer,       true            },
+
         {"state-dir",            required_argument, NULL,                   8999            },
 
         {"shiftless",            no_argument,       &clopt_shiftless,       true            },
@@ -336,7 +334,6 @@ config_t* config_init( int argc, char* argv[] )
                             "false)\n"
                             "     --reset        force a reset\n"
                             "     --monitor      start with monitor (default: no)\n"
-                            "     --batchXfer    enable batchXfer (default: no)\n"
                             "\n"
                             "     --debug-opcodes        enables debugging opcodes (default: no)\n"
                             /* "     --debug-        enables debugging something (default: no)\n" */
@@ -463,9 +460,6 @@ config_t* config_init( int argc, char* argv[] )
         lua_getglobal( config_lua_values, "monitor" );
         __config.monitor = lua_toboolean( config_lua_values, -1 );
 
-        lua_getglobal( config_lua_values, "batchXfer" );
-        __config.batchXfer = lua_toboolean( config_lua_values, -1 );
-
         lua_getglobal( config_lua_values, "model" );
         const char* svalue_model = luaL_optstring( config_lua_values, -1, "49g" );
         if ( svalue_model != NULL ) {
@@ -541,8 +535,6 @@ config_t* config_init( int argc, char* argv[] )
         __config.reset = clopt_reset;
     if ( clopt_monitor != -1 )
         __config.monitor = clopt_monitor;
-    /* if ( clopt_batchXfer != -1 ) */
-    /*     __config.batchXfer = clopt_batchXfer; */
     if ( clopt_enable_BUSCC != -1 )
         __config.enable_BUSCC = clopt_enable_BUSCC;
 
