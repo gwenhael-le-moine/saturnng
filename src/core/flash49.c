@@ -192,6 +192,7 @@ static int ReadXSR( enum FlashState* state, enum FlashCycle cycle, XAddress addr
        emulation scheme.  Keep current state.
     */
     debug1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read XSR" );
+
     return FLASH_XSR_WBS;
 }
 
@@ -202,6 +203,7 @@ static int ReadSR( enum FlashState* state, enum FlashCycle cycle, XAddress addre
        emulation scheme.  Keep current state.
     */
     debug1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read SR" );
+
     return FLASH_SR_WSMS;
 }
 
@@ -217,6 +219,7 @@ static int StoreCount( enum FlashState* state, enum FlashCycle cycle, XAddress a
     wb_count = wb_cdown = data & WB_COUNT_MASK;
 
     *state = FLASH_ST_WRITE_DATA_1;
+
     return 0; /* No result; this is a write cycle */
 }
 
@@ -227,8 +230,6 @@ static int StoreCount( enum FlashState* state, enum FlashCycle cycle, XAddress a
 */
 static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
-    int index;
-
     debug1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (data)" );
 
     /* Store WRITE_BUFFER data; the first write also stores the
@@ -243,12 +244,15 @@ static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress ad
             break;
 
         case FLASH_ST_WRITE_DATA_N:
-            index = address - wb_start;
-            if ( index < 0 || index >= WB_SIZE ) {
-                ChfGenerate( FLASH_CHF_MODULE_ID, __FILE__, __LINE__, FLASH_W_BAD_ADDRESS, CHF_WARNING, *state, cycle, address, data );
-                ChfSignal( FLASH_CHF_MODULE_ID );
-            } else
-                wb[ index ] = data;
+            {
+                int index = address - wb_start;
+                if ( index <= 0 && index < WB_SIZE )
+                    wb[ index ] = data;
+                else {
+                    ChfGenerate( FLASH_CHF_MODULE_ID, __FILE__, __LINE__, FLASH_W_BAD_ADDRESS, CHF_WARNING, *state, cycle, address, data );
+                    ChfSignal( FLASH_CHF_MODULE_ID );
+                }
+            }
             break;
 
         default:
@@ -273,18 +277,17 @@ static int WriteConfirm( enum FlashState* state, enum FlashCycle cycle, XAddress
 
     /* Expect Write to Buffer confirmation code */
     if ( data == FLASH_CMD_WRITE_BUFFER_2 ) {
-        int i;
-
         /* Confirmation OK; write.
            Remember that wb_count is the byte count MINUS 1.
         */
-        for ( i = 0; i <= wb_count; i++ ) {
+        for ( int i = 0; i <= wb_count; i++ ) {
             mod_status_49->flash[ NibbleAddress( wb_start + i ) ] = LowNibble( wb[ i ] );
             mod_status_49->flash[ NibbleAddress( wb_start + i ) + 1 ] = HighNibble( wb[ i ] );
         }
     }
 
     *state = FLASH_ST_READ_ARRAY;
+
     return 0; /* No result */
 }
 
@@ -300,16 +303,16 @@ static int BlockErase( enum FlashState* state, enum FlashCycle cycle, XAddress a
     /* Expect Write to Buffer confirmation code */
     if ( data == FLASH_CMD_BL_ERASE_2 ) {
         XAddress block_base = BlockBase( address );
-        int i;
 
         /* Confirmation OK; erase */
-        for ( i = 0; i < BLOCK_SIZE; i++ ) {
+        for ( int i = 0; i < BLOCK_SIZE; i++ ) {
             mod_status_49->flash[ NibbleAddress( block_base + i ) ] = ( Nibble )0xF;
             mod_status_49->flash[ NibbleAddress( block_base + i ) + 1 ] = ( Nibble )0xF;
         }
     }
 
     *state = FLASH_ST_READ_SR;
+
     return 0; /* No result */
 }
 
@@ -339,14 +342,13 @@ static FlashF F[ FLASH_ST_N ][ FLASH_CYCLE_N ] = {
 */
 static int FSM( enum FlashCycle cycle, XAddress address, int data )
 {
-    int result;
-
     debug2( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM, fsm_state, cycle );
     debug2( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_AD, address, data );
 
-    result = F[ fsm_state ][ cycle ]( &fsm_state, cycle, address, data );
+    int result = F[ fsm_state ][ cycle ]( &fsm_state, cycle, address, data );
 
     debug2( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_RESULT, fsm_state, result );
+
     return result;
 }
 

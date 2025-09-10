@@ -137,13 +137,15 @@ void RomInit49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomInit49" );
 
-    if ( ( mod_status_49 = ( struct ModStatus_49* )malloc( sizeof( struct ModStatus_49 ) ) ) == ( struct ModStatus_49* )NULL ) {
+    mod_status_49 = ( struct ModStatus_49* )malloc( sizeof( struct ModStatus_49 ) );
+    if ( mod_status_49 == ( struct ModStatus_49* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MOD_STATUS_ALLOC, CHF_FATAL, sizeof( struct ModStatus_49 ) );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
 
-    if ( ReadNibblesFromFile( config.rom_path, N_FLASH_SIZE_49, mod_status_49->flash ) ) {
+    bool err = ReadNibblesFromFile( config.rom_path, N_FLASH_SIZE_49, mod_status_49->flash );
+    if ( err ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_ROM_INIT, CHF_FATAL );
         ChfSignal( MOD_CHF_MODULE_ID );
     }
@@ -173,7 +175,8 @@ void RomSave49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomSave49" );
 
-    if ( WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_path ) ) {
+    bool err = WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_path );
+    if ( err ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_ROM_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
@@ -201,11 +204,9 @@ void RomSave49( void )
 .- */
 Nibble RomRead49( Address rel_address )
 {
-    register XAddress view;
-
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RomRead49" );
 
-    view = mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ];
+    register XAddress view = mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ];
 
     return mod_status_49->flash[ view | ( rel_address & FLASH_BANK_MASK ) ];
 }
@@ -272,7 +273,8 @@ void RamInit49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamInit49" );
 
-    if ( ReadNibblesFromFile( config.ram_path, N_RAM_SIZE_49, mod_status_49->ram ) ) {
+    bool err = ReadNibblesFromFile( config.ram_path, N_RAM_SIZE_49, mod_status_49->ram );
+    if ( err ) {
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RAM_INIT, CHF_WARNING );
         ChfSignal( MOD_CHF_MODULE_ID );
 
@@ -303,7 +305,8 @@ void RamSave49( void )
 {
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "RamSave49" );
 
-    if ( WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_path ) ) {
+    bool err = WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_path );
+    if ( err ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_RAM_SAVE, CHF_ERROR );
         ChfSignal( MOD_CHF_MODULE_ID );
@@ -547,13 +550,11 @@ void Ce2Init49( void )
     /* CE2 always present and write enabled */
     mod_status.hdw.card_status |= ( CE2_CARD_PRESENT | CE2_CARD_WE );
 
-#if 0
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
     */
-    cpu_status.HST |= HST_MP_MASK;
-    CpuIntRequest(INT_REQUEST_IRQ);
-#endif
+    /* cpu_status.HST |= HST_MP_MASK; */
+    /* CpuIntRequest(INT_REQUEST_IRQ); */
 }
 
 /* .+

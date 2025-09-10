@@ -94,9 +94,11 @@ static int ReadHexAddress( Address* addr )
 static int ReadHexDatum( Nibble* n )
 {
     Address addr;
-    int st;
-    if ( ( st = ReadHexAddress( &addr ) ) == OK )
+    int st = ReadHexAddress( &addr );
+
+    if ( st == OK )
         *n = ( Nibble )addr;
+
     return st;
 }
 
@@ -104,6 +106,7 @@ static int ReadHexDatum( Nibble* n )
 static int ReadCount( int* count )
 {
     char* p = strtok( ( char* )NULL, TOK_DELIMITERS );
+
     return ( p == ( char* )NULL || sscanf( p, COUNT_FMT, count ) != 1 || *count <= 0 ) ? FAILED : OK;
 }
 
@@ -117,6 +120,7 @@ static int ReadCount( int* count )
 static int run( void )
 {
     Emulator();
+
     return OK;
 }
 
@@ -124,9 +128,13 @@ static int run( void )
 static int debug( void )
 {
     Address addr;
-    if ( ReadHexAddress( &addr ) )
+    int st = ReadHexAddress( &addr );
+
+    if ( st )
         return FAILED;
+
     config.debug_level |= ( int )addr;
+
     return OK;
 }
 
@@ -134,11 +142,15 @@ static int debug( void )
 static int map_check( void )
 {
     Address addr;
-    char ob[ MOD_MAP_CHECK_OB_SIZE ];
-    if ( ReadHexAddress( &addr ) )
+    int st = ReadHexAddress( &addr );
+
+    if ( st )
         return FAILED;
+
+    char ob[ MOD_MAP_CHECK_OB_SIZE ];
     ModMapCheck( addr, ob );
     puts( ob );
+
     return OK;
 }
 
@@ -148,6 +160,7 @@ static int map( void )
     char ob[ MOD_MAP_TABLE_OB_SIZE ];
     ModMapTable( ob );
     puts( ob );
+
     return OK;
 }
 
@@ -168,8 +181,11 @@ static int r( void )
 {
     Address addr;
     int count;
-    if ( ReadHexAddress( &addr ) )
+    int st = ReadHexAddress( &addr );
+
+    if ( st )
         return FAILED;
+
     if ( ReadCount( &count ) )
         count = 1;
 
@@ -188,8 +204,11 @@ static int d( void )
     int count;
     char ob[ DISASSEMBLE_OB_SIZE ];
 
-    if ( ReadHexAddress( &addr ) )
+    int st = ReadHexAddress( &addr );
+
+    if ( st )
         return FAILED;
+
     if ( ReadCount( &count ) )
         count = 1;
 
@@ -207,6 +226,7 @@ static int cpu( void )
     char ob[ DUMP_CPU_STATUS_OB_SIZE ];
     DumpCpuStatus( ob );
     puts( ob );
+
     return OK;
 }
 
@@ -214,6 +234,7 @@ static int cpu( void )
 static int reset( void )
 {
     CpuReset();
+
     return OK;
 }
 
@@ -223,6 +244,7 @@ static int mon_exit( void )
     ModSave();
     CpuSave();
     exit( EXIT_SUCCESS );
+
     return OK; /* 3.1: Keep compiler happy */
 }
 
@@ -230,6 +252,7 @@ static int mon_exit( void )
 static int mon_quit( void )
 {
     exit( EXIT_SUCCESS );
+
     return OK; /* 3.1: Keep compiler happy */
 }
 
@@ -310,11 +333,8 @@ static void sigint_handler( int s ) { EmulatorIntRequest(); }
 void Monitor( void )
 {
     char cmd[ LINE_BUFFER_SIZE ];
-    char old_cmd[ LINE_BUFFER_SIZE ];
     char* tk;
-
-    /* Clear old_cmd buffer */
-    strcpy( old_cmd, "" );
+    char* ret;
 
     /* Establish SIGINT handler */
     signal( SIGINT, sigint_handler );
@@ -325,21 +345,18 @@ void Monitor( void )
         fputs( PROMPT, stdout );
         fflush( stdout );
 
-        if ( fgets( cmd, LINE_BUFFER_SIZE, stdin ) == ( char* )NULL || ( tk = strtok( cmd, TOK_DELIMITERS ) ) == ( char* )NULL ) {
-            /* New command empty; try old command */
-            if ( ( tk = strtok( old_cmd, TOK_DELIMITERS ) ) != ( char* )NULL )
-                if ( InvokeCommand( tk ) )
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk );
-            ChfSignal( CPU_CHF_MODULE_ID );
-        } else {
-            /* Save command */
-            strcpy( old_cmd, cmd );
+        ret = fgets( cmd, LINE_BUFFER_SIZE, stdin );
+        if ( ret == ( char* )NULL )
+            continue;
 
-            /* New command */
-            if ( InvokeCommand( tk ) ) {
-                ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk );
-                ChfSignal( CPU_CHF_MODULE_ID );
-            }
+        tk = strtok( cmd, TOK_DELIMITERS );
+        if ( tk == ( char* )NULL )
+            continue;
+
+        bool err = InvokeCommand( tk );
+        if ( err ) {
+            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk );
+            ChfSignal( CPU_CHF_MODULE_ID );
         }
     }
 }

@@ -30,25 +30,25 @@
    ------------------------------------------------------------------------- */
 
 /* .+
-.author       : Ivan Cibrario B.
+   .author       : Ivan Cibrario B.
 
 .creation     :	23-Jan-1998
 
 .description  :
-  This module implements the disk I/O functions used by the emulator to
-  save and restore the machine status to/from disk files.
+This module implements the disk I/O functions used by the emulator to
+save and restore the machine status to/from disk files.
 
 .notes        :
-  $Log: disk_io.c,v $
-  Revision 4.1  2000/12/11 09:54:19  cibrario
-  Public release.
+$Log: disk_io.c,v $
+Revision 4.1  2000/12/11 09:54:19  cibrario
+Public release.
 
   Revision 3.10  2000/10/24 16:14:36  cibrario
   Added/Replaced GPL header
 
   Revision 1.1  1998/02/17 11:54:38  cibrario
   Initial revision
-.- */
+  .- */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,54 +66,57 @@
 
 .creation     : 11-Feb-1998
 .description  :
-  This function reads 'size' nibbles from the disk file named 'name',
-  and stores them into main memory starting from 'dest'. It returns to the
-  caller a status code.
+This function reads 'size' nibbles from the disk file named 'name',
+and stores them into main memory starting from 'dest'. It returns to the
+caller a status code.
 
 .call         :
-                st = ReadNibbledFromFile(name, size, dest);
+st = ReadNibbledFromFile(name, size, dest);
 .input        :
-                const char *name, file name
-                int size, size of the file (nibbles, NOT bytes)
+const char *name, file name
+int size, size of the file (nibbles, NOT bytes)
 .output       :
-                Nibble *dest, pointer to the destination memory area
-                int st, status code
+Nibble *dest, pointer to the destination memory area
+int st, status code
 .status_codes :
-                DISK_IO_I_CALLED	(signalled)
-                DISK_IO_E_OPEN
-                DISK_IO_E_GETC
+DISK_IO_I_CALLED	(signalled)
+DISK_IO_E_OPEN
+DISK_IO_E_GETC
 .notes        :
-  1.1, 11-Feb-1998, creation
+1.1, 11-Feb-1998, creation
 
 .- */
 int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 {
-    FILE* f;
-    int i;
-    int by;
-    int st = DISK_IO_S_OK;
+    FILE* f = fopen( name, "rb" );
 
     debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadNibblesFromFile" );
 
-    if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
+    if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
-    } else {
-        for ( i = 0; i < size; ) {
-            by = getc( f );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
 
-            if ( by == -1 ) {
-                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_GETC, CHF_ERROR, name );
-                break;
-            }
+        return DISK_IO_E_OPEN;
+    }
 
-            dest[ i++ ] = ( Nibble )( by & 0x0F );
-            dest[ i++ ] = ( Nibble )( ( by & 0xF0 ) >> 4 );
+    int by;
+    int st = DISK_IO_S_OK;
+    for ( int i = 0; i < size; ) {
+        by = getc( f );
+
+        if ( by == -1 ) {
+            st = DISK_IO_E_GETC;
+
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+            break;
         }
 
-        ( void )fclose( f );
+        dest[ i++ ] = ( Nibble )( by & 0x0F );
+        dest[ i++ ] = ( Nibble )( ( by & 0xF0 ) >> 4 );
     }
+
+    ( void )fclose( f );
 
     return st;
 }
@@ -122,54 +125,61 @@ int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
 
 .creation     : 11-Feb-1998
 .description  :
-  This function writes 'size' nibbles taken from 'src' into the file 'name'.
-  It returns to the caller a status code
+This function writes 'size' nibbles taken from 'src' into the file 'name'.
+It returns to the caller a status code
 
 .call         :
-                st = WriteNibblesToFile(src, size, name);
+st = WriteNibblesToFile(src, size, name);
 .input        :
-                const Nibble *src, pointer to data to be written
-                int size, # of nibble to write
-                const char *name, file name
+const Nibble *src, pointer to data to be written
+int size, # of nibble to write
+const char *name, file name
 .output       :
-                int st, status code
+int st, status code
 .status_codes :
-                DISK_IO_I_CALLED	(signalled)
-                DISK_IO_E_OPEN
-                DISK_IO_E_PUTC
-                DISK_IO_E_CLOSE
+DISK_IO_I_CALLED	(signalled)
+DISK_IO_E_OPEN
+DISK_IO_E_PUTC
+DISK_IO_E_CLOSE
 .notes        :
-  1.1, 11-Feb-1998, creation
+1.1, 11-Feb-1998, creation
 
 .- */
 int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 {
-    FILE* f;
-    int i;
-    int by;
-    int st = DISK_IO_S_OK;
+    FILE* f = fopen( name, "wb" );
 
     debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteNibblesToFile" );
 
-    if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
+    if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
-    } else {
-        for ( i = 0; i < size; ) {
-            by = ( int )src[ i++ ];
-            by |= ( int )src[ i++ ] << 4;
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
 
-            if ( putc( by, f ) == EOF ) {
-                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_PUTC, CHF_ERROR, name );
-                break;
-            }
-        }
+        return DISK_IO_E_OPEN;
+    }
 
-        if ( fclose( f ) == EOF ) {
+    int by;
+    int ret;
+    int st = DISK_IO_S_OK;
+    for ( int i = 0; i < size; ) {
+        by = ( int )src[ i++ ];
+        by |= ( int )src[ i++ ] << 4;
+
+        ret = putc( by, f );
+        if ( ret == EOF ) {
+            st = DISK_IO_E_PUTC;
+
             ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_CLOSE, CHF_ERROR, name );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+            break;
         }
+    }
+
+    if ( fclose( f ) == EOF ) {
+        st = DISK_IO_E_CLOSE;
+
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
     }
 
     return st;
@@ -179,42 +189,47 @@ int WriteNibblesToFile( const Nibble* src, int size, const char* name )
 
 .creation     : 11-Feb-1998
 .description  :
-  This function reads the contents of the structure 's', with size 's_size',
-  from the disk file 'name' and returns a status code to the caller.
+This function reads the contents of the structure 's', with size 's_size',
+from the disk file 'name' and returns a status code to the caller.
 
 .call         :
-                st = ReadStructFromFile(name, s_size, s);
+st = ReadStructFromFile(name, s_size, s);
 .input        :
-                const char *name, file name
-                size_t s_size, structure size
+const char *name, file name
+size_t s_size, structure size
 .output       :
-                void *s, pointer to the structure
+void *s, pointer to the structure
 .status_codes :
-                DISK_IO_I_CALLED	(signalled)
-                DISK_IO_E_OPEN
-                DISK_IO_E_READ
+DISK_IO_I_CALLED	(signalled)
+DISK_IO_E_OPEN
+DISK_IO_E_READ
 .notes        :
-  1.1, 11-Feb-1998, creation
+1.1, 11-Feb-1998, creation
 
 .- */
 int ReadStructFromFile( const char* name, size_t s_size, void* s )
 {
-    FILE* f;
+    FILE* f = fopen( name, "rb" );
     int st = DISK_IO_S_OK;
 
     debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "ReadStructFromFile" );
 
-    if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
+    if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
-    } else {
-        if ( fread( s, s_size, ( size_t )1, f ) != 1 ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_READ, CHF_ERROR, name );
-        }
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
 
-        ( void )fclose( f );
+        return DISK_IO_E_OPEN;
     }
+
+    int ret = fread( s, s_size, ( size_t )1, f );
+    if ( ret != 1 ) {
+        st = DISK_IO_E_READ;
+
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+    }
+
+    ( void )fclose( f );
 
     return st;
 }
@@ -223,46 +238,54 @@ int ReadStructFromFile( const char* name, size_t s_size, void* s )
 
 .creation     : 11-Feb-1998
 .description  :
-  This function writes the structure 's', with size 's_size', to the file
-  'name' and returns to the caller a status code.
+This function writes the structure 's', with size 's_size', to the file
+'name' and returns to the caller a status code.
 
 .call         :
-                st =WriteStructToFile(s, s_size, name);
+st =WriteStructToFile(s, s_size, name);
 .input        :
-                const void *s, pointer to the structure to be written
-                size_t s_size, structure size
-                const char *name, output file name
+const void *s, pointer to the structure to be written
+size_t s_size, structure size
+const char *name, output file name
 .output       :
-                int st, status code
+int st, status code
 .status_codes :
-                DISK_IO_I_CALLED	(signalled)
-                DISK_IO_E_OPEN
-                DISK_IO_E_WRITE
-                DISK_IO_E_CLOSE
+DISK_IO_I_CALLED	(signalled)
+DISK_IO_E_OPEN
+DISK_IO_E_WRITE
+DISK_IO_E_CLOSE
 .notes        :
-  1.1, 11-Feb-1998, creation
+1.1, 11-Feb-1998, creation
 
 .- */
 int WriteStructToFile( const void* s, size_t s_size, const char* name )
 {
-    FILE* f;
+    FILE* f = fopen( name, "wb" );
     int st = DISK_IO_S_OK;
 
     debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteStructToFile" );
 
-    if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
+    if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
-    } else {
-        if ( fwrite( s, s_size, ( size_t )1, f ) != 1 ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_WRITE, CHF_ERROR, name );
-        }
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
 
-        if ( fclose( f ) == EOF ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_CLOSE, CHF_ERROR, name );
-        }
+        return DISK_IO_E_OPEN;
+    }
+
+    int ret = fwrite( s, s_size, ( size_t )1, f );
+    if ( ret != 1 ) {
+        st = DISK_IO_E_WRITE;
+
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+    }
+
+    ret = fclose( f );
+    if ( ret == EOF ) {
+        st = DISK_IO_E_CLOSE;
+
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
     }
 
     return st;
@@ -272,9 +295,9 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
 
 .creation     : 10-Nov-2000
 .description  :
-  This function reads an object from file 'name' and stores it into
-  the calculator's memory from nibble address 'start' inclusive to nibble
-  address 'end' exclusive.
+This function reads an object from file 'name' and stores it into
+the calculator's memory from nibble address 'start' inclusive to nibble
+address 'end' exclusive.
 
   The presence of header 'hdr' in the disk file is checked, then the
   header is stripped before starting the transfer.  In 'hdr', '?'
@@ -291,29 +314,28 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name )
   This function returns to the caller a status code.
 
 .call         :
-                st = ReadObjectFromFile(name, hdr, start, end);
+st = ReadObjectFromFile(name, hdr, start, end);
 
 .input        :
-                const char *name, input file name
-                const char *hdr, file header
-                Address start, start address (inclusive)
-                Address end, end address (exclusive)
+const char *name, input file name
+const char *hdr, file header
+Address start, start address (inclusive)
+Address end, end address (exclusive)
 .output       :
-                int st, status code
+int st, status code
 .status_codes :
-                DISK_IO_I_CALLED	(signalled)
-                DISK_IO_E_OPEN
-                DISK_IO_E_GETC
-                DISK_IO_E_BAD_HDR
-                DISK_IO_E_SIZE
+DISK_IO_I_CALLED	(signalled)
+DISK_IO_E_OPEN
+DISK_IO_E_GETC
+DISK_IO_E_BAD_HDR
+DISK_IO_E_SIZE
 .notes        :
-  3.14, 10-Nov-2000, creation
+3.14, 10-Nov-2000, creation
 
 .- */
 int ReadObjectFromFile( const char* name, const char* hdr, Address start, Address end )
 {
     size_t hdr_len = strlen( hdr );
-    FILE* f;
     int i;
     int by;
     Address cur;
@@ -329,54 +351,65 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
     for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
         save_area[ i ] = ReadNibble( cur );
 
-    if ( ( f = fopen( name, "rb" ) ) == ( FILE* )NULL ) {
+    FILE* f = fopen( name, "rb" );
+    if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
-    } else {
-        /* Check and skip header */
-        for ( i = 0; i < ( int )hdr_len; i++ ) {
-            by = getc( f );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
 
-            if ( by == EOF ) {
-                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_GETC, CHF_ERROR, name );
-                break;
-            } else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
-                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_BAD_HDR, CHF_ERROR, name );
-                break;
-            }
-        }
-
-        if ( st == DISK_IO_S_OK ) {
-            cur = start;
-
-            /* Header check/skip OK; transfer */
-            while ( ( by = getc( f ) ) != EOF ) {
-                /* Next byte available in by; check available space */
-                if ( cur >= end - 1 ) {
-                    ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_SIZE, CHF_ERROR, name );
-                    break;
-                }
-
-                /* Store it */
-                WriteNibble( cur++, ( Nibble )( by & 0x0F ) );
-                WriteNibble( cur++, ( Nibble )( ( by & 0xF0 ) >> 4 ) );
-            }
-
-            /* Check why getc() failed */
-            if ( ferror( f ) && !feof( f ) ) {
-                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_GETC, CHF_ERROR, name );
-            }
-
-            /* Recover from save_area if transfer failed */
-            if ( st )
-                for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
-                    WriteNibble( cur, save_area[ i ] );
-        }
-
-        ( void )fclose( f );
+        return DISK_IO_E_OPEN;
     }
+
+    /* Check and skip header */
+    for ( i = 0; i < ( int )hdr_len; i++ ) {
+        by = getc( f );
+
+        if ( by == EOF ) {
+            st = DISK_IO_E_GETC;
+
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+            break;
+        } else if ( hdr[ i ] != '?' && by != hdr[ i ] ) {
+            st = DISK_IO_E_BAD_HDR;
+
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+            break;
+        }
+    }
+
+    if ( st == DISK_IO_S_OK ) {
+        cur = start;
+
+        /* Header check/skip OK; transfer */
+        while ( ( by = getc( f ) ) != EOF ) {
+            /* Next byte available in by; check available space */
+            if ( cur >= end - 1 ) {
+                st = DISK_IO_E_SIZE;
+
+                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+                break;
+            }
+
+            /* Store it */
+            WriteNibble( cur++, ( Nibble )( by & 0x0F ) );
+            WriteNibble( cur++, ( Nibble )( ( by & 0xF0 ) >> 4 ) );
+        }
+
+        /* Check why getc() failed */
+        if ( ferror( f ) && !feof( f ) ) {
+            st = DISK_IO_E_GETC;
+
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+        }
+
+        /* Recover from save_area if transfer failed */
+        if ( st )
+            for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
+                WriteNibble( cur, save_area[ i ] );
+    }
+
+    ( void )fclose( f );
 
     return st;
 }
@@ -385,89 +418,101 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
 .creation     : 10-Nov-2000
 .description  :
-  This function writes an object located in calculator's memory,
-  from nibble address 'start' inclusive to nibble address 'end' exclusive,
-  into the file 'name'.  The header 'hdr' is prepended to the actual
-  object and objects with an odd number of nibbles are padded to an even
-  size adding a 0 nibble to their end.  In 'hdr', the wildcard character
-  '?' is replaced by 'S' when the header is written on disk.
+This function writes an object located in calculator's memory,
+from nibble address 'start' inclusive to nibble address 'end' exclusive,
+into the file 'name'.  The header 'hdr' is prepended to the actual
+object and objects with an odd number of nibbles are padded to an even
+size adding a 0 nibble to their end.  In 'hdr', the wildcard character
+'?' is replaced by 'S' when the header is written on disk.
 
   This function returns to the caller a status code.
 
 .call         :
-                st = WriteObjectToFile(start, end, hdr, name);
+st = WriteObjectToFile(start, end, hdr, name);
 .input        :
-                Address start, start address (inclusive)
-                Address end, end address (exclusive)
-                const char *hdr, file header
-                const char *name, output file name
+Address start, start address (inclusive)
+Address end, end address (exclusive)
+const char *hdr, file header
+const char *name, output file name
 .output       :
-                int st, status code
+int st, status code
 .status_codes :
-                DISK_IO_I_CALLED	(signalled)
-                DISK_IO_E_OPEN
-                DISK_IO_E_PUTC
-                DISK_IO_E_CLOSE
+DISK_IO_I_CALLED	(signalled)
+DISK_IO_E_OPEN
+DISK_IO_E_PUTC
+DISK_IO_E_CLOSE
 .notes        :
-  3.14, 10-Nov-2000, creation
+3.14, 10-Nov-2000, creation
 
 .- */
 int WriteObjectToFile( Address start, Address end, const char* hdr, const char* name )
 {
     size_t hdr_len = strlen( hdr );
-    FILE* f;
-    int i;
+    int ret;
     int by;
-    Address cur;
 
     int st = DISK_IO_S_OK;
 
     debug1( DISK_IO_CHF_MODULE_ID, DEBUG_C_TRACE, DISK_IO_I_CALLED, "WriteObjectFromFile" );
 
-    if ( ( f = fopen( name, "wb" ) ) == ( FILE* )NULL ) {
+    FILE* f = fopen( name, "wb" );
+    if ( f == ( FILE* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_OPEN, CHF_ERROR, name );
-    } else {
-        /* Write header; replace wildcard character '?' with 'S' */
-        for ( i = 0; i < ( int )hdr_len; i++ ) {
-            if ( putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f ) == EOF ) {
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, DISK_IO_E_OPEN, CHF_ERROR, name );
+
+        return DISK_IO_E_OPEN;
+    }
+
+    /* Write header; replace wildcard character '?' with 'S' */
+    for ( int i = 0; i < ( int )hdr_len; i++ ) {
+        ret = putc( hdr[ i ] == '?' ? 'S' : hdr[ i ], f );
+        if ( ret == EOF ) {
+            st = DISK_IO_E_PUTC;
+
+            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
+            break;
+        }
+    }
+
+    if ( st == DISK_IO_S_OK ) {
+        Address cur = start;
+
+        while ( cur < end - 1 ) {
+            /* Make a byte with two nibbles */
+            by = ( int )ReadNibble( cur++ );
+            by |= ( int )ReadNibble( cur++ ) << 4;
+
+            ret = putc( by, f );
+            if ( ret == EOF ) {
+                st = DISK_IO_E_PUTC;
+
                 ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_PUTC, CHF_ERROR, name );
+                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
                 break;
             }
         }
 
-        if ( st == DISK_IO_S_OK ) {
-            cur = start;
+        /* Write the last odd nibble, if necessary */
+        if ( st == DISK_IO_S_OK && cur == end - 1 ) {
+            by = ( int )ReadNibble( cur++ );
 
-            while ( cur < end - 1 ) {
-                /* Make a byte with two nibbles */
-                by = ( int )ReadNibble( cur++ );
-                by |= ( int )ReadNibble( cur++ ) << 4;
+            ret = putc( by, f );
+            if ( ret == EOF ) {
+                st = DISK_IO_E_PUTC;
 
-                if ( putc( by, f ) == EOF ) {
-                    ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                    ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_PUTC, CHF_ERROR, name );
-                    break;
-                }
-            }
-
-            /* Write the last odd nibble, if necessary */
-            if ( st == DISK_IO_S_OK && cur == end - 1 ) {
-                by = ( int )ReadNibble( cur++ );
-
-                if ( putc( by, f ) == EOF ) {
-                    ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-                    ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_PUTC, CHF_ERROR, name );
-                }
+                ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+                ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
             }
         }
+    }
 
-        /* Close the output file anyway */
-        if ( fclose( f ) == EOF ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st = DISK_IO_E_CLOSE, CHF_ERROR, name );
-        }
+    /* Close the output file anyway */
+    if ( fclose( f ) == EOF ) {
+        st = DISK_IO_E_CLOSE;
+
+        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+        ChfGenerate( DISK_IO_CHF_MODULE_ID, __FILE__, __LINE__, st, CHF_ERROR, name );
     }
 
     return st;

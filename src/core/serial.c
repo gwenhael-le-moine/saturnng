@@ -683,7 +683,8 @@ void SerialClose( void )
 {
     debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "SerialClose" );
 
-    if ( close( slave_pty ) || close( master_pty ) ) {
+    bool err = close( slave_pty ) || close( master_pty );
+    if ( err ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_PTY_CLOSE, CHF_ERROR );
         ChfSignal( SERIAL_CHF_MODULE_ID );
@@ -864,6 +865,7 @@ int8 Serial_RBR_Read( void )
     CheckIRQ;
 
     debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_RBR, rx );
+
     return rx;
 }
 
@@ -1078,13 +1080,11 @@ void Serial_TBR_Write( int8 d )
 .- */
 void HandleSerial( void )
 {
-    int result;
-
     debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_TRACE, SERIAL_I_CALLED, "HandleSerial" );
 
 #ifndef USE_NOPTY
     /* Attempt to drain transmitter buffer even if serial port is closed */
-    result = PullAndWrite( &trb, master_pty );
+    int result = PullAndWrite( &trb, master_pty );
 
     /* Signal a condition upon failure */
     if ( result < 0 ) {

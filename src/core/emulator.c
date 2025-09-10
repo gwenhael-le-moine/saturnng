@@ -503,9 +503,9 @@ void Emulator( void )
 
         /* Activate emulator loop */
         EmulatorLoop();
-    } /*  else { */
-    /*     /\* Unwinding after an emulator interrupt *\/ */
-    /* } */
+    } else {
+        /* Unwinding after an emulator interrupt */
+    }
 }
 
 /* .+

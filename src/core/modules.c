@@ -395,11 +395,11 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 .- */
 static struct ModMap* NewModMap( void )
 {
-    struct ModMap* new;
-
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "NewModMap" );
 
-    if ( ( new = ( struct ModMap* )malloc( sizeof( struct ModMap ) ) ) == ( struct ModMap* )NULL ) {
+    struct ModMap* new = ( struct ModMap* )malloc( sizeof( struct ModMap ) );
+
+    if ( new == ( struct ModMap* )NULL ) {
         ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
         ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MAP_ALLOC, CHF_FATAL );
         ChfSignal( MOD_CHF_MODULE_ID );
@@ -446,6 +446,7 @@ static struct ModMap* CopyModMap( struct ModMap* d, const struct ModMap* s )
 
     *d = *s;
     d->cache.link = link; /* Restore .link */
+
     return ClearCachingInfo( d );
 }
 
@@ -577,11 +578,9 @@ static void FlushCache( struct ModMap* save )
 .- */
 static struct ModMap* AccessConfigCache( Address tag )
 {
-    int i;
-
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "AccessConfigCache" );
 
-    for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
+    for ( int i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
         if ( MOD_MAP.cache.config[ i ].tag == tag )
             return MOD_MAP.cache.config[ i ].map_ptr;
 
@@ -1266,12 +1265,12 @@ void ModConfig( Address config_info )
 void ModUnconfig( Address unconfig_info )
 {
     struct ModMap *nxt, *old;
-    int mod;
+    int mod = MOD_MAP.page_table[ ModPage( unconfig_info ) ].index;
 
     debug1( MOD_CHF_MODULE_ID, DEBUG_C_TRACE, MOD_I_CALLED, "ModUnconfig" );
 
     /* Determine the module to unconfigure */
-    if ( ( mod = MOD_MAP.page_table[ ModPage( unconfig_info ) ].index ) == MOD_NO_MOD_INDEX ) {
+    if ( mod == MOD_NO_MOD_INDEX ) {
         /* There isn't any module configured at the given address -
            Signal a warning
         */
@@ -1486,18 +1485,14 @@ void WriteNibble( Address addr, Nibble datum )
 .- */
 void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 {
-    int page;
-    Address offset;
-    int mod;
+    int page = ModPage( addr );
+    Address offset = ModOffset( addr );
+    int mod = MOD_MAP.page_table[ page ].index;
 
-    page = ModPage( addr );
-    offset = ModOffset( addr );
-
-    if ( ( mod = MOD_MAP.page_table[ page ].index ) == MOD_NO_MOD_INDEX )
+    if ( mod == MOD_NO_MOD_INDEX )
         sprintf( ob, "A[%05X] -> *Not Mapped*", addr );
     else {
-        Address rel_addr;
-        rel_addr = MOD_MAP.page_table[ page ].rel_base_addr | offset;
+        Address rel_addr = MOD_MAP.page_table[ page ].rel_base_addr | offset;
 
         sprintf( ob, "A[%05X] -> M[%s] R[%05X]", addr, mod_description[ mod ].name, rel_addr );
     }
@@ -1526,12 +1521,10 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 .- */
 void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] )
 {
-    int mod;
-
     sprintf( ob, "%s\n", "Device\t\t\tAddress\tSize\tStatus" );
     ob += strlen( ob );
 
-    for ( mod = 0; mod < N_MOD; mod++ ) {
+    for ( int mod = 0; mod < N_MOD; mod++ ) {
         sprintf( ob, "%s\t%05X\t%05X\t%s", mod_description[ mod ].name, MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size,
                  MOD_MAP.map_info[ mod ].config == MOD_CONFIGURED
                      ? "Configured"
