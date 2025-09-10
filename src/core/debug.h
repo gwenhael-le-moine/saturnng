@@ -95,6 +95,8 @@
 
 .- */
 
+#include "../libChf/src/Chf.h"
+
 #  include "../options.h"
 
 #  define _debug_preamble( module_id, debug_class, condition_code )                                                                        \

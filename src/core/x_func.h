@@ -89,6 +89,8 @@ typedef enum {
         Function prototypes
   ---------------------------------------------------------------------------*/
 
-void ExtendedFunction( Nibble function_code ); /* used in hdw.c */
+void set_speed( unsigned int new_speed_mhz );
+void import_file( char* filename );
+void export_file( char* filename );
 
 #endif /*!_X_FUNC_H*/

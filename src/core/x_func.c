@@ -73,97 +73,18 @@
 .- */
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
 
-#include "../libChf/src/Chf.h"
 #include "../options.h"
 
 #include "config.h"
 #include "cpu.h"
-#include "modules.h"
 #include "disk_io.h"
 #include "x_func.h"
 #include "debug.h"
 
 /*---------------------------------------------------------------------------
-        Private functions: CPU access
-  ---------------------------------------------------------------------------*/
-
-/* Return the A field of a DataRegister as an integer. */
-static int R2int( const Nibble* r )
-{
-    return ( ( ( int )r[ 0 ] ) | ( ( int )r[ 1 ] << 4 ) | ( ( int )r[ 2 ] << 8 ) | ( ( int )r[ 3 ] << 12 ) | ( ( int )r[ 4 ] << 16 ) );
-}
-
-/* Return the contents of the byte pointed by addr.
-   Memory is accessed through ReadNibble()
-*/
-static int ByteFromAddress( Address addr ) { return ( int )ReadNibble( addr ) + ( int )ReadNibble( addr + 1 ) * 16; }
-
-/* Return a dynamically-allocated copy of the contents of the IDNT
-   object pointed by D1.  D1 points to the *body* of the
-   RPL object, that is, to the IDNT length byte directly and *not*
-   to the prologue.
-*/
-static char* NameFromD1( void )
-{
-    Address addr = cpu_status.D1;      /* Points to the IDNT body */
-    int len = ByteFromAddress( addr ); /* IDNT length */
-    char* name = malloc( len + 1 );    /* IDNT name buffer */
-    int c;
-
-    /* Read the name; toascii() is there to avoid 'strange' characters */
-    for ( c = 0; c < len; c++ ) {
-        addr += 2;
-        name[ c ] = ( char )toascii( ByteFromAddress( addr ) );
-    }
-
-    name[ c ] = '\0'; /* Terminate and return the name */
-    return name;
-}
-
-/*---------------------------------------------------------------------------
         Private functions: action routines
   ---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------*/
-
-/* Set the emulator speed to the given value (in MHz); the desired speed
-   value is held in the A field of the C CPU register.  No handshake.
-*/
-static void SetSpeed( Nibble function_code )
-{
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetSpeed" );
-
-    if ( !config.throttle ) {
-        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_SPEED, CHF_ERROR );
-        ChfSignal( X_FUNC_CHF_MODULE_ID );
-    } else {
-        int new_speed;
-
-        /* Get new_speed from A field of C register */
-        new_speed = R2int( cpu_status.C );
-
-        /* Compute inner loop limit; 4 is the real CPU speed in MHz when
-           the limit is set to INNER_LOOP_MAX.  No overflow checks,
-           because new_speed is >=0, has an architectural upper limit of 2^20,
-           and int are at least 2^31.
-        */
-        cpu_status.inner_loop_max = ( new_speed * INNER_LOOP_MAX ) / 4;
-
-        /* Notify the user about the speed change */
-        if ( cpu_status.inner_loop_max )
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_I_SET_SPEED, CHF_INFO, new_speed );
-        else
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_I_MAX_SPEED, CHF_INFO );
-
-        ChfSignal( X_FUNC_CHF_MODULE_ID );
-    }
-}
-
-/*---------------------------------------------------------------------------*/
 
 /* Return the header of binary files for current hw configuration;
    '?' is a wildcard character when reading from file
@@ -174,7 +95,6 @@ static void SetSpeed( Nibble function_code )
 */
 static const char* BinaryHeader( void )
 {
-
     switch ( config.model ) {
         case MODEL_48SX:
         case MODEL_48GX:
@@ -185,169 +105,8 @@ static const char* BinaryHeader( void )
             return "HPHP49-?";
             break;
         default:
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_BIN_HDR, CHF_ERROR, "hw unknown" );
             fprintf( stderr, "Error: Unknown model %i\n", config.model );
             return ( char* )NULL;
-    }
-}
-
-/* This function is the continuation of Kget(); it is invoked when the
-   user interaction with the FSB ends.
-*/
-static void KgetContinuation( int proceed, char* file_name )
-{
-    /* Check whether continuation should proceed */
-    if ( !proceed ) {
-        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_ABORTED, CHF_WARNING );
-        ChfSignal( X_FUNC_CHF_MODULE_ID );
-    } else {
-        /* Ok to proceed; read:
-           - target start address from A[A]
-           - target end address from C[A]
-           - binary header with BinaryHeader()
-        */
-        int start_addr = R2int( cpu_status.A );
-        int end_addr = R2int( cpu_status.C );
-        const char* bin_hdr = BinaryHeader();
-
-        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
-
-        if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
-            ChfSignal( X_FUNC_CHF_MODULE_ID );
-        }
-    }
-
-    CpuRunRequest();
-}
-
-/* This function is the continuation of Send(); it is invoked when the
-   user interaction with the FSB ends.
-*/
-static void SendContinuation( int proceed, char* file_name )
-{
-    if ( !proceed ) {
-        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_ABORTED, CHF_WARNING );
-        ChfSignal( X_FUNC_CHF_MODULE_ID );
-    } else {
-        /* Ok to proceed; read:
-           - source start address from A[A]
-           - source end address from C[A]
-           - binary header with BinaryHeader()
-        */
-        int start_addr = R2int( cpu_status.A );
-        int end_addr = R2int( cpu_status.C );
-        const char* bin_hdr = BinaryHeader();
-
-        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
-
-        if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
-            ChfSignal( X_FUNC_CHF_MODULE_ID );
-        }
-    }
-
-    CpuRunRequest();
-}
-
-/* This function does the setup of a transfer, performing the following
-   actions:
-
-   - If CPU halt requests are not allowed, it signals X_FUNC_E_NO_HALT
-   - Gets the FSB title from 'msg' and 'def_msg', using ChfGetMessage()
-   - Gets the default file name using NameFromD1()
-   - Invokes ActivateFSB() to pop the FSB up; continuation 'cont' will
-     be invoked when the user interaction ends
-   - Halts the CPU
- */
-typedef void ( *FsbContinuation )( int proceed, char* file_name );
-static void SetupXfer( int msg, const char* def_msg, FsbContinuation cont )
-{
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "SetupXfer" );
-
-    if ( CpuHaltAllowed() ) {
-        /* char* fsb_title = XtNewString( ChfGetMessage( CHF_MODULE_ID, msg, def_msg ) ); */
-
-        /* char* fsb_file = NameFromD1(); */
-
-        /* // ActivateFSB( fsb_title, fsb_file, cont ); */
-
-        /* /\* Free *before* CpuHaltRequest() because it does not return, and */
-        /*    ActivateFSB() copied its argument when necessary. */
-        /* *\/ */
-        /* XtFree( fsb_title ); */
-        /* XtFree( fsb_file ); */
-
-        /* ( void )CpuHaltRequest(); */
-    } else {
-        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_E_NO_HALT, CHF_ERROR );
-        ChfSignal( X_FUNC_CHF_MODULE_ID );
-    }
-}
-
-/* This is the emulator's extended function for 'kget': this function
-   transfers a file from disk into the calculator's memory.
-*/
-static void Kget( Nibble function_code )
-{
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "Kget" );
-
-    /* Setup File Selection Box if transfers are *not* in batch mode */
-    if ( !config.batchXfer )
-        SetupXfer( X_FUNC_M_KGET, "Kget", KgetContinuation );
-    else {
-        /* Ok to proceed; read:
-           - file name from @D1
-           - target start address from A[A]
-           - target end address from C[A]
-           - binary header with BinaryHeader()
-        */
-        char* file_name = NameFromD1();
-        int start_addr = R2int( cpu_status.A );
-        int end_addr = R2int( cpu_status.C );
-        const char* bin_hdr = BinaryHeader();
-
-        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr );
-
-        if ( bin_hdr == ( const char* )NULL || ReadObjectFromFile( file_name, bin_hdr, ( Address )start_addr, ( Address )end_addr ) ) {
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
-            ChfSignal( X_FUNC_CHF_MODULE_ID );
-        }
-    }
-}
-
-/* This is the emulator's extended function for 'send': this function
-   transfers an object from the calculator's memory into a disk file.
-*/
-static void Send( Nibble function_code )
-{
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "Send" );
-
-    /* Setup File Selection Box if transfers are *not* in batch mode */
-    if ( !config.batchXfer )
-        SetupXfer( X_FUNC_M_SEND, "Send", SendContinuation );
-    else {
-        /* Ok to proceed; read:
-           - file name from @D1
-           - source start address from A[A]
-           - source end address from C[A]
-           - binary header with BinaryHeader()
-        */
-        char* file_name = NameFromD1();
-        int start_addr = R2int( cpu_status.A );
-        int end_addr = R2int( cpu_status.C );
-        const char* bin_hdr = BinaryHeader();
-
-        debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, file_name );
-        debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr );
-
-        if ( bin_hdr == ( const char* )NULL || WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, file_name ) ) {
-            ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_FAILED, CHF_WARNING );
-            ChfSignal( X_FUNC_CHF_MODULE_ID );
-        }
     }
 }
 
@@ -355,47 +114,51 @@ static void Send( Nibble function_code )
         Public functions
   ---------------------------------------------------------------------------*/
 
-/* .+
-
-.creation     : 3-Nov-2000
-.description  :
-  This function executes the emulator's extended function identified
-  by 'function_code'; communications with the triggering code on
-  the calculator side are made through CPU registers.
-
-.call         :
-                ExtendedFunction(function_code);
-.input        :
-                Nibble function_code, function code
-.output       :
-                void
-.status_codes :
-                X_FUNC_I_CALLED
-                X_FUNC_I_CODE
-                X_FUNC_W_BAD_CODE
-                * Any other condition code generated by action functions
-.notes        :
-  3.13, 3-Nov-2000, creation
-
-.- */
-void ExtendedFunction( Nibble function_code )
+void import_file( char* filename )
 {
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "ExtendedFunction" );
-    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_CODE, function_code );
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "import_file" );
 
-    switch ( function_code ) {
-    case 0:
-        SetSpeed( function_code );
-        break;
-    case 1:
-        Kget( function_code );
-        break;
-    case 2:
-        Send( function_code );
-        break;
+    /* const char* bin_hdr = BinaryHeader(); */
 
-    default:
-        ChfGenerate( X_FUNC_CHF_MODULE_ID, __FILE__, __LINE__, X_FUNC_W_BAD_CODE, CHF_WARNING, function_code );
-        ChfSignal( X_FUNC_CHF_MODULE_ID );
-    }
+    /* if ( bin_hdr == ( const char* )NULL ) */
+    /*     return; */
+
+    /* int start_addr = R2int( cpu_status.A ); */
+    /* int end_addr = R2int( cpu_status.C ); */
+
+    /* debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ); */
+    /* debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr ); */
+
+    /* ReadObjectFromFile( filename, bin_hdr, ( Address )start_addr, ( Address )end_addr ); */
+}
+
+/* This is the emulator's extended function for 'send': this function
+   transfers an object from the calculator's memory into a disk file.
+*/
+void export_file( char* filename )
+{
+    debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_TRACE, X_FUNC_I_CALLED, "export_file" );
+
+    /* const char* bin_hdr = BinaryHeader(); */
+
+    /* if ( bin_hdr == ( const char* )NULL ) */
+    /*     return; */
+
+    /* int start_addr = R2int( cpu_status.A ); */
+    /* int end_addr = R2int( cpu_status.C ); */
+
+    /* debug1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ); */
+    /* debug3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr ); */
+
+    /* WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, filename ); */
+}
+
+void set_speed( unsigned int new_speed_mhz )
+{
+    /* Compute inner loop limit; 4 is the real CPU speed in MHz when
+       the limit is set to INNER_LOOP_MAX.  No overflow checks,
+       because new_speed is >=0, has an architectural upper limit of 2^20,
+       and int are at least 2^31.
+     */
+    cpu_status.inner_loop_max = ( new_speed_mhz * INNER_LOOP_MAX ) / 4;
 }
