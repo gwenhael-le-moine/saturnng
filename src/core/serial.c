@@ -84,10 +84,10 @@
   - Avoided name clash on ADDRESS_MASK when including pty headers
     (Digital UNIX platform)
   - Enhanced documentation of public functions
- 
+
   Revision 2.5  2000/09/14  15:44:08  cibrario
   *** empty log message ***
- 
+
 
 .- */
 
@@ -360,24 +360,29 @@ static int ReadAndPush( struct RingBuffer* rbp, int fd )
 /*---------------------------------------------------------------------------
         Static variables, holding the status of the emulated port
   ---------------------------------------------------------------------------*/
+typedef enum {
+    IOC_SON = 0x08,   /* Serial port enable */
+    IOC_ETBE = 0x04,  /* Enable IRQ on TX buffer empty */
+    IOC_ERBF = 0x02,  /* Enable IRQ on RX buffer full */
+    IOC_ERBZ = 0x01,  /* Enable IRQ on RX buzy (sic) */
+} ioc_t;
+static ioc_t ioc = 0; /* I/O and interrupt control register */
 
-static Nibble ioc = 0; /* I/O and interrupt control register */
-#define IOC_SON 0x08   /* Serial port enable */
-#define IOC_ETBE 0x04  /* Enable IRQ on TX buffer empty */
-#define IOC_ERBF 0x02  /* Enable IRQ on RX buffer full */
-#define IOC_ERBZ 0x01  /* Enable IRQ on RX buzy (sic) */
+typedef enum {
+    RCS_UNUSED = 0x08, /* Unused (?) */
+    RCS_RER = 0x04,    /* RX Error */
+    RCS_RBZ = 0x02,    /* RX Buzy */
+    RCS_RBF = 0x01,    /* RX Buffer full */
+} rcs_t;
+static rcs_t rcs = 0;  /* RX control & status register */
 
-static Nibble rcs = 0;  /* RX control & status register */
-#define RCS_UNUSED 0x08 /* Unused (?) */
-#define RCS_RER 0x04    /* RX Error */
-#define RCS_RBZ 0x02    /* RX Buzy */
-#define RCS_RBF 0x01    /* RX Buffer full */
-
-static Nibble tcs = 0; /* TX control & status register */
-#define TCS_BRK 0x08   /* Unknown (?) */
-#define TCS_LPB 0x04   /* Unknown (?) */
-#define TCS_TBZ 0x02   /* TX Buzy */
-#define TCS_TBF 0x01   /* TX Buffer full */
+typedef enum {
+    TCS_BRK = 0x08,   /* Unknown (?) */
+    TCS_LPB = 0x04,   /* Unknown (?) */
+    TCS_TBZ = 0x02,   /* TX Buzy */
+    TCS_TBF = 0x01,   /* TX Buffer full */
+} tcs_t;
+static tcs_t tcs = 0; /* TX control & status register */
 
 static struct RingBuffer rrb; /* RX ring buffer */
 static struct RingBuffer trb; /* TX ring buffer */

@@ -154,10 +154,6 @@ src/libChf/libChf.a:
 dist/$(NAME): $(OBJS) $(HEADERS) src/libChf/libChf.a
 	$(CC) $(OBJS) src/libChf/libChf.a -o $@ $(CFLAGS) $(LIBS)
 
-# UNUSED
-dist/pack: src/pack.o src/disk_io.o src/debug.o src/libChf/libChf.a
-	$(CC) $^ -o $@ $(CFLAGS) $(LIBS)
-
 doc:
 	make -C docs
 

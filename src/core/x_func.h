@@ -64,34 +64,26 @@
 #  include "cpu.h"
 
 /*---------------------------------------------------------------------------
-        Macro/Data type definitions - require cpu.h
-  ---------------------------------------------------------------------------*/
-
-/* Extended function codes (argument of XFunction()) */
-#  define X_FUNC_SET_SPEED ( Nibble )0
-#  define X_FUNC_KGET ( Nibble )1
-#  define X_FUNC_SEND ( Nibble )2
-
-/*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
-
-#  define X_FUNC_I_CALLED 101     /* Function %s called */
-#  define X_FUNC_I_CODE 102       /* Function code %d */
-#  define X_FUNC_I_SET_SPEED 103  /* Speed set to %dMhz (%d mult.) */
-#  define X_FUNC_I_MAX_SPEED 104  /* Emulator at max speed */
-#  define X_FUNC_I_FILE_NAME 105  /* Transferring file name %s */
-#  define X_FUNC_I_KGET 106       /* Kget start:%x end:%x hdr:%s */
-#  define X_FUNC_I_SEND 107       /* Send start:%x end:%x hdr:%s */
-#  define X_FUNC_W_BAD_CODE 201   /* Bad function code %d ignored */
-#  define X_FUNC_W_ABORTED 202    /* Aborted by user */
-#  define X_FUNC_W_FAILED 203     /* Operation failed */
-#  define X_FUNC_E_NO_HALT 301    /* Cpu halt not allowed */
-#  define X_FUNC_E_NO_SPEED 302   /* No speed control available */
-#  define X_FUNC_E_NO_BIN_HDR 303 /* Can't determine hdr for hw %s */
-#  define X_FUNC_F_xxx 401
-#  define X_FUNC_M_KGET 501 /* FSB title for Kget function */
-#  define X_FUNC_M_SEND 502 /* FSB title for Send function */
+typedef enum {
+    X_FUNC_I_CALLED = 101,     /* Function %s called */
+    X_FUNC_I_CODE = 102,       /* Function code %d */
+    X_FUNC_I_SET_SPEED = 103,  /* Speed set to %dMhz (%d mult.) */
+    X_FUNC_I_MAX_SPEED = 104,  /* Emulator at max speed */
+    X_FUNC_I_FILE_NAME = 105,  /* Transferring file name %s */
+    X_FUNC_I_KGET = 106,       /* Kget start:%x end:%x hdr:%s */
+    X_FUNC_I_SEND = 107,       /* Send start:%x end:%x hdr:%s */
+    X_FUNC_W_BAD_CODE = 201,   /* Bad function code %d ignored */
+    X_FUNC_W_ABORTED = 202,    /* Aborted by user */
+    X_FUNC_W_FAILED = 203,     /* Operation failed */
+    X_FUNC_E_NO_HALT = 301,    /* Cpu halt not allowed */
+    X_FUNC_E_NO_SPEED = 302,   /* No speed control available */
+    X_FUNC_E_NO_BIN_HDR = 303, /* Can't determine hdr for hw %s */
+    X_FUNC_F_xxx = 401,
+    X_FUNC_M_KGET = 501, /* FSB title for Kget function */
+    X_FUNC_M_SEND = 502, /* FSB title for Send function */
+} x_func_chf_condition_code_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

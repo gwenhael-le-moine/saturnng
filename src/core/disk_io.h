@@ -67,17 +67,18 @@
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
-
-#  define DISK_IO_S_OK 0        /* Function completed succesfully */
-#  define DISK_IO_I_CALLED 101  /* Function %s called */
-#  define DISK_IO_E_OPEN 401    /* Open file %s failed */
-#  define DISK_IO_E_GETC 402    /* getc() from file %s failed */
-#  define DISK_IO_E_PUTC 403    /* putc() to file %s failed */
-#  define DISK_IO_E_READ 404    /* fread() from file %s failed */
-#  define DISK_IO_E_WRITE 405   /* fwrite() to file %s failed */
-#  define DISK_IO_E_CLOSE 406   /* Close file %s failed */
-#  define DISK_IO_E_BAD_HDR 407 /* File %s has a bad header */
-#  define DISK_IO_E_SIZE 408    /* File %s too large */
+typedef enum {
+    DISK_IO_S_OK = 0,        /* Function completed succesfully */
+    DISK_IO_I_CALLED = 101,  /* Function %s called */
+    DISK_IO_E_OPEN = 401,    /* Open file %s failed */
+    DISK_IO_E_GETC = 402,    /* getc() from file %s failed */
+    DISK_IO_E_PUTC = 403,    /* putc() to file %s failed */
+    DISK_IO_E_READ = 404,    /* fread() from file %s failed */
+    DISK_IO_E_WRITE = 405,   /* fwrite() to file %s failed */
+    DISK_IO_E_CLOSE = 406,   /* Close file %s failed */
+    DISK_IO_E_BAD_HDR = 407, /* File %s has a bad header */
+    DISK_IO_E_SIZE = 408,    /* File %s too large */
+} disk_io_chf_condition_code_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

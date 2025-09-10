@@ -74,40 +74,46 @@
    (*) are not implemented.
 
    The last fixed byte of multibyte commands has a '_2' suffix.
-*/
-#  define FLASH_CMD_READ_ARRAY 0xFF   /* BCS */
-#  define FLASH_CMD_READ_ID 0x90      /* BCS (*) */
-#  define FLASH_CMD_READ_QUERY 0x98   /* SCS (*) */
-#  define FLASH_CMD_READ_SR 0x70      /* BCS */
-#  define FLASH_CMD_CLR_SR 0x50       /* BCS */
-#  define FLASH_CMD_WRITE_BUFFER 0xE8 /* SCS */
-#  define FLASH_CMD_WRITE_BUFFER_2 0xD0
-#  define FLASH_CMD_BW_PGM 0x40     /* BCS (*) */
-#  define FLASH_CMD_BW_PGM_ALT 0x10 /* BCS, alternate (*) */
-#  define FLASH_CMD_BL_ERASE 0x20   /* BCS */
-#  define FLASH_CMD_BL_ERASE_2 0xD0
-#  define FLASH_CMD_SUSPEND 0xB0    /* BCS (*) */
-#  define FLASH_CMD_RESUME 0xD0     /* BCS (*) */
-#  define FLASH_CMD_STS_CONFIG 0xB8 /* SCS (*) */
-#  define FLASH_CMD_BL_LB 0x60      /* SCS (*) */
-#  define FLASH_CMD_BL_LB_SET 0x01
-#  define FLASH_CMD_BL_LB_CLR 0xD0
-#  define FLASH_CMD_CHIP_ERASE 0x30 /* SCS (*) */
-#  define FLASH_CMD_CHIP_ERASE_2 0xD0
+ */
+typedef enum {
+    FLASH_CMD_READ_ARRAY = 0xFF,   /* BCS */
+    FLASH_CMD_READ_ID = 0x90,      /* BCS (*) */
+    FLASH_CMD_READ_QUERY = 0x98,   /* SCS (*) */
+    FLASH_CMD_READ_SR = 0x70,      /* BCS */
+    FLASH_CMD_CLR_SR = 0x50,       /* BCS */
+    FLASH_CMD_WRITE_BUFFER = 0xE8, /* SCS */
+    FLASH_CMD_WRITE_BUFFER_2 = 0xD0,
+    FLASH_CMD_BW_PGM = 0x40,     /* BCS (*) */
+    FLASH_CMD_BW_PGM_ALT = 0x10, /* BCS, alternate (*) */
+    FLASH_CMD_BL_ERASE = 0x20,   /* BCS */
+    FLASH_CMD_BL_ERASE_2 = 0xD0,
+    FLASH_CMD_SUSPEND = 0xB0,    /* BCS (*) */
+    FLASH_CMD_RESUME = 0xD0,     /* BCS (*) */
+    FLASH_CMD_STS_CONFIG = 0xB8, /* SCS (*) */
+    FLASH_CMD_BL_LB = 0x60,      /* SCS (*) */
+    FLASH_CMD_BL_LB_SET = 0x01,
+    FLASH_CMD_BL_LB_CLR = 0xD0,
+    FLASH_CMD_CHIP_ERASE = 0x30, /* SCS (*) */
+    FLASH_CMD_CHIP_ERASE_2 = 0xD0,
+} flash_command_t;
 
 /* Status Register bit masks, Table 15 on Data Sheet
  */
-#  define FLASH_SR_WSMS 0x80   /* WSM state, 0=busy, 1=ready */
-#  define FLASH_SR_ESS 0x40    /* Erase suspend, 1=suspended */
-#  define FLASH_SR_ECLBS 0x20  /* 1=Error during erasure */
-#  define FLASH_SR_BWSLBS 0x10 /* 1=Error during program */
-#  define FLASH_SR_VPPS 0x08   /* 1=Vpp error */
-#  define FLASH_SR_BWSS 0x04   /* Program suspend, 1=suspended */
-#  define FLASH_SR_DPS 0x02    /* 1=Lock encountered */
+typedef enum {
+    FLASH_SR_WSMS = 0x80,   /* WSM state, 0=busy, 1=ready */
+    FLASH_SR_ESS = 0x40,    /* Erase suspend, 1=suspended */
+    FLASH_SR_ECLBS = 0x20,  /* 1=Error during erasure */
+    FLASH_SR_BWSLBS = 0x10, /* 1=Error during program */
+    FLASH_SR_VPPS = 0x08,   /* 1=Vpp error */
+    FLASH_SR_BWSS = 0x04,   /* Program suspend, 1=suspended */
+    FLASH_SR_DPS = 0x02,    /* 1=Lock encountered */
+} flash_status_register_bit_mask_t;
 
 /* Extended Status Register bit masks, Table 16 on Data Sheet
  */
-#  define FLASH_XSR_WBS 0x80 /* Write buffer status 1=available */
+typedef enum {
+    FLASH_XSR_WBS = 0x80, /* Write buffer status 1=available */
+} flash_extended_status_register_bit_mask_t;
 
 /* State of the Flash FSM, derived from command descriptions on
    pages 16...28 and from flowcharts on Figure 6...12 of Data Sheet
@@ -126,17 +132,18 @@ enum FlashState {
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
-
-#  define FLASH_I_READ 101        /* Read from address %x: %d */
-#  define FLASH_I_WRITE 102       /* Write address %x, datum %x */
-#  define FLASH_I_FSM 103         /* FSM from state %d, cycle %d */
-#  define FLASH_I_FSM_AD 104      /* FSM address %x, data %x */
-#  define FLASH_I_FSM_RESULT 105  /* FSM next state %d, result %x */
-#  define FLASH_I_FSM_OP 106      /* FSM operation %s */
-#  define FLASH_W_BAD_CMD 201     /* Bad cmd st%d, cycle%d, a%x, d%d */
-#  define FLASH_W_BAD_ADDRESS 202 /* Bad addr st%d, cycle%d, a%x, d%d */
-#  define FLASH_E_xxx 301
-#  define FLASH_F_xxx 401
+typedef enum {
+    FLASH_I_READ = 101,        /* Read from address %x: %d */
+    FLASH_I_WRITE = 102,       /* Write address %x, datum %x */
+    FLASH_I_FSM = 103,         /* FSM from state %d, cycle %d */
+    FLASH_I_FSM_AD = 104,      /* FSM address %x, data %x */
+    FLASH_I_FSM_RESULT = 105,  /* FSM next state %d, result %x */
+    FLASH_I_FSM_OP = 106,      /* FSM operation %s */
+    FLASH_W_BAD_CMD = 201,     /* Bad cmd st%d, cycle%d, a%x, d%d */
+    FLASH_W_BAD_ADDRESS = 202, /* Bad addr st%d, cycle%d, a%x, d%d */
+    FLASH_E_xxx = 301,
+    FLASH_F_xxx = 401,
+} flash49_chf_conditions_codes_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

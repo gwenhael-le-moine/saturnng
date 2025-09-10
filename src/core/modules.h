@@ -68,19 +68,19 @@
     MOD_F_NO_DESCRIPTION
   - added prototype of new functions: ModSelectDescription(),
     ModRegisterDescription()
- 
+
   Revision 3.1  2000/09/20  14:00:40  cibrario
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
   when -ansi -pedantic -Wall options are selected.
- 
+
   Revision 2.7  2000/09/19  11:12:46  cibrario
   Deeply revised to implement module config/unconfig cache.
- 
+
   Revision 2.5  2000/09/14  15:20:18  cibrario
   Added serial port buffer registers .serial_rbr and .serial_tbr
   in struct ModHdw; the hdw module uses them to buffer nibbles
   to/from multi-nibble registers.
- 
+
   Revision 2.4  2000/09/12  15:47:32  cibrario
   The follwing updates were required to implement emulation of Port 1
   and 2, and to prepare the support of additional hw configurations:
@@ -99,15 +99,15 @@
     MOD_I_PORT_2_WP, MOD_W_PORT_1_INIT, MOD_W_PORT_2_INIT,
     MOD_E_PORT_1_SAVE, MOD_E_CE1_WRITE, MOD_E_PORT_2_SAVE,
     MOD_E_NCE3_READ, MOD_E_NCE3_WRITE.
- 
+
   Revision 2.1  2000/09/08  15:20:50  cibrario
   Updated template of MOD_W_BAD_KEY status code; added new status
   code MOD_W_BAD_OUT_BIT.  Both changes reflect the updates made to
   the keyboard emulation module in order to accommodate the new GUI.
- 
+
   Revision 1.1  1998/02/17  14:55:04  cibrario
   Initial revision
- 
+
 
 .- */
 
@@ -496,63 +496,64 @@ extern struct ModStatus mod_status;
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
-
-#  define MOD_I_CALLED 101            /* Function %s called */
-#  define MOD_I_INITIALIZING 102      /* Initializing module %s */
-#  define MOD_I_RESETTING 103         /* Resetting module %s */
-#  define MOD_I_GET_ID 106            /* ModGetID returning %x */
-#  define MOD_I_CONFIG 107            /* ModConfig %s %x %x completed */
-#  define MOD_I_UNCONFIG 108          /* ModUnconfig %s %x %x completed */
-#  define MOD_I_SAVING 109            /* Saving status of module %s */
-#  define MOD_I_NOT_IMPLEMENTED 110   /* Function %s not implemented */
-#  define MOD_I_REVISION 111          /* Modules revision: %s */
-#  define MOD_I_BS_ADDRESS 112        /* 2.4: Bank Switcher address: %x */
-#  define MOD_I_PORT_1_WP 113         /* 2.4: Port 1 is write protected */
-#  define MOD_I_PORT_2_WP 114         /* 2.4: Port 2 is write protected */
-#  define MOD_I_PERF_CTR 115          /* 2.7: Value of PerfCtr %s is %d */
-#  define MOD_I_CACHED_UNCONFIG 116   /* 2.7: Cached ModUnconfig completed */
-#  define MOD_I_CACHED_CONFIG 117     /* 2.7: Cached ModConfig %x comp. */
-#  define MOD_I_UNCONFIG_L_HIT 118    /* 2.7: Late unconfig hit */
-#  define MOD_I_UNCONFIG_L_MISS 119   /* 2.7: Late unconfig miss */
-#  define MOD_W_BAD_CONFIG 202        /* Bad ModConfig %x ignored */
-#  define MOD_W_BAD_UNCONFIG 203      /* Bad ModUnconfig %x ignored */
-#  define MOD_W_HDW_WRITE 204         /* Bad HdwWrite %x, %x */
-#  define MOD_W_HDW_READ 205          /* Bad HdwRead %x */
-#  define MOD_W_RESETTING_ALL 206     /* Resetting all modules */
-#  define MOD_W_RAM_INIT 207          /* Can't initialize internal RAM */
-#  define MOD_W_HDW_INIT 208          /* Can't initialize HDW */
-#  define MOD_W_BAD_KEY 209           /* 2.1: Bad key %s ignored */
-#  define MOD_W_BAD_OUT_BIT 210       /* 2.1: Bad out_bit %x ignored */
-#  define MOD_W_PORT_1_INIT 211       /* 2.4: Can't initialize Port 1 */
-#  define MOD_W_PORT_2_INIT 212       /* 2.4: Can't initialize Port 2 */
-#  define MOD_W_NO_VICTIM 213         /* 2.7: No cache victim; flush/retry */
-#  define MOD_E_BAD_READ 301          /* Read unmapped addr %x */
-#  define MOD_E_BAD_WRITE 302         /* Write unmapped addr %x datum %x */
-#  define MOD_E_ROM_WRITE 303         /* Write into ROM addr %x datum %x */
-#  define MOD_E_RAM_SAVE 304          /* Can't save internal RAM status */
-#  define MOD_E_HDW_SAVE 305          /* Can't save HDW status */
-#  define MOD_E_PORT_1_SAVE 306       /* 2.4: Can't save Port 1 status */
-#  define MOD_E_CE1_WRITE 307         /* 2.4: Ce1Write addr %x datum %x */
-#  define MOD_E_PORT_2_SAVE 308       /* 2.4: Can't save Port 2 status */
-#  define MOD_E_NCE3_READ 309         /* 2.4: Read from NCE3 addr %x */
-#  define MOD_E_NCE3_WRITE 310        /* 2.4: Wr. to NCE3 addr %x datum %x */
-#  define MOD_E_NO_MATCH 311          /* 3.2: Hw desription %s not found */
-#  define MOD_E_ROM_SAVE 312          /* 3.3: Can't save Flash ROM */
-#  define MOD_F_MAP_SAVE 401          /* Can't save mod_map information */
-#  define MOD_F_ROM_INIT 402          /* Can't initialize internal ROM */
-#  define MOD_F_MAP_ALLOC 403         /* Dynamic map allocation failed */
-#  define MOD_F_BAD_ALLOC_C 404       /* 2.7: Bad alloc_c %d aft FlushCache*/
-#  define MOD_F_CHAIN_CORRUPTED 405   /* 2.7: ModMap chain corrupted */
-#  define MOD_F_NO_VICTIM 406         /* 2.7: No cache victim after flush */
-#  define MOD_F_MOD_STATUS_ALLOC 407  /* 3.2: ModStatus_xx alloc failed %d */
-#  define MOD_F_NO_DESCRIPTION 408    /* 3.2: No module description */
-#  define MOD_M_NOT_MAPPED 501        /* Address %x not mapped */
-#  define MOD_M_MAPPED 502            /* Address %x mapped to %s:%x */
-#  define MOD_M_MAP_TABLE_TITLE 503   /* */
-#  define MOD_M_MAP_TABLE_ROW 504     /* %s %x %x %s */
-#  define MOD_M_MAP_CONFIGURED 505    /* Configured */
-#  define MOD_M_MAP_SZ_CONFIGURED 506 /* Size configured */
-#  define MOD_M_MAP_UNCONFIGURED 507  /* Unconfigured */
+typedef enum {
+    MOD_I_CALLED = 101,            /* Function %s called */
+    MOD_I_INITIALIZING = 102,      /* Initializing module %s */
+    MOD_I_RESETTING = 103,         /* Resetting module %s */
+    MOD_I_GET_ID = 106,            /* ModGetID returning %x */
+    MOD_I_CONFIG = 107,            /* ModConfig %s %x %x completed */
+    MOD_I_UNCONFIG = 108,          /* ModUnconfig %s %x %x completed */
+    MOD_I_SAVING = 109,            /* Saving status of module %s */
+    MOD_I_NOT_IMPLEMENTED = 110,   /* Function %s not implemented */
+    MOD_I_REVISION = 111,          /* Modules revision: %s */
+    MOD_I_BS_ADDRESS = 112,        /* 2.4: Bank Switcher address: %x */
+    MOD_I_PORT_1_WP = 113,         /* 2.4: Port 1 is write protected */
+    MOD_I_PORT_2_WP = 114,         /* 2.4: Port 2 is write protected */
+    MOD_I_PERF_CTR = 115,          /* 2.7: Value of PerfCtr %s is %d */
+    MOD_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached ModUnconfig completed */
+    MOD_I_CACHED_CONFIG = 117,     /* 2.7: Cached ModConfig %x comp. */
+    MOD_I_UNCONFIG_L_HIT = 118,    /* 2.7: Late unconfig hit */
+    MOD_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
+    MOD_W_BAD_CONFIG = 202,        /* Bad ModConfig %x ignored */
+    MOD_W_BAD_UNCONFIG = 203,      /* Bad ModUnconfig %x ignored */
+    MOD_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
+    MOD_W_HDW_READ = 205,          /* Bad HdwRead %x */
+    MOD_W_RESETTING_ALL = 206,     /* Resetting all modules */
+    MOD_W_RAM_INIT = 207,          /* Can't initialize internal RAM */
+    MOD_W_HDW_INIT = 208,          /* Can't initialize HDW */
+    MOD_W_BAD_KEY = 209,           /* 2.1: Bad key %s ignored */
+    MOD_W_BAD_OUT_BIT = 210,       /* 2.1: Bad out_bit %x ignored */
+    MOD_W_PORT_1_INIT = 211,       /* 2.4: Can't initialize Port 1 */
+    MOD_W_PORT_2_INIT = 212,       /* 2.4: Can't initialize Port 2 */
+    MOD_W_NO_VICTIM = 213,         /* 2.7: No cache victim; flush/retry */
+    MOD_E_BAD_READ = 301,          /* Read unmapped addr %x */
+    MOD_E_BAD_WRITE = 302,         /* Write unmapped addr %x datum %x */
+    MOD_E_ROM_WRITE = 303,         /* Write into ROM addr %x datum %x */
+    MOD_E_RAM_SAVE = 304,          /* Can't save internal RAM status */
+    MOD_E_HDW_SAVE = 305,          /* Can't save HDW status */
+    MOD_E_PORT_1_SAVE = 306,       /* 2.4: Can't save Port 1 status */
+    MOD_E_CE1_WRITE = 307,         /* 2.4: Ce1Write addr %x datum %x */
+    MOD_E_PORT_2_SAVE = 308,       /* 2.4: Can't save Port 2 status */
+    MOD_E_NCE3_READ = 309,         /* 2.4: Read from NCE3 addr %x */
+    MOD_E_NCE3_WRITE = 310,        /* 2.4: Wr. to NCE3 addr %x datum %x */
+    MOD_E_NO_MATCH = 311,          /* 3.2: Hw desription %s not found */
+    MOD_E_ROM_SAVE = 312,          /* 3.3: Can't save Flash ROM */
+    MOD_F_MAP_SAVE = 401,          /* Can't save mod_map information */
+    MOD_F_ROM_INIT = 402,          /* Can't initialize internal ROM */
+    MOD_F_MAP_ALLOC = 403,         /* Dynamic map allocation failed */
+    MOD_F_BAD_ALLOC_C = 404,       /* 2.7: Bad alloc_c %d aft FlushCache*/
+    MOD_F_CHAIN_CORRUPTED = 405,   /* 2.7: ModMap chain corrupted */
+    MOD_F_NO_VICTIM = 406,         /* 2.7: No cache victim after flush */
+    MOD_F_MOD_STATUS_ALLOC = 407,  /* 3.2: ModStatus_xx alloc failed %d */
+    MOD_F_NO_DESCRIPTION = 408,    /* 3.2: No module description */
+    MOD_M_NOT_MAPPED = 501,        /* Address %x not mapped */
+    MOD_M_MAPPED = 502,            /* Address %x mapped to %s:%x */
+    MOD_M_MAP_TABLE_TITLE = 503,   /* */
+    MOD_M_MAP_TABLE_ROW = 504,     /* %s %x %x %s */
+    MOD_M_MAP_CONFIGURED = 505,    /* Configured */
+    MOD_M_MAP_SZ_CONFIGURED = 506, /* Size configured */
+    MOD_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
+} modules_chf_condition_code_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

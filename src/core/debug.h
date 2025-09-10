@@ -85,13 +85,13 @@
 
   Revision 2.7  2000/09/19  10:51:13  cibrario
   Added new debug class: DEBUG_C_MOD_CACHE
- 
+
   Revision 2.5  2000/09/14  14:34:13  cibrario
   Added new debug class: DEBUG_C_SERIAL
- 
+
   Revision 1.1  1998/02/18  11:54:33  cibrario
   Initial revision
- 
+
 
 .- */
 
@@ -118,26 +118,28 @@
 /*---------------------------------------------------------------------------
         Debug classes
   ---------------------------------------------------------------------------*/
-
-#  define DEBUG_C_TRACE 0x8000          /* Function Call trace */
-#  define DEBUG_C_MODULES 0x4000        /* Modules configuration */
-#  define DEBUG_C_DISPLAY 0x2000        /* Display activity */
-#  define DEBUG_C_INT 0x1000            /* Interrupt activity */
-#  define DEBUG_C_TIMERS 0x0800         /* Timers activity */
-#  define DEBUG_C_SERIAL 0x0400         /* 2.5: Serial port activity */
-#  define DEBUG_C_MOD_CACHE 0x0200      /* 2.7: Module cache */
-#  define DEBUG_C_IMPLEMENTATION 0x0100 /* Feature implementation */
-#  define DEBUG_C_FLASH 0x0080          /* 3.3: Flash ROM */
-#  define DEBUG_C_X_FUNC 0x0040         /* 3.13: Extended functions */
-#  define DEBUG_C_XX 0x0010
-#  define DEBUG_C_OPCODES 0x0001 /* OpCodes */
-#  define DEBUG_C_NONE 0
+typedef enum {
+    DEBUG_C_TRACE = 0x8000,          /* Function Call trace */
+    DEBUG_C_MODULES = 0x4000,        /* Modules configuration */
+    DEBUG_C_DISPLAY = 0x2000,        /* Display activity */
+    DEBUG_C_INT = 0x1000,            /* Interrupt activity */
+    DEBUG_C_TIMERS = 0x0800,         /* Timers activity */
+    DEBUG_C_SERIAL = 0x0400,         /* 2.5: Serial port activity */
+    DEBUG_C_MOD_CACHE = 0x0200,      /* 2.7: Module cache */
+    DEBUG_C_IMPLEMENTATION = 0x0100, /* Feature implementation */
+    DEBUG_C_FLASH = 0x0080,          /* 3.3: Flash ROM */
+    DEBUG_C_X_FUNC = 0x0040,         /* 3.13: Extended functions */
+    DEBUG_C_XX = 0x0010,
+    DEBUG_C_OPCODES = 0x0001, /* OpCodes */
+    DEBUG_C_NONE = 0,
+} debug_class_t;
 
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
-
-#  define DEBUG_W_NOT_SUPPORTED 201 /* Debug not supported */
-#  define DEBUG_W_BAD_CMD 202       /* Invalid command */
+typedef enum {
+    DEBUG_W_NOT_SUPPORTED = 201, /* Debug not supported */
+    DEBUG_W_BAD_CMD = 202,       /* Invalid command */
+} debug_chf_condition_code_t;
 
 #endif /*!_DEBUG_H*/
