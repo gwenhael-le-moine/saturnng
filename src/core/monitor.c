@@ -63,6 +63,7 @@
 
 #include "config.h"
 #include "cpu.h"
+#include "debug.h"
 #include "modules.h"
 
 /*---------------------------------------------------------------------------
@@ -352,9 +353,7 @@ void Monitor( void )
             continue;
 
         bool err = InvokeCommand( tk );
-        if ( err ) {
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk );
-            ChfSignal( CPU_CHF_MODULE_ID );
-        }
+        if ( err )
+            LOGGER( CPU_CHF_MODULE_ID, CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk )
     }
 }
