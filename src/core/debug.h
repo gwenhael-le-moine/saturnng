@@ -101,15 +101,24 @@
       {                                                                                                                                    \
           if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, message_id, CHF_INFO
 
-#  define _debug_postamble( module_id ) );                                                                                                 \
+#  define _logger_preamble( module_id, message_id, severity )                                                                             \
+      {                                                                                                                                    \
+          if ( severity > CHF_INFO || config.verbose ) { ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
+
+#  define _postamble( module_id ) );                                                                                                       \
       ChfSignal( module_id );                                                                                                              \
       }                                                                                                                                    \
       }
 
 #  define DEBUG( module_id, debug_class, message_id, ... )                                                                                 \
-      _debug_preamble( module_id, debug_class, message_id ), __VA_ARGS__ _debug_postamble( module_id )
+      _debug_preamble( module_id, debug_class, message_id ), __VA_ARGS__ _postamble( module_id )
 
-#  define DEBUG0( module_id, debug_class, message_id ) _debug_preamble( module_id, debug_class, message_id ) _debug_postamble( module_id )
+#  define DEBUG0( module_id, debug_class, message_id ) _debug_preamble( module_id, debug_class, message_id ) _postamble( module_id )
+
+#  define LOGGER( module_id, message_id, severity, ... )                                                                                  \
+      _logger_preamble( module_id, message_id, severity ), __VA_ARGS__ _postamble( module_id )
+
+#  define LOGGER0( module_id, message_id, severity ) _logger_preamble( module_id, message_id, severity ) _postamble( module_id )
 
 /*---------------------------------------------------------------------------
         Debug classes
