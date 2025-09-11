@@ -78,7 +78,7 @@ typedef enum {
     DISK_IO_E_CLOSE = 406,   /* Close file %s failed */
     DISK_IO_E_BAD_HDR = 407, /* File %s has a bad header */
     DISK_IO_E_SIZE = 408,    /* File %s too large */
-} disk_io_chf_condition_code_t;
+} disk_io_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

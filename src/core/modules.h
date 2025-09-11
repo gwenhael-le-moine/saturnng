@@ -551,7 +551,7 @@ typedef enum {
     MOD_M_MAP_CONFIGURED = 505,    /* Configured */
     MOD_M_MAP_SZ_CONFIGURED = 506, /* Size configured */
     MOD_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
-} modules_chf_condition_code_t;
+} modules_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

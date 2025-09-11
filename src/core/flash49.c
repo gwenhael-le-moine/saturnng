@@ -138,7 +138,7 @@ static int ParseCommand( enum FlashState* state, enum FlashCycle cycle, XAddress
     switch ( data ) {
         case FLASH_CMD_READ_ARRAY:
             /* Transition to FLASH_ST_READ_ARRAY state */
-            DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read Array" );
+            DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read Array" );
             *state = FLASH_ST_READ_ARRAY;
             break;
 
@@ -147,14 +147,14 @@ static int ParseCommand( enum FlashState* state, enum FlashCycle cycle, XAddress
                The current implementation does nothing, because
                the value of the status register is fixed. No state transitions.
             */
-            DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Clear Status" );
+            DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Clear Status" );
             break;
 
         case FLASH_CMD_WRITE_BUFFER:
             /* Write to Buffer; section 4.8 on Data Sheet.
                Transition to FLASH_ST_READ_XSR state.
             */
-            DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (start)" );
+            DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (start)" );
             *state = FLASH_ST_READ_XSR;
             break;
 
@@ -162,7 +162,7 @@ static int ParseCommand( enum FlashState* state, enum FlashCycle cycle, XAddress
             /* Read Status; section 4.4 on Data Sheet.
                Transition to FLASH_ST_READ_SR state.
             */
-            DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read Status" );
+            DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read Status" );
             *state = FLASH_ST_READ_SR;
             break;
 
@@ -171,7 +171,7 @@ static int ParseCommand( enum FlashState* state, enum FlashCycle cycle, XAddress
                Transition to FLASH_ST_BL_ERASE state.
                Consistency of block addresses is not checked.
             */
-            DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Erase Block (start)" );
+            DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Erase Block (start)" );
             *state = FLASH_ST_BL_ERASE;
             break;
 
@@ -191,7 +191,7 @@ static int ReadXSR( enum FlashState* state, enum FlashCycle cycle, XAddress addr
     /* Return XSR status; a buffer is always available in the current
        emulation scheme.  Keep current state.
     */
-    DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read XSR" );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read XSR" );
 
     return FLASH_XSR_WBS;
 }
@@ -202,7 +202,7 @@ static int ReadSR( enum FlashState* state, enum FlashCycle cycle, XAddress addre
     /* Return SR status; the WSM executes in zero time in the current
        emulation scheme.  Keep current state.
     */
-    DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read SR" );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Read SR" );
 
     return FLASH_SR_WSMS;
 }
@@ -215,7 +215,7 @@ static int ReadSR( enum FlashState* state, enum FlashCycle cycle, XAddress addre
 static int StoreCount( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
     /* Store WRITE_BUFFER count; next state is FLASH_ST_WRITE_DATA */
-    DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (count)" );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (count)" );
     wb_count = wb_cdown = data & WB_COUNT_MASK;
 
     *state = FLASH_ST_WRITE_DATA_1;
@@ -230,7 +230,7 @@ static int StoreCount( enum FlashState* state, enum FlashCycle cycle, XAddress a
 */
 static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
-    DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (data)" );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (data)" );
 
     /* Store WRITE_BUFFER data; the first write also stores the
        buffer starting address.
@@ -273,7 +273,7 @@ static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress ad
 */
 static int WriteConfirm( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
-    DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (end)" );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Write to Buffer (end)" );
 
     /* Expect Write to Buffer confirmation code */
     if ( data == FLASH_CMD_WRITE_BUFFER_2 ) {
@@ -298,7 +298,7 @@ static int WriteConfirm( enum FlashState* state, enum FlashCycle cycle, XAddress
 */
 static int BlockErase( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
-    DEBUG1( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Block Erase (end)" );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_OP, "Block Erase (end)" );
 
     /* Expect Write to Buffer confirmation code */
     if ( data == FLASH_CMD_BL_ERASE_2 ) {
@@ -342,12 +342,12 @@ static FlashF F[ FLASH_ST_N ][ FLASH_CYCLE_N ] = {
 */
 static int FSM( enum FlashCycle cycle, XAddress address, int data )
 {
-    DEBUG2( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM, fsm_state, cycle );
-    DEBUG2( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_AD, address, data );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM, fsm_state, cycle );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_AD, address, data );
 
     int result = F[ fsm_state ][ cycle ]( &fsm_state, cycle, address, data );
 
-    DEBUG2( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_RESULT, fsm_state, result );
+    DEBUG( FLASH_CHF_MODULE_ID, DEBUG_C_FLASH, FLASH_I_FSM_RESULT, fsm_state, result );
 
     return result;
 }

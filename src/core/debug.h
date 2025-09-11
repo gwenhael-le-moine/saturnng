@@ -40,10 +40,10 @@
 .description  :
   This header defines the following macros:
 
-        - DEBUG0(debug_class, condition_code)
-        - DEBUG1(debug_class, condition_code, arg_1)
-        - DEBUG2(debug_class, condition_code, arg_1, arg_2)
-        - DEBUG3(debug_class, condition_code, arg_1, arg_2, arg_3)
+        - DEBUG0(debug_class, message_id)
+        - DEBUG(debug_class, message_id, arg_1)
+        - DEBUG(debug_class, message_id, arg_1, arg_2)
+        - DEBUG(debug_class, message_id, arg_1, arg_2, arg_3)
 
   used throughout the source code for debugging purposes.
 
@@ -97,23 +97,19 @@
 
 #  include "../options.h"
 
-#  define _debug_preamble( module_id, debug_class, condition_code )                                                                        \
+#  define _debug_preamble( module_id, debug_class, message_id )                                                                            \
       {                                                                                                                                    \
-          if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, condition_code, CHF_INFO
+          if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, message_id, CHF_INFO
 
 #  define _debug_postamble( module_id ) );                                                                                                 \
       ChfSignal( module_id );                                                                                                              \
       }                                                                                                                                    \
       }
 
-#  define DEBUG0( module_id, debug_class, condition_code )                                                                                 \
-      _debug_preamble( module_id, debug_class, condition_code ) _debug_postamble( module_id )
-#  define DEBUG1( module_id, debug_class, condition_code, arg_1 )                                                                          \
-      _debug_preamble( module_id, debug_class, condition_code ), arg_1 _debug_postamble( module_id )
-#  define DEBUG2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                   \
-      _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 _debug_postamble( module_id )
-#  define DEBUG3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                            \
-      _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 _debug_postamble( module_id )
+#  define DEBUG( module_id, debug_class, message_id, ... )                                                                                 \
+      _debug_preamble( module_id, debug_class, message_id ), __VA_ARGS__ _debug_postamble( module_id )
+
+#  define DEBUG0( module_id, debug_class, message_id ) _debug_preamble( module_id, debug_class, message_id ) _debug_postamble( module_id )
 
 /*---------------------------------------------------------------------------
         Debug classes

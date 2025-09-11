@@ -104,7 +104,7 @@ typedef enum {
     SERIAL_F_PUSH = 407,        /* ioctl(I_PUSH,%s) failed on slave */
     SERIAL_F_TCGETATTR = 408,   /* tcgetattr() failed on master */
     SERIAL_F_TCSETATTR = 409,   /* tcsetattr() failed on master */
-} serial_chf_condition_code_t;
+} serial_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

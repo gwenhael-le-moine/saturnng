@@ -76,7 +76,6 @@
 
 #include "../options.h"
 
-#include "config.h"
 #include "cpu.h"
 #include "disk_io.h"
 #include "x_func.h"
@@ -124,8 +123,8 @@ void import_file( char* filename )
     /* int start_addr = R2int( cpu_status.A ); */
     /* int end_addr = R2int( cpu_status.C ); */
 
-    /* DEBUG1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ); */
-    /* DEBUG3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr ); */
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ); */
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr ); */
 
     /* ReadObjectFromFile( filename, bin_hdr, ( Address )start_addr, ( Address )end_addr ); */
 }
@@ -143,8 +142,8 @@ void export_file( char* filename )
     /* int start_addr = R2int( cpu_status.A ); */
     /* int end_addr = R2int( cpu_status.C ); */
 
-    /* DEBUG1( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ); */
-    /* DEBUG3( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr ); */
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ); */
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr ); */
 
     /* WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, filename ); */
 }

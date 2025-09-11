@@ -305,7 +305,7 @@ typedef enum {
     CPU_E_NO_HALT = 303,         /* 3.13: Halt/Run not allowed */
     CPU_F_INTERR = 401,          /* Internal error %s */
     CPU_F_BAD_SHUTDN = 402,      /* Unexpected CPU shutdown */
-} cpu_chf_condition_code_t;
+} cpu_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

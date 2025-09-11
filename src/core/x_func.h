@@ -83,7 +83,7 @@ typedef enum {
     X_FUNC_F_xxx = 401,
     X_FUNC_M_KGET = 501, /* FSB title for Kget function */
     X_FUNC_M_SEND = 502, /* FSB title for Send function */
-} x_func_chf_condition_code_t;
+} x_func_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

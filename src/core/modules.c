@@ -153,7 +153,7 @@ static int repl_c = 0;  /* Entry replacement counter */
 
 #  define IncPerfCtr( x ) x++
 #  define DecPerfCtr( x ) x--
-#  define PrintPerfCtr( x ) DEBUG2( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
+#  define PrintPerfCtr( x ) DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
 
 #  define PrintCacheStats                                                                                                                  \
       {                                                                                                                                    \
@@ -881,7 +881,7 @@ void ModInit( void )
 
     /* Scan the mod_description table, initializing all modules */
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        DEBUG1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_INITIALIZING, mod_description[ mod ].name );
+        DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_INITIALIZING, mod_description[ mod ].name );
         mod_description[ mod ].init();
     }
 
@@ -938,7 +938,7 @@ void ModSave( void )
 
     /* Scan the mod_description table, initializing all modules */
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        DEBUG1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_SAVING, mod_description[ mod ].name );
+        DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_SAVING, mod_description[ mod ].name );
         mod_description[ mod ].save();
     }
 
@@ -1003,7 +1003,7 @@ Address ModGetID( void )
              ( MOD_MAP.map_info[ mod ].config == MOD_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
              ( mod_description[ mod ].id + ( MOD_MAP.map_info[ mod ].config == MOD_UNCONFIGURED ? 0 : 1 ) );
 
-    DEBUG1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_GET_ID, id );
+    DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_GET_ID, id );
     return id;
 }
 
@@ -1038,7 +1038,7 @@ void ModReset( void )
        mapping information MOD_MAP.map_info.
     */
     for ( mod = 0; mod < N_MOD; mod++ ) {
-        DEBUG1( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[ mod ].name );
+        DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_RESETTING, mod_description[ mod ].name );
 
         /* Set the module configuration status */
         MOD_MAP.map_info[ mod ].config = mod_description[ mod ].r_config;
@@ -1121,7 +1121,7 @@ void ModConfig( Address config_info )
 
         IncPerfCtr( hit_c );
 
-        DEBUG1( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info );
+        DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info );
         return;
     }
 
@@ -1181,8 +1181,8 @@ void ModConfig( Address config_info )
             */
             MOD_MAP.cache.config_point = 1;
 
-            DEBUG3( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_CONFIG, mod_description[ mod ].name,
-                    MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size );
+            DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_CONFIG, mod_description[ mod ].name,
+                   MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size );
         }
 
         /* Set the unconfig cache pointer of module 'mod' to the old ModMap,
@@ -1316,8 +1316,8 @@ void ModUnconfig( Address unconfig_info )
 
             DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS );
 
-            DEBUG3( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG, mod_description[ mod ].name,
-                    MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size );
+            DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG, mod_description[ mod ].name,
+                   MOD_MAP.map_info[ mod ].abs_base_addr, MOD_MAP.map_info[ mod ].size );
         }
     }
 }
