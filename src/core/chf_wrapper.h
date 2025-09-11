@@ -99,11 +99,13 @@
 
 #  define _debug_preamble( module_id, debug_class, message_id )                                                                            \
       {                                                                                                                                    \
-          if ( config.debug_level & ( debug_class ) ) { ChfGenerate( module_id, __FILE__, __LINE__, message_id, CHF_INFO
+          if ( config.debug_level & ( debug_class ) ) {                                                                                    \
+    ChfGenerate( module_id, __FILE__, __LINE__, message_id, CHF_INFO
 
 #  define _logger_preamble( module_id, message_id, severity )                                                                              \
       {                                                                                                                                    \
-          if ( severity > CHF_INFO || config.verbose ) { ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
+          if ( severity > CHF_INFO || config.verbose ) {                                                                                   \
+    ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
 
 #  define _signal_preamble( module_id, message_id, severity )                                                                              \
       {                                                                                                                                    \
