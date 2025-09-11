@@ -97,7 +97,7 @@
 #include "modules.h"
 #include "keyb.h"
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Global variables

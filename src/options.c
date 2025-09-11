@@ -15,7 +15,7 @@
 #include <lauxlib.h>
 
 #include "options.h"
-#include "core/debug.h"
+#include "core/chf_wrapper.h"
 
 #ifndef LUA_OK
 #  define LUA_OK 0

@@ -97,7 +97,7 @@
 #include "machdep.h"
 #include "cpu.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Determine pty implementation

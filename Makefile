@@ -60,9 +60,8 @@ HEADERS = src/options.h \
 	src/core/monitor.h \
 	src/core/serial.h \
 	src/core/x_func.h \
-	src/core/chf_messages.h \
 	src/core/cpu.h \
-	src/core/debug.h \
+	src/core/chf_wrapper.h \
 	src/ui4x/api.h \
 	src/ui4x/bitmaps_misc.h \
 	src/ui4x/common.h \

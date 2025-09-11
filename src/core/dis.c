@@ -76,7 +76,7 @@
 
 #include "config.h"
 #include "cpu.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 #include "modules.h"
 
 /*---------------------------------------------------------------------------

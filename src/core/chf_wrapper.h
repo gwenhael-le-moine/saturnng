@@ -1,5 +1,5 @@
-#ifndef _DEBUG_H
-#  define _DEBUG_H 1
+#ifndef _CHF_WRAPPER_H
+#  define _CHF_WRAPPER_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
@@ -66,7 +66,7 @@
 .include      : Chf.h
 
 .notes        :
-  $Log: debug.h,v $
+  $Log: chf_wrapper.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
 
@@ -120,12 +120,10 @@
 
 #  define DEBUG( module_id, debug_class, message_id, ... )                                                                                 \
       _debug_preamble( module_id, debug_class, message_id ), __VA_ARGS__ _postamble( module_id )
-
 #  define DEBUG0( module_id, debug_class, message_id ) _debug_preamble( module_id, debug_class, message_id ) _postamble( module_id )
 
 #  define LOGGER( module_id, message_id, severity, ... )                                                                                   \
       _logger_preamble( module_id, message_id, severity ), __VA_ARGS__ _postamble( module_id )
-
 #  define LOGGER0( module_id, message_id, severity ) _logger_preamble( module_id, message_id, severity ) _postamble( module_id )
 
 /* #  define SUCCESS( module_id, message_id, ... ) LOGGER( module_id, message_id, CHF_SUCCESS, __VA_ARGS__ ) */
@@ -144,6 +142,7 @@
 #  define FATAL0( module_id, message_id ) SIGNAL0( module_id, message_id, CHF_FATAL )
 
 #  define SIGNAL_ERRNO ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+
 /*---------------------------------------------------------------------------
         Debug classes
   ---------------------------------------------------------------------------*/
@@ -159,4 +158,7 @@ typedef enum {
     DEBUG_C_NONE = 0,
 } debug_class_t;
 
-#endif /*!_DEBUG_H*/
+extern ChfTable message_table[];
+extern size_t message_table_size;
+
+#endif /*!_CHF_WRAPPER_H*/

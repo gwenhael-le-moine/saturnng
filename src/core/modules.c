@@ -109,7 +109,7 @@
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Static/Global variables

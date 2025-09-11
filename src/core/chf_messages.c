@@ -1,6 +1,14 @@
+#include <stdlib.h>
+
 #include "../libChf/src/Chf.h"
 
-#include "chf_messages.h"
+#include "config.h"
+#include "cpu.h"
+#include "disk_io.h"
+#include "flash49.h"
+#include "modules.h"
+#include "serial.h"
+#include "x_func.h"
 
 ChfTable message_table[] = {
     {CHF_MODULE_NAMES_SET,  CHF_SET,                 "Chf"                                                                                   },

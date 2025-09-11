@@ -77,7 +77,7 @@
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
    a private struct ModStatus_48. The dynamic allocation is performed during

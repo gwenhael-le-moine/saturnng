@@ -63,7 +63,7 @@
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Private Macro/Data type definitions

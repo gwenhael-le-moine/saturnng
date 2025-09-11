@@ -98,7 +98,7 @@
 #include "modules.h"
 #include "disk_io.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
-#include "debug.h"
+#include "chf_wrapper.h"
 
 static const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
 

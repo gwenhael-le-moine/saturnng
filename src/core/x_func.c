@@ -79,7 +79,7 @@
 #include "cpu.h"
 #include "disk_io.h"
 #include "x_func.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Private functions: action routines

@@ -65,7 +65,7 @@
 #include "config.h"
 #include "cpu.h"
 #include "modules.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Module description tables

@@ -106,7 +106,7 @@
 #include "cpu.h"
 #include "modules.h"
 #include "serial.h"
-#include "debug.h"
+#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Private macros / variables / functions
