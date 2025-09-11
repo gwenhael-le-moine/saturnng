@@ -197,7 +197,7 @@ static void print_config( void )
 }
 
 /* Path/name dynamic allocator */
-static char* normalize_filename( char* path, char* name )
+static char* normalize_filename( char* path, const char* name )
 {
     char* s = malloc( strlen( path ) + strlen( name ) + 2 );
 
