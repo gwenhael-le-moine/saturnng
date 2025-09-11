@@ -126,8 +126,8 @@
       _logger_preamble( module_id, message_id, severity ), __VA_ARGS__ _postamble( module_id )
 #  define LOGGER0( module_id, message_id, severity ) _logger_preamble( module_id, message_id, severity ) _postamble( module_id )
 
-/* #  define SUCCESS( module_id, message_id, ... ) LOGGER( module_id, message_id, CHF_SUCCESS, __VA_ARGS__ ) */
-/* #  define SUCCESS0( module_id, message_id ) LOGGER0( module_id, message_id, CHF_SUCCESS ) */
+#  define SUCCESS( module_id, message_id, ... ) LOGGER( module_id, message_id, CHF_SUCCESS, __VA_ARGS__ )
+#  define SUCCESS0( module_id, message_id ) LOGGER0( module_id, message_id, CHF_SUCCESS )
 
 #  define INFO( module_id, message_id, ... ) LOGGER( module_id, message_id, CHF_INFO, __VA_ARGS__ )
 #  define INFO0( module_id, message_id ) LOGGER0( module_id, message_id, CHF_INFO )

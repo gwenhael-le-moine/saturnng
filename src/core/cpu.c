@@ -205,20 +205,18 @@ static void ExecIN( Nibble* r )
        CPU speed of 4MHz and to a repetition rate of 1 (instructions are
        executed once as usual).
     */
-    {
-        static int count_down = 0;
+    static int count_down = 0;
 
-        /* Decrement counter; set PC back and return immediately if counter
-           was not zero (counter not expired yet).
-        */
-        if ( count_down-- != 0 ) {
-            cpu_status.PC -= 3;
-            return;
-        }
-
-        /* Counter expired; reset counter and execute the instruction */
-        count_down = ( ( cpu_status.inner_loop + ( INNER_LOOP_MAX / 2 ) ) / INNER_LOOP_MAX ) * CPU_SLOW_IN;
+    /* Decrement counter; set PC back and return immediately if counter
+       was not zero (counter not expired yet).
+    */
+    if ( count_down-- != 0 ) {
+        cpu_status.PC -= 3;
+        return;
     }
+
+    /* Counter expired; reset counter and execute the instruction */
+    count_down = ( ( cpu_status.inner_loop + ( INNER_LOOP_MAX / 2 ) ) / INNER_LOOP_MAX ) * CPU_SLOW_IN;
 #endif
     cpu_status.IN = KeybIN( cpu_status.OUT );
 
@@ -1287,7 +1285,6 @@ static void ExecGroup_0( void )
             break;
         case 0xA: /* ST=C */
             /* Copy the 12 low-order bits of C into ST */
-
             cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
                             ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
             break;
@@ -1305,25 +1302,21 @@ static void ExecGroup_0( void )
             }
             break;
         case 0xC: /* P=P+1 */
-            {
-                if ( cpu_status.P == NIBBLE_MASK ) {
-                    SetP( 0 );
-                    cpu_status.carry = true;
-                } else {
-                    SetP( cpu_status.P + 1 );
-                    cpu_status.carry = false;
-                }
+            if ( cpu_status.P == NIBBLE_MASK ) {
+                SetP( 0 );
+                cpu_status.carry = true;
+            } else {
+                SetP( cpu_status.P + 1 );
+                cpu_status.carry = false;
             }
             break;
         case 0xD: /* P=P-1 */
-            {
-                if ( cpu_status.P == ( Nibble )0 ) {
-                    SetP( NIBBLE_MASK );
-                    cpu_status.carry = true;
-                } else {
-                    SetP( cpu_status.P - 1 );
-                    cpu_status.carry = false;
-                }
+            if ( cpu_status.P == ( Nibble )0 ) {
+                SetP( NIBBLE_MASK );
+                cpu_status.carry = true;
+            } else {
+                SetP( cpu_status.P - 1 );
+                cpu_status.carry = false;
             }
             break;
         case 0xE: /* AND_OR */
@@ -2725,9 +2718,8 @@ void CpuInit( void )
 .- */
 void CpuSave( void )
 {
-    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_path ) ) {
+    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_path ) )
         ERROR0( CPU_CHF_MODULE_ID, CPU_E_SAVE )
-    }
 }
 
 /* .+
@@ -2809,18 +2801,16 @@ void CpuIntRequest( int_request_t ireq )
 .- */
 void CpuWake( void )
 {
-    if ( cpu_status.shutdn ) {
-        if ( !cpu_status.halt ) {
-            DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE )
+    if ( cpu_status.shutdn && !cpu_status.halt ) {
+        DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE )
 
-            /* Clear SHUTDN flag */
-            cpu_status.shutdn = false;
+        /* Clear SHUTDN flag */
+        cpu_status.shutdn = false;
 
-            /* Clear PC if necessary */
-            /* if(cpu_status.OUT == (OutputRegister)0)
-                 cpu_status.PC = (Address)0;
-            */
-        }
+        /* Clear PC if necessary */
+        /* if ( cpu_status.OUT == (OutputRegister)0 )
+           cpu_status.PC = (Address)0;
+         */
     }
 }
 
