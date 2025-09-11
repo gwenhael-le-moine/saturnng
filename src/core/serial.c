@@ -507,9 +507,8 @@ const char* SerialInit( void )
     if ( openpty( &master_pty, &slave_pty, NULL, NULL, NULL ) ) {
         pty_name = ( char* )NULL;
 
-        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_OPENPTY, CHF_FATAL );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
+        SIGNAL_ERRNO
+        FATAL0( SERIAL_CHF_MODULE_ID, SERIAL_F_OPENPTY )
     } else {
         int cur_flags;
 
@@ -520,9 +519,8 @@ const char* SerialInit( void )
 
         /* Set O_NONBLOCK on master_pty */
         if ( ( cur_flags = fcntl( master_pty, F_GETFL, 0 ) ) < 0 || fcntl( master_pty, F_SETFL, cur_flags | O_NONBLOCK ) < 0 ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_FCNTL, CHF_FATAL );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            SIGNAL_ERRNO
+            FATAL0( SERIAL_CHF_MODULE_ID, SERIAL_F_FCNTL )
         }
     }
 #  endif
@@ -532,30 +530,29 @@ const char* SerialInit( void )
     if ( ( master_pty = open( PTY_MASTER, O_RDWR | O_NONBLOCK ) ) < 0 ) {
         pty_name = ( char* )NULL;
 
-        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_OPEN_MASTER, CHF_FATAL, PTY_MASTER );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
+        SIGNAL_ERRNO
+        FATAL( SERIAL_CHF_MODULE_ID, SERIAL_F_OPEN_MASTER, PTY_MASTER )
     } else {
         /* Master side opened ok; change permissions and unlock slave side */
 
         if ( grantpt( master_pty ) < 0 ) {
             /* close() may modify errno; save it first */
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            SIGNAL_ERRNO
 
-            ( void )close( master_pty );
+                ( void )
+            close( master_pty );
 
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_GRANTPT, CHF_FATAL );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            FATAL0( SERIAL_CHF_MODULE_ID, SERIAL_F_GRANTPT )
         }
 
         if ( unlockpt( master_pty ) < 0 ) {
             /* close() may modify errno; save it first */
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            SIGNAL_ERRNO
 
-            ( void )close( master_pty );
+                ( void )
+            close( master_pty );
 
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_UNLOCKPT, CHF_FATAL );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            FATAL0( SERIAL_CHF_MODULE_ID, SERIAL_F_UNLOCKPT )
         }
 
         /* Get name of slave side; this must be done on the *master* side */
@@ -564,12 +561,12 @@ const char* SerialInit( void )
         /* Open slave in nonblocking mode */
         if ( ( slave_pty = open( pty_name, O_RDWR | O_NONBLOCK ) ) < 0 ) {
             /* close() may modify errno; save it first */
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
+            SIGNAL_ERRNO
 
-            ( void )close( master_pty );
+                ( void )
+            close( master_pty );
 
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_OPEN_SLAVE, CHF_FATAL, pty_name );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            FATAL( SERIAL_CHF_MODULE_ID, SERIAL_F_OPEN_SLAVE, pty_name )
         }
 
         /* Remember: close the pty before exiting */
@@ -580,15 +577,13 @@ const char* SerialInit( void )
            indistinguishable from a real terminal.
         */
         if ( ioctl( slave_pty, I_PUSH, "ptem" ) == -1 ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_PUSH, CHF_FATAL, "ptem" );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            SIGNAL_ERRNO
+            FATAL( SERIAL_CHF_MODULE_ID, SERIAL_F_PUSH, "ptem" )
         }
 
         if ( ioctl( slave_pty, I_PUSH, "ldterm" ) == -1 ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_PUSH, CHF_FATAL, "ldterm" );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            SIGNAL_ERRNO
+            FATAL( SERIAL_CHF_MODULE_ID, SERIAL_F_PUSH, "ldterm" )
         }
     }
 #  endif
@@ -601,9 +596,8 @@ const char* SerialInit( void )
         struct termios tios;
 
         if ( tcgetattr( slave_pty, &tios ) ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_TCGETATTR, CHF_FATAL );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            SIGNAL_ERRNO
+            FATAL0( SERIAL_CHF_MODULE_ID, SERIAL_F_TCGETATTR )
         }
 
         tios.c_iflag &= ~( BRKINT | IGNPAR | PARMRK | INPCK | ISTRIP | INLCR | IGNCR | ICRNL | IUCLC | IXON | IXANY | IXOFF | IMAXBEL );
@@ -626,24 +620,21 @@ const char* SerialInit( void )
         tios.c_cc[ VTIME ] = 0;
 
         if ( tcsetattr( slave_pty, TCSANOW, &tios ) ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_F_TCSETATTR, CHF_FATAL );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            SIGNAL_ERRNO
+            FATAL0( SERIAL_CHF_MODULE_ID, SERIAL_F_TCSETATTR )
         }
     }
 
     /* Publish pty name */
     if ( config.verbose ) {
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_I_PTY_NAME, CHF_INFO, pty_name );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
+        INFO( SERIAL_CHF_MODULE_ID, SERIAL_I_PTY_NAME, pty_name )
     }
 
 #else
     /* Dummy implementation; do nothing */
     pty_name = "";
 
-    ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_W_NOPTY, CHF_WARNING );
-    ChfSignal( SERIAL_CHF_MODULE_ID );
+    WARNING0( SERIAL_CHF_MODULE_ID, SERIAL_W_NOPTY )
 #endif
 
     return pty_name;
@@ -679,9 +670,8 @@ void SerialClose( void )
 {
     bool err = close( slave_pty ) || close( master_pty );
     if ( err ) {
-        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_PTY_CLOSE, CHF_ERROR );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
+        SIGNAL_ERRNO
+        ERROR0( SERIAL_CHF_MODULE_ID, SERIAL_E_PTY_CLOSE )
     }
 }
 
@@ -1018,8 +1008,7 @@ void Serial_TBR_Write( int8 d )
         Push( trb, d );
     } else {
         /* trb is full; discard character */
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_W_FULL_TRB, CHF_WARNING, tcs );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
+        WARNING( SERIAL_CHF_MODULE_ID, SERIAL_W_FULL_TRB, tcs )
     }
 
     /* Update transmitter status */
@@ -1073,9 +1062,8 @@ void HandleSerial( void )
 
     /* Signal a condition upon failure */
     if ( result < 0 ) {
-        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_TRB_DRAIN, CHF_ERROR );
-        ChfSignal( SERIAL_CHF_MODULE_ID );
+        SIGNAL_ERRNO
+        ERROR0( SERIAL_CHF_MODULE_ID, SERIAL_E_TRB_DRAIN )
     }
 
     /* Update tcs */
@@ -1087,9 +1075,8 @@ void HandleSerial( void )
 
         /* Signal a condition upon failure */
         if ( result < 0 ) {
-            ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-            ChfGenerate( SERIAL_CHF_MODULE_ID, __FILE__, __LINE__, SERIAL_E_RRB_CHARGE, CHF_ERROR );
-            ChfSignal( SERIAL_CHF_MODULE_ID );
+            SIGNAL_ERRNO
+            ERROR0( SERIAL_CHF_MODULE_ID, SERIAL_E_RRB_CHARGE )
         }
 
         /* Update receiver status */

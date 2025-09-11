@@ -70,13 +70,13 @@
 .- */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h> /* 3.1: strcpy(), strcat(), strlen() */
 
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
 #include "cpu.h"
+#include "debug.h"
 #include "modules.h"
 
 /*---------------------------------------------------------------------------
@@ -388,8 +388,7 @@ static Address DisTest_9( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Test_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Test_Code" )
             break;
     }
 
@@ -521,8 +520,7 @@ static Address DisRegOp_A( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -653,8 +651,7 @@ static Address DisRegOp_B( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -732,8 +729,7 @@ static Address DisRegOp_C( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -811,8 +807,7 @@ static Address DisRegOp_D( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -891,8 +886,7 @@ static Address DisRegOp_E( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -971,8 +965,7 @@ static Address DisRegOp_F( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -1063,8 +1056,7 @@ static Address DisAND_OR( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 
@@ -1124,8 +1116,7 @@ static Address DisGroup_0( Address pc, char* ob )
             /* Unknown opcode */
             strcpy( ob, "?" );
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
             break;
     }
 
@@ -1387,8 +1378,7 @@ static Address DisGroup_1( Address pc, char* ob )
             /* Unknown opcode */
             strcpy( ob, "?" );
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
             break;
     }
 
@@ -1502,8 +1492,7 @@ static Address DisGroup_808( Address pc, char* ob )
             /* Unknown opcode */
             strcpy( ob, "?" );
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
             break;
     }
 
@@ -1571,8 +1560,7 @@ static Address DisGroup_80( Address pc, char* ob )
             /* Unknown opcode */
             strcpy( ob, "?" );
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
             break;
     }
 
@@ -1712,8 +1700,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
                     break;
 
                 default:
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-                    ChfSignal( CPU_CHF_MODULE_ID );
+                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
                     break;
             }
 
@@ -1726,8 +1713,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Register_Pair" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Register_Pair" )
             break;
     }
 
@@ -1803,8 +1789,7 @@ static Address DisTest_8A( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Test_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Test_Code" )
             break;
     }
 
@@ -1884,8 +1869,7 @@ static Address DisTest_8B( Address pc, char* ob )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Test_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Test_Code" )
             break;
     }
 
@@ -1982,8 +1966,7 @@ static Address DisGroup_8( Address pc, char* ob )
                     break;
 
                 default:
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-                    ChfSignal( CPU_CHF_MODULE_ID );
+                    FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
                     break;
             }
             break;
@@ -2151,8 +2134,7 @@ static Address DisGroup_8( Address pc, char* ob )
             /* Unknown opcode */
             strcpy( ob, "?" );
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
             break;
     }
 
@@ -2278,8 +2260,7 @@ Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] )
             /* Unknown opcode */
             strcpy( ob, "?" );
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, pc, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, pc, n )
             break;
     }
 

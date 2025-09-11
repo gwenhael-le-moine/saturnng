@@ -238,8 +238,7 @@ static void ExecSHUTDN( void )
     cpu_status.shutdn = true;
 
     /* the CPU module implements SHUTDN signalling the condition CPU_I_SHUTDN */
-    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_I_SHUTDN, CHF_INFO );
-    ChfSignal( CPU_CHF_MODULE_ID );
+    SIGNAL0( CPU_CHF_MODULE_ID, CPU_I_SHUTDN, CHF_INFO )
 }
 
 /*---------------------------------------------------------------------------
@@ -948,8 +947,7 @@ static void ExecTest_9( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Test_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Test_Code" )
             break;
     }
 
@@ -980,8 +978,7 @@ static void ExecTest_8A( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Test_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Test_Code" )
             break;
     }
 
@@ -1012,8 +1009,7 @@ static void ExecTest_8B( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Test_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Test_Code" )
             break;
     }
 
@@ -1058,8 +1054,7 @@ static void ExecRegOp_A( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1101,8 +1096,7 @@ static void ExecRegOp_B( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1130,8 +1124,7 @@ static void ExecRegOp_C( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1159,8 +1152,7 @@ static void ExecRegOp_D( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1188,8 +1180,7 @@ static void ExecRegOp_E( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1217,8 +1208,7 @@ static void ExecRegOp_F( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1247,8 +1237,7 @@ static void ExecAND_OR( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1358,8 +1347,7 @@ static void ExecGroup_0( void )
             break;
 
         default: /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1553,8 +1541,7 @@ static void ExecGroup_15( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
 }
@@ -1642,8 +1629,7 @@ static void ExecGroup_1( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1669,8 +1655,7 @@ static void ExecGroup_808( void )
             break;
         case 0x3: /* BUSCB */
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCB" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            WARNING( CPU_CHF_MODULE_ID, CPU_F_INTERR, "BUSCB" )
             break;
         case 0x4: /* ABIT=0 d */
             ExecBIT0( cpu_status.A, FetchNibble( cpu_status.PC++ ) );
@@ -1705,8 +1690,7 @@ static void ExecGroup_808( void )
             break;
         case 0xD: /* BUSCD */
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "BUSCD" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            WARNING( CPU_CHF_MODULE_ID, CPU_F_INTERR, "BUSCD" )
             break;
         case 0xE: /* PC=(C) */
             cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.C ) );
@@ -1717,8 +1701,7 @@ static void ExecGroup_808( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1773,8 +1756,7 @@ static void ExecGroup_80B0( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1821,8 +1803,7 @@ static void ExecGroup_80B1( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1872,8 +1853,7 @@ static void ExecGroup_80B2( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1925,8 +1905,7 @@ static void ExecGroup_80B3( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -1967,8 +1946,7 @@ static void ExecGroup_80B4( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2008,8 +1986,7 @@ static void ExecGroup_80B5( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2050,8 +2027,7 @@ static void ExecGroup_80B6( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2088,8 +2064,7 @@ static void ExecGroup_80B7( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2144,8 +2119,7 @@ static void ExecGroup_80B8( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2180,8 +2154,7 @@ static void ExecGroup_80B9( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2218,8 +2191,7 @@ static void ExecGroup_80BE( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2254,8 +2226,7 @@ static void ExecGroup_80BF( void )
 
         default:
             /* Unknown opcode */
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2313,8 +2284,7 @@ static void ExecGroup_80B( void )
 
             default:
                 /* Unknown opcode */
-                ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-                ChfSignal( CPU_CHF_MODULE_ID );
+                ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
                 break;
         }
     } else
@@ -2372,8 +2342,7 @@ static void ExecGroup_80( void )
             break;
         case 0xE: /* SREQ? */
 
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_WARNING, "SREQ" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            WARNING( CPU_CHF_MODULE_ID, CPU_F_INTERR, "SREQ" )
             break;
         case 0xF: /* CPEX */
             {
@@ -2385,8 +2354,7 @@ static void ExecGroup_80( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2436,8 +2404,7 @@ static void ExecSpecialGroup_81( int rp )
                     break;
 
                 default:
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-                    ChfSignal( CPU_CHF_MODULE_ID );
+                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
                     break;
             }
             break;
@@ -2478,15 +2445,13 @@ static void ExecSpecialGroup_81( int rp )
                     }
 
                 default:
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-                    ChfSignal( CPU_CHF_MODULE_ID );
+                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
                     break;
             }
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Register_Pair" );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Register_Pair" )
             break;
     }
 }
@@ -2525,8 +2490,7 @@ static void ExecGroup_8( void )
                     break;
 
                 default:
-                    ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_F_INTERR, CHF_FATAL, "Bad_Operation_Code" );
-                    ChfSignal( CPU_CHF_MODULE_ID );
+                    FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
                     break;
             }
             break;
@@ -2585,8 +2549,7 @@ static void ExecGroup_8( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }
@@ -2732,8 +2695,7 @@ void CpuReset( void )
 void CpuInit( void )
 {
     if ( ReadStructFromFile( config.cpu_path, sizeof( cpu_status ), &cpu_status ) ) {
-        ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_W_RESETTING, CHF_WARNING );
-        ChfSignal( CPU_CHF_MODULE_ID );
+        WARNING0( CPU_CHF_MODULE_ID, CPU_W_RESETTING )
 
         CpuReset();
     }
@@ -2764,8 +2726,7 @@ void CpuInit( void )
 void CpuSave( void )
 {
     if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_path ) ) {
-        ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_SAVE, CHF_ERROR );
-        ChfSignal( CPU_CHF_MODULE_ID );
+        ERROR0( CPU_CHF_MODULE_ID, CPU_E_SAVE )
     }
 }
 
@@ -3157,8 +3118,7 @@ void OneStep( void )
             break;
 
         default:
-            ChfGenerate( CPU_CHF_MODULE_ID, __FILE__, __LINE__, CPU_E_BAD_OPCODE, CHF_ERROR, cpu_status.PC, n );
-            ChfSignal( CPU_CHF_MODULE_ID );
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
 }

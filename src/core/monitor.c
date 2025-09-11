@@ -354,6 +354,6 @@ void Monitor( void )
 
         bool err = InvokeCommand( tk );
         if ( err )
-            LOGGER( CPU_CHF_MODULE_ID, CPU_W_BAD_MONITOR_CMD, CHF_WARNING, tk )
+            WARNING( CPU_CHF_MODULE_ID, CPU_W_BAD_MONITOR_CMD, tk )
     }
 }

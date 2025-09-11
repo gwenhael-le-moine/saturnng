@@ -204,8 +204,7 @@ static int repl_c = 0;  /* Entry replacement counter */
 .- */
 static Nibble BadRead( Address addr )
 {
-    ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_BAD_READ, CHF_ERROR, addr );
-    ChfSignal( MOD_CHF_MODULE_ID );
+    ERROR( MOD_CHF_MODULE_ID, MOD_E_BAD_READ, addr )
 
     return ( Nibble )0x0;
 }
@@ -232,11 +231,7 @@ static Nibble BadRead( Address addr )
   1.1, 26-Jan-1998, creation
 
 .- */
-static void BadWrite( Address addr, Nibble datum )
-{
-    ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_BAD_WRITE, CHF_ERROR, addr, datum );
-    ChfSignal( MOD_CHF_MODULE_ID );
-}
+static void BadWrite( Address addr, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID, MOD_E_BAD_WRITE, addr, datum ) }
 
 /* .+
 
@@ -392,9 +387,8 @@ static struct ModMap* NewModMap( void )
     struct ModMap* new = ( struct ModMap* )malloc( sizeof( struct ModMap ) );
 
     if ( new == ( struct ModMap* )NULL ) {
-        ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MAP_ALLOC, CHF_FATAL );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        SIGNAL_ERRNO
+        FATAL0( MOD_CHF_MODULE_ID, MOD_F_MAP_ALLOC )
     }
 
     /* Link new structure to the cache list */
@@ -535,8 +529,7 @@ static void FlushCache( struct ModMap* save )
 #ifdef DEBUG
     /* The alloc_c performance counter must be exactly 1 now */
     if ( alloc_c != 1 ) {
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_BAD_ALLOC_C, CHF_ERROR, alloc_c );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        ERROR( MOD_CHF_MODULE_ID, MOD_F_BAD_ALLOC_C, alloc_c )
     }
 #endif
 }
@@ -660,16 +653,14 @@ struct ModCacheTableEntry* SelectConfigVictim( int retry )
     if ( victim == ( struct ModCacheTableEntry* )NULL ) {
         if ( retry ) {
             /* Unable to find a victim; flush the cache and retry */
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_NO_VICTIM, CHF_WARNING );
-            ChfSignal( MOD_CHF_MODULE_ID );
+            WARNING0( MOD_CHF_MODULE_ID, MOD_W_NO_VICTIM )
 
             FlushCache( mod_map_ptr );
 
             victim = SelectConfigVictim( 0 );
         } else {
             /* Unable to find a victim; retry is not an option; give up */
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_NO_VICTIM, CHF_FATAL );
-            ChfSignal( MOD_CHF_MODULE_ID );
+            FATAL0( MOD_CHF_MODULE_ID, MOD_F_NO_VICTIM )
         }
     } else
         /* Found a victim; update next-victim index */
@@ -784,8 +775,7 @@ static void FreeModMap( struct ModMap* p )
 
         /* Should never happen */
         if ( n == ( struct ModMap* )NULL ) {
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_CHAIN_CORRUPTED, CHF_FATAL );
-            ChfSignal( MOD_CHF_MODULE_ID );
+            FATAL0( MOD_CHF_MODULE_ID, MOD_F_CHAIN_CORRUPTED )
         }
 
         /* Bypass element pointed by p and free it */
@@ -875,8 +865,7 @@ void ModInit( void )
        non-NULL argument.
     */
     if ( mod_description == NULL ) {
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_NO_DESCRIPTION, CHF_FATAL );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        FATAL0( MOD_CHF_MODULE_ID, MOD_F_NO_DESCRIPTION )
     }
 
     /* Scan the mod_description table, initializing all modules */
@@ -894,8 +883,7 @@ void ModInit( void )
        fails.
     */
     if ( ReadStructFromFile( config.mod_path, sizeof( MOD_MAP.map_info ), &MOD_MAP.map_info ) ) {
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_RESETTING_ALL, CHF_WARNING );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        WARNING0( MOD_CHF_MODULE_ID, MOD_W_RESETTING_ALL )
 
         /* Reset all modules */
         ModReset();
@@ -944,8 +932,7 @@ void ModSave( void )
 
     /* Attempt to save the mod_map from file */
     if ( WriteStructToFile( &MOD_MAP.map_info, sizeof( MOD_MAP.map_info ), config.mod_path ) ) {
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_F_MAP_SAVE, CHF_FATAL );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        FATAL0( MOD_CHF_MODULE_ID, MOD_F_MAP_SAVE )
     }
 }
 
@@ -1159,8 +1146,7 @@ void ModConfig( Address config_info )
     if ( mod == N_MOD ) {
         /* All modules are configured - Signal a warning */
         // FIXME: 48gx bugs here when running VERSION
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_CONFIG, CHF_WARNING, config_info );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_CONFIG, config_info )
     } else {
         if ( MOD_MAP.map_info[ mod ].config == MOD_UNCONFIGURED ) {
             /* The module was unconfigured; configure its size */
@@ -1234,8 +1220,7 @@ void ModUnconfig( Address unconfig_info )
         /* There isn't any module configured at the given address -
            Signal a warning
         */
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_UNCONFIG, CHF_WARNING, unconfig_info );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_UNCONFIG, unconfig_info )
     } else if ( mod_description[ mod ].r_config == MOD_CONFIGURED ) {
         /* The module is automatically configured after reset; it can never
            be unconfigured.

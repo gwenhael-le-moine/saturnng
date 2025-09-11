@@ -105,10 +105,18 @@
       {                                                                                                                                    \
           if ( severity > CHF_INFO || config.verbose ) { ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
 
+#  define _signal_preamble( module_id, message_id, severity )                                                                              \
+      {                                                                                                                                    \
+          { ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
+
 #  define _postamble( module_id ) );                                                                                                       \
       ChfSignal( module_id );                                                                                                              \
       }                                                                                                                                    \
       }
+
+#  define SIGNAL( module_id, message_id, severity, ... )                                                                                   \
+      _signal_preamble( module_id, message_id, severity ), __VA_ARGS__ _postamble( module_id )
+#  define SIGNAL0( module_id, message_id, severity ) _signal_preamble( module_id, message_id, severity ) _postamble( module_id )
 
 #  define DEBUG( module_id, debug_class, message_id, ... )                                                                                 \
       _debug_preamble( module_id, debug_class, message_id ), __VA_ARGS__ _postamble( module_id )
@@ -120,6 +128,22 @@
 
 #  define LOGGER0( module_id, message_id, severity ) _logger_preamble( module_id, message_id, severity ) _postamble( module_id )
 
+/* #  define SUCCESS( module_id, message_id, ... ) LOGGER( module_id, message_id, CHF_SUCCESS, __VA_ARGS__ ) */
+/* #  define SUCCESS0( module_id, message_id ) LOGGER0( module_id, message_id, CHF_SUCCESS ) */
+
+#  define INFO( module_id, message_id, ... ) LOGGER( module_id, message_id, CHF_INFO, __VA_ARGS__ )
+#  define INFO0( module_id, message_id ) LOGGER0( module_id, message_id, CHF_INFO )
+
+#  define WARNING( module_id, message_id, ... ) SIGNAL( module_id, message_id, CHF_WARNING, __VA_ARGS__ )
+#  define WARNING0( module_id, message_id ) SIGNAL0( module_id, message_id, CHF_WARNING )
+
+#  define ERROR( module_id, message_id, ... ) SIGNAL( module_id, message_id, CHF_ERROR, __VA_ARGS__ )
+#  define ERROR0( module_id, message_id ) SIGNAL0( module_id, message_id, CHF_ERROR )
+
+#  define FATAL( module_id, message_id, ... ) SIGNAL( module_id, message_id, CHF_FATAL, __VA_ARGS__ )
+#  define FATAL0( module_id, message_id ) SIGNAL0( module_id, message_id, CHF_FATAL )
+
+#  define SIGNAL_ERRNO ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR );
 /*---------------------------------------------------------------------------
         Debug classes
   ---------------------------------------------------------------------------*/

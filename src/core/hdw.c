@@ -130,8 +130,7 @@ void HdwInit( void )
 {
     bool err = ReadStructFromFile( config.hdw_path, sizeof( mod_status.hdw ), &mod_status.hdw );
     if ( err ) {
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_HDW_INIT, CHF_WARNING );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        WARNING0( MOD_CHF_MODULE_ID, MOD_W_HDW_INIT )
 
         ( void )memset( &mod_status.hdw, 0, sizeof( mod_status.hdw ) );
     }
@@ -161,8 +160,7 @@ void HdwSave( void )
 {
     bool err = WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_path );
     if ( err ) {
-        ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_E_HDW_SAVE, CHF_ERROR );
-        ChfSignal( MOD_CHF_MODULE_ID );
+        ERROR0( MOD_CHF_MODULE_ID, MOD_E_HDW_SAVE )
     }
 }
 
@@ -299,8 +297,7 @@ Nibble HdwRead( Address rel_address )
             return ( Nibble )( ( mod_status.hdw.t2_val >> ( ( rel_address - 0x38 ) * 4 ) ) & 0x0F );
 
         default:
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_HDW_READ, CHF_WARNING, rel_address );
-            ChfSignal( MOD_CHF_MODULE_ID );
+            WARNING( MOD_CHF_MODULE_ID, MOD_W_HDW_READ, rel_address )
             return ( Nibble )0xF;
     }
 
@@ -498,8 +495,7 @@ void HdwWrite( Address rel_address, Nibble data )
             break;
 
         default:
-            ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_HDW_WRITE, CHF_WARNING, rel_address, ( int )data );
-            ChfSignal( MOD_CHF_MODULE_ID );
+            WARNING( MOD_CHF_MODULE_ID, MOD_W_HDW_WRITE, rel_address, ( int )data )
     }
 
     /* Save copy into hdw register array */

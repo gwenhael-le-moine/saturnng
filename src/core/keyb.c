@@ -77,8 +77,9 @@
 
 #include "config.h"
 #include "cpu.h"
-#include "modules.h"
+#include "debug.h"
 #include "keyb.h"
+#include "modules.h"
 
 #define OUT_BITS 12
 
@@ -200,11 +201,9 @@ void KeybPress( const char* key )
             CpuIntRequest( INT_REQUEST_NMI );
         } else {
             if ( ret != 2 ) {
-                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_KEY, CHF_WARNING, key );
-                ChfSignal( MOD_CHF_MODULE_ID );
+                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_KEY, key )
             } else if ( out_bit >= OUT_BITS ) {
-                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit );
-                ChfSignal( MOD_CHF_MODULE_ID );
+                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_OUT_BIT, out_bit )
             }
         }
     }
@@ -248,11 +247,9 @@ void KeybRelease( const char* key )
             cur_in[ out_bit ] &= ~in_val;
         else {
             if ( ret != 2 ) {
-                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_KEY, CHF_WARNING, key );
-                ChfSignal( MOD_CHF_MODULE_ID );
+                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_KEY, key )
             } else if ( out_bit >= OUT_BITS ) {
-                ChfGenerate( MOD_CHF_MODULE_ID, __FILE__, __LINE__, MOD_W_BAD_OUT_BIT, CHF_WARNING, out_bit );
-                ChfSignal( MOD_CHF_MODULE_ID );
+                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_OUT_BIT, out_bit )
             }
         }
     }

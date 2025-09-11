@@ -118,8 +118,7 @@ static int wb[ WB_SIZE ]; /* Write buffer */
 static int BadCommand( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
     /* Unknown command: signal and reset state to FLASH_ST_READ_ARRAY */
-    ChfGenerate( FLASH_CHF_MODULE_ID, __FILE__, __LINE__, FLASH_W_BAD_CMD, CHF_WARNING, *state, cycle, address, data );
-    ChfSignal( FLASH_CHF_MODULE_ID );
+    WARNING( FLASH_CHF_MODULE_ID, FLASH_W_BAD_CMD, *state, cycle, address, data )
 
     *state = FLASH_ST_READ_ARRAY;
     return 0; /* Dummy result */
@@ -177,8 +176,7 @@ static int ParseCommand( enum FlashState* state, enum FlashCycle cycle, XAddress
 
         default:
             /* Unknown command; signal, ignore, keep current state. */
-            ChfGenerate( FLASH_CHF_MODULE_ID, __FILE__, __LINE__, FLASH_W_BAD_CMD, CHF_WARNING, *state, cycle, address, data );
-            ChfSignal( FLASH_CHF_MODULE_ID );
+            WARNING( FLASH_CHF_MODULE_ID, FLASH_W_BAD_CMD, *state, cycle, address, data )
             break;
     }
 
@@ -249,8 +247,7 @@ static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress ad
                 if ( index <= 0 && index < WB_SIZE )
                     wb[ index ] = data;
                 else {
-                    ChfGenerate( FLASH_CHF_MODULE_ID, __FILE__, __LINE__, FLASH_W_BAD_ADDRESS, CHF_WARNING, *state, cycle, address, data );
-                    ChfSignal( FLASH_CHF_MODULE_ID );
+                    WARNING( FLASH_CHF_MODULE_ID, FLASH_W_BAD_ADDRESS, *state, cycle, address, data )
                 }
             }
             break;
