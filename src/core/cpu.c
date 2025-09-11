@@ -1342,7 +1342,7 @@ static void ExecGroup_0( void )
             break;
         case 0xF: /* RTI */
             if ( cpu_status.int_pending != INT_REQUEST_NONE ) {
-                debug1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
+                DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
 
                 /* Service immediately any pending interrupt request */
                 cpu_status.int_service = true;
@@ -1350,7 +1350,7 @@ static void ExecGroup_0( void )
                 cpu_status.PC = INT_HANDLER_PC;
             } else {
                 /* Reenable interrupts and return */
-                debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_END );
+                DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_END );
 
                 cpu_status.int_service = false;
                 cpu_status.PC = PopRSTK();
@@ -1731,34 +1731,34 @@ static void ExecGroup_80B0( void )
 
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RPL2 (preserve carry)" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RPL2 (preserve carry)" );
             break;
         case 0x3:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: FALSE" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: FALSE" );
             break;
         case 0x4:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: DOFALSE" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: DOFALSE" );
             break;
         case 0x5:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: BEEP2" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: BEEP2" );
             break;
         case 0x6:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: MOVEDOWN" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: MOVEDOWN" );
             break;
         case 0x7:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: MOVEUP" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: MOVEUP" );
             break;
         case 0x8:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: CREATETEMP" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: CREATETEMP" );
             break;
         case 0x9:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RCKBp" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RCKBp" );
             break;
         case 0xA:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: KEYDN" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: KEYDN" );
             break;
         case 0xB:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: doslow" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: doslow" );
             break;
 
         case 0x1:
@@ -1768,7 +1768,7 @@ static void ExecGroup_80B0( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -1794,16 +1794,16 @@ static void ExecGroup_80B1( void )
             // do not do settime, fall in the normal settime function (only valid in untouched ROM)
             break;
         case 0x3:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RESETOS" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: RESETOS" );
             break;
         case 0x4:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: AUTOTEST" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: AUTOTEST" );
             break;
         case 0x5:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: NATIVE?" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: NATIVE?" );
             break;
         case 0x7:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: SERIAL" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: SERIAL" );
             break;
 
         case 0x6:
@@ -1816,7 +1816,7 @@ static void ExecGroup_80B1( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -1835,7 +1835,7 @@ static void ExecGroup_80B2( void )
         case 0x8:
             // cpu_status.HST |= I[5]; // Emu48:apple.c:500
             cpu_status.PC += 1;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: HST=1.x" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: HST=1.x" );
             break;
         case 0x9: // screen height = 0x50 = 80 or 0x40 = 64
             cpu_status.A[ 4 ] = cpu_status.A[ 3 ] = cpu_status.A[ 2 ] = cpu_status.A[ 0 ] = 0;
@@ -1867,7 +1867,7 @@ static void ExecGroup_80B2( void )
         case 0xd:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -1884,30 +1884,30 @@ static void ExecGroup_80B3( void )
 
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: config_disp0 Ca:address 4K data" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: config_disp0 Ca:address 4K data" );
             break;
         case 0x1:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: unconfig_disp0 does the refresh" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: unconfig_disp0 does the refresh" );
             break;
         case 0x2:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: refresh_disp0 force refresh" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: refresh_disp0 force refresh" );
             break;
         case 0x3:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: set_lines_disp0 nb in Cb" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: set_lines_disp0 nb in Cb" );
             break;
         case 0x4:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: set_offset_disp0 offset to disp in disp0" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: set_offset_disp0 offset to disp in disp0" );
             /* w.d0offset = Npack(w.C, 5); */
             /* w.d0offset &= 0x7FF; */
             break;
         case 0x5:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: native_get_line_disp0" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: native_get_line_disp0" );
             /* Nunpack(w.C, w.d0offset, 5); */
             break;
         case 0x8:
             // cpu_status.HST |= I[5]; // Emu48:apple.c:500
             cpu_status.PC += 3;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ?HST=1.x" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ?HST=1.x" );
             break;
 
         case 0x6:
@@ -1920,7 +1920,7 @@ static void ExecGroup_80B3( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -1937,16 +1937,16 @@ static void ExecGroup_80B4( void )
 
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: setup basic memory configuration" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: setup basic memory configuration" );
             break;
         case 0x1:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: erase Flash bank" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: erase Flash bank" );
             break;
         case 0x2:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: write byte into Flash bank" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: write byte into Flash bank" );
             break;
         case 0x3:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: format Flash bank" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: format Flash bank" );
             break;
 
         case 0x4:
@@ -1962,7 +1962,7 @@ static void ExecGroup_80B4( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -1978,13 +1978,13 @@ static void ExecGroup_80B5( void )
     Nibble n = FetchNibble( cpu_status.PC++ );
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMON" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMON" );
             break;
         case 0x1:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMOFF" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMOFF" );
             break;
         case 0x6:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: OUTBYT" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: OUTBYT" );
             break;
         case 0x7:
             cpu_status.D0 = cpu_status.D1 = 0;
@@ -2003,7 +2003,7 @@ static void ExecGroup_80B5( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2020,10 +2020,10 @@ static void ExecGroup_80B6( void )
 
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ACCESSSD" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ACCESSSD" );
             break;
         case 0x1:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: PORTTAG?" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: PORTTAG?" );
             break;
         case 0x4:
             cpu_status.carry = false; /* There is no SD card present */
@@ -2045,7 +2045,7 @@ static void ExecGroup_80B6( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2064,7 +2064,7 @@ static void ExecGroup_80B7( void )
         case 0xF:
             cpu_status.carry = false;
             cpu_status.PC++;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: SETFLDn" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: SETFLDn" );
             break;
 
         case 0x0:
@@ -2083,7 +2083,7 @@ static void ExecGroup_80B7( void )
         case 0xd:
         case 0xe:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2100,37 +2100,37 @@ static void ExecGroup_80B8( void )
 
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=s" );
             break;
         case 0x1:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r+s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r+s" );
             break;
         case 0x2:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r-s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r-s" );
             break;
         case 0x3:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r*s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r*s" );
             break;
         case 0x4:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r/s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r/s" );
             break;
         case 0x5:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r%s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r%s" );
             break;
         case 0x6:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=-r-1" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=-r-1" );
             break;
         case 0x7:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=-r" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=-r" );
             break;
         case 0x8:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r<s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r<s" );
             break;
         case 0x9:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r>s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r>s" );
             break;
         case 0xA:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r^s" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: r=r^s" );
             break;
 
         case 0xb:
@@ -2139,7 +2139,7 @@ static void ExecGroup_80B8( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2156,7 +2156,7 @@ static void ExecGroup_80B9( void )
 
     switch ( n ) {
         case 0x0:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: Data streamer" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: Data streamer" );
             break;
 
         case 0x1:
@@ -2175,7 +2175,7 @@ static void ExecGroup_80B9( void )
         case 0xe:
         case 0xf:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2192,10 +2192,10 @@ static void ExecGroup_80BE( void )
 
     switch ( n ) {
         case 0xE:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMFLUSH" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMFLUSH" );
             break;
         case 0xF:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSYS" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSYS" );
             break;
 
         case 0x0:
@@ -2213,7 +2213,7 @@ static void ExecGroup_80BE( void )
         case 0xc:
         case 0xd:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2230,7 +2230,7 @@ static void ExecGroup_80BF( void )
 
     switch ( n ) {
         case 0xF:
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSAT" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: ARMSAT" );
             break;
 
         case 0x0:
@@ -2249,7 +2249,7 @@ static void ExecGroup_80BF( void )
         case 0xd:
         case 0xe:
             cpu_status.PC--;
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
             break;
 
         default:
@@ -2308,7 +2308,7 @@ static void ExecGroup_80B( void )
             case 0xC:
             case 0xD:
                 cpu_status.PC--;
-                debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
+                DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: < ?opcode? >" );
                 break;
 
             default:
@@ -2318,7 +2318,7 @@ static void ExecGroup_80B( void )
                 break;
         }
     } else
-        debug1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "BUSCC not implemented" );
+        DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "BUSCC not implemented" );
 }
 
 /* Instruction Group_80 */
@@ -2811,12 +2811,12 @@ void CpuIntRequest( int_request_t ireq )
             PushRSTK( cpu_status.PC );
             cpu_status.PC = INT_HANDLER_PC;
 
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
         } else {
             /* int_service is set; save the request for later processing */
             cpu_status.int_pending = ireq;
 
-            debug1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT_PENDING, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
+            DEBUG1( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT_PENDING, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) );
         }
     }
 }
@@ -2850,7 +2850,7 @@ void CpuWake( void )
 {
     if ( cpu_status.shutdn ) {
         if ( !cpu_status.halt ) {
-            debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE );
+            DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE );
 
             /* Clear SHUTDN flag */
             cpu_status.shutdn = false;
@@ -2915,7 +2915,7 @@ void CpuWake( void )
 int CpuHaltRequest( void )
 {
     if ( !cpu_status.halt ) {
-        debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_HALT );
+        DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_HALT );
 
         cpu_status.halt = true;
         /* CPU must actually be halted: call ExecSHUTDN() to simulate
@@ -2958,7 +2958,7 @@ int CpuHaltRequest( void )
 int CpuRunRequest( void )
 {
     if ( cpu_status.halt ) {
-        debug0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN );
+        DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN );
 
         cpu_status.halt = false;
         /* CPU must actually be awoken: call CpuWake() */

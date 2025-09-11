@@ -40,10 +40,10 @@
 .description  :
   This header defines the following macros:
 
-        - debug0(debug_class, condition_code)
-        - debug1(debug_class, condition_code, arg_1)
-        - debug2(debug_class, condition_code, arg_1, arg_2)
-        - debug3(debug_class, condition_code, arg_1, arg_2, arg_3)
+        - DEBUG0(debug_class, condition_code)
+        - DEBUG1(debug_class, condition_code, arg_1)
+        - DEBUG2(debug_class, condition_code, arg_1, arg_2)
+        - DEBUG3(debug_class, condition_code, arg_1, arg_2, arg_3)
 
   used throughout the source code for debugging purposes.
 
@@ -106,13 +106,13 @@
       }                                                                                                                                    \
       }
 
-#  define debug0( module_id, debug_class, condition_code )                                                                                 \
+#  define DEBUG0( module_id, debug_class, condition_code )                                                                                 \
       _debug_preamble( module_id, debug_class, condition_code ) _debug_postamble( module_id )
-#  define debug1( module_id, debug_class, condition_code, arg_1 )                                                                          \
+#  define DEBUG1( module_id, debug_class, condition_code, arg_1 )                                                                          \
       _debug_preamble( module_id, debug_class, condition_code ), arg_1 _debug_postamble( module_id )
-#  define debug2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                   \
+#  define DEBUG2( module_id, debug_class, condition_code, arg_1, arg_2 )                                                                   \
       _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2 _debug_postamble( module_id )
-#  define debug3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                            \
+#  define DEBUG3( module_id, debug_class, condition_code, arg_1, arg_2, arg_3 )                                                            \
       _debug_preamble( module_id, debug_class, condition_code ), arg_1, arg_2, arg_3 _debug_postamble( module_id )
 
 /*---------------------------------------------------------------------------
@@ -129,13 +129,5 @@ typedef enum {
     DEBUG_C_OPCODES = 0x0001,        /* OpCodes */
     DEBUG_C_NONE = 0,
 } debug_class_t;
-
-/*---------------------------------------------------------------------------
-        Chf condition codes
-  ---------------------------------------------------------------------------*/
-typedef enum {
-    DEBUG_W_NOT_SUPPORTED = 201, /* Debug not supported */
-    DEBUG_W_BAD_CMD = 202,       /* Invalid command */
-} debug_chf_condition_code_t;
 
 #endif /*!_DEBUG_H*/

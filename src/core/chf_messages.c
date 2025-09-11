@@ -53,9 +53,6 @@ ChfTable message_table[] = {
     {CPU_CHF_MODULE_ID,     CPU_F_INTERR,            "Internal error [%s]"                                                                   },
     {CPU_CHF_MODULE_ID,     CPU_F_BAD_SHUTDN,        "Unexpected CPU shutdown"                                                               },
 
-    {DEBUG_CHF_MODULE_ID,   DEBUG_W_NOT_SUPPORTED,   "Debug not supported; Rebuild with -DDEBUG"                                             },
-    {DEBUG_CHF_MODULE_ID,   DEBUG_W_BAD_CMD,         "Debug: Invalid command"                                                                },
-
     {DISK_IO_CHF_MODULE_ID, DISK_IO_S_OK,            "Disk IO: OK"                                                                           },
     {DISK_IO_CHF_MODULE_ID, DISK_IO_I_CALLED,        "Function [%s] called"                                                                  },
     {DISK_IO_CHF_MODULE_ID, DISK_IO_E_OPEN,          "Can't open file [%s]"                                                                  },

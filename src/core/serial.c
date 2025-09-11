@@ -737,7 +737,7 @@ const char* SerialPtyName( void ) { return pty_name; }
 Nibble Serial_IOC_Read( void )
 {
 
-    debug2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "IOC", ioc );
+    DEBUG2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "IOC", ioc );
 
     return ioc;
 }
@@ -768,7 +768,7 @@ Nibble Serial_IOC_Read( void )
 Nibble Serial_RCS_Read( void )
 {
 
-    debug2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "RCS", rcs );
+    DEBUG2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "RCS", rcs );
 
     return rcs;
 }
@@ -799,7 +799,7 @@ Nibble Serial_RCS_Read( void )
 Nibble Serial_TCS_Read( void )
 {
 
-    debug2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "TCS", tcs );
+    DEBUG2( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_READ, "TCS", tcs );
 
     return tcs;
 }
@@ -851,7 +851,7 @@ int8 Serial_RBR_Read( void )
     /* Post a new IRQ if necessary */
     CheckIRQ;
 
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_RBR, rx );
+    DEBUG1( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_RBR, rx );
 
     return rx;
 }
@@ -883,7 +883,7 @@ int8 Serial_RBR_Read( void )
 void Serial_IOC_Write( Nibble n )
 {
 
-    debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "IOC", ioc, n );
+    DEBUG3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "IOC", ioc, n );
 
     ioc = n;
 
@@ -916,7 +916,7 @@ void Serial_IOC_Write( Nibble n )
 void Serial_RCS_Write( Nibble n )
 {
 
-    debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "RCS", rcs, n );
+    DEBUG3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "RCS", rcs, n );
 
     rcs = n;
 }
@@ -947,7 +947,7 @@ void Serial_RCS_Write( Nibble n )
 void Serial_TCS_Write( Nibble n )
 {
 
-    debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "TCS", tcs, n );
+    DEBUG3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "TCS", tcs, n );
 
     tcs = n;
 }
@@ -977,7 +977,7 @@ void Serial_TCS_Write( Nibble n )
 void Serial_CRER_Write( Nibble n )
 {
 
-    debug3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "CRER", 0, n );
+    DEBUG3( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_WRITE, "CRER", 0, n );
 
     rcs &= ~RCS_RER;
 }
@@ -1011,7 +1011,7 @@ void Serial_CRER_Write( Nibble n )
 void Serial_TBR_Write( int8 d )
 {
 
-    debug1( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_TBR, d );
+    DEBUG1( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_TBR, d );
 
     /* Pull one character from rbr, if not empty */
     if ( EmptySlots( trb ) > 0 ) {

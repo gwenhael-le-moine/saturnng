@@ -61,7 +61,7 @@ int main( int argc, char** argv )
     /* Chf initialization with msgcat subsystem
      */
     int ret = ChfStaticInit( MAIN_CHF_MODULE_ID, config.progname, CHF_DEFAULT, message_table, message_table_size, CONDITION_STACK_SIZE,
-                              HANDLER_STACK_SIZE, EXIT_FAILURE );
+                             HANDLER_STACK_SIZE, EXIT_FAILURE );
     if ( ret != CHF_S_OK ) {
         fprintf( stderr, "saturn-E-Primary Chf initialization failed\n" );
         exit( EXIT_FAILURE );
