@@ -3,6 +3,10 @@
 #include "modules.h"
 #include "chf_wrapper.h"
 
+/*
+  https://groups.google.com/g/comp.sys.hp48/c/-d2r5Z78YTc/m/gnKxCmRa-wAJ
+ */
+
 /* Instruction Group_80B */
 // FIXME: 49g bugs here on display change
 static void ExecGroup_80B0( void )
