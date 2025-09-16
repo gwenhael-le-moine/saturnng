@@ -1822,6 +1822,13 @@ static void ExecSpecialGroup_81( int rp )
             break;
         case 0x3: /* Group 81B */
             switch ( n = FetchNibble( cpu_status.PC++ ) ) {
+                case 0x1:
+                    if ( config.big_screen && config.enable_BUSCC )
+                        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: LOOP2 (RPL2 80B00)" )
+                    else
+                        ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+                    break;
+
                 case 0x2: /* PC=A */
                     cpu_status.PC = R2Addr( cpu_status.A );
                     break;

@@ -178,6 +178,7 @@ void ModSelectDescription( int model )
             break;
         case MODEL_40G:
         case MODEL_49G:
+        case MODEL_50G:
             ModRegisterDescription( hw49_description );
             break;
         default:

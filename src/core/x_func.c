@@ -101,6 +101,7 @@ static const char* BinaryHeader( void )
             break;
         case MODEL_40G:
         case MODEL_49G:
+        case MODEL_50G:
             return "HPHP49-?";
             break;
         default:

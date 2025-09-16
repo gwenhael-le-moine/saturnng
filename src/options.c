@@ -250,6 +250,7 @@ config_t* config_init( int argc, char* argv[] )
         {"48gx",                 no_argument,       &clopt_model,           MODEL_48GX      },
         {"40g",                  no_argument,       &clopt_model,           MODEL_40G       },
         {"49g",                  no_argument,       &clopt_model,           MODEL_49G       },
+        {"50g",                  no_argument,       &clopt_model,           MODEL_50G       },
 
         {"reset",                no_argument,       &clopt_reset,           true            },
         {"monitor",              no_argument,       &clopt_monitor,         true            },
@@ -518,9 +519,6 @@ config_t* config_init( int argc, char* argv[] )
     if ( clopt_enable_BUSCC != -1 )
         __config.enable_BUSCC = clopt_enable_BUSCC;
 
-    if ( __config.model == MODEL_49G )
-        __config.black_lcd = true;
-
     __config.progname = basename( strdup( argv[ 0 ] ) );
     switch ( __config.model ) {
         case MODEL_48GX:
@@ -537,8 +535,13 @@ config_t* config_init( int argc, char* argv[] )
             break;
         case MODEL_50G:
             strcat( __config.progname, "50g" );
+            /* __config.model = MODEL_49G; */
+            __config.big_screen = true;
             break;
     }
+
+    if ( __config.model == MODEL_49G )
+        __config.black_lcd = true;
 
     if ( __config.verbose ) {
         if ( !print_config_and_exit )
