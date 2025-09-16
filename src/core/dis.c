@@ -1430,7 +1430,6 @@ static Address DisGroup_808( Address pc, char* ob )
         case 0x1:
             /* RSI */
             strcpy( ob, "RSI" );
-            pc;
             pc++;
             break;
 
