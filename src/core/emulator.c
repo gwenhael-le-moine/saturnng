@@ -194,14 +194,16 @@ static void EmulatorLoop( void )
         }
 
         /* LCD update */
-        if ( ( t1_count++ & LCD_T1_MASK ) == 0 ) {
+        if ( ( t1_count & LCD_T1_MASK ) == 0 ) {
             /* DrawLcd(); */
         }
+        t1_count++;
 
         /* Emulator Interrupt Request */
-        if ( ( t1_count++ & INT_T1_MASK ) == 0 && emulator_int_req ) {
+        if ( ( t1_count & INT_T1_MASK ) == 0 && emulator_int_req ) {
             INFO0( CPU_CHF_MODULE_ID, CPU_I_EMULATOR_INT )
         }
+        t1_count++;
 
         /* UI Events handling */
         // ui_get_event();

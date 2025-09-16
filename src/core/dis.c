@@ -189,14 +189,16 @@ static void DisIMM_FIELD_SEL( int fs, char* ob )
 /* P=n, opcode 2n, length 2 */
 static Address DisPEqn( Address pc, char* ob )
 {
-    sprintf( ob, "P=%d", FetchNibble( pc++ ) );
+    sprintf( ob, "P=%d", FetchNibble( pc ) );
+    pc++;
     return pc;
 }
 
 /* LC(m) n..n, opcode 3xn..n, length 3+m, x=m-1 */
 static Address DisLC( Address pc, char* ob )
 {
-    Nibble m = FetchNibble( pc++ ) + 1;
+    Nibble m = FetchNibble( pc ) + 1;
+    pc++;
 
     sprintf( ob, "LC(%d)\t", m );
     return DisHexConstant( pc, ob, m );
@@ -347,8 +349,10 @@ static Address DisGOSUB( Address pc, char* ob )
 */
 static Address DisTest_9( Address pc, char* ob )
 {
-    Nibble f = FetchNibble( pc++ );
-    Nibble t = FetchNibble( pc++ );
+    Nibble f = FetchNibble( pc );
+    pc++;
+    Nibble t = FetchNibble( pc );
+    pc++;
 
     int fs = GET_FS( f );
     int tc = GET_OC_2( f, t );
@@ -479,8 +483,10 @@ static Address DisTest_9( Address pc, char* ob )
 */
 static Address DisRegOp_A( Address pc, char* ob )
 {
-    Nibble f = FetchNibble( pc++ );
-    Nibble o = FetchNibble( pc++ );
+    Nibble f = FetchNibble( pc );
+    pc++;
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int fs = GET_FS( f );
     int oc = GET_OC_2( f, o );
@@ -610,8 +616,10 @@ static Address DisRegOp_A( Address pc, char* ob )
 */
 static Address DisRegOp_B( Address pc, char* ob )
 {
-    Nibble f = FetchNibble( pc++ );
-    Nibble o = FetchNibble( pc++ );
+    Nibble f = FetchNibble( pc );
+    pc++;
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int fs = GET_FS( f );
     int oc = GET_OC_2( f, o );
@@ -706,7 +714,8 @@ static Address DisRegOp_B( Address pc, char* ob )
 */
 static Address DisRegOp_C( Address pc, char* ob )
 {
-    Nibble o = FetchNibble( pc++ );
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -784,7 +793,8 @@ static Address DisRegOp_C( Address pc, char* ob )
 */
 static Address DisRegOp_D( Address pc, char* ob )
 {
-    Nibble o = FetchNibble( pc++ );
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -863,7 +873,8 @@ static Address DisRegOp_D( Address pc, char* ob )
 */
 static Address DisRegOp_E( Address pc, char* ob )
 {
-    Nibble o = FetchNibble( pc++ );
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -942,7 +953,8 @@ static Address DisRegOp_E( Address pc, char* ob )
 */
 static Address DisRegOp_F( Address pc, char* ob )
 {
-    Nibble o = FetchNibble( pc++ );
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -1032,8 +1044,10 @@ static Address DisRegOp_F( Address pc, char* ob )
 */
 static Address DisAND_OR( Address pc, char* ob )
 {
-    Nibble f = FetchNibble( pc++ );
-    Nibble o = FetchNibble( pc++ );
+    Nibble f = FetchNibble( pc );
+    pc++;
+    Nibble o = FetchNibble( pc );
+    pc++;
 
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
@@ -1072,7 +1086,8 @@ static Address DisAND_OR( Address pc, char* ob )
 */
 static Address DisGroup_0( Address pc, char* ob )
 {
-    Nibble n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc );
+    pc++;
 
     switch ( n ) {
         case 0x0:
@@ -1251,7 +1266,8 @@ static Address DisGroup_0( Address pc, char* ob )
 */
 static Address DisGroup_1( Address pc, char* ob )
 {
-    Nibble n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc );
+    pc++;
     Nibble f;
     int rn, ac;
     int oc, is;
@@ -1259,7 +1275,8 @@ static Address DisGroup_1( Address pc, char* ob )
     switch ( n ) {
         case 0x0:
             /* Rn=A/C */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
@@ -1268,7 +1285,8 @@ static Address DisGroup_1( Address pc, char* ob )
 
         case 0x1:
             /* A/C=Rn */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
@@ -1277,7 +1295,8 @@ static Address DisGroup_1( Address pc, char* ob )
 
         case 0x2:
             /* ARnEX, CRnEX */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
@@ -1286,20 +1305,24 @@ static Address DisGroup_1( Address pc, char* ob )
 
         case 0x3:
             /* Copy/Exchange A/C and D0/D1 */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             strcpy( ob, group_13_opc[ ( int )n ] );
             break;
 
         case 0x4:
             /* Load/Store A/C to @D0/@D1, Field selector A or B */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             strcpy( ob, group_14_opc[ ( int )n ] );
             break;
 
         case 0x5:
             /* Load/Store A/C to @D0/@D1, Other Field Selectors */
-            n = FetchNibble( pc++ );
-            f = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
+            f = FetchNibble( pc );
+            pc++;
             oc = GET_OC_3b( n );
             is = GET_IMMEDIATE_FS_FLAG( n );
 
@@ -1317,19 +1340,22 @@ static Address DisGroup_1( Address pc, char* ob )
 
         case 0x6:
             /* D0=D0+n+1 */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "D0=D0+%d", n + 1 );
             break;
 
         case 0x7:
             /* D1=D1+n+1 */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "D1=D1+%d", n + 1 );
             break;
 
         case 0x8:
             /* D0=D0-(n+1) */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "D0=D0-%d", n + 1 );
             break;
 
@@ -1353,7 +1379,8 @@ static Address DisGroup_1( Address pc, char* ob )
 
         case 0xC:
             /* D1=D1-(n+1) */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "D1=D1-%d", n + 1 );
             break;
 
@@ -1390,7 +1417,8 @@ static Address DisGroup_1( Address pc, char* ob )
  */
 static Address DisGroup_808( Address pc, char* ob )
 {
-    Nibble n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc );
+    pc++;
     Nibble m;
 
     switch ( n ) {
@@ -1402,12 +1430,14 @@ static Address DisGroup_808( Address pc, char* ob )
         case 0x1:
             /* RSI */
             strcpy( ob, "RSI" );
+            pc;
             pc++;
             break;
 
         case 0x2:
             /* LA(m) n..n */
-            m = FetchNibble( pc++ ) + 1;
+            m = FetchNibble( pc ) + 1;
+            pc++;
             sprintf( ob, "LA(%d)\t", m );
             pc = DisHexConstant( pc, ob, m );
             break;
@@ -1419,52 +1449,60 @@ static Address DisGroup_808( Address pc, char* ob )
 
         case 0x4:
             /* ABIT=0 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "ABIT=0 %d", m );
             break;
 
         case 0x5:
             /* ABIT=1 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "ABIT=1 %d", m );
             break;
 
         case 0x6:
             /* ?ABIT=0 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "?ABIT=0 %d", m );
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
         case 0x7:
             /* ?ABIT=1 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "?ABIT=1 %d", m );
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
         case 0x8:
             /* CBIT=0 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "CBIT=0 %d", m );
             break;
 
         case 0x9:
             /* CBIT=1 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "CBIT=1 %d", m );
             break;
 
         case 0xA:
             /* ?CBIT=0 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "?CBIT=0 %d", m );
             pc = DisGOYES_RTNYES( pc, ob );
             break;
 
         case 0xB:
             /* ?CBIT=1 d */
-            m = FetchNibble( pc++ );
+            m = FetchNibble( pc );
+            pc++;
             sprintf( ob, "?CBIT=1 %d", m );
             pc = DisGOYES_RTNYES( pc, ob );
             break;
@@ -1504,7 +1542,8 @@ static Address DisGroup_808( Address pc, char* ob )
  */
 static Address DisGroup_80( Address pc, char* ob )
 {
-    Nibble n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc );
+    pc++;
 
     switch ( n ) {
         case 0x0:
@@ -1541,19 +1580,22 @@ static Address DisGroup_80( Address pc, char* ob )
 
         case 0xC:
             /* C=P n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "C=P\t%d", n );
             break;
 
         case 0xD:
             /* P=C n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "P=C\t%d", n );
             break;
 
         case 0xF:
             /* CPEX */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             sprintf( ob, "CPEX\t%d", n );
             break;
 
@@ -1646,9 +1688,12 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
     switch ( rp ) {
         case 0x0:
             /* r=r+-CON fs, d */
-            f = FetchNibble( pc++ );
-            n = FetchNibble( pc++ );
-            m = FetchNibble( pc++ );
+            f = FetchNibble( pc );
+            pc++;
+            n = FetchNibble( pc );
+            pc++;
+            m = FetchNibble( pc );
+            pc++;
             rp = GET_RP( n );
 
             sprintf( ob, "%c=%c%cCON", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], ( GET_AS( n ) ? '-' : '+' ) );
@@ -1663,8 +1708,10 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
 
         case 0x1:
             /* rSRB.f fs */
-            f = FetchNibble( pc++ );
-            n = FetchNibble( pc++ );
+            f = FetchNibble( pc );
+            pc++;
+            n = FetchNibble( pc );
+            pc++;
             rp = GET_RP( n );
 
             sprintf( ob, "%cSRB.F", reg_pair[ rp ][ 0 ] );
@@ -1675,9 +1722,12 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
 
         case 0x2:
             /* Rn=r.F fs, r=R0.F fs, rRnEX.F fs */
-            f = FetchNibble( pc++ );
-            n = FetchNibble( pc++ );
-            m = FetchNibble( pc++ );
+            f = FetchNibble( pc );
+            pc++;
+            n = FetchNibble( pc );
+            pc++;
+            m = FetchNibble( pc );
+            pc++;
             rn = GET_Rn( m );
             ac = GET_AC( m );
 
@@ -1709,7 +1759,8 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
 
         case 0x3:
             /* Group 81B */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             strcpy( ob, group_81B_opc[ ( int )n ] );
             break;
 
@@ -1766,7 +1817,8 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
 */
 static Address DisTest_8A( Address pc, char* ob )
 {
-    Nibble t = FetchNibble( pc++ );
+    Nibble t = FetchNibble( pc );
+    pc++;
 
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
@@ -1846,7 +1898,8 @@ static Address DisTest_8A( Address pc, char* ob )
 */
 static Address DisTest_8B( Address pc, char* ob )
 {
-    Nibble t = FetchNibble( pc++ );
+    Nibble t = FetchNibble( pc );
+    pc++;
 
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
@@ -1930,7 +1983,8 @@ static Address DisTest_8B( Address pc, char* ob )
 */
 static Address DisGroup_8( Address pc, char* ob )
 {
-    Nibble n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc );
+    pc++;
     Address addr;
     int oc, rp;
 
@@ -1941,7 +1995,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x1:
             /* rSLC, rSRC, rSRB, Special Group_81 */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
             oc = GET_OC_1( n );
             rp = GET_RP( n );
 
@@ -1974,7 +2029,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x2:
             /* CLRHSn */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             switch ( n ) {
                 case 0x1:
@@ -2005,7 +2061,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x3:
             /* ?HS=0 */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             switch ( n ) {
                 case 0x1:
@@ -2035,21 +2092,24 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x4:
             /* ST=0 n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             sprintf( ob, "ST=0\t%d", n );
             break;
 
         case 0x5:
             /* ST=1 n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             sprintf( ob, "ST=1\t%d", n );
             break;
 
         case 0x6:
             /* ?ST=0 n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             /* Decode bit number */
             sprintf( ob, "?ST=0\t%d", n );
@@ -2060,7 +2120,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x7:
             /* ?ST=1 n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             /* Decode bit number */
             sprintf( ob, "?ST=1\t%d", n );
@@ -2071,7 +2132,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x8:
             /* ?P#n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             /* Decode bit number */
             sprintf( ob, "?P#%d", n );
@@ -2082,7 +2144,8 @@ static Address DisGroup_8( Address pc, char* ob )
 
         case 0x9:
             /* ?P=n */
-            n = FetchNibble( pc++ );
+            n = FetchNibble( pc );
+            pc++;
 
             /* Decode bit number */
             sprintf( ob, "?P=%d", n );
@@ -2174,7 +2237,8 @@ Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] )
     ob += strlen( ob );
 
     /* Get first instruction nibble */
-    Nibble n = FetchNibble( pc++ );
+    Nibble n = FetchNibble( pc );
+    pc++;
 
     switch ( n ) {
         case 0x0:

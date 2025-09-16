@@ -251,8 +251,10 @@ static int w( void )
     Nibble n;
     if ( ReadHexAddress( &addr ) )
         return FAILED;
-    while ( ReadHexDatum( &n ) == OK )
-        WriteNibble( addr++, n );
+    while ( ReadHexDatum( &n ) == OK ) {
+        WriteNibble( addr, n );
+        addr++;
+    }
     return OK;
 }
 
