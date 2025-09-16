@@ -400,7 +400,8 @@ static void FetchR( Nibble* r, register int n )
     register int p = ( int )cpu_status.P;
 
     for ( register int i = 0; i <= n; i++ ) {
-        r[ p++ ] = FetchNibble( cpu_status.PC++ );
+        r[ p++ ] = FetchNibble( cpu_status.PC );
+        cpu_status.PC++;
         if ( p >= NIBBLE_PER_REGISTER )
             p = 0;
     }
@@ -919,10 +920,12 @@ static void ExecGOYES_RTNYES( void )
 /* ?..., GOYES/RTNYES, Test with Field Selector, opcode 9ftyy, length 5 */
 static void ExecTest_9( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC++ );
+    Nibble f = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble t = FetchNibble( cpu_status.PC++ );
+    Nibble t = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += t;
     int fs = GET_FS( f );
@@ -968,7 +971,8 @@ static void ExecTest_9( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Atyy, length 5 */
 static void ExecTest_8A( void )
 {
-    Nibble t = FetchNibble( cpu_status.PC++ );
+    Nibble t = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += t;
     int tc = GET_OC_1( t );
@@ -1001,7 +1005,8 @@ static void ExecTest_8A( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Btyy, length 5 */
 static void ExecTest_8B( void )
 {
-    Nibble t = FetchNibble( cpu_status.PC++ );
+    Nibble t = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += t;
     int tc = GET_OC_1( t );
@@ -1034,10 +1039,12 @@ static void ExecTest_8B( void )
 /* ..., Register Operation with Field Selector, opcode Afo, length 3 */
 static void ExecRegOp_A( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC++ );
+    Nibble f = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += o;
     int fs = GET_FS( f );
@@ -1080,10 +1087,12 @@ static void ExecRegOp_A( void )
 /* ..., Register Operation with Field Selector, opcode Bfo, length 3 */
 static void ExecRegOp_B( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC++ );
+    Nibble f = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += o;
     int fs = GET_FS( f );
@@ -1126,7 +1135,8 @@ static void ExecRegOp_B( void )
 /* ..., Register Operation on A Fields, opcode Co, length 2 */
 static void ExecRegOp_C( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1156,7 +1166,8 @@ static void ExecRegOp_C( void )
 /* ..., Register Operation on A Fields, opcode Do, length 2 */
 static void ExecRegOp_D( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1186,7 +1197,8 @@ static void ExecRegOp_D( void )
 /* ..., Register Operation on A Fields, opcode Eo, length 2 */
 static void ExecRegOp_E( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1216,7 +1228,8 @@ static void ExecRegOp_E( void )
 /* ..., Register Operation on A Fields, opcode Fo, length 2 */
 static void ExecRegOp_F( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += 0;
     int oc = GET_OC_1( o );
@@ -1246,10 +1259,12 @@ static void ExecRegOp_F( void )
 /* .&., .!., AND/OR Operations, opcode 0Efo, length 4 */
 static void ExecAND_OR( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC++ );
+    Nibble f = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble o = FetchNibble( cpu_status.PC++ );
+    Nibble o = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1279,7 +1294,8 @@ static void ExecAND_OR( void )
 /* Instruction Group_0 */
 static void ExecGroup_0( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -1516,10 +1532,12 @@ static void ExecGroup_14( void )
 static void ExecGroup_15( void )
 {
     /* Load/Store A/C to @D0/@D1, Other Field Selectors */
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
-    Nibble f = FetchNibble( cpu_status.PC++ );
+    Nibble f = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += f;
 
@@ -1585,7 +1603,8 @@ static void ExecGroup_15( void )
 /* Instruction Group_1 */
 static void ExecGroup_1( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -1594,7 +1613,8 @@ static void ExecGroup_1( void )
 
     switch ( n ) {
         case 0x0: /* Rn=A/C */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
@@ -1603,7 +1623,8 @@ static void ExecGroup_1( void )
             CopyRR( cpu_status.R[ rn ], ( ac ? cpu_status.C : cpu_status.A ), FS_W );
             break;
         case 0x1: /* A/C=Rn */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
@@ -1612,7 +1633,8 @@ static void ExecGroup_1( void )
             CopyRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], FS_W );
             break;
         case 0x2: /* ARnEX, CRnEX */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
@@ -1630,7 +1652,8 @@ static void ExecGroup_1( void )
             ExecGroup_15();
             break;
         case 0x6: /* D0=D0+n+1 */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             ta = ( cpu_status.D0 + n + 1 ) & ADDRESS_MASK;
@@ -1638,7 +1661,8 @@ static void ExecGroup_1( void )
             cpu_status.D0 = ta;
             break;
         case 0x7: /* D1=D1+n+1 */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             ta = ( cpu_status.D1 + n + 1 ) & ADDRESS_MASK;
@@ -1646,7 +1670,8 @@ static void ExecGroup_1( void )
             cpu_status.D1 = ta;
             break;
         case 0x8: /* D0=D0-(n+1) */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             ta = ( cpu_status.D0 - n - 1 ) & ADDRESS_MASK;
@@ -1663,7 +1688,8 @@ static void ExecGroup_1( void )
             FetchD( &cpu_status.D0, 5 );
             break;
         case 0xC: /* D1=D1-(n+1) */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             ta = ( cpu_status.D1 - n - 1 ) & ADDRESS_MASK;
@@ -1690,7 +1716,8 @@ static void ExecGroup_1( void )
 /* Instruction Group_808 */
 static void ExecGroup_808( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -1764,7 +1791,8 @@ static void ExecGroup_808( void )
 /* Instruction Group_80 */
 static void ExecGroup_80( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -1822,7 +1850,8 @@ static void ExecGroup_80( void )
         case 0xF: /* CPEX */
             {
                 Nibble tmp = cpu_status.P;
-                n = FetchNibble( cpu_status.PC++ );
+                n = FetchNibble( cpu_status.PC );
+                cpu_status.PC++;
                 opcode *= 0x10;
                 opcode += n;
                 SetP( cpu_status.C[ ( int )n ] );
@@ -1844,13 +1873,16 @@ static void ExecSpecialGroup_81( int rp )
 
     switch ( rp ) {
         case 0x0: /* r=r+-CON fs, d */
-            f = FetchNibble( cpu_status.PC++ );
+            f = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += f;
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
-            m = FetchNibble( cpu_status.PC++ );
+            m = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += m;
             rp = GET_RP( n );
@@ -1861,23 +1893,28 @@ static void ExecSpecialGroup_81( int rp )
                 AddRImm( reg_pair_0[ rp ], f, m );
             break;
         case 0x1: /* rSRB.f fs */
-            f = FetchNibble( cpu_status.PC++ );
+            f = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += f;
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             rp = GET_RP( n );
             ShiftRightBitR( reg_pair_0[ rp ], f );
             break;
         case 0x2: /* Rn=r.F fs, r=R0.F fs, rRnEX.F fs */
-            f = FetchNibble( cpu_status.PC++ );
+            f = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += f;
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
-            m = FetchNibble( cpu_status.PC++ );
+            m = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += m;
             rn = GET_Rn( m );
@@ -1902,7 +1939,8 @@ static void ExecSpecialGroup_81( int rp )
             }
             break;
         case 0x3: /* Group 81B */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             switch ( n ) {
@@ -1962,7 +2000,8 @@ static void ExecSpecialGroup_81( int rp )
 /* Instruction Group_8 */
 static void ExecGroup_8( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
     Address addr;
@@ -1973,7 +2012,8 @@ static void ExecGroup_8( void )
             ExecGroup_80();
             break;
         case 0x1: /* rSLC, rSRC, rSRB, Special Group_81 */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             oc = GET_OC_1( n );
@@ -2002,10 +2042,12 @@ static void ExecGroup_8( void )
             }
             break;
         case 0x2: /* CLRHSn */
-            cpu_status.HST &= ~FetchNibble( cpu_status.PC++ );
+            cpu_status.HST &= ~FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             break;
         case 0x3: /* ?HS=0 */
-            n = FetchNibble( cpu_status.PC++ );
+            n = FetchNibble( cpu_status.PC );
+            cpu_status.PC++;
             opcode *= 0x10;
             opcode += n;
             cpu_status.carry = ( ( cpu_status.HST & n ) == 0 );
@@ -2468,7 +2510,8 @@ void OneStep( void )
 
     Address offset;
     /* Get first instruction nibble */
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 

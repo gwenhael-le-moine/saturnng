@@ -11,7 +11,8 @@
 // FIXME: 49g bugs here on display change
 static void ExecGroup_80B0( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -56,7 +57,8 @@ static void ExecGroup_80B0( void )
 
 static void ExecGroup_80B1( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -93,7 +95,8 @@ static void ExecGroup_80B1( void )
 
 static void ExecGroup_80B2( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -129,7 +132,8 @@ static void ExecGroup_80B2( void )
 
 static void ExecGroup_80B3( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -170,7 +174,8 @@ static void ExecGroup_80B3( void )
 
 static void ExecGroup_80B4( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -197,7 +202,8 @@ static void ExecGroup_80B4( void )
 
 static void ExecGroup_80B5( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -224,7 +230,8 @@ static void ExecGroup_80B5( void )
 
 static void ExecGroup_80B6( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -251,7 +258,8 @@ static void ExecGroup_80B6( void )
 
 static void ExecGroup_80B7( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -270,7 +278,8 @@ static void ExecGroup_80B7( void )
 
 static void ExecGroup_80B8( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -319,7 +328,8 @@ static void ExecGroup_80B8( void )
 
 static void ExecGroup_80B9( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -337,7 +347,8 @@ static void ExecGroup_80B9( void )
 
 static void ExecGroup_80BE( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -358,7 +369,8 @@ static void ExecGroup_80BE( void )
 
 static void ExecGroup_80BF( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -376,7 +388,8 @@ static void ExecGroup_80BF( void )
 
 static void ExecGroup_80B_catch_all( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -390,7 +403,8 @@ static void ExecGroup_80B_catch_all( void )
 
 void ExecGroup_80B( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC++ );
+    Nibble n = FetchNibble( cpu_status.PC );
+    cpu_status.PC++;
     opcode *= 0x10;
     opcode += n;
 
