@@ -58,6 +58,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <signal.h>
+
 #include "../libChf/src/Chf.h"
 #include "../options.h"
 
@@ -65,6 +66,8 @@
 #include "cpu.h"
 #include "chf_wrapper.h"
 #include "modules.h"
+#include "monitor.h"
+#include "dis.h"
 
 /*---------------------------------------------------------------------------
         Macro & Data type definitions
@@ -112,6 +115,84 @@ static int ReadCount( int* count )
 /*---------------------------------------------------------------------------
         Private functions - Command execution
   ---------------------------------------------------------------------------*/
+
+/*---------------------------------------------------------------------------
+        Private functions: dump
+  ---------------------------------------------------------------------------*/
+
+static const char* DumpR( Nibble* r )
+{
+    static char b[ NIBBLE_PER_REGISTER + 1 ];
+    static const char hex_char[ NIBBLE_PER_REGISTER ] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+
+    for ( int n = 0; n < NIBBLE_PER_REGISTER; n++ )
+        b[ n ] = hex_char[ ( int )r[ NIBBLE_PER_REGISTER - 1 - n ] ];
+
+    b[ NIBBLE_PER_REGISTER ] = '\0';
+
+    return b;
+}
+
+/* .+
+
+.creation     : 3-Feb-1998
+.description  :
+  This function dumps the current CPU status into the string buffer 'ob'.
+
+.call         :
+                DumpCpuStatus(ob);
+.input        :
+                void
+.output       :
+                char ob[DUMP_CPU_STATUS_OB_SIZE];
+.status_codes :
+                *
+.notes        :
+  1.1, 3-Feb-1998, creation
+
+.- */
+void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
+{
+    static const char* work_n[ N_WORKING_REGISTER ] = { "A", "B", "C", "D" };
+    char dob[ DISASSEMBLE_OB_SIZE ];
+    int n;
+
+    /* Dump PC and current instruction */
+    ( void )Disassemble( cpu_status.PC, dob );
+    sprintf( ob, "\n%s\n\n", dob );
+    ob += strlen( ob );
+
+    /* Dump A, B, C, D */
+    for ( n = 0; n < N_WORKING_REGISTER; n++ ) {
+        sprintf( ob, "%s:\t%s\n", work_n[ n ], DumpR( cpu_status.work[ n ] ) );
+        ob += strlen( ob );
+    }
+
+    sprintf( ob, "\n" );
+    ob += strlen( ob );
+
+    /* Dump Rn */
+    for ( n = 0; n < N_SCRATCH_REGISTER; n++ ) {
+        sprintf( ob, "R%d:\t%s\n", n, DumpR( cpu_status.R[ n ] ) );
+        ob += strlen( ob );
+    }
+
+    sprintf( ob, "\n" );
+    ob += strlen( ob );
+
+    sprintf( ob, "D0:\t%05X\t\tD1:\t%05X\n", cpu_status.D0, cpu_status.D1 );
+    ob += strlen( ob );
+
+    sprintf( ob, "P:\t%01X\t\tIN:\t%04X\t\tOUT:\t%03X\n", cpu_status.P, cpu_status.IN, cpu_status.OUT );
+    ob += strlen( ob );
+
+    sprintf( ob, "HST:\t%01X\t\tST:\t%04X\n", cpu_status.HST, cpu_status.ST );
+    ob += strlen( ob );
+
+    sprintf( ob, "hexmode: %d, carry: %d, int_enable/pending/service: %d/%d/%d, shutdn:%d\n", cpu_status.hexmode, cpu_status.carry,
+             cpu_status.int_enable, cpu_status.int_pending, cpu_status.int_service, cpu_status.shutdn );
+    ob += strlen( ob );
+}
 
 /* Run the emulator; this function exits normally only when an
    EmulatorIntRequest() is posted and satisfied

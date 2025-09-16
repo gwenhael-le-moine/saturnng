@@ -32,6 +32,11 @@
    email: cibrario@iriti.cnr.it
    ------------------------------------------------------------------------- */
 
+#  include "cpu.h"
+
+#  define DUMP_CPU_STATUS_OB_SIZE 512
+void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] );
+
 void Monitor( void );
 
 #endif /*!_MONITOR_H*/

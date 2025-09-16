@@ -76,6 +76,7 @@
 
 #include "config.h"
 #include "cpu.h"
+#include "dis.h"
 #include "chf_wrapper.h"
 #include "modules.h"
 
@@ -2169,7 +2170,7 @@ static Address DisGroup_8( Address pc, char* ob )
 Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] )
 {
     /* Disassemble current program counter */
-    sprintf( ob, "A_%05X\t", pc );
+    sprintf( ob, "[%05X]\t", pc );
     ob += strlen( ob );
 
     /* Get first instruction nibble */

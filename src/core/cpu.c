@@ -99,10 +99,17 @@
 #include "keyb.h"
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
 #include "chf_wrapper.h"
+#include "dis.h"
+
+#define OPCODE_LENGTH( oc )                                                                                                                \
+    ( ( oc / 0x1000000 > 0 ) + ( oc / 0x100000 > 0 ) + ( oc / 0x10000 > 0 ) + ( oc / 0x1000 > 0 ) + ( oc / 0x100 > 0 ) +                   \
+      ( oc / 0x10 > 0 ) + 1 )
 
 /*---------------------------------------------------------------------------
         Global variables
   ---------------------------------------------------------------------------*/
+
+int opcode;
 
 struct CpuStatus cpu_status;
 
@@ -913,7 +920,11 @@ static void ExecGOYES_RTNYES( void )
 static void ExecTest_9( void )
 {
     Nibble f = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += f;
     Nibble t = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += t;
     int fs = GET_FS( f );
     int tc = GET_OC_2( f, t );
     int rp = GET_RP( t );
@@ -958,6 +969,8 @@ static void ExecTest_9( void )
 static void ExecTest_8A( void )
 {
     Nibble t = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += t;
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
 
@@ -989,6 +1002,8 @@ static void ExecTest_8A( void )
 static void ExecTest_8B( void )
 {
     Nibble t = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += t;
     int tc = GET_OC_1( t );
     int rp = GET_RP( t );
 
@@ -1020,7 +1035,11 @@ static void ExecTest_8B( void )
 static void ExecRegOp_A( void )
 {
     Nibble f = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += f;
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += o;
     int fs = GET_FS( f );
     int oc = GET_OC_2( f, o );
     int rp = GET_RP( o );
@@ -1062,7 +1081,11 @@ static void ExecRegOp_A( void )
 static void ExecRegOp_B( void )
 {
     Nibble f = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += f;
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += o;
     int fs = GET_FS( f );
     int oc = GET_OC_2( f, o );
     int rp = GET_RP( o );
@@ -1104,6 +1127,8 @@ static void ExecRegOp_B( void )
 static void ExecRegOp_C( void )
 {
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += o;
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
@@ -1132,6 +1157,8 @@ static void ExecRegOp_C( void )
 static void ExecRegOp_D( void )
 {
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += o;
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
@@ -1160,6 +1187,8 @@ static void ExecRegOp_D( void )
 static void ExecRegOp_E( void )
 {
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += o;
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
@@ -1188,6 +1217,8 @@ static void ExecRegOp_E( void )
 static void ExecRegOp_F( void )
 {
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += 0;
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
@@ -1216,7 +1247,11 @@ static void ExecRegOp_F( void )
 static void ExecAND_OR( void )
 {
     Nibble f = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += f;
     Nibble o = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += o;
     int oc = GET_OC_1( o );
     int rp = GET_RP( o );
 
@@ -1245,6 +1280,8 @@ static void ExecAND_OR( void )
 static void ExecGroup_0( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0: /* RTNSXM */
@@ -1480,7 +1517,12 @@ static void ExecGroup_15( void )
 {
     /* Load/Store A/C to @D0/@D1, Other Field Selectors */
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
     Nibble f = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += f;
+
     int oc = GET_OC_3b( n );
     int is = GET_IMMEDIATE_FS_FLAG( n );
 
@@ -1544,12 +1586,17 @@ static void ExecGroup_15( void )
 static void ExecGroup_1( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
+
     int rn, ac;
     Address ta;
 
     switch ( n ) {
         case 0x0: /* Rn=A/C */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
@@ -1557,6 +1604,8 @@ static void ExecGroup_1( void )
             break;
         case 0x1: /* A/C=Rn */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
@@ -1564,6 +1613,8 @@ static void ExecGroup_1( void )
             break;
         case 0x2: /* ARnEX, CRnEX */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
@@ -1580,18 +1631,24 @@ static void ExecGroup_1( void )
             break;
         case 0x6: /* D0=D0+n+1 */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             ta = ( cpu_status.D0 + n + 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta < cpu_status.D0 );
             cpu_status.D0 = ta;
             break;
         case 0x7: /* D1=D1+n+1 */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             ta = ( cpu_status.D1 + n + 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta < cpu_status.D1 );
             cpu_status.D1 = ta;
             break;
         case 0x8: /* D0=D0-(n+1) */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             ta = ( cpu_status.D0 - n - 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta > cpu_status.D0 );
             cpu_status.D0 = ta;
@@ -1607,6 +1664,8 @@ static void ExecGroup_1( void )
             break;
         case 0xC: /* D1=D1-(n+1) */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             ta = ( cpu_status.D1 - n - 1 ) & ADDRESS_MASK;
             cpu_status.carry = ( ta > cpu_status.D1 );
             cpu_status.D1 = ta;
@@ -1632,6 +1691,8 @@ static void ExecGroup_1( void )
 static void ExecGroup_808( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0: /* INTON */
@@ -1704,6 +1765,8 @@ static void ExecGroup_808( void )
 static void ExecGroup_80( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0: /* OUT=CS */
@@ -1760,6 +1823,8 @@ static void ExecGroup_80( void )
             {
                 Nibble tmp = cpu_status.P;
                 n = FetchNibble( cpu_status.PC++ );
+                opcode *= 0x10;
+                opcode += n;
                 SetP( cpu_status.C[ ( int )n ] );
                 cpu_status.C[ ( int )n ] = tmp;
             }
@@ -1780,8 +1845,14 @@ static void ExecSpecialGroup_81( int rp )
     switch ( rp ) {
         case 0x0: /* r=r+-CON fs, d */
             f = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += f;
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             m = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += m;
             rp = GET_RP( n );
 
             if ( GET_AS( n ) ) /* Subtract */
@@ -1791,14 +1862,24 @@ static void ExecSpecialGroup_81( int rp )
             break;
         case 0x1: /* rSRB.f fs */
             f = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += f;
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             rp = GET_RP( n );
             ShiftRightBitR( reg_pair_0[ rp ], f );
             break;
         case 0x2: /* Rn=r.F fs, r=R0.F fs, rRnEX.F fs */
             f = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += f;
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             m = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += m;
             rn = GET_Rn( m );
             ac = GET_AC( m );
 
@@ -1821,7 +1902,10 @@ static void ExecSpecialGroup_81( int rp )
             }
             break;
         case 0x3: /* Group 81B */
-            switch ( n = FetchNibble( cpu_status.PC++ ) ) {
+            n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
+            switch ( n ) {
                 case 0x1:
                     if ( config.big_screen && config.enable_BUSCC )
                         DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: LOOP2 (RPL2 80B00)" )
@@ -1879,6 +1963,8 @@ static void ExecSpecialGroup_81( int rp )
 static void ExecGroup_8( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
     Address addr;
     int oc, rp;
 
@@ -1888,6 +1974,8 @@ static void ExecGroup_8( void )
             break;
         case 0x1: /* rSLC, rSRC, rSRB, Special Group_81 */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             oc = GET_OC_1( n );
             rp = GET_RP( n );
 
@@ -1918,6 +2006,8 @@ static void ExecGroup_8( void )
             break;
         case 0x3: /* ?HS=0 */
             n = FetchNibble( cpu_status.PC++ );
+            opcode *= 0x10;
+            opcode += n;
             cpu_status.carry = ( ( cpu_status.HST & n ) == 0 );
             ExecGOYES_RTNYES();
             break;
@@ -1971,23 +2061,6 @@ static void ExecGroup_8( void )
             ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
     }
-}
-
-/*---------------------------------------------------------------------------
-        Private functions: dump
-  ---------------------------------------------------------------------------*/
-
-static const char* DumpR( Nibble* r )
-{
-    static char b[ NIBBLE_PER_REGISTER + 1 ];
-    static const char hex_char[ NIBBLE_PER_REGISTER ] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
-
-    for ( int n = 0; n < NIBBLE_PER_REGISTER; n++ )
-        b[ n ] = hex_char[ ( int )r[ NIBBLE_PER_REGISTER - 1 - n ] ];
-
-    b[ NIBBLE_PER_REGISTER ] = '\0';
-
-    return b;
 }
 
 /*---------------------------------------------------------------------------
@@ -2370,67 +2443,6 @@ bool CpuHaltAllowed( void ) { return true; }
 
 .creation     : 3-Feb-1998
 .description  :
-  This function dumps the current CPU status into the string buffer 'ob'.
-
-.call         :
-                DumpCpuStatus(ob);
-.input        :
-                void
-.output       :
-                char ob[DUMP_CPU_STATUS_OB_SIZE];
-.status_codes :
-                *
-.notes        :
-  1.1, 3-Feb-1998, creation
-
-.- */
-void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
-{
-    static const char* work_n[ N_WORKING_REGISTER ] = { "A", "B", "C", "D" };
-    char dob[ DISASSEMBLE_OB_SIZE ];
-    int n;
-
-    /* Dump PC and current instruction */
-    ( void )Disassemble( cpu_status.PC, dob );
-    sprintf( ob, "\n%s\n\n", dob );
-    ob += strlen( ob );
-
-    /* Dump A, B, C, D */
-    for ( n = 0; n < N_WORKING_REGISTER; n++ ) {
-        sprintf( ob, "%s:\t%s\n", work_n[ n ], DumpR( cpu_status.work[ n ] ) );
-        ob += strlen( ob );
-    }
-
-    sprintf( ob, "\n" );
-    ob += strlen( ob );
-
-    /* Dump Rn */
-    for ( n = 0; n < N_SCRATCH_REGISTER; n++ ) {
-        sprintf( ob, "R%d:\t%s\n", n, DumpR( cpu_status.R[ n ] ) );
-        ob += strlen( ob );
-    }
-
-    sprintf( ob, "\n" );
-    ob += strlen( ob );
-
-    sprintf( ob, "D0:\t%05X\t\tD1:\t%05X\n", cpu_status.D0, cpu_status.D1 );
-    ob += strlen( ob );
-
-    sprintf( ob, "P:\t%01X\t\tIN:\t%04X\t\tOUT:\t%03X\n", cpu_status.P, cpu_status.IN, cpu_status.OUT );
-    ob += strlen( ob );
-
-    sprintf( ob, "HST:\t%01X\t\tST:\t%04X\n", cpu_status.HST, cpu_status.ST );
-    ob += strlen( ob );
-
-    sprintf( ob, "hexmode: %d, carry: %d, int_enable/pending/service: %d/%d/%d, shutdn:%d\n", cpu_status.hexmode, cpu_status.carry,
-             cpu_status.int_enable, cpu_status.int_pending, cpu_status.int_service, cpu_status.shutdn );
-    ob += strlen( ob );
-}
-
-/* .+
-
-.creation     : 3-Feb-1998
-.description  :
   This function executes a Saturn instruction starting from the current
   program counter, updating accordingly the global cpu_status data structure.
 
@@ -2452,17 +2464,13 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 .- */
 void OneStep( void )
 {
-    if ( config.debug_level > 0 && config.debug_level & DEBUG_C_OPCODES ) {
-        char dob[ DISASSEMBLE_OB_SIZE ];
-
-        /* Dump PC and current instruction */
-        ( void )Disassemble( cpu_status.PC, dob );
-        fprintf( stderr, "%s\n", dob );
-    }
+    opcode = 0;
 
     Address offset;
     /* Get first instruction nibble */
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0: /* Group_0 */
@@ -2536,5 +2544,13 @@ void OneStep( void )
         default:
             ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
             break;
+    }
+
+    if ( config.verbose ) {
+        char dis_opcode[ DISASSEMBLE_OB_SIZE ];
+        Disassemble( opcode, dis_opcode );
+
+        // fprintf( stderr, "opcode: %x (%i) => %s\n", opcode, OPCODE_LENGTH( opcode ), dis_opcode );
+        fprintf( stderr, "%s\n", dis_opcode );
     }
 }

@@ -58,6 +58,7 @@ ChfTable message_table[] = {
     {CPU_CHF_MODULE_ID,     CPU_E_BAD_OPCODE,        "Bad opcode @ PC[%05X], N[%01X]"                                                        },
     {CPU_CHF_MODULE_ID,     CPU_E_SAVE,              "Can't save CPU status to disk"                                                         },
     {CPU_CHF_MODULE_ID,     CPU_E_NO_HALT,           "Halt/Run requests not allowed; #undef CPU_SPIN_SHUTDN"                                 },
+    {CPU_CHF_MODULE_ID,     CPU_E_BAD_OPCODE2,       "Bad opcode %X"                                                                         },
     {CPU_CHF_MODULE_ID,     CPU_F_INTERR,            "Internal error [%s]"                                                                   },
     {CPU_CHF_MODULE_ID,     CPU_F_BAD_SHUTDN,        "Unexpected CPU shutdown"                                                               },
 

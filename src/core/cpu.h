@@ -119,9 +119,6 @@
 
 #  define INT_HANDLER_PC ( ( Address )0x0000F )
 
-#  define DISASSEMBLE_OB_SIZE 128
-#  define DUMP_CPU_STATUS_OB_SIZE 512
-
 /* Instruction opcode access macros:
      GET_FS(f)		returns the short field-selector value from the
                         given nibble (bits 2..0)
@@ -275,6 +272,8 @@ typedef enum /* 2.1: EmulatorExit() option */
 
 extern struct CpuStatus cpu_status;
 
+extern int opcode;
+
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
@@ -303,6 +302,7 @@ typedef enum {
     CPU_E_BAD_OPCODE = 301,      /* Bad opc. pc=%x, value=%x */
     CPU_E_SAVE = 302,            /* Can't save CPU status */
     CPU_E_NO_HALT = 303,         /* 3.13: Halt/Run not allowed */
+    CPU_E_BAD_OPCODE2 = 304,     /* Bad opc. pc=%x, value=%x */
     CPU_F_INTERR = 401,          /* Internal error %s */
     CPU_F_BAD_SHUTDN = 402,      /* Unexpected CPU shutdown */
 } cpu_chf_message_id_t;
@@ -324,8 +324,5 @@ void EmulatorExit( exit_option_t opt ); /* 2.1 */
 int CpuHaltRequest( void );             /* 3.13 */
 int CpuRunRequest( void );              /* 3.13 */
 bool CpuHaltAllowed( void );            /* 3.13 */
-
-Address Disassemble( Address pc, char ob[ DISASSEMBLE_OB_SIZE ] ); /* dis.c */
-void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] );
 
 #endif /*!_CPU_H*/

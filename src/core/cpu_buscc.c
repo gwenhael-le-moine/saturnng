@@ -12,6 +12,8 @@
 static void ExecGroup_80B0( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0: /* RPL2 { Returns to RPL (A=DAT0.A D0+5 PC=(A) } */
@@ -47,7 +49,7 @@ static void ExecGroup_80B0( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -55,6 +57,8 @@ static void ExecGroup_80B0( void )
 static void ExecGroup_80B1( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0: // simulate off function
@@ -82,7 +86,7 @@ static void ExecGroup_80B1( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -90,6 +94,8 @@ static void ExecGroup_80B1( void )
 static void ExecGroup_80B2( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x8:
@@ -116,7 +122,7 @@ static void ExecGroup_80B2( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -124,6 +130,8 @@ static void ExecGroup_80B2( void )
 static void ExecGroup_80B3( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0:
@@ -155,7 +163,7 @@ static void ExecGroup_80B3( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -163,6 +171,8 @@ static void ExecGroup_80B3( void )
 static void ExecGroup_80B4( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0:
@@ -180,7 +190,7 @@ static void ExecGroup_80B4( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -188,6 +198,9 @@ static void ExecGroup_80B4( void )
 static void ExecGroup_80B5( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
+
     switch ( n ) {
         case 0x0:
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "Not implemented: REMON" )
@@ -204,7 +217,7 @@ static void ExecGroup_80B5( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -212,6 +225,8 @@ static void ExecGroup_80B5( void )
 static void ExecGroup_80B6( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0:
@@ -229,7 +244,7 @@ static void ExecGroup_80B6( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -237,6 +252,8 @@ static void ExecGroup_80B6( void )
 static void ExecGroup_80B7( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0xF: // SETFLDn not implemented, set carry for failed
@@ -246,7 +263,7 @@ static void ExecGroup_80B7( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -254,6 +271,8 @@ static void ExecGroup_80B7( void )
 static void ExecGroup_80B8( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0:
@@ -267,6 +286,7 @@ static void ExecGroup_80B8( void )
             break;
         case 0x3:
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: r=r*s" )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
         case 0x4:
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: r=r/s" )
@@ -292,7 +312,7 @@ static void ExecGroup_80B8( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -300,6 +320,8 @@ static void ExecGroup_80B8( void )
 static void ExecGroup_80B9( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0:
@@ -308,7 +330,7 @@ static void ExecGroup_80B9( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -316,6 +338,8 @@ static void ExecGroup_80B9( void )
 static void ExecGroup_80BE( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0xE:
@@ -327,7 +351,7 @@ static void ExecGroup_80BE( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -335,6 +359,8 @@ static void ExecGroup_80BE( void )
 static void ExecGroup_80BF( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0xF:
@@ -343,7 +369,21 @@ static void ExecGroup_80BF( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
+            break;
+    }
+}
+
+static void ExecGroup_80B_catch_all( void )
+{
+    Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
+
+    switch ( n ) {
+        default:
+            /* Unknown opcode */
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }
@@ -351,6 +391,8 @@ static void ExecGroup_80BF( void )
 void ExecGroup_80B( void )
 {
     Nibble n = FetchNibble( cpu_status.PC++ );
+    opcode *= 0x10;
+    opcode += n;
 
     switch ( n ) {
         case 0x0:
@@ -383,6 +425,12 @@ void ExecGroup_80B( void )
         case 0x9:
             ExecGroup_80B9();
             break;
+        case 0xA:
+        case 0xB:
+        case 0xC:
+        case 0xD:
+            ExecGroup_80B_catch_all();
+            break;
         case 0xE:
             ExecGroup_80BE();
             break;
@@ -392,7 +440,7 @@ void ExecGroup_80B( void )
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE2, opcode )
             break;
     }
 }

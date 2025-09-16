@@ -60,6 +60,7 @@ HEADERS = src/options.h \
 	src/core/monitor.h \
 	src/core/serial.h \
 	src/core/x_func.h \
+	src/core/dis.h \
 	src/core/cpu.h \
 	src/core/cpu_buscc.h \
 	src/core/chf_wrapper.h \
