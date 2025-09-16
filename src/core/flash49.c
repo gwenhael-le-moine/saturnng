@@ -257,7 +257,8 @@ static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress ad
             break;
     }
 
-    if ( --wb_cdown < 0 )
+    --wb_cdown;
+    if ( wb_cdown < 0 )
         *state = FLASH_ST_WRITE_CONFIRM;
 
     return 0; /* No result; this is a write cycle */
