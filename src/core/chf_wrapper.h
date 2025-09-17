@@ -97,21 +97,21 @@
 
 #  include "../options.h"
 
-#  define _DEBUG_PREFIX( module_id, debug_class, message_id )                                                                            \
+#  define _DEBUG_PREFIX( module_id, debug_class, message_id )                                                                              \
       {                                                                                                                                    \
           if ( config.debug_level & ( debug_class ) ) {                                                                                    \
     ChfGenerate( module_id, __FILE__, __LINE__, message_id, CHF_INFO
 
-#  define _LOG_PREFIX( module_id, message_id, severity )                                                                              \
+#  define _LOG_PREFIX( module_id, message_id, severity )                                                                                   \
       {                                                                                                                                    \
           if ( severity > CHF_INFO || config.verbose ) {                                                                                   \
     ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
 
-#  define _SIGNAL_PREFIX( module_id, message_id, severity )                                                                              \
+#  define _SIGNAL_PREFIX( module_id, message_id, severity )                                                                                \
       {                                                                                                                                    \
           { ChfGenerate( module_id, __FILE__, __LINE__, message_id, severity
 
-#  define _POSTFIX( module_id ) );                                                                                                       \
+#  define _POSTFIX( module_id ) );                                                                                                         \
       ChfSignal( module_id );                                                                                                              \
       }                                                                                                                                    \
       }
@@ -124,8 +124,7 @@
       _DEBUG_PREFIX( module_id, debug_class, message_id ), __VA_ARGS__ _POSTFIX( module_id )
 #  define DEBUG0( module_id, debug_class, message_id ) _DEBUG_PREFIX( module_id, debug_class, message_id ) _POSTFIX( module_id )
 
-#  define LOG( module_id, message_id, severity, ... )                                                                                   \
-      _LOG_PREFIX( module_id, message_id, severity ), __VA_ARGS__ _POSTFIX( module_id )
+#  define LOG( module_id, message_id, severity, ... ) _LOG_PREFIX( module_id, message_id, severity ), __VA_ARGS__ _POSTFIX( module_id )
 #  define LOG0( module_id, message_id, severity ) _LOG_PREFIX( module_id, message_id, severity ) _POSTFIX( module_id )
 
 #  define SUCCESS( module_id, message_id, ... ) LOG( module_id, message_id, CHF_SUCCESS, __VA_ARGS__ )

@@ -140,9 +140,8 @@ void RomInit49( void )
     }
 
     bool err = ReadNibblesFromFile( config.rom_path, N_FLASH_SIZE_49, mod_status_49->flash );
-    if ( err ) {
+    if ( err )
         FATAL0( MOD_CHF_MODULE_ID, MOD_F_ROM_INIT )
-    }
 }
 
 /* .+
@@ -401,7 +400,7 @@ void Ce1Save49( void )
    the macro definition is here to allow us to write the code once and
    use it many times without incurring a function call overhead.
 */
-#define Ce1SetViews                                                                                                                        \
+#define CE1_SET_VIEWS                                                                                                                      \
     {                                                                                                                                      \
         mod_status.hdw.accel.a49.view[ 0 ] = ( ( XAddress )( ( rel_address >> 5 ) & 0x03 ) << 18 );                                        \
                                                                                                                                            \
@@ -440,7 +439,7 @@ Nibble Ce1Read49( Address rel_address )
        view[] can be directly or-ed with a relative port address to
        obtain a valid index in Flash Rom.
     */
-    Ce1SetViews;
+    CE1_SET_VIEWS;
 
     return ( Nibble )0x0;
 }
@@ -478,7 +477,7 @@ void Ce1Write49( Address rel_address, Nibble datum )
        view[] can be directly or-ed with a relative port address to
        obtain a valid index in Flash Rom.
     */
-    Ce1SetViews;
+    CE1_SET_VIEWS;
 }
 
 /*---------------------------------------------------------------------------
@@ -617,13 +616,11 @@ void NCe3Init49( void )
     /* NCE3 always present and write enabled */
     mod_status.hdw.card_status |= ( NCE3_CARD_PRESENT | NCE3_CARD_WE );
 
-#if 0
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
     */
-    cpu_status.HST |= HST_MP_MASK;
-    CpuIntRequest(INT_REQUEST_IRQ);
-#endif
+    /* cpu_status.HST |= HST_MP_MASK; */
+    /* CpuIntRequest(INT_REQUEST_IRQ); */
 }
 
 /* .+
@@ -676,10 +673,11 @@ void NCe3Save49( void ) { /* Do nothing; the whole RAM is saved by RamSave49() *
 .- */
 Nibble NCe3Read49( Address rel_address )
 {
-    return ( mod_status.hdw.hdw[ HDW_LCR_OFFSET ] & LCR_LED )
-               ? FlashRead49( mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] |
-                              ( rel_address & FLASH_BANK_MASK ) )
-               : mod_status_49->nce3[ rel_address & NCE3_RAM_MASK ];
+    if ( mod_status.hdw.hdw[ HDW_LCR_OFFSET ] & LCR_LED )
+        return FlashRead49( mod_status.hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] |
+                            ( rel_address & FLASH_BANK_MASK ) );
+    else
+        return mod_status_49->nce3[ rel_address & NCE3_RAM_MASK ];
 }
 
 /* .+

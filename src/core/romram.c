@@ -728,9 +728,7 @@ void NCe3Write( Address rel_address, Nibble datum )
 {
 #ifdef N_PORT_2_BANK
     mod_status_48->port_2[ rel_address | mod_status.hdw.accel.a48.bs_address ] = datum;
-
 #else
     ERROR( MOD_CHF_MODULE_ID, MOD_E_NCE3_WRITE, rel_address, datum )
-
 #endif
 }

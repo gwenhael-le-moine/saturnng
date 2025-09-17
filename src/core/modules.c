@@ -155,14 +155,14 @@ static int repl_c = 0;  /* Entry replacement counter */
 #  define DECR_PERF_COUNTER( x ) x--
 #  define PRINT_PERF_COUNTER( x ) DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
 
-#  define PRINT_CACHE_STATS                                                                                                                  \
+#  define PRINT_CACHE_STATS                                                                                                                \
       {                                                                                                                                    \
-          PRINT_PERF_COUNTER( alloc_c );                                                                                                         \
-          PRINT_PERF_COUNTER( flush_c );                                                                                                         \
-          PRINT_PERF_COUNTER( hit_c );                                                                                                           \
-          PRINT_PERF_COUNTER( lhit_c );                                                                                                          \
-          PRINT_PERF_COUNTER( miss_c );                                                                                                          \
-          PRINT_PERF_COUNTER( repl_c );                                                                                                          \
+          PRINT_PERF_COUNTER( alloc_c );                                                                                                   \
+          PRINT_PERF_COUNTER( flush_c );                                                                                                   \
+          PRINT_PERF_COUNTER( hit_c );                                                                                                     \
+          PRINT_PERF_COUNTER( lhit_c );                                                                                                    \
+          PRINT_PERF_COUNTER( miss_c );                                                                                                    \
+          PRINT_PERF_COUNTER( repl_c );                                                                                                    \
       }
 
 #else
