@@ -148,7 +148,7 @@ static void EmulatorLoop( void )
 {
     struct timeval old_t, cur_t;
     int ela;
-    int inner_loop = cpu_status.inner_loop;
+    int inner_loop = cpu.inner_loop;
     int t1_count = 0;
 
     /* Ignore past interrupt requests */
@@ -224,20 +224,20 @@ static void EmulatorLoop( void )
 
         /* 3.13: Force an upper limit to the CPU speed if the run-time option
            config.throttle is defined: inner_loop is limited to
-           cpu_status.inner_loop_max
+           cpu.inner_loop_max
            and the excess time, if any, is spent sleeping; usleep() is
            BSD 4.3-specific, but most recent systems should offer it anyway,
            well, I hope.
-           The special value cpu_status.inner_loop_max==0 gives maximum speed.
+           The special value cpu.inner_loop_max==0 gives maximum speed.
         */
         if ( config.throttle )
-            if ( cpu_status.inner_loop_max != 0 && inner_loop >= cpu_status.inner_loop_max ) {
-                inner_loop = cpu_status.inner_loop_max;
+            if ( cpu.inner_loop_max != 0 && inner_loop >= cpu.inner_loop_max ) {
+                inner_loop = cpu.inner_loop_max;
                 if ( T1_INTERVAL > ela )
                     usleep( T1_INTERVAL - ela );
             }
 
-        cpu_status.inner_loop = inner_loop;
+        cpu.inner_loop = inner_loop;
         old_t = cur_t;
     }
 }
@@ -317,7 +317,7 @@ static ChfAction do_SHUTDN( void )
             CpuIntRequest( INT_REQUEST_IRQ );
     }
 
-    while ( cpu_status.shutdn ) {
+    while ( cpu.shutdn ) {
         unsigned long ms = MAX_IDLE_X_LOOP_TIMEOUT;
         unsigned long mst;
         int ela;

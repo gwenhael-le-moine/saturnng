@@ -56,7 +56,7 @@
     needed because the HP firmware uses an active loop instead of a
     timer to determine the keyboard automatic repeat rate.
 
-  - Changed initial value of cpu_status.inner_loop_max after a CPU reset,
+  - Changed initial value of cpu.inner_loop_max after a CPU reset,
     to be as documented (that is, maximum speed).
 
   - During CPU initialization, both shutdn and halt flags are now
@@ -80,7 +80,7 @@
   when -ansi -pedantic -Wall options are selected.
 
   Revision 1.2  2000/09/07  14:31:34  cibrario
-  Bug fix: cpu_status.return_sp and .reset_req were not reset; this gave
+  Bug fix: cpu.return_sp and .reset_req were not reset; this gave
   troubles when attempting to override a corrupt status with CpuReset().
 
   Revision 1.1  1998/02/17  15:25:16  cibrario
@@ -107,7 +107,7 @@
 
 int opcode;
 
-struct CpuStatus cpu_status;
+struct Cpu cpu;
 
 /*---------------------------------------------------------------------------
         Private variables
@@ -132,11 +132,11 @@ static const int fs_idx_hi[ N_FS ] =
 /* Register Pair pointers */
 static Nibble* const reg_pair_0[] =
     /*	AB,		BC,		CA,		DC		*/
-    { cpu_status.A, cpu_status.B, cpu_status.C, cpu_status.D };
+    { cpu.A, cpu.B, cpu.C, cpu.D };
 
 static Nibble* const reg_pair_1[] =
     /*	AB,		BC,		CA,		DC		*/
-    { cpu_status.B, cpu_status.C, cpu_status.A, cpu_status.C };
+    { cpu.B, cpu.C, cpu.A, cpu.C };
 
 /* Nibble bit masks */
 static const Nibble nibble_bit_mask[] = { 0x1, 0x2, 0x4, 0x8 };
@@ -168,18 +168,18 @@ static const int dec_one_c[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0 };
 /* PushRSTK */
 static void PushRSTK( const Address r )
 {
-    cpu_status.return_stack[ cpu_status.return_sp ] = r;
-    cpu_status.return_sp = ( cpu_status.return_sp + 1 ) & RETURN_SP_MASK;
+    cpu.return_stack[ cpu.return_sp ] = r;
+    cpu.return_sp = ( cpu.return_sp + 1 ) & RETURN_SP_MASK;
 }
 
 /* PopRSTK */
 static Address PopRSTK( void )
 {
-    cpu_status.return_sp = ( cpu_status.return_sp - 1 ) & RETURN_SP_MASK;
+    cpu.return_sp = ( cpu.return_sp - 1 ) & RETURN_SP_MASK;
 
-    Address r = cpu_status.return_stack[ cpu_status.return_sp ];
+    Address r = cpu.return_stack[ cpu.return_sp ];
 
-    cpu_status.return_stack[ cpu_status.return_sp ] = ( Address )0;
+    cpu.return_stack[ cpu.return_sp ] = ( Address )0;
 
     return r;
 }
@@ -204,8 +204,8 @@ static void ExecIN( Nibble* r )
        the PC as appropriate.
 
        The number of repetions depends linearly, with gain CPU_SLOW_IN,
-       from the current value of cpu_status.inner_loop:
-       cpu_status.inner_loop==INNER_LOOP_MAX corresponds to the nominal
+       from the current value of cpu.inner_loop:
+       cpu.inner_loop==INNER_LOOP_MAX corresponds to the nominal
        CPU speed of 4MHz and to a repetition rate of 1 (instructions are
        executed once as usual).
     */
@@ -215,19 +215,19 @@ static void ExecIN( Nibble* r )
        was not zero (counter not expired yet).
     */
     if ( count_down-- != 0 ) {
-        cpu_status.PC -= 3;
+        cpu.PC -= 3;
         return;
     }
 
     /* Counter expired; reset counter and execute the instruction */
-    count_down = ( ( cpu_status.inner_loop + ( INNER_LOOP_MAX / 2 ) ) / INNER_LOOP_MAX ) * CPU_SLOW_IN;
+    count_down = ( ( cpu.inner_loop + ( INNER_LOOP_MAX / 2 ) ) / INNER_LOOP_MAX ) * CPU_SLOW_IN;
 #endif
-    cpu_status.IN = KeybIN( cpu_status.OUT );
+    cpu.IN = KeybIN( cpu.OUT );
 
-    r[ 0 ] = ( Nibble )( cpu_status.IN & NIBBLE_MASK );
-    r[ 1 ] = ( Nibble )( ( cpu_status.IN ) >> 4 & NIBBLE_MASK );
-    r[ 2 ] = ( Nibble )( ( cpu_status.IN ) >> 8 & NIBBLE_MASK );
-    r[ 3 ] = ( Nibble )( ( cpu_status.IN ) >> 12 & NIBBLE_MASK );
+    r[ 0 ] = ( Nibble )( cpu.IN & NIBBLE_MASK );
+    r[ 1 ] = ( Nibble )( ( cpu.IN ) >> 4 & NIBBLE_MASK );
+    r[ 2 ] = ( Nibble )( ( cpu.IN ) >> 8 & NIBBLE_MASK );
+    r[ 3 ] = ( Nibble )( ( cpu.IN ) >> 12 & NIBBLE_MASK );
 }
 
 /*---------------------------------------------------------------------------
@@ -237,7 +237,7 @@ static void ExecIN( Nibble* r )
 static void ExecSHUTDN( void )
 {
     /* Set shutdown flag */
-    cpu_status.shutdn = true;
+    cpu.shutdn = true;
 
     /* the CPU module implements SHUTDN signalling the condition CPU_I_SHUTDN */
     SIGNAL0( CPU_CHF_MODULE_ID, CPU_I_SHUTDN, CHF_INFO )
@@ -301,8 +301,8 @@ static void Addr2RS( Nibble* d, Address a )
 /* Read a field of a DataRegister from memory */
 static void ReadDAT( Nibble* d, Address s, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ ) {
         d[ n ] = ReadNibble( s );
@@ -320,8 +320,8 @@ static void ReadDATImm( Nibble* d, Address s, int imm_fs )
 /* Write a field of a DataRegister into memory */
 static void WriteDAT( Address d, const Nibble* r, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ ) {
         WriteNibble( d, r[ n ] );
@@ -386,8 +386,8 @@ static void FetchD( Address* d, register int n )
     register int shift = 0;
 
     for ( register int i = 0; i < n; i++ ) {
-        v |= ( ( Address )FetchNibble( cpu_status.PC ) << shift );
-        cpu_status.PC++;
+        v |= ( ( Address )FetchNibble( cpu.PC ) << shift );
+        cpu.PC++;
         mask <<= 4;
         shift += 4;
     }
@@ -400,12 +400,12 @@ static void FetchD( Address* d, register int n )
 */
 static void FetchR( Nibble* r, register int n )
 {
-    register int p = ( int )cpu_status.P;
+    register int p = ( int )cpu.P;
 
     for ( register int i = 0; i <= n; i++ ) {
-        r[ p ] = FetchNibble( cpu_status.PC );
+        r[ p ] = FetchNibble( cpu.PC );
         p++;
-        cpu_status.PC++;
+        cpu.PC++;
         if ( p >= NIBBLE_PER_REGISTER )
             p = 0;
     }
@@ -416,11 +416,11 @@ static void FetchR( Nibble* r, register int n )
   ---------------------------------------------------------------------------*/
 static void SetP( Nibble n )
 {
-    cpu_status.P = n;
+    cpu.P = n;
 
-    cpu_status.fs_idx_lo[ FS_P ] = n;
-    cpu_status.fs_idx_hi[ FS_P ] = n;
-    cpu_status.fs_idx_hi[ FS_WP ] = n;
+    cpu.fs_idx_lo[ FS_P ] = n;
+    cpu.fs_idx_hi[ FS_P ] = n;
+    cpu.fs_idx_hi[ FS_WP ] = n;
 }
 
 /*---------------------------------------------------------------------------
@@ -432,32 +432,32 @@ static void TestRREq( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
-            cpu_status.carry = false;
+            cpu.carry = false;
             return;
         };
 
-    cpu_status.carry = true;
+    cpu.carry = true;
 }
 
 /* ?r=0 */
 static void TestRZ( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
-            cpu_status.carry = false;
+            cpu.carry = false;
             return;
         };
 
-    cpu_status.carry = true;
+    cpu.carry = true;
 }
 
 /* ?r#s */
@@ -465,32 +465,32 @@ static void TestRRNe( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
-            cpu_status.carry = true;
+            cpu.carry = true;
             return;
         };
 
-    cpu_status.carry = false;
+    cpu.carry = false;
 }
 
 /* ?r#0 */
 static void TestRNZ( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
-            cpu_status.carry = true;
+            cpu.carry = true;
             return;
         };
 
-    cpu_status.carry = false;
+    cpu.carry = false;
 }
 
 /* ?r>s */
@@ -498,21 +498,21 @@ static void TestRRGt( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = true;
+            cpu.carry = true;
             return;
         };
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = false;
+            cpu.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = false;
+    cpu.carry = false;
 }
 
 /* ?r>=s */
@@ -520,21 +520,21 @@ static void TestRRGe( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = true;
+            cpu.carry = true;
             return;
         };
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = false;
+            cpu.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = true;
+    cpu.carry = true;
 }
 
 /* ?r<s */
@@ -542,21 +542,21 @@ static void TestRRLt( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = true;
+            cpu.carry = true;
             return;
         };
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = false;
+            cpu.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = false;
+    cpu.carry = false;
 }
 
 /* ?r<=s */
@@ -564,21 +564,21 @@ static void TestRRLe( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
-            cpu_status.carry = true;
+            cpu.carry = true;
             return;
         };
         if ( r[ n ] > s[ n ] ) {
-            cpu_status.carry = false;
+            cpu.carry = false;
             return;
         };
     }
 
-    cpu_status.carry = true;
+    cpu.carry = true;
 }
 
 /*---------------------------------------------------------------------------
@@ -589,14 +589,14 @@ static void TestRRLe( int rp, int fs )
 static void AddRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
     register int carry = 0;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
         s = a[ n ] + b[ n ] + carry;
 
-        if ( cpu_status.hexmode ) {
+        if ( cpu.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         } else {
@@ -604,21 +604,21 @@ static void AddRR( register Nibble* d, register const Nibble* a, register const 
             carry = dec_carry[ s ];
         }
     }
-    cpu_status.carry = ( bool )carry;
+    cpu.carry = ( bool )carry;
 }
 
 /* r=r+1 */
 static void IncrR( register Nibble* d, int fs )
 {
     register int carry = 1;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
         s = d[ n ] + carry;
 
-        if ( cpu_status.hexmode ) {
+        if ( cpu.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         } else {
@@ -627,21 +627,21 @@ static void IncrR( register Nibble* d, int fs )
         }
     }
 
-    cpu_status.carry = ( bool )carry;
+    cpu.carry = ( bool )carry;
 }
 
 /* r=r-r */
 static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, int fs )
 {
     register int carry = 0;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
         s = a[ n ] - b[ n ] - carry;
 
-        if ( cpu_status.hexmode ) {
+        if ( cpu.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         } else {
@@ -650,21 +650,21 @@ static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, i
         }
     }
 
-    cpu_status.carry = ( bool )carry;
+    cpu.carry = ( bool )carry;
 }
 
 /* r=r-1 */
 static void DecrR( register Nibble* d, int fs )
 {
     register int carry = 1;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
         s = d[ n ] - carry;
 
-        if ( cpu_status.hexmode ) {
+        if ( cpu.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         } else {
@@ -673,14 +673,14 @@ static void DecrR( register Nibble* d, int fs )
         }
     }
 
-    cpu_status.carry = ( bool )carry;
+    cpu.carry = ( bool )carry;
 }
 
 /* r=0 */
 static void ClearR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = ( Nibble )0;
@@ -689,8 +689,8 @@ static void ClearR( register Nibble* d, int fs )
 /* r=r */
 static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = s[ n ];
@@ -699,8 +699,8 @@ static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 /* rrEX */
 static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register Nibble t;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -713,8 +713,8 @@ static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 /* rSL */
 static void ShiftLeftR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = hi; n > lo; n-- )
         d[ n ] = d[ n - 1 ];
@@ -725,11 +725,11 @@ static void ShiftLeftR( register Nibble* d, int fs )
 /* rSR */
 static void ShiftRightR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     if ( d[ lo ] != ( Nibble )0 )
-        cpu_status.HST |= HST_SB_MASK;
+        cpu.HST |= HST_SB_MASK;
 
     for ( register int n = lo; n < hi; n++ )
         d[ n ] = d[ n + 1 ];
@@ -740,11 +740,11 @@ static void ShiftRightR( register Nibble* d, int fs )
 /* rSRB */
 static void ShiftRightBitR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     if ( ( d[ lo ] & nibble_bit_mask[ 0 ] ) != ( Nibble )0 )
-        cpu_status.HST |= HST_SB_MASK;
+        cpu.HST |= HST_SB_MASK;
 
     for ( register int n = lo; n < hi; n++ ) {
         d[ n ] >>= 1;
@@ -757,8 +757,8 @@ static void ShiftRightBitR( register Nibble* d, int fs )
 /* rSLC */
 static void ShiftLeftCircR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register Nibble s = d[ hi ];
 
     for ( register int n = hi; n > lo; n-- )
@@ -770,12 +770,12 @@ static void ShiftLeftCircR( register Nibble* d, int fs )
 /* rSRC */
 static void ShiftRightCircR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register Nibble s;
 
     if ( ( s = d[ lo ] ) != ( Nibble )0 )
-        cpu_status.HST |= HST_SB_MASK;
+        cpu.HST |= HST_SB_MASK;
 
     for ( register int n = lo; n < hi; n++ )
         d[ n ] = d[ n + 1 ];
@@ -787,15 +787,15 @@ static void ShiftRightCircR( register Nibble* d, int fs )
 static void TwoComplR( register Nibble* d, int fs )
 {
     register int carry = 0;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
     register int nz = 0;
 
     for ( register int n = lo; n <= hi; n++ ) {
         s = -d[ n ] - carry;
 
-        if ( cpu_status.hexmode ) {
+        if ( cpu.hexmode ) {
             d[ n ] = ( Nibble )( s & NIBBLE_MASK );
             carry = ( ( s & ~NIBBLE_MASK ) != 0 );
         } else {
@@ -806,30 +806,30 @@ static void TwoComplR( register Nibble* d, int fs )
         nz = nz || ( d[ n ] != ( Nibble )0 );
     }
 
-    cpu_status.carry = nz;
+    cpu.carry = nz;
 }
 
 /* r=-r-1 */
 static void OneComplR( register Nibble* d, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ ) {
-        if ( cpu_status.hexmode )
+        if ( cpu.hexmode )
             d[ n ] = ( 0xF - d[ n ] ) & NIBBLE_MASK;
         else
             d[ n ] = dec_one_c[ ( int )d[ n ] ];
     }
 
-    cpu_status.carry = false;
+    cpu.carry = false;
 }
 
 /* r=r&r */
 static void AndRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = a[ n ] & b[ n ];
@@ -838,8 +838,8 @@ static void AndRR( register Nibble* d, register const Nibble* a, register const 
 /* r=r!r */
 static void OrRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = a[ n ] | b[ n ];
@@ -851,8 +851,8 @@ static void OrRR( register Nibble* d, register const Nibble* a, register const N
 static void AddRImm( Nibble* r, int fs, Nibble v )
 {
     register int carry = ( int )v + 1;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -862,7 +862,7 @@ static void AddRImm( Nibble* r, int fs, Nibble v )
         carry = ( ( s & ~NIBBLE_MASK ) != 0 );
     }
 
-    cpu_status.carry = ( bool )carry;
+    cpu.carry = ( bool )carry;
 }
 
 /* Subtract immediate value 'v'+1 from the DataRegister 'r',
@@ -871,8 +871,8 @@ static void AddRImm( Nibble* r, int fs, Nibble v )
 static void SubRImm( register Nibble* r, int fs, Nibble v )
 {
     register int carry = ( int )v + 1;
-    register int lo = cpu_status.fs_idx_lo[ fs ];
-    register int hi = cpu_status.fs_idx_hi[ fs ];
+    register int lo = cpu.fs_idx_lo[ fs ];
+    register int hi = cpu.fs_idx_hi[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -882,7 +882,7 @@ static void SubRImm( register Nibble* r, int fs, Nibble v )
         carry = ( ( s & ~NIBBLE_MASK ) != 0 );
     }
 
-    cpu_status.carry = ( bool )carry;
+    cpu.carry = ( bool )carry;
 }
 
 /*---------------------------------------------------------------------------
@@ -892,9 +892,9 @@ static void ExecBIT0( Nibble* r, Nibble n ) { r[ n / 4 ] &= ~nibble_bit_mask[ n 
 
 static void ExecBIT1( Nibble* r, Nibble n ) { r[ n / 4 ] |= nibble_bit_mask[ n % 4 ]; }
 
-static void TestBIT0( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) == 0 ); }
+static void TestBIT0( Nibble* r, Nibble n ) { cpu.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) == 0 ); }
 
-static void TestBIT1( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) != 0 ); }
+static void TestBIT1( Nibble* r, Nibble n ) { cpu.carry = ( ( r[ n / 4 ] & nibble_bit_mask[ n % 4 ] ) != 0 ); }
 
 /*---------------------------------------------------------------------------
         Private functions: jumps/subroutine calls
@@ -903,18 +903,18 @@ static void TestBIT1( Nibble* r, Nibble n ) { cpu_status.carry = ( ( r[ n / 4 ] 
 /* GOYES/RTNYES */
 static void ExecGOYES_RTNYES( void )
 {
-    if ( cpu_status.carry ) {
+    if ( cpu.carry ) {
         /* Taken */
-        Address offset = Get2Nibbles2C( cpu_status.PC );
+        Address offset = Get2Nibbles2C( cpu.PC );
 
         if ( offset == 0 )
             /* RTNYES */
-            cpu_status.PC = PopRSTK();
+            cpu.PC = PopRSTK();
         else
-            cpu_status.PC += offset;
+            cpu.PC += offset;
     } else
         /* Not taken */
-        cpu_status.PC += 2;
+        cpu.PC += 2;
 }
 
 /*---------------------------------------------------------------------------
@@ -924,12 +924,12 @@ static void ExecGOYES_RTNYES( void )
 /* ?..., GOYES/RTNYES, Test with Field Selector, opcode 9ftyy, length 5 */
 static void ExecTest_9( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble f = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble t = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble t = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += t;
     int fs = GET_FS( f );
@@ -975,8 +975,8 @@ static void ExecTest_9( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Atyy, length 5 */
 static void ExecTest_8A( void )
 {
-    Nibble t = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble t = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += t;
     int tc = GET_OC_1( t );
@@ -1009,8 +1009,8 @@ static void ExecTest_8A( void )
 /* ?..., GOYES/RTNYES, Test on A Fields, opcode 8Btyy, length 5 */
 static void ExecTest_8B( void )
 {
-    Nibble t = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble t = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += t;
     int tc = GET_OC_1( t );
@@ -1043,12 +1043,12 @@ static void ExecTest_8B( void )
 /* ..., Register Operation with Field Selector, opcode Afo, length 3 */
 static void ExecRegOp_A( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble f = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += o;
     int fs = GET_FS( f );
@@ -1091,12 +1091,12 @@ static void ExecRegOp_A( void )
 /* ..., Register Operation with Field Selector, opcode Bfo, length 3 */
 static void ExecRegOp_B( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble f = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += o;
     int fs = GET_FS( f );
@@ -1139,8 +1139,8 @@ static void ExecRegOp_B( void )
 /* ..., Register Operation on A Fields, opcode Co, length 2 */
 static void ExecRegOp_C( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1170,8 +1170,8 @@ static void ExecRegOp_C( void )
 /* ..., Register Operation on A Fields, opcode Do, length 2 */
 static void ExecRegOp_D( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1201,8 +1201,8 @@ static void ExecRegOp_D( void )
 /* ..., Register Operation on A Fields, opcode Eo, length 2 */
 static void ExecRegOp_E( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1232,8 +1232,8 @@ static void ExecRegOp_E( void )
 /* ..., Register Operation on A Fields, opcode Fo, length 2 */
 static void ExecRegOp_F( void )
 {
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += 0;
     int oc = GET_OC_1( o );
@@ -1263,12 +1263,12 @@ static void ExecRegOp_F( void )
 /* .&., .!., AND/OR Operations, opcode 0Efo, length 4 */
 static void ExecAND_OR( void )
 {
-    Nibble f = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble f = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += f;
-    Nibble o = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble o = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += o;
     int oc = GET_OC_1( o );
@@ -1298,107 +1298,107 @@ static void ExecAND_OR( void )
 /* Instruction Group_0 */
 static void ExecGroup_0( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
 
     switch ( n ) {
         case 0x0: /* RTNSXM */
-            cpu_status.HST |= HST_XM_MASK;
-            cpu_status.PC = PopRSTK();
+            cpu.HST |= HST_XM_MASK;
+            cpu.PC = PopRSTK();
             break;
         case 0x1: /* RTN */
-            cpu_status.PC = PopRSTK();
+            cpu.PC = PopRSTK();
             break;
         case 0x2: /* RTNSC */
-            cpu_status.carry = true;
-            cpu_status.PC = PopRSTK();
+            cpu.carry = true;
+            cpu.PC = PopRSTK();
             break;
         case 0x3: /* RTNCC */
-            cpu_status.carry = false;
-            cpu_status.PC = PopRSTK();
+            cpu.carry = false;
+            cpu.PC = PopRSTK();
             break;
         case 0x4: /* SETHEX */
-            cpu_status.hexmode = true;
+            cpu.hexmode = true;
             break;
         case 0x5: /* SETDEC */
-            cpu_status.hexmode = false;
+            cpu.hexmode = false;
             break;
         case 0x6: /* RSTK=C */
-            PushRSTK( R2Addr( cpu_status.C ) );
+            PushRSTK( R2Addr( cpu.C ) );
             break;
         case 0x7: /* C=RSTK */
-            Addr2R( cpu_status.C, PopRSTK() );
+            Addr2R( cpu.C, PopRSTK() );
             break;
         case 0x8: /* CLRST */
-            cpu_status.ST &= CLRST_MASK;
+            cpu.ST &= CLRST_MASK;
             break;
         case 0x9: /* C=ST */
             /* Copy the 12 low-order bits of ST into C */
 
-            cpu_status.C[ 0 ] = ( Nibble )( cpu_status.ST & NIBBLE_MASK );
-            cpu_status.C[ 1 ] = ( Nibble )( ( cpu_status.ST >> 4 ) & NIBBLE_MASK );
-            cpu_status.C[ 2 ] = ( Nibble )( ( cpu_status.ST >> 8 ) & NIBBLE_MASK );
+            cpu.C[ 0 ] = ( Nibble )( cpu.ST & NIBBLE_MASK );
+            cpu.C[ 1 ] = ( Nibble )( ( cpu.ST >> 4 ) & NIBBLE_MASK );
+            cpu.C[ 2 ] = ( Nibble )( ( cpu.ST >> 8 ) & NIBBLE_MASK );
             break;
         case 0xA: /* ST=C */
             /* Copy the 12 low-order bits of C into ST */
-            cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
-                            ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
+            cpu.ST = ( ProgramStatusRegister )cpu.C[ 0 ] | ( ( ProgramStatusRegister )cpu.C[ 1 ] << 4 ) |
+                     ( ( ProgramStatusRegister )cpu.C[ 2 ] << 8 ) | ( cpu.ST & CLRST_MASK );
             break;
         case 0xB: /* CSTEX */
             /* Exchange the 12 low-order bits of C with the 12 low-order bits of ST */
             {
-                ProgramStatusRegister tst = cpu_status.ST;
+                ProgramStatusRegister tst = cpu.ST;
 
-                cpu_status.ST = ( ProgramStatusRegister )cpu_status.C[ 0 ] | ( ( ProgramStatusRegister )cpu_status.C[ 1 ] << 4 ) |
-                                ( ( ProgramStatusRegister )cpu_status.C[ 2 ] << 8 ) | ( cpu_status.ST & CLRST_MASK );
+                cpu.ST = ( ProgramStatusRegister )cpu.C[ 0 ] | ( ( ProgramStatusRegister )cpu.C[ 1 ] << 4 ) |
+                         ( ( ProgramStatusRegister )cpu.C[ 2 ] << 8 ) | ( cpu.ST & CLRST_MASK );
 
-                cpu_status.C[ 0 ] = ( Nibble )( tst & NIBBLE_MASK );
-                cpu_status.C[ 1 ] = ( Nibble )( ( tst >> 4 ) & NIBBLE_MASK );
-                cpu_status.C[ 2 ] = ( Nibble )( ( tst >> 8 ) & NIBBLE_MASK );
+                cpu.C[ 0 ] = ( Nibble )( tst & NIBBLE_MASK );
+                cpu.C[ 1 ] = ( Nibble )( ( tst >> 4 ) & NIBBLE_MASK );
+                cpu.C[ 2 ] = ( Nibble )( ( tst >> 8 ) & NIBBLE_MASK );
             }
             break;
         case 0xC: /* P=P+1 */
-            if ( cpu_status.P == NIBBLE_MASK ) {
+            if ( cpu.P == NIBBLE_MASK ) {
                 SetP( 0 );
-                cpu_status.carry = true;
+                cpu.carry = true;
             } else {
-                SetP( cpu_status.P + 1 );
-                cpu_status.carry = false;
+                SetP( cpu.P + 1 );
+                cpu.carry = false;
             }
             break;
         case 0xD: /* P=P-1 */
-            if ( cpu_status.P == ( Nibble )0 ) {
+            if ( cpu.P == ( Nibble )0 ) {
                 SetP( NIBBLE_MASK );
-                cpu_status.carry = true;
+                cpu.carry = true;
             } else {
-                SetP( cpu_status.P - 1 );
-                cpu_status.carry = false;
+                SetP( cpu.P - 1 );
+                cpu.carry = false;
             }
             break;
         case 0xE: /* AND_OR */
             ExecAND_OR();
             break;
         case 0xF: /* RTI */
-            if ( cpu_status.int_pending != INT_REQUEST_NONE ) {
-                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu_status.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) )
+            if ( cpu.int_pending != INT_REQUEST_NONE ) {
+                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_LOOP, ( cpu.int_pending == INT_REQUEST_NMI ? "NMI" : "IRQ" ) )
 
                 /* Service immediately any pending interrupt request */
-                cpu_status.int_service = true;
-                cpu_status.int_pending = INT_REQUEST_NONE;
-                cpu_status.PC = INT_HANDLER_PC;
+                cpu.int_service = true;
+                cpu.int_pending = INT_REQUEST_NONE;
+                cpu.PC = INT_HANDLER_PC;
             } else {
                 /* Reenable interrupts and return */
                 DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_END )
 
-                cpu_status.int_service = false;
-                cpu_status.PC = PopRSTK();
+                cpu.int_service = false;
+                cpu.PC = PopRSTK();
             }
             break;
 
         default: /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
             break;
     }
 }
@@ -1407,74 +1407,74 @@ static void ExecGroup_0( void )
 static void ExecGroup_13( void )
 {
     Address ta;
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
 
     /* Copy/Exchange A/C and D0/D1 */
     switch ( n ) {
         case 0x0: /* D0=A */
-            cpu_status.D0 = R2Addr( cpu_status.A );
+            cpu.D0 = R2Addr( cpu.A );
             break;
         case 0x1: /* D1=A */
-            cpu_status.D1 = R2Addr( cpu_status.A );
+            cpu.D1 = R2Addr( cpu.A );
             break;
         case 0x2: /* AD0EX */
-            ta = cpu_status.D0;
-            cpu_status.D0 = R2Addr( cpu_status.A );
-            Addr2R( cpu_status.A, ta );
+            ta = cpu.D0;
+            cpu.D0 = R2Addr( cpu.A );
+            Addr2R( cpu.A, ta );
             break;
         case 0x3: /* AD1EX */
-            ta = cpu_status.D1;
-            cpu_status.D1 = R2Addr( cpu_status.A );
-            Addr2R( cpu_status.A, ta );
+            ta = cpu.D1;
+            cpu.D1 = R2Addr( cpu.A );
+            Addr2R( cpu.A, ta );
             break;
         case 0x4: /* D0=C */
-            cpu_status.D0 = R2Addr( cpu_status.C );
+            cpu.D0 = R2Addr( cpu.C );
             break;
         case 0x5: /* D1=C */
-            cpu_status.D1 = R2Addr( cpu_status.C );
+            cpu.D1 = R2Addr( cpu.C );
             break;
         case 0x6: /* CD0EX */
-            ta = cpu_status.D0;
-            cpu_status.D0 = R2Addr( cpu_status.C );
-            Addr2R( cpu_status.C, ta );
+            ta = cpu.D0;
+            cpu.D0 = R2Addr( cpu.C );
+            Addr2R( cpu.C, ta );
             break;
         case 0x7: /* CD1EX */
-            ta = cpu_status.D1;
-            cpu_status.D1 = R2Addr( cpu_status.C );
-            Addr2R( cpu_status.C, ta );
+            ta = cpu.D1;
+            cpu.D1 = R2Addr( cpu.C );
+            Addr2R( cpu.C, ta );
             break;
         case 0x8: /* D0=AS */
-            cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
+            cpu.D0 = R2AddrS( cpu.A ) | ( cpu.D0 & D_S_MASK );
             break;
         case 0x9: /* D1=AS */
-            cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
+            cpu.D1 = R2AddrS( cpu.A ) | ( cpu.D1 & D_S_MASK );
             break;
         case 0xA: /* AD0XS */
-            ta = cpu_status.D0;
-            cpu_status.D0 = R2AddrS( cpu_status.A ) | ( cpu_status.D0 & D_S_MASK );
-            Addr2RS( cpu_status.A, ta );
+            ta = cpu.D0;
+            cpu.D0 = R2AddrS( cpu.A ) | ( cpu.D0 & D_S_MASK );
+            Addr2RS( cpu.A, ta );
             break;
         case 0xB: /* AD1XS */
-            ta = cpu_status.D1;
-            cpu_status.D1 = R2AddrS( cpu_status.A ) | ( cpu_status.D1 & D_S_MASK );
-            Addr2RS( cpu_status.A, ta );
+            ta = cpu.D1;
+            cpu.D1 = R2AddrS( cpu.A ) | ( cpu.D1 & D_S_MASK );
+            Addr2RS( cpu.A, ta );
             break;
         case 0xC: /* D0=CS */
-            cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
+            cpu.D0 = R2AddrS( cpu.C ) | ( cpu.D0 & D_S_MASK );
             break;
         case 0xD: /* D1=CS */
-            cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
+            cpu.D1 = R2AddrS( cpu.C ) | ( cpu.D1 & D_S_MASK );
             break;
         case 0xE: /* CD0XS */
-            ta = cpu_status.D0;
-            cpu_status.D0 = R2AddrS( cpu_status.C ) | ( cpu_status.D0 & D_S_MASK );
-            Addr2RS( cpu_status.C, ta );
+            ta = cpu.D0;
+            cpu.D0 = R2AddrS( cpu.C ) | ( cpu.D0 & D_S_MASK );
+            Addr2RS( cpu.C, ta );
             break;
         case 0xF: /* CD1XS */
-            ta = cpu_status.D1;
-            cpu_status.D1 = R2AddrS( cpu_status.C ) | ( cpu_status.D1 & D_S_MASK );
-            Addr2RS( cpu_status.C, ta );
+            ta = cpu.D1;
+            cpu.D1 = R2AddrS( cpu.C ) | ( cpu.D1 & D_S_MASK );
+            Addr2RS( cpu.C, ta );
             break;
     }
 }
@@ -1482,58 +1482,58 @@ static void ExecGroup_13( void )
 /* Instruction Group_14 */
 static void ExecGroup_14( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
 
     /* Load/Store A/C to @D0/@D1, Field selector A or B */
     switch ( n ) {
         case 0x0: /* DAT0=A A */
-            WriteDAT( cpu_status.D0, cpu_status.A, FS_A );
+            WriteDAT( cpu.D0, cpu.A, FS_A );
             break;
         case 0x1: /* DAT1=A A */
-            WriteDAT( cpu_status.D1, cpu_status.A, FS_A );
+            WriteDAT( cpu.D1, cpu.A, FS_A );
             break;
         case 0x2: /* A=DAT0 A */
-            ReadDAT( cpu_status.A, cpu_status.D0, FS_A );
+            ReadDAT( cpu.A, cpu.D0, FS_A );
             break;
         case 0x3: /* A=DAT1 A */
-            ReadDAT( cpu_status.A, cpu_status.D1, FS_A );
+            ReadDAT( cpu.A, cpu.D1, FS_A );
             break;
         case 0x4: /* DAT0=C A */
-            WriteDAT( cpu_status.D0, cpu_status.C, FS_A );
+            WriteDAT( cpu.D0, cpu.C, FS_A );
             break;
         case 0x5: /* DAT1=C A */
-            WriteDAT( cpu_status.D1, cpu_status.C, FS_A );
+            WriteDAT( cpu.D1, cpu.C, FS_A );
             break;
         case 0x6: /* C=DAT0 A */
-            ReadDAT( cpu_status.C, cpu_status.D0, FS_A );
+            ReadDAT( cpu.C, cpu.D0, FS_A );
             break;
         case 0x7: /* C=DAT1 A */
-            ReadDAT( cpu_status.C, cpu_status.D1, FS_A );
+            ReadDAT( cpu.C, cpu.D1, FS_A );
             break;
         case 0x8: /* DAT0=A B */
-            WriteDAT( cpu_status.D0, cpu_status.A, FS_B );
+            WriteDAT( cpu.D0, cpu.A, FS_B );
             break;
         case 0x9: /* DAT1=A B */
-            WriteDAT( cpu_status.D1, cpu_status.A, FS_B );
+            WriteDAT( cpu.D1, cpu.A, FS_B );
             break;
         case 0xA: /* A=DAT0 B */
-            ReadDAT( cpu_status.A, cpu_status.D0, FS_B );
+            ReadDAT( cpu.A, cpu.D0, FS_B );
             break;
         case 0xB: /* A=DAT1 B */
-            ReadDAT( cpu_status.A, cpu_status.D1, FS_B );
+            ReadDAT( cpu.A, cpu.D1, FS_B );
             break;
         case 0xC: /* DAT0=C B */
-            WriteDAT( cpu_status.D0, cpu_status.C, FS_B );
+            WriteDAT( cpu.D0, cpu.C, FS_B );
             break;
         case 0xD: /* DAT1=C B */
-            WriteDAT( cpu_status.D1, cpu_status.C, FS_B );
+            WriteDAT( cpu.D1, cpu.C, FS_B );
             break;
         case 0xE: /* C=DAT0 B */
-            ReadDAT( cpu_status.C, cpu_status.D0, FS_B );
+            ReadDAT( cpu.C, cpu.D0, FS_B );
             break;
         case 0xF: /* C=DAT1 B */
-            ReadDAT( cpu_status.C, cpu_status.D1, FS_B );
+            ReadDAT( cpu.C, cpu.D1, FS_B );
             break;
     }
 }
@@ -1542,12 +1542,12 @@ static void ExecGroup_14( void )
 static void ExecGroup_15( void )
 {
     /* Load/Store A/C to @D0/@D1, Other Field Selectors */
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
-    Nibble f = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble f = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += f;
 
@@ -1557,51 +1557,51 @@ static void ExecGroup_15( void )
     switch ( oc ) {
         case 0x0: /* DAT0=A */
             if ( is )
-                WriteDATImm( cpu_status.D0, cpu_status.A, f );
+                WriteDATImm( cpu.D0, cpu.A, f );
             else
-                WriteDAT( cpu_status.D0, cpu_status.A, f );
+                WriteDAT( cpu.D0, cpu.A, f );
             break;
         case 0x1: /* DAT1=A */
             if ( is )
-                WriteDATImm( cpu_status.D1, cpu_status.A, f );
+                WriteDATImm( cpu.D1, cpu.A, f );
             else
-                WriteDAT( cpu_status.D1, cpu_status.A, f );
+                WriteDAT( cpu.D1, cpu.A, f );
             break;
         case 0x2: /* A=DAT0 */
             if ( is )
-                ReadDATImm( cpu_status.A, cpu_status.D0, f );
+                ReadDATImm( cpu.A, cpu.D0, f );
             else
-                ReadDAT( cpu_status.A, cpu_status.D0, f );
+                ReadDAT( cpu.A, cpu.D0, f );
             break;
         case 0x3: /* A=DAT1 */
             if ( is )
-                ReadDATImm( cpu_status.A, cpu_status.D1, f );
+                ReadDATImm( cpu.A, cpu.D1, f );
             else
-                ReadDAT( cpu_status.A, cpu_status.D1, f );
+                ReadDAT( cpu.A, cpu.D1, f );
             break;
         case 0x4: /* DAT0=C */
             if ( is )
-                WriteDATImm( cpu_status.D0, cpu_status.C, f );
+                WriteDATImm( cpu.D0, cpu.C, f );
             else
-                WriteDAT( cpu_status.D0, cpu_status.C, f );
+                WriteDAT( cpu.D0, cpu.C, f );
             break;
         case 0x5: /* DAT1=C */
             if ( is )
-                WriteDATImm( cpu_status.D1, cpu_status.C, f );
+                WriteDATImm( cpu.D1, cpu.C, f );
             else
-                WriteDAT( cpu_status.D1, cpu_status.C, f );
+                WriteDAT( cpu.D1, cpu.C, f );
             break;
         case 0x6: /* C=DAT0 */
             if ( is )
-                ReadDATImm( cpu_status.C, cpu_status.D0, f );
+                ReadDATImm( cpu.C, cpu.D0, f );
             else
-                ReadDAT( cpu_status.C, cpu_status.D0, f );
+                ReadDAT( cpu.C, cpu.D0, f );
             break;
         case 0x7: /* C=DAT1 */
             if ( is )
-                ReadDATImm( cpu_status.C, cpu_status.D1, f );
+                ReadDATImm( cpu.C, cpu.D1, f );
             else
-                ReadDAT( cpu_status.C, cpu_status.D1, f );
+                ReadDAT( cpu.C, cpu.D1, f );
             break;
 
         default:
@@ -1613,8 +1613,8 @@ static void ExecGroup_15( void )
 /* Instruction Group_1 */
 static void ExecGroup_1( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -1623,34 +1623,34 @@ static void ExecGroup_1( void )
 
     switch ( n ) {
         case 0x0: /* Rn=A/C */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
-            CopyRR( cpu_status.R[ rn ], ( ac ? cpu_status.C : cpu_status.A ), FS_W );
+            CopyRR( cpu.R[ rn ], ( ac ? cpu.C : cpu.A ), FS_W );
             break;
         case 0x1: /* A/C=Rn */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
-            CopyRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], FS_W );
+            CopyRR( ( ac ? cpu.C : cpu.A ), cpu.R[ rn ], FS_W );
             break;
         case 0x2: /* ARnEX, CRnEX */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
             ac = GET_AC( n );
 
-            ExchRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], FS_W );
+            ExchRR( ( ac ? cpu.C : cpu.A ), cpu.R[ rn ], FS_W );
             break;
         case 0x3:
             ExecGroup_13();
@@ -1662,63 +1662,63 @@ static void ExecGroup_1( void )
             ExecGroup_15();
             break;
         case 0x6: /* D0=D0+n+1 */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            ta = ( cpu_status.D0 + n + 1 ) & ADDRESS_MASK;
-            cpu_status.carry = ( ta < cpu_status.D0 );
-            cpu_status.D0 = ta;
+            ta = ( cpu.D0 + n + 1 ) & ADDRESS_MASK;
+            cpu.carry = ( ta < cpu.D0 );
+            cpu.D0 = ta;
             break;
         case 0x7: /* D1=D1+n+1 */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            ta = ( cpu_status.D1 + n + 1 ) & ADDRESS_MASK;
-            cpu_status.carry = ( ta < cpu_status.D1 );
-            cpu_status.D1 = ta;
+            ta = ( cpu.D1 + n + 1 ) & ADDRESS_MASK;
+            cpu.carry = ( ta < cpu.D1 );
+            cpu.D1 = ta;
             break;
         case 0x8: /* D0=D0-(n+1) */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            ta = ( cpu_status.D0 - n - 1 ) & ADDRESS_MASK;
-            cpu_status.carry = ( ta > cpu_status.D0 );
-            cpu_status.D0 = ta;
+            ta = ( cpu.D0 - n - 1 ) & ADDRESS_MASK;
+            cpu.carry = ( ta > cpu.D0 );
+            cpu.D0 = ta;
             break;
         case 0x9: /* D0=(2) nn */
-            FetchD( &cpu_status.D0, 2 );
+            FetchD( &cpu.D0, 2 );
             break;
         case 0xA: /* D0=(4) nn */
-            FetchD( &cpu_status.D0, 4 );
+            FetchD( &cpu.D0, 4 );
             break;
         case 0xB: /* D0=(5) nn */
-            FetchD( &cpu_status.D0, 5 );
+            FetchD( &cpu.D0, 5 );
             break;
         case 0xC: /* D1=D1-(n+1) */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            ta = ( cpu_status.D1 - n - 1 ) & ADDRESS_MASK;
-            cpu_status.carry = ( ta > cpu_status.D1 );
-            cpu_status.D1 = ta;
+            ta = ( cpu.D1 - n - 1 ) & ADDRESS_MASK;
+            cpu.carry = ( ta > cpu.D1 );
+            cpu.D1 = ta;
             break;
         case 0xD: /* D1=(2) nn */
-            FetchD( &cpu_status.D1, 2 );
+            FetchD( &cpu.D1, 2 );
             break;
         case 0xE: /* D1=(4) nn */
-            FetchD( &cpu_status.D1, 4 );
+            FetchD( &cpu.D1, 4 );
             break;
         case 0xF: /* D1=(5) nn */
-            FetchD( &cpu_status.D1, 5 );
+            FetchD( &cpu.D1, 5 );
             break;
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
             break;
     }
 }
@@ -1726,92 +1726,92 @@ static void ExecGroup_1( void )
 /* Instruction Group_808 */
 static void ExecGroup_808( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
 
     switch ( n ) {
         case 0x0: /* INTON */
             /* Enable maskable interrupts */
-            cpu_status.int_enable = true;
+            cpu.int_enable = true;
             break;
         case 0x1: /* RSI */
             /* Discard last nibble of RSI opcode */
-            cpu_status.PC++;
+            cpu.PC++;
 
             KeybRSI();
             break;
         case 0x2: /* LA(m) n..n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            FetchR( cpu_status.A, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            FetchR( cpu.A, n );
             break;
         case 0x3: /* BUSCB */
 
             WARNING( CPU_CHF_MODULE_ID, CPU_F_INTERR, "BUSCB" )
             break;
         case 0x4: /* ABIT=0 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            ExecBIT0( cpu_status.A, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            ExecBIT0( cpu.A, n );
             break;
         case 0x5: /* ABIT=1 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            ExecBIT1( cpu_status.A, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            ExecBIT1( cpu.A, n );
             break;
         case 0x6: /* ?ABIT=0 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            TestBIT0( cpu_status.A, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            TestBIT0( cpu.A, n );
             ExecGOYES_RTNYES();
             break;
         case 0x7: /* ?ABIT=1 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            TestBIT1( cpu_status.A, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            TestBIT1( cpu.A, n );
             ExecGOYES_RTNYES();
             break;
         case 0x8: /* CBIT=0 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            ExecBIT0( cpu_status.C, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            ExecBIT0( cpu.C, n );
             break;
         case 0x9: /* CBIT=1 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            ExecBIT1( cpu_status.C, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            ExecBIT1( cpu.C, n );
             break;
         case 0xA: /* ?CBIT=0 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            TestBIT0( cpu_status.C, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            TestBIT0( cpu.C, n );
             ExecGOYES_RTNYES();
             break;
         case 0xB: /* ?CBIT=1 d */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            TestBIT1( cpu_status.C, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            TestBIT1( cpu.C, n );
             ExecGOYES_RTNYES();
             break;
         case 0xC: /* PC=(A) */
-            cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.A ) );
+            cpu.PC = Get5NibblesAbs( R2Addr( cpu.A ) );
             break;
         case 0xD: /* BUSCD */
 
             WARNING( CPU_CHF_MODULE_ID, CPU_F_INTERR, "BUSCD" )
             break;
         case 0xE: /* PC=(C) */
-            cpu_status.PC = Get5NibblesAbs( R2Addr( cpu_status.C ) );
+            cpu.PC = Get5NibblesAbs( R2Addr( cpu.C ) );
             break;
         case 0xF: /* INTOFF */
-            cpu_status.int_enable = false;
+            cpu.int_enable = false;
             break;
 
         default:
             /* Unknown opcode */
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
             break;
     }
 }
@@ -1819,33 +1819,32 @@ static void ExecGroup_808( void )
 /* Instruction Group_80 */
 static void ExecGroup_80( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
 
     switch ( n ) {
         case 0x0: /* OUT=CS */
-            cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( cpu_status.OUT & 0xFF0 );
+            cpu.OUT = ( ( OutputRegister )cpu.C[ 0 ] ) | ( cpu.OUT & 0xFF0 );
             break;
         case 0x1: /* OUT=C */
-            cpu_status.OUT = ( ( OutputRegister )cpu_status.C[ 0 ] ) | ( ( OutputRegister )cpu_status.C[ 1 ] << 4 ) |
-                             ( ( OutputRegister )cpu_status.C[ 2 ] << 8 );
+            cpu.OUT = ( ( OutputRegister )cpu.C[ 0 ] ) | ( ( OutputRegister )cpu.C[ 1 ] << 4 ) | ( ( OutputRegister )cpu.C[ 2 ] << 8 );
             break;
         case 0x2: /* A=IN */
-            ExecIN( cpu_status.A );
+            ExecIN( cpu.A );
             break;
         case 0x3: /* C=IN */
-            ExecIN( cpu_status.C );
+            ExecIN( cpu.C );
             break;
         case 0x4: /* UNCNFG */
-            ModUnconfig( R2Addr( cpu_status.C ) );
+            ModUnconfig( R2Addr( cpu.C ) );
             break;
         case 0x5: /* CONFIG */
-            ModConfig( R2Addr( cpu_status.C ) );
+            ModConfig( R2Addr( cpu.C ) );
             break;
         case 0x6: /* C=ID */
-            Addr2R( cpu_status.C, ModGetID() );
+            Addr2R( cpu.C, ModGetID() );
             break;
         case 0x7: /* SHUTDN */
             ExecSHUTDN();
@@ -1854,7 +1853,7 @@ static void ExecGroup_80( void )
             ExecGroup_808();
             break;
         case 0x9: /* C+P+1 */
-            AddRImm( cpu_status.C, FS_A, cpu_status.P );
+            AddRImm( cpu.C, FS_A, cpu.P );
             break;
         case 0xA: /* RESET */
             ModReset();
@@ -1866,14 +1865,14 @@ static void ExecGroup_80( void )
                 DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "BUSCC not implemented" )
             break;
         case 0xC: /* C=P n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.C[ ( int )n ] = cpu_status.P;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.C[ ( int )n ] = cpu.P;
             break;
         case 0xD: /* P=C n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            SetP( cpu_status.C[ ( int )n ] );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            SetP( cpu.C[ ( int )n ] );
             break;
         case 0xE: /* SREQ? */
 
@@ -1881,18 +1880,18 @@ static void ExecGroup_80( void )
             break;
         case 0xF: /* CPEX */
             {
-                Nibble tmp = cpu_status.P;
-                n = FetchNibble( cpu_status.PC );
-                cpu_status.PC++;
+                Nibble tmp = cpu.P;
+                n = FetchNibble( cpu.PC );
+                cpu.PC++;
                 opcode *= 0x10;
                 opcode += n;
-                SetP( cpu_status.C[ ( int )n ] );
-                cpu_status.C[ ( int )n ] = tmp;
+                SetP( cpu.C[ ( int )n ] );
+                cpu.C[ ( int )n ] = tmp;
             }
             break;
 
         default:
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
             break;
     }
 }
@@ -1905,16 +1904,16 @@ static void ExecSpecialGroup_81( int rp )
 
     switch ( rp ) {
         case 0x0: /* r=r+-CON fs, d */
-            f = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            f = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += f;
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            m = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            m = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += m;
             rp = GET_RP( n );
@@ -1925,28 +1924,28 @@ static void ExecSpecialGroup_81( int rp )
                 AddRImm( reg_pair_0[ rp ], f, m );
             break;
         case 0x1: /* rSRB.f fs */
-            f = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            f = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += f;
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
             rp = GET_RP( n );
             ShiftRightBitR( reg_pair_0[ rp ], f );
             break;
         case 0x2: /* Rn=r.F fs, r=R0.F fs, rRnEX.F fs */
-            f = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            f = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += f;
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            m = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            m = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += m;
             rn = GET_Rn( m );
@@ -1954,25 +1953,25 @@ static void ExecSpecialGroup_81( int rp )
 
             switch ( n ) {
                 case 0x0: /* Rn=r.F fs */
-                    CopyRR( cpu_status.R[ rn ], ( ac ? cpu_status.C : cpu_status.A ), f );
+                    CopyRR( cpu.R[ rn ], ( ac ? cpu.C : cpu.A ), f );
                     break;
 
                 case 0x1: /* r=R0.F fs */
-                    CopyRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], f );
+                    CopyRR( ( ac ? cpu.C : cpu.A ), cpu.R[ rn ], f );
                     break;
 
                 case 0x2: /* rRnEX.F fs */
-                    ExchRR( ( ac ? cpu_status.C : cpu_status.A ), cpu_status.R[ rn ], f );
+                    ExchRR( ( ac ? cpu.C : cpu.A ), cpu.R[ rn ], f );
                     break;
 
                 default:
-                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
                     break;
             }
             break;
         case 0x3: /* Group 81B */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
             switch ( n ) {
@@ -1980,45 +1979,45 @@ static void ExecSpecialGroup_81( int rp )
                     if ( config.big_screen && config.enable_BUSCC )
                         DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: LOOP2 (RPL2 80B00)" )
                     else
-                        ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+                        ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
                     break;
 
                 case 0x2: /* PC=A */
-                    cpu_status.PC = R2Addr( cpu_status.A );
+                    cpu.PC = R2Addr( cpu.A );
                     break;
 
                 case 0x3: /* PC=C */
-                    cpu_status.PC = R2Addr( cpu_status.C );
+                    cpu.PC = R2Addr( cpu.C );
                     break;
 
                 case 0x4: /* A=PC */
-                    Addr2R( cpu_status.A, cpu_status.PC );
+                    Addr2R( cpu.A, cpu.PC );
                     break;
 
                 case 0x5: /* C=PC */
-                    Addr2R( cpu_status.C, cpu_status.PC );
+                    Addr2R( cpu.C, cpu.PC );
                     break;
 
                 case 0x6: /* APCEX */
                     {
                         Address t;
-                        t = R2Addr( cpu_status.A );
-                        Addr2R( cpu_status.A, cpu_status.PC );
-                        cpu_status.PC = t;
+                        t = R2Addr( cpu.A );
+                        Addr2R( cpu.A, cpu.PC );
+                        cpu.PC = t;
                         break;
                     }
 
                 case 0x7: /* CPCEX */
                     {
                         Address t;
-                        t = R2Addr( cpu_status.C );
-                        Addr2R( cpu_status.C, cpu_status.PC );
-                        cpu_status.PC = t;
+                        t = R2Addr( cpu.C );
+                        Addr2R( cpu.C, cpu.PC );
+                        cpu.PC = t;
                         break;
                     }
 
                 default:
-                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+                    ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
                     break;
             }
             break;
@@ -2032,8 +2031,8 @@ static void ExecSpecialGroup_81( int rp )
 /* Instruction Group_8 */
 static void ExecGroup_8( void )
 {
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
     Address addr;
@@ -2044,8 +2043,8 @@ static void ExecGroup_8( void )
             ExecGroup_80();
             break;
         case 0x1: /* rSLC, rSRC, rSRB, Special Group_81 */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
             oc = GET_OC_1( n );
@@ -2074,49 +2073,49 @@ static void ExecGroup_8( void )
             }
             break;
         case 0x2: /* CLRHSn */
-            cpu_status.HST &= ~FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            cpu.HST &= ~FetchNibble( cpu.PC );
+            cpu.PC++;
             break;
         case 0x3: /* ?HS=0 */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             opcode *= 0x10;
             opcode += n;
-            cpu_status.carry = ( ( cpu_status.HST & n ) == 0 );
+            cpu.carry = ( ( cpu.HST & n ) == 0 );
             ExecGOYES_RTNYES();
             break;
         case 0x4: /* ST=0 n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.ST &= ~st_bit_mask[ ( int )n ];
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.ST &= ~st_bit_mask[ ( int )n ];
             break;
         case 0x5: /* ST=1 n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.ST |= st_bit_mask[ ( int )n ];
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.ST |= st_bit_mask[ ( int )n ];
             break;
         case 0x6: /* ?ST=0 n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.carry = ( ( cpu_status.ST & st_bit_mask[ ( int )n ] ) == 0 );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.carry = ( ( cpu.ST & st_bit_mask[ ( int )n ] ) == 0 );
             ExecGOYES_RTNYES();
             break;
         case 0x7: /* ?ST=1 n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.carry = ( ( cpu_status.ST & st_bit_mask[ ( int )n ] ) != 0 );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.carry = ( ( cpu.ST & st_bit_mask[ ( int )n ] ) != 0 );
             ExecGOYES_RTNYES();
             break;
         case 0x8: /* ?P#n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.carry = ( cpu_status.P != n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.carry = ( cpu.P != n );
             ExecGOYES_RTNYES();
             break;
         case 0x9: /* ?P=n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            cpu_status.carry = ( cpu_status.P == n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            cpu.carry = ( cpu.P == n );
             ExecGOYES_RTNYES();
             break;
         case 0xA: /* Test */
@@ -2126,25 +2125,25 @@ static void ExecGroup_8( void )
             ExecTest_8B();
             break;
         case 0xC: /* GOLONG */
-            addr = Get4Nibbles2C( cpu_status.PC );
-            cpu_status.PC += addr;
+            addr = Get4Nibbles2C( cpu.PC );
+            cpu.PC += addr;
             break;
         case 0xD: /* GOVLNG */
-            cpu_status.PC = Get5NibblesAbs( cpu_status.PC );
+            cpu.PC = Get5NibblesAbs( cpu.PC );
             break;
         case 0xE: /* GOSUBL */
-            addr = Get4Nibbles2C( cpu_status.PC );
-            cpu_status.PC += 4;
-            PushRSTK( cpu_status.PC );
-            cpu_status.PC += addr;
+            addr = Get4Nibbles2C( cpu.PC );
+            cpu.PC += 4;
+            PushRSTK( cpu.PC );
+            cpu.PC += addr;
             break;
         case 0xF: /* GOSBVL */
-            PushRSTK( cpu_status.PC + 5 );
-            cpu_status.PC = Get5NibblesAbs( cpu_status.PC );
+            PushRSTK( cpu.PC + 5 );
+            cpu.PC = Get5NibblesAbs( cpu.PC );
             break;
 
         default:
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
             break;
     }
 }
@@ -2159,7 +2158,7 @@ static void ExecGroup_8( void )
 .description  :
   This function resets the CPU, performing the following operations:
 
-  - Copies the field selector index arrays to the cpu_status structure
+  - Copies the field selector index arrays to the cpu structure
   - Set P=0
   - Clears registers A, B, C, D, Rn
   - Clears registers D0, D1
@@ -2182,69 +2181,69 @@ static void ExecGroup_8( void )
 .notes        :
   1.1, 3-Feb-1998, creation
   1.2, 7-Sep-2000, bug fix
-    - cpu_status.return_sp and .reset_req were not reset; this gave troubles
+    - cpu.return_sp and .reset_req were not reset; this gave troubles
       when attempting to override a corrupt status with CpuReset().
   3.13, 2-Nov-2000, update
-    - cpu_status.halt and cpu_status.inner_loop_max need reset
+    - cpu.halt and cpu.inner_loop_max need reset
   3.14, 10-Nov-2000, bug fix
-    - cpu_status.inner_loop_max must be reset to 0, because the default
+    - cpu.inner_loop_max must be reset to 0, because the default
       emulator speed is maximum speed.
 .- */
 void CpuReset( void )
 {
     int n;
 
-    /* Copy field selector index arrays to the cpu_status structure */
-    ( void )memcpy( cpu_status.fs_idx_lo, fs_idx_lo, sizeof( fs_idx_lo ) );
-    ( void )memcpy( cpu_status.fs_idx_hi, fs_idx_hi, sizeof( fs_idx_hi ) );
+    /* Copy field selector index arrays to the cpu structure */
+    ( void )memcpy( cpu.fs_idx_lo, fs_idx_lo, sizeof( fs_idx_lo ) );
+    ( void )memcpy( cpu.fs_idx_hi, fs_idx_hi, sizeof( fs_idx_hi ) );
 
     /* Set P=0 and adjust fs index arrays */
     SetP( ( Nibble )0 );
 
     /* Clear A, B, C, D */
     for ( n = 0; n < N_WORKING_REGISTER; n++ )
-        ClearR( cpu_status.work[ n ], FS_W );
+        ClearR( cpu.work[ n ], FS_W );
 
     /* Clear Rn */
     for ( n = 0; n < N_SCRATCH_REGISTER; n++ )
-        ClearR( cpu_status.R[ n ], FS_W );
+        ClearR( cpu.R[ n ], FS_W );
 
     /* Clear D0, D1 */
-    cpu_status.D0 = cpu_status.D1 = ( Address )0;
+    cpu.D0 = cpu.D1 = ( Address )0;
 
     /* Clear PC */
-    cpu_status.PC = ( Address )0;
+    cpu.PC = ( Address )0;
 
     /* Clear IN, OUT, ST, HST */
-    cpu_status.IN = ( InputRegister )0;
-    cpu_status.OUT = ( OutputRegister )0;
-    cpu_status.ST = ( ProgramStatusRegister )0;
-    cpu_status.HST = ( Nibble )0;
+    cpu.IN = ( InputRegister )0;
+    cpu.OUT = ( OutputRegister )0;
+    cpu.ST = ( ProgramStatusRegister )0;
+    cpu.HST = ( Nibble )0;
 
     /* Fill the return stack with (Address)0 */
-    cpu_status.return_sp = 0;
+    cpu.return_sp = 0;
     for ( n = 0; n < RETURN_STACK_SIZE; n++ )
-        cpu_status.return_stack[ n ] = ( Address )0;
+        cpu.return_stack[ n ] = ( Address )0;
 
     /* Set hexmode */
-    cpu_status.hexmode = true;
+    cpu.hexmode = true;
 
     /* Clear carry */
-    cpu_status.carry = false;
+    cpu.carry = false;
 
     /* Disable maskable interrupts */
-    cpu_status.int_enable = false;
+    cpu.int_enable = false;
 
     /* No interrupts are pending (for now) */
-    cpu_status.int_service = false;
-    cpu_status.int_pending = false;
+    cpu.int_service = false;
+    cpu.int_pending = false;
 
     /* The CPU is running */
-    cpu_status.shutdn = cpu_status.halt = false;
+    cpu.shutdn = cpu.halt = false;
 
     /* Set inner_loop and inner_loop_max to default values */
-    cpu_status.inner_loop = INNER_LOOP_MED;
-    cpu_status.inner_loop_max = 0;
+    cpu.inner_loop = INNER_LOOP_MED;
+    cpu.inner_loop_max = 0;
 }
 
 /* .+
@@ -2272,14 +2271,14 @@ void CpuReset( void )
 .- */
 void CpuInit( void )
 {
-    if ( ReadStructFromFile( config.cpu_path, sizeof( cpu_status ), &cpu_status ) ) {
+    if ( ReadStructFromFile( config.cpu_path, sizeof( cpu ), &cpu ) ) {
         WARNING0( CPU_CHF_MODULE_ID, CPU_W_RESETTING )
 
         CpuReset();
     }
 
     /* The CPU is running */
-    cpu_status.shutdn = cpu_status.halt = false;
+    cpu.shutdn = cpu.halt = false;
 }
 
 /* .+
@@ -2303,7 +2302,7 @@ void CpuInit( void )
 .- */
 void CpuSave( void )
 {
-    if ( WriteStructToFile( &cpu_status, sizeof( cpu_status ), config.cpu_path ) )
+    if ( WriteStructToFile( &cpu, sizeof( cpu ), config.cpu_path ) )
         ERROR0( CPU_CHF_MODULE_ID, CPU_E_SAVE )
 }
 
@@ -2337,22 +2336,22 @@ void CpuSave( void )
 .- */
 void CpuIntRequest( int_request_t ireq )
 {
-    if ( ( ireq == INT_REQUEST_IRQ && cpu_status.int_enable ) || ireq == INT_REQUEST_NMI ) {
+    if ( ( ireq == INT_REQUEST_IRQ && cpu.int_enable ) || ireq == INT_REQUEST_NMI ) {
         /* Wake the CPU if it's sleeping */
         CpuWake();
 
         /* Check if immediate vectoring is ok */
-        if ( !cpu_status.int_service ) {
+        if ( !cpu.int_service ) {
             /* Vector immediately */
-            cpu_status.int_service = true;
-            cpu_status.int_pending = INT_REQUEST_NONE;
-            PushRSTK( cpu_status.PC );
-            cpu_status.PC = INT_HANDLER_PC;
+            cpu.int_service = true;
+            cpu.int_pending = INT_REQUEST_NONE;
+            PushRSTK( cpu.PC );
+            cpu.PC = INT_HANDLER_PC;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) )
         } else {
             /* int_service is set; save the request for later processing */
-            cpu_status.int_pending = ireq;
+            cpu.int_pending = ireq;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT_PENDING, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) )
         }
@@ -2386,15 +2385,15 @@ void CpuIntRequest( int_request_t ireq )
 .- */
 void CpuWake( void )
 {
-    if ( cpu_status.shutdn && !cpu_status.halt ) {
+    if ( cpu.shutdn && !cpu.halt ) {
         DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE )
 
         /* Clear SHUTDN flag */
-        cpu_status.shutdn = false;
+        cpu.shutdn = false;
 
         /* Clear PC if necessary */
-        /* if ( cpu_status.OUT == (OutputRegister)0 )
-           cpu_status.PC = (Address)0;
+        /* if ( cpu.OUT == (OutputRegister)0 )
+           cpu.PC = (Address)0;
          */
     }
 }
@@ -2450,10 +2449,10 @@ void CpuWake( void )
 */
 int CpuHaltRequest( void )
 {
-    if ( !cpu_status.halt ) {
+    if ( !cpu.halt ) {
         DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_HALT )
 
-        cpu_status.halt = true;
+        cpu.halt = true;
         /* CPU must actually be halted: call ExecSHUTDN() to simulate
            the execution of a regular SHUTDN instruction.
 
@@ -2462,7 +2461,7 @@ int CpuHaltRequest( void )
         ExecSHUTDN();
     }
 
-    return cpu_status.halt;
+    return cpu.halt;
 }
 
 /* .+
@@ -2493,15 +2492,15 @@ int CpuHaltRequest( void )
 */
 int CpuRunRequest( void )
 {
-    if ( cpu_status.halt ) {
+    if ( cpu.halt ) {
         DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN )
 
-        cpu_status.halt = false;
+        cpu.halt = false;
         /* CPU must actually be awoken: call CpuWake() */
         CpuWake();
     }
 
-    return cpu_status.halt;
+    return cpu.halt;
 }
 
 /* .+
@@ -2530,7 +2529,7 @@ bool CpuHaltAllowed( void ) { return true; }
 .creation     : 3-Feb-1998
 .description  :
   This function executes a Saturn instruction starting from the current
-  program counter, updating accordingly the global cpu_status data structure.
+  program counter, updating accordingly the global cpu data structure.
 
   The function signals all exceptional situations through Chf conditions.
 
@@ -2554,8 +2553,8 @@ void OneStep( void )
 
     Address offset;
     /* Get first instruction nibble */
-    Nibble n = FetchNibble( cpu_status.PC );
-    cpu_status.PC++;
+    Nibble n = FetchNibble( cpu.PC );
+    cpu.PC++;
     opcode *= 0x10;
     opcode += n;
 
@@ -2567,45 +2566,45 @@ void OneStep( void )
             ExecGroup_1();
             break;
         case 0x2: /* P=n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
             SetP( n );
             break;
         case 0x3: /* LC(m) n...n */
-            n = FetchNibble( cpu_status.PC );
-            cpu_status.PC++;
-            FetchR( cpu_status.C, n );
+            n = FetchNibble( cpu.PC );
+            cpu.PC++;
+            FetchR( cpu.C, n );
             break;
         case 0x4: /* RTNC/GOC */
-            if ( cpu_status.carry ) {
-                offset = Get2Nibbles2C( cpu_status.PC );
+            if ( cpu.carry ) {
+                offset = Get2Nibbles2C( cpu.PC );
                 if ( offset == 0 )
-                    cpu_status.PC = PopRSTK();
+                    cpu.PC = PopRSTK();
                 else
-                    cpu_status.PC += offset;
+                    cpu.PC += offset;
             } else
-                cpu_status.PC += 2;
+                cpu.PC += 2;
 
             break;
         case 0x5: /* RTNNC/GONC */
-            if ( !cpu_status.carry ) {
-                offset = Get2Nibbles2C( cpu_status.PC );
+            if ( !cpu.carry ) {
+                offset = Get2Nibbles2C( cpu.PC );
                 if ( offset == 0 )
-                    cpu_status.PC = PopRSTK();
+                    cpu.PC = PopRSTK();
                 else
-                    cpu_status.PC += offset;
+                    cpu.PC += offset;
             } else
-                cpu_status.PC += 2;
+                cpu.PC += 2;
 
             break;
         case 0x6: /* GOTO */
-            cpu_status.PC += Get3Nibbles2C( cpu_status.PC );
+            cpu.PC += Get3Nibbles2C( cpu.PC );
             break;
         case 0x7: /* GOSUB */
-            offset = Get3Nibbles2C( cpu_status.PC );
-            cpu_status.PC += 3;
-            PushRSTK( cpu_status.PC );
-            cpu_status.PC += offset;
+            offset = Get3Nibbles2C( cpu.PC );
+            cpu.PC += 3;
+            PushRSTK( cpu.PC );
+            cpu.PC += offset;
             break;
         case 0x8: /* Group_8 */
             ExecGroup_8();
@@ -2633,7 +2632,7 @@ void OneStep( void )
             break;
 
         default:
-            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu_status.PC, n )
+            ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.PC, n )
             break;
     }
 

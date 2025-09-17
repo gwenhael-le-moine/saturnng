@@ -121,8 +121,8 @@ void import_file( char* filename )
     /* if ( bin_hdr == ( const char* )NULL ) */
     /*     return; */
 
-    /* int start_addr = R2int( cpu_status.A ); */
-    /* int end_addr = R2int( cpu_status.C ); */
+    /* int start_addr = R2int( cpu.A ); */
+    /* int end_addr = R2int( cpu.C ); */
 
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ) */
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr ) */
@@ -140,8 +140,8 @@ void export_file( char* filename )
     /* if ( bin_hdr == ( const char* )NULL ) */
     /*     return; */
 
-    /* int start_addr = R2int( cpu_status.A ); */
-    /* int end_addr = R2int( cpu_status.C ); */
+    /* int start_addr = R2int( cpu.A ); */
+    /* int end_addr = R2int( cpu.C ); */
 
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ) */
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr ) */
@@ -156,5 +156,5 @@ void set_speed( unsigned int new_speed_mhz )
        because new_speed is >=0, has an architectural upper limit of 2^20,
        and int are at least 2^31.
      */
-    cpu_status.inner_loop_max = ( new_speed_mhz * INNER_LOOP_MAX ) / 4;
+    cpu.inner_loop_max = ( new_speed_mhz * INNER_LOOP_MAX ) / 4;
 }

@@ -516,7 +516,7 @@ void Ce2Init49( void )
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
     */
-    /* cpu_status.HST |= HST_MP_MASK; */
+    /* cpu.HST |= HST_MP_MASK; */
     /* CpuIntRequest(INT_REQUEST_IRQ); */
 }
 
@@ -618,7 +618,7 @@ void NCe3Init49( void )
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
     */
-    /* cpu_status.HST |= HST_MP_MASK; */
+    /* cpu.HST |= HST_MP_MASK; */
     /* CpuIntRequest(INT_REQUEST_IRQ); */
 }
 

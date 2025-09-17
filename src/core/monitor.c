@@ -136,31 +136,31 @@ static const char* DumpR( Nibble* r )
   This function dumps the current CPU status into the string buffer 'ob'.
 
 .call         :
-                DumpCpuStatus(ob);
+                DumpCpu(ob);
 .input        :
                 void
 .output       :
-                char ob[DUMP_CPU_STATUS_OB_SIZE];
+                char ob[DUMP_CPU_OB_SIZE];
 .status_codes :
                 *
 .notes        :
   1.1, 3-Feb-1998, creation
 
 .- */
-void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
+void DumpCpu( char ob[ DUMP_CPU_OB_SIZE ] )
 {
     static const char* work_n[ N_WORKING_REGISTER ] = { "A", "B", "C", "D" };
     char dob[ DISASSEMBLE_OB_SIZE ];
     int n;
 
     /* Dump PC and current instruction */
-    ( void )Disassemble( cpu_status.PC, dob );
+    ( void )Disassemble( cpu.PC, dob );
     sprintf( ob, "\n%s\n\n", dob );
     ob += strlen( ob );
 
     /* Dump A, B, C, D */
     for ( n = 0; n < N_WORKING_REGISTER; n++ ) {
-        sprintf( ob, "%s:\t%s\n", work_n[ n ], DumpR( cpu_status.work[ n ] ) );
+        sprintf( ob, "%s:\t%s\n", work_n[ n ], DumpR( cpu.work[ n ] ) );
         ob += strlen( ob );
     }
 
@@ -169,24 +169,24 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
 
     /* Dump Rn */
     for ( n = 0; n < N_SCRATCH_REGISTER; n++ ) {
-        sprintf( ob, "R%d:\t%s\n", n, DumpR( cpu_status.R[ n ] ) );
+        sprintf( ob, "R%d:\t%s\n", n, DumpR( cpu.R[ n ] ) );
         ob += strlen( ob );
     }
 
     sprintf( ob, "\n" );
     ob += strlen( ob );
 
-    sprintf( ob, "D0:\t%05X\t\tD1:\t%05X\n", cpu_status.D0, cpu_status.D1 );
+    sprintf( ob, "D0:\t%05X\t\tD1:\t%05X\n", cpu.D0, cpu.D1 );
     ob += strlen( ob );
 
-    sprintf( ob, "P:\t%01X\t\tIN:\t%04X\t\tOUT:\t%03X\n", cpu_status.P, cpu_status.IN, cpu_status.OUT );
+    sprintf( ob, "P:\t%01X\t\tIN:\t%04X\t\tOUT:\t%03X\n", cpu.P, cpu.IN, cpu.OUT );
     ob += strlen( ob );
 
-    sprintf( ob, "HST:\t%01X\t\tST:\t%04X\n", cpu_status.HST, cpu_status.ST );
+    sprintf( ob, "HST:\t%01X\t\tST:\t%04X\n", cpu.HST, cpu.ST );
     ob += strlen( ob );
 
-    sprintf( ob, "hexmode: %d, carry: %d, int_enable/pending/service: %d/%d/%d, shutdn:%d\n", cpu_status.hexmode, cpu_status.carry,
-             cpu_status.int_enable, cpu_status.int_pending, cpu_status.int_service, cpu_status.shutdn );
+    sprintf( ob, "hexmode: %d, carry: %d, int_enable/pending/service: %d/%d/%d, shutdn:%d\n", cpu.hexmode, cpu.carry, cpu.int_enable,
+             cpu.int_pending, cpu.int_service, cpu.shutdn );
     ob += strlen( ob );
 }
 
@@ -303,17 +303,17 @@ static int d( void )
 }
 
 /* Print CPU status */
-static int cpu( void )
+static int show_cpu( void )
 {
-    char ob[ DUMP_CPU_STATUS_OB_SIZE ];
-    DumpCpuStatus( ob );
+    char ob[ DUMP_CPU_OB_SIZE ];
+    DumpCpu( ob );
     puts( ob );
 
     return OK;
 }
 
 /* Reset CPU */
-static int reset( void )
+static int reset_cpu( void )
 {
     CpuReset();
 
@@ -360,10 +360,10 @@ static const struct TEntry table[] = {
     {"r",     "<addr> [count], Read nibbles from memory",         r        },
     {"w",     "<addr> [n]..., Write nibbles into memory",         w        },
     {"d",     "<addr> [count], Disassemble starting from 'addr'", d        },
-    {"cpu",   "Print CPU status",                                 cpu      },
+    {"cpu",   "Print CPU status",                                 show_cpu },
     {"map",   "Print the contents of the module map table",       map      },
     {"debug", "Set the debugging level",                          debug    },
-    {"reset", "Reset CPU",                                        reset    },
+    {"reset", "Reset CPU",                                        reset_cpu},
     {"exit",  "Save emulator state & exit",                       mon_exit },
     {"quit",  "Quit emulator WITHOUT saving its state",           mon_quit }
 };

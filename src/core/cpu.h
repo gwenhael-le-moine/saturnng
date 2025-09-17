@@ -61,8 +61,8 @@
   requests and emulator's extended functions:
 
   - Added new fields:
-        struct CpuStatus.halt (number of pending halt requests)
-        struct CpuStatus.inner_loop_max (upper limit of inner_loop)
+        struct Cpu.halt (number of pending halt requests)
+        struct Cpu.inner_loop_max (upper limit of inner_loop)
   - New condition codes: CPU_I_HALT, CPU_I_RUN, CPU_E_NO_HALT
   - New prototypes: CpuHaltRequest(), CpuRunRequest(), CpuHaltAllowed()
 
@@ -193,7 +193,7 @@ typedef Nibble DataRegister[ NIBBLE_PER_REGISTER ];
 
 typedef enum { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI } int_request_t;
 
-struct CpuStatus {
+struct Cpu {
     DataRegister work[ N_WORKING_REGISTER ];
 #  define A work[ 0 ]
 #  define B work[ 1 ]
@@ -256,7 +256,7 @@ typedef enum /* 2.1: EmulatorExit() option */
         Global variables
   ---------------------------------------------------------------------------*/
 
-extern struct CpuStatus cpu_status;
+extern struct Cpu cpu;
 
 extern int opcode;
 

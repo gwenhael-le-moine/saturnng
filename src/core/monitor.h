@@ -34,8 +34,8 @@
 
 #  include "cpu.h"
 
-#  define DUMP_CPU_STATUS_OB_SIZE 512
-void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] );
+#  define DUMP_CPU_OB_SIZE 512
+void DumpCpu( char ob[ DUMP_CPU_OB_SIZE ] );
 
 void Monitor( void );
 
