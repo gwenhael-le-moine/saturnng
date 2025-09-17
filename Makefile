@@ -54,13 +54,17 @@ HEADERS = src/options.h \
 	src/core/config.h \
 	src/core/disk_io.h \
 	src/core/flash49.h \
+	src/core/romram49.h \
+	src/core/romram.h \
 	src/core/keyb.h \
 	src/core/machdep.h \
 	src/core/modules.h \
+	src/core/hw_config.h \
 	src/core/monitor.h \
 	src/core/serial.h \
 	src/core/x_func.h \
 	src/core/dis.h \
+	src/core/hdw.h \
 	src/core/cpu.h \
 	src/core/cpu_buscc.h \
 	src/core/chf_wrapper.h \

@@ -105,6 +105,7 @@
 #include "config.h"
 #include "cpu.h"
 #include "modules.h"
+#include "hw_config.h"
 #include "serial.h"
 #include "chf_wrapper.h"
 

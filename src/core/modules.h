@@ -558,7 +558,6 @@ typedef enum {
   ---------------------------------------------------------------------------*/
 
 /* Initialization */
-void ModSelectDescription( int model );
 void ModRegisterDescription( ModDescription p );
 void ModInit( void );
 void ModSave( void );

@@ -63,6 +63,7 @@
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"
+#include "romram49.h"
 #include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
@@ -94,9 +95,6 @@ typedef int ( *FlashF )( enum FlashState* state, enum FlashCycle cycle, XAddress
 /*---------------------------------------------------------------------------
         Private state variables
   ---------------------------------------------------------------------------*/
-
-/* External storage */
-extern struct ModStatus_49* mod_status_49;
 
 static int r_buffer;              /* Nibble buffer during read */
 static int w_buffer;              /* Nibble buffer during write */

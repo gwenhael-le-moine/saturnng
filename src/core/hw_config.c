@@ -63,69 +63,14 @@
 #include "../libChf/src/Chf.h"
 
 #include "config.h"
-#include "cpu.h"
 #include "modules.h"
 #include "chf_wrapper.h"
+#include "romram.h"
+#include "romram49.h"
 
 /*---------------------------------------------------------------------------
         Module description tables
   ---------------------------------------------------------------------------*/
-
-extern void RomInit( void );
-extern void HdwInit( void );
-extern void RamInit( void );
-extern void Ce1Init( void );
-extern void Ce2Init( void );
-extern void NCe3Init( void );
-
-extern void RomSave( void );
-extern void HdwSave( void );
-extern void RamSave( void );
-extern void Ce1Save( void );
-extern void Ce2Save( void );
-extern void NCe3Save( void );
-
-extern Nibble RomRead( Address );
-extern Nibble HdwRead( Address );
-extern Nibble RamRead( Address );
-extern Nibble Ce1Read( Address );
-extern Nibble Ce2Read( Address );
-extern Nibble NCe3Read( Address );
-
-extern void RomWrite( Address, Nibble );
-extern void HdwWrite( Address, Nibble );
-extern void RamWrite( Address, Nibble );
-extern void Ce1Write( Address, Nibble );
-extern void Ce2Write( Address, Nibble );
-extern void NCe3Write( Address, Nibble );
-
-extern void RomInit49( void );
-extern void HdwInit49( void );
-extern void RamInit49( void );
-extern void Ce1Init49( void );
-extern void Ce2Init49( void );
-extern void NCe3Init49( void );
-
-extern void RomSave49( void );
-extern void HdwSave49( void );
-extern void RamSave49( void );
-extern void Ce1Save49( void );
-extern void Ce2Save49( void );
-extern void NCe3Save49( void );
-
-extern Nibble RomRead49( Address );
-extern Nibble HdwRead49( Address );
-extern Nibble RamRead49( Address );
-extern Nibble Ce1Read49( Address );
-extern Nibble Ce2Read49( Address );
-extern Nibble NCe3Read49( Address );
-
-extern void RomWrite49( Address, Nibble );
-extern void HdwWrite49( Address, Nibble );
-extern void RamWrite49( Address, Nibble );
-extern void Ce1Write49( Address, Nibble );
-extern void Ce2Write49( Address, Nibble );
-extern void NCe3Write49( Address, Nibble );
 
 static const ModDescription hw48_description = {
     {"ROM              (ROM)",  0x00, 0, RomInit,  RomSave,  RomRead,  RomWrite,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0},
