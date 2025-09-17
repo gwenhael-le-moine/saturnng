@@ -77,6 +77,7 @@
 
 #define IN_VAL( keycode ) ( 1 << ( keycode & 0xf ) )
 #define OUT_BIT( keycode ) ( keycode >> 4 )
+
 /* cur_in:
 
    This array contains the current value the CPU IN register will assume
@@ -180,16 +181,12 @@ void KeybPress( int keycode )
         /* Set all 0x8000 lines */
         for ( int i = 0; i < OUT_BITS; i++ )
             cur_in[ i ] |= 0x8000;
-
-        /* Post an interrupt request to the CPU */
-        CpuIntRequest( INT_REQUEST_NMI );
-    } else {
+    } else
         /* Update the cur_in array */
         cur_in[ OUT_BIT( keycode ) ] |= IN_VAL( keycode );
 
-        /* Post an interrupt request to the CPU */
-        CpuIntRequest( INT_REQUEST_NMI );
-    }
+    /* Post an interrupt request to the CPU */
+    CpuIntRequest( INT_REQUEST_NMI );
 }
 
 /* .+
