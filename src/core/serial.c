@@ -627,9 +627,7 @@ const char* SerialInit( void )
     }
 
     /* Publish pty name */
-    if ( config.verbose ) {
-        INFO( SERIAL_CHF_MODULE_ID, SERIAL_I_PTY_NAME, pty_name )
-    }
+    INFO( SERIAL_CHF_MODULE_ID, SERIAL_I_PTY_NAME, pty_name )
 
 #else
     /* Dummy implementation; do nothing */
