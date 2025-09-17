@@ -177,15 +177,6 @@ typedef enum {
     N_FS = 16, /* Total # of FS codes */
 } field_selector_code_t;
 
-/* Register pair codes */
-typedef enum {
-    RP_AB = 0,
-    RP_BC = 1,
-    RP_CA = 2,
-    RP_DC = 3,
-    N_RP = 4, /* Total # of RP codes */
-} register_pair_code_t;
-
 /* Masks */
 #  define NIBBLE_MASK ( ( Nibble )0xF )
 #  define ADDRESS_MASK ( ( Address )0xFFFFF )
