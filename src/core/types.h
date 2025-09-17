@@ -38,10 +38,10 @@
 .creation     :	28-Jan-1998
 
 .description  :
-  Machine-dependent type definitions.
+  type definitions.
 
 .notes        :
-  $Log: machdep.h,v $
+  $Log: types.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
 
@@ -57,6 +57,7 @@
         All Data types must be SIGNED
   ---------------------------------------------------------------------------*/
 
+/* Machine-dependent */
 typedef char int1;
 typedef char int4;
 typedef char int8;
@@ -64,5 +65,14 @@ typedef int int12;
 typedef int int16;
 typedef int int20;
 typedef int int32;
+
+/* typedef int1 Bit; */
+typedef int4 Nibble;
+typedef int20 Address;
+typedef int12 OutputRegister;
+typedef int16 InputRegister;
+
+/* The XAddress data type holds extended addresses used to access Port 2 */
+typedef int32 XAddress;
 
 #endif /*!_MACHDEP_H*/

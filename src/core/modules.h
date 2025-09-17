@@ -112,7 +112,7 @@
 #  include "cpu.h"
 
 /*---------------------------------------------------------------------------
-        Data type definitions - require config.h, machdep.h, cpu.h
+        Data type definitions - require config.h, types.h, cpu.h
   ---------------------------------------------------------------------------*/
 
 #  define N_MOD 6

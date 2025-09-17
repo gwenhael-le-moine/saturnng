@@ -57,7 +57,7 @@ HEADERS = src/options.h \
 	src/core/romram49.h \
 	src/core/romram48.h \
 	src/core/keyb.h \
-	src/core/machdep.h \
+	src/core/types.h \
 	src/core/modules.h \
 	src/core/hw_config.h \
 	src/core/monitor.h \

@@ -91,7 +91,7 @@
 #include <string.h> /* 3.1: memset() */
 
 #include "config.h"
-#include "machdep.h"
+#include "types.h"
 #include "cpu.h"
 #include "modules.h"
 #include "disk_io.h"

@@ -93,7 +93,7 @@
 #include <errno.h>
 
 #include "config.h"
-#include "machdep.h"
+#include "types.h"
 #include "cpu.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
 #include "chf_wrapper.h"

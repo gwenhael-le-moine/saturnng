@@ -100,13 +100,13 @@
 #  include <stdbool.h>
 
 /*---------------------------------------------------------------------------
-        Macro/Data type definitions - require machdep.h
+        Macro/Data type definitions - require types.h
 
   N_SCRATCH_REGISTER_ALL, used during scratch register space allocation
   is larger than necessary to avoid additional checks on the validity of
   the R register index fields during emulation
   ---------------------------------------------------------------------------*/
-#  include "machdep.h"
+#  include "types.h"
 
 #  define OPCODE_LENGTH( oc )                                                                                                              \
       ( ( oc / 0x100000 > 0 ) + ( oc / 0x10000 > 0 ) + ( oc / 0x1000 > 0 ) + ( oc / 0x100 > 0 ) + ( oc / 0x10 > 0 ) + 1 )
@@ -188,16 +188,8 @@ typedef enum {
 #  define D_S_MASK ( ( Address )0xF0000 )
 #  define RETURN_SP_MASK 0x7
 
-typedef int1 Bit;
-typedef int4 Nibble;
-typedef int20 Address;
-typedef int12 OutputRegister;
-typedef int16 InputRegister;
 typedef int16 ProgramStatusRegister;
 typedef Nibble DataRegister[ NIBBLE_PER_REGISTER ];
-
-/* The XAddress data type holds extended addresses used to access Port 2 */
-typedef int32 XAddress;
 
 typedef enum { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI } int_request_t;
 
