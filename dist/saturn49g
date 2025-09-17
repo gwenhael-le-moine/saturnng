@@ -22,11 +22,14 @@ if [ ! -e "$CONFIGDIR"/rom ]; then
         exit 1
     fi
 
-    echo "The next step will download a ROM from https://hpcalc.org where \"HP graciously began allowing this to be downloaded in mid-2000.\""
-    echo "You can hit Ctrl-C now if you do not wish to download them."
-    read -r
+    if [ ! -e "$CONFIGDIR"/ROMs/rom.49g ]; then
+        echo "The next step will download a ROM from https://hpcalc.org where \"HP graciously began allowing this to be downloaded in mid-2000.\""
+        echo "You can hit Ctrl-C now if you do not wish to download them."
+        read -r
 
-    make -C "$CONFIGDIR"/ROMs rom.49g
+        make -C "$CONFIGDIR"/ROMs rom.49g
+    fi
+
     cp "$CONFIGDIR"/ROMs/rom.49g "$CONFIGDIR"/rom
 fi
 
