@@ -574,7 +574,7 @@ Nibble ReadNibble( Address addr );
 void WriteNibble( Address addr, Nibble datum );
 
 /* Monitor */
-void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] );
-void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] );
+void monitor_ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] );
+void monitor_ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] );
 
 #endif /*!_MODULES_H*/

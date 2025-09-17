@@ -111,7 +111,7 @@ static struct ModStatus_48* mod_status_48;
   1.1, 23-Jan-1998, creation
 
 .- */
-void RomInit( void )
+void RomInit48( void )
 {
     mod_status_48 = ( struct ModStatus_48* )malloc( sizeof( struct ModStatus_48 ) );
     if ( mod_status_48 == ( struct ModStatus_48* )NULL ) {
@@ -147,7 +147,7 @@ void RomInit( void )
   1.1, 11-Feb-1998, creation
 
 .- */
-void RomSave( void ) {}
+void RomSave48( void ) {}
 
 /* .+
 
@@ -168,7 +168,7 @@ void RomSave( void ) {}
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RomRead( Address rel_address ) { return mod_status_48->rom[ rel_address ]; }
+Nibble RomRead48( Address rel_address ) { return mod_status_48->rom[ rel_address ]; }
 
 /* .+
 
@@ -191,7 +191,7 @@ Nibble RomRead( Address rel_address ) { return mod_status_48->rom[ rel_address ]
   1.1, 26-Jan-1998, creation
 
 .- */
-void RomWrite( Address rel_address, Nibble datum )
+void RomWrite48( Address rel_address, Nibble datum )
 {
     // FIXME: 48gx: saturn48gx-Mid <12>d (src/romram.c,235)-E-Write into ROM A[1B632] D[9]
     ERROR( MOD_CHF_MODULE_ID, MOD_E_ROM_WRITE, rel_address, datum )
@@ -220,7 +220,7 @@ void RomWrite( Address rel_address, Nibble datum )
   1.1, 23-Jan-1998, creation
 
 .- */
-void RamInit( void )
+void RamInit48( void )
 {
     bool err = ReadNibblesFromFile( config.ram_path, N_RAM_SIZE, mod_status_48->ram );
     if ( err ) {
@@ -251,7 +251,7 @@ void RamInit( void )
     - upon failure, added push of ChfGenerate( CHF_ERRNO_SET, __FILE__, __LINE__, errno, CHF_ERROR ) to condition stack.
 
 .- */
-void RamSave( void )
+void RamSave48( void )
 {
     bool err = WriteNibblesToFile( mod_status_48->ram, N_RAM_SIZE, config.ram_path );
     if ( err ) {
@@ -279,7 +279,7 @@ void RamSave( void )
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RamRead( Address rel_address ) { return mod_status_48->ram[ rel_address ]; }
+Nibble RamRead48( Address rel_address ) { return mod_status_48->ram[ rel_address ]; }
 
 /* .+
 
@@ -301,7 +301,7 @@ Nibble RamRead( Address rel_address ) { return mod_status_48->ram[ rel_address ]
   1.1, 26-Jan-1998, creation
 
 .- */
-void RamWrite( Address rel_address, Nibble datum ) { mod_status_48->ram[ rel_address ] = datum; }
+void RamWrite48( Address rel_address, Nibble datum ) { mod_status_48->ram[ rel_address ] = datum; }
 
 /*---------------------------------------------------------------------------
         Ce1  module
@@ -327,7 +327,7 @@ void RamWrite( Address rel_address, Nibble datum ) { mod_status_48->ram[ rel_add
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Init( void )
+void Ce1Init48( void )
 {
     /* Check if bank-switcher accelerators are valid; if not, initialize
        them to a reasonable value (that is, select Port_2 bank 0).
@@ -358,7 +358,7 @@ void Ce1Init( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Save( void )
+void Ce1Save48( void )
 {
     /* Nothing to be done herel the bank-switcher accelerators are saved
        by the hdw modules
@@ -388,7 +388,7 @@ void Ce1Save( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble Ce1Read( Address rel_address )
+Nibble Ce1Read48( Address rel_address )
 {
 
     DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address )
@@ -427,7 +427,7 @@ Nibble Ce1Read( Address rel_address )
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Write( Address rel_address, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID, MOD_E_CE1_WRITE, rel_address, datum ) }
+void Ce1Write48( Address rel_address, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID, MOD_E_CE1_WRITE, rel_address, datum ) }
 
 /*---------------------------------------------------------------------------
         Ce2  module
@@ -454,7 +454,7 @@ void Ce1Write( Address rel_address, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID, M
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Init( void )
+void Ce2Init48( void )
 {
     Nibble new_status;
 
@@ -511,7 +511,7 @@ void Ce2Init( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Save( void )
+void Ce2Save48( void )
 {
     /* Attempt to save only if port is write-enabled */
     if ( !( mod_status.hdw.card_status & CE2_CARD_WE ) )
@@ -543,7 +543,7 @@ void Ce2Save( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble Ce2Read( Address rel_address ) { return mod_status_48->port_1[ rel_address ]; }
+Nibble Ce2Read48( Address rel_address ) { return mod_status_48->port_1[ rel_address ]; }
 
 /* .+
 
@@ -565,7 +565,7 @@ Nibble Ce2Read( Address rel_address ) { return mod_status_48->port_1[ rel_addres
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Write( Address rel_address, Nibble datum ) { mod_status_48->port_1[ rel_address ] = datum; }
+void Ce2Write48( Address rel_address, Nibble datum ) { mod_status_48->port_1[ rel_address ] = datum; }
 
 /*---------------------------------------------------------------------------
         NCe3  module
@@ -593,7 +593,7 @@ void Ce2Write( Address rel_address, Nibble datum ) { mod_status_48->port_1[ rel_
   2.4, 11-Sep-2000, implemented
 
 .- */
-void NCe3Init( void )
+void NCe3Init48( void )
 {
     Nibble new_status;
 
@@ -656,7 +656,7 @@ void NCe3Init( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-void NCe3Save( void )
+void NCe3Save48( void )
 {
 #ifdef N_PORT_2_BANK
     /* Attempt to save only if port is write-enabled */
@@ -692,7 +692,7 @@ void NCe3Save( void )
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble NCe3Read( Address rel_address )
+Nibble NCe3Read48( Address rel_address )
 {
 #ifdef N_PORT_2_BANK
     return mod_status_48->port_2[ rel_address | mod_status.hdw.accel.a48.bs_address ];
@@ -726,7 +726,7 @@ Nibble NCe3Read( Address rel_address )
   2.4, 11-Sep-2000, implemented
 
 .- */
-void NCe3Write( Address rel_address, Nibble datum )
+void NCe3Write48( Address rel_address, Nibble datum )
 {
 #ifdef N_PORT_2_BANK
     mod_status_48->port_2[ rel_address | mod_status.hdw.accel.a48.bs_address ] = datum;

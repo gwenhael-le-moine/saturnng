@@ -113,13 +113,9 @@ static int ReadCount( int* count )
 }
 
 /*---------------------------------------------------------------------------
-        Private functions - Command execution
-  ---------------------------------------------------------------------------*/
-
-/*---------------------------------------------------------------------------
         Private functions: dump
   ---------------------------------------------------------------------------*/
-
+/* CPU */
 static const char* DumpR( Nibble* r )
 {
     static char b[ NIBBLE_PER_REGISTER + 1 ];
@@ -194,6 +190,10 @@ void DumpCpuStatus( char ob[ DUMP_CPU_STATUS_OB_SIZE ] )
     ob += strlen( ob );
 }
 
+/*---------------------------------------------------------------------------
+        Private functions - Command execution
+  ---------------------------------------------------------------------------*/
+
 /* Run the emulator; this function exits normally only when an
    EmulatorIntRequest() is posted and satisfied
 */
@@ -228,7 +228,7 @@ static int map_check( void )
         return FAILED;
 
     char ob[ MOD_MAP_CHECK_OB_SIZE ];
-    ModMapCheck( addr, ob );
+    monitor_ModMapCheck( addr, ob );
     puts( ob );
 
     return OK;
@@ -238,7 +238,7 @@ static int map_check( void )
 static int map( void )
 {
     char ob[ MOD_MAP_TABLE_OB_SIZE ];
-    ModMapTable( ob );
+    monitor_ModMapTable( ob );
     puts( ob );
 
     return OK;

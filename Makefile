@@ -55,7 +55,7 @@ HEADERS = src/options.h \
 	src/core/disk_io.h \
 	src/core/flash49.h \
 	src/core/romram49.h \
-	src/core/romram.h \
+	src/core/romram48.h \
 	src/core/keyb.h \
 	src/core/machdep.h \
 	src/core/modules.h \
@@ -90,7 +90,7 @@ SRC = src/main.c \
 	src/core/keyb.c \
 	src/core/modules.c \
 	src/core/monitor.c \
-	src/core/romram.c \
+	src/core/romram48.c \
 	src/core/romram49.c \
 	src/core/serial.c \
 	src/core/x_func.c \

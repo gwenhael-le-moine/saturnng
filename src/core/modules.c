@@ -1417,7 +1417,7 @@ void WriteNibble( Address addr, Nibble datum )
   for address 'addr'; it is used by the emulator monitor only.
 
 .call         :
-                ModMapCheck(addr, char ob[MOD_MAP_CHECK_OB_SIZE]);
+                monitor_ModMapCheck(addr, char ob[MOD_MAP_CHECK_OB_SIZE]);
 .input        :
                 Address addr;
 .output       :
@@ -1428,7 +1428,7 @@ void WriteNibble( Address addr, Nibble datum )
   1.1, 26-Jan-1998, creation
 
 .- */
-void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
+void monitor_ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 {
     int page = MOD_PAGE( addr );
     Address offset = MOD_OFFSET( addr );
@@ -1453,7 +1453,7 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
   all modules; it is used by the emulator monitor only.
 
 .call         :
-                ModMapTable(char ob[MOD_MAP_TABLE_OB_SIZE]);
+                monitor_ModMapTable(char ob[MOD_MAP_TABLE_OB_SIZE]);
 .input        :
                 Address addr;
 .output       :
@@ -1464,7 +1464,7 @@ void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
   1.1, 26-Jan-1998, creation
 
 .- */
-void ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] )
+void monitor_ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] )
 {
     sprintf( ob, "%s\n", "Device\t\t\tAddress\tSize\tStatus" );
     ob += strlen( ob );

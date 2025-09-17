@@ -65,7 +65,7 @@
 #include "config.h"
 #include "modules.h"
 #include "chf_wrapper.h"
-#include "romram.h"
+#include "romram48.h"
 #include "romram49.h"
 
 /*---------------------------------------------------------------------------
@@ -73,12 +73,12 @@
   ---------------------------------------------------------------------------*/
 
 static const ModDescription hw48_description = {
-    {"ROM              (ROM)",  0x00, 0, RomInit,  RomSave,  RomRead,  RomWrite,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0},
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,  HdwSave,  HdwRead,  HdwWrite,  MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
-    {"Internal RAM     (RAM)",  0x03, 4, RamInit,  RamSave,  RamRead,  RamWrite,  MOD_UNCONFIGURED,    0,       0,       0},
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init,  Ce1Save,  Ce1Read,  Ce1Write,  MOD_UNCONFIGURED,    0,       0,       0},
-    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init,  Ce2Save,  Ce2Read,  Ce2Write,  MOD_UNCONFIGURED,    0,       0,       0},
-    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init, NCe3Save, NCe3Read, NCe3Write, MOD_UNCONFIGURED,    0,       0,       0}
+    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  MOD_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  MOD_UNCONFIGURED,    0,       0,       0},
+    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  MOD_UNCONFIGURED,    0,       0,       0},
+    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, MOD_UNCONFIGURED,    0,       0,       0}
 };
 static const ModDescription hw49_description = {
     {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0                },
