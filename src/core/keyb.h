@@ -76,8 +76,7 @@
 
 void KeybRSI( void );
 InputRegister KeybIN( OutputRegister out );
-void KeybPress( const char* key );
-void KeybRelease( const char* key );
-void KeybReset( void );
+void KeybPress( int keycode );
+void KeybRelease( int keycode );
 
 #endif /*!_KEYB_H*/

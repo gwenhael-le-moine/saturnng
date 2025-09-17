@@ -70,19 +70,13 @@
   Initial revision
 .- */
 
-#include <stdio.h>
-#include <string.h>
-
-#include "../libChf/src/Chf.h"
-
-#include "config.h"
 #include "cpu.h"
-#include "chf_wrapper.h"
 #include "keyb.h"
-#include "modules.h"
 
 #define OUT_BITS 12
 
+#define IN_VAL( keycode ) ( 1 << ( keycode & 0xf ) )
+#define OUT_BIT( keycode ) ( keycode >> 4 )
 /* cur_in:
 
    This array contains the current value the CPU IN register will assume
@@ -179,9 +173,9 @@ InputRegister KeybIN( OutputRegister out )
     deeply revised to accomodate the new GUI
 
 .- */
-void KeybPress( const char* key )
+void KeybPress( int keycode )
 {
-    if ( strcmp( key, "*" ) == 0 ) {
+    if ( keycode == 0x8000 ) {
         /* This is the ON key */
         /* Set all 0x8000 lines */
         for ( int i = 0; i < OUT_BITS; i++ )
@@ -190,22 +184,11 @@ void KeybPress( const char* key )
         /* Post an interrupt request to the CPU */
         CpuIntRequest( INT_REQUEST_NMI );
     } else {
-        unsigned int in_val, out_bit;
-        int ret = sscanf( key, "%x/%x", &out_bit, &in_val );
+        /* Update the cur_in array */
+        cur_in[ OUT_BIT( keycode ) ] |= IN_VAL( keycode );
 
-        if ( ret == 2 ) {
-            /* Update the cur_in array */
-            cur_in[ out_bit ] |= in_val;
-
-            /* Post an interrupt request to the CPU */
-            CpuIntRequest( INT_REQUEST_NMI );
-        } else {
-            if ( ret != 2 ) {
-                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_KEY, key )
-            } else if ( out_bit >= OUT_BITS ) {
-                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_OUT_BIT, out_bit )
-            }
-        }
+        /* Post an interrupt request to the CPU */
+        CpuIntRequest( INT_REQUEST_NMI );
     }
 }
 
@@ -231,50 +214,14 @@ void KeybPress( const char* key )
     deeply revised to accomodate the new GUI
 
 .- */
-void KeybRelease( const char* key )
+void KeybRelease( int keycode )
 {
-    if ( strcmp( key, "*" ) == 0 ) {
+    if ( keycode == 0x8000 ) {
         /* This is the ON key */
         /* Reset all 0x8000 lines */
         for ( int i = 0; i < OUT_BITS; i++ )
             cur_in[ i ] &= 0x7FFF;
-    } else {
-        unsigned int in_val, out_bit;
-        int ret = sscanf( key, "%x/%x", &out_bit, &in_val );
-
-        if ( ret == 2 )
-            /* Update the cur_in array */
-            cur_in[ out_bit ] &= ~in_val;
-        else {
-            if ( ret != 2 ) {
-                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_KEY, key )
-            } else if ( out_bit >= OUT_BITS ) {
-                WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_OUT_BIT, out_bit )
-            }
-        }
-    }
-}
-
-/* .+
-
-.creation     : 7-Nov-2000
-.description  :
-  This function resets the emulated keyboard; all keys are released.
-
-.call         :
-                KeybReset();
-.input        :
-                void
-.output       :
-                void
-.status_codes :
-.notes        :
-  3.13, 7-Nov-2000, creation
-
-.- */
-void KeybReset( void )
-{
-    /* Reset all 0x8000 lines */
-    for ( int i = 0; i < OUT_BITS; i++ )
-        cur_in[ i ] = 0;
+    } else
+        /* Update the cur_in array */
+        cur_in[ OUT_BIT( keycode ) ] &= ~( IN_VAL( keycode ) );
 }
