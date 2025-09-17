@@ -244,11 +244,10 @@ static int StoreData( enum FlashState* state, enum FlashCycle cycle, XAddress ad
         case FLASH_ST_WRITE_DATA_N:
             {
                 int index = address - wb_start;
-                if ( index >= 0 && index < WB_SIZE )
+                if ( 0 <= index && index < WB_SIZE )
                     wb[ index ] = data;
-                else {
+                else
                     WARNING( FLASH_CHF_MODULE_ID, FLASH_W_BAD_ADDRESS, *state, cycle, address, data )
-                }
             }
             break;
 
