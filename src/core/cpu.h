@@ -108,6 +108,9 @@
   ---------------------------------------------------------------------------*/
 #  include "machdep.h"
 
+#  define OPCODE_LENGTH( oc )                                                                                                              \
+      ( ( oc / 0x100000 > 0 ) + ( oc / 0x10000 > 0 ) + ( oc / 0x1000 > 0 ) + ( oc / 0x100 > 0 ) + ( oc / 0x10 > 0 ) + 1 )
+
 /* General */
 #  define NIBBLE_PER_REGISTER 16
 #  define N_WORKING_REGISTER 4

@@ -119,7 +119,7 @@ struct ModStatus mod_status; /* Status information - global */
 
 /* 2.7: Replaced the statically-allocated module mapping structure with a
    pointer to a dynamically-allocated structure, to be able to switch
-   between different structures fast.  The mod_map macro can be used to
+   between different structures fast.  The MOD_MAP macro can be used to
    refer to the current module mapping structure, and mod_map_ptr
    points to it.
 */

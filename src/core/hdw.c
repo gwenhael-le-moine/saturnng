@@ -90,8 +90,6 @@
 
 #include <string.h> /* 3.1: memset() */
 
-#include "../libChf/src/Chf.h"
-
 #include "config.h"
 #include "machdep.h"
 #include "cpu.h"
@@ -159,9 +157,8 @@ void HdwInit( void )
 void HdwSave( void )
 {
     bool err = WriteStructToFile( &mod_status.hdw, sizeof( mod_status.hdw ), config.hdw_path );
-    if ( err ) {
+    if ( err )
         ERROR0( MOD_CHF_MODULE_ID, MOD_E_HDW_SAVE )
-    }
 }
 
 /* .+
