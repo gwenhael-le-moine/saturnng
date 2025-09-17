@@ -123,9 +123,8 @@ void RomInit( void )
     if ( err ) {
         // To load 48SX ROM, try again with half the size this time.
         err = ReadNibblesFromFile( config.rom_path, N_ROM_SIZE / 2, mod_status_48->rom );
-        if ( err ) {
+        if ( err )
             FATAL0( MOD_CHF_MODULE_ID, MOD_F_ROM_INIT )
-        }
     }
 }
 
@@ -333,10 +332,11 @@ void Ce1Init( void )
     /* Check if bank-switcher accelerators are valid; if not, initialize
        them to a reasonable value (that is, select Port_2 bank 0).
     */
-    if ( !mod_status.hdw.accel_valid ) {
-        mod_status.hdw.accel_valid = 1;
-        mod_status.hdw.accel.a48.bs_address = ( XAddress )0;
-    }
+    if ( mod_status.hdw.accel_valid )
+        return;
+
+    mod_status.hdw.accel_valid = 1;
+    mod_status.hdw.accel.a48.bs_address = ( XAddress )0;
 }
 
 /* .+
@@ -479,14 +479,15 @@ void Ce2Init( void )
         new_status = mod_status.hdw.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
     }
 
-    if ( new_status != mod_status.hdw.card_status ) {
-        /* card_status changed; update, set MP bit in HST and post
-           interrupt request.
-        */
-        mod_status.hdw.card_status = new_status;
-        cpu_status.HST |= HST_MP_MASK;
-        CpuIntRequest( INT_REQUEST_IRQ );
-    }
+    if ( new_status == mod_status.hdw.card_status )
+        return;
+
+    /* card_status changed; update, set MP bit in HST and post
+       interrupt request.
+     */
+    mod_status.hdw.card_status = new_status;
+    cpu_status.HST |= HST_MP_MASK;
+    CpuIntRequest( INT_REQUEST_IRQ );
 }
 
 /* .+
@@ -624,14 +625,15 @@ void NCe3Init( void )
 
 #endif
 
-    if ( new_status != mod_status.hdw.card_status ) {
-        /* card_status changed; update, set MP bit in HST and post
-           interrupt request.
-        */
-        mod_status.hdw.card_status = new_status;
-        cpu_status.HST |= HST_MP_MASK;
-        CpuIntRequest( INT_REQUEST_IRQ );
-    }
+    if ( new_status == mod_status.hdw.card_status )
+        return;
+
+    /* card_status changed; update, set MP bit in HST and post
+       interrupt request.
+     */
+    mod_status.hdw.card_status = new_status;
+    cpu_status.HST |= HST_MP_MASK;
+    CpuIntRequest( INT_REQUEST_IRQ );
 }
 
 /* .+
