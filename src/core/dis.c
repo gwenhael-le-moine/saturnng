@@ -72,8 +72,6 @@
 #include <stdio.h>
 #include <string.h> /* 3.1: strcpy(), strcat(), strlen() */
 
-#include "../libChf/src/Chf.h"
-
 #include "config.h"
 #include "cpu.h"
 #include "dis.h"

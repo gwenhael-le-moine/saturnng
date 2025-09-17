@@ -82,7 +82,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h> /* access() */
-#include "../libChf/src/Chf.h"
 
 #include "config.h"
 #include "cpu.h"
