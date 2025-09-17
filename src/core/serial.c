@@ -49,7 +49,7 @@
 
   Revision 3.17  2000/11/23 17:01:45  cibrario
   Implemented sutil library and assorted bug fixes:
-  - Fixed UpdateTCS macro; it gave wrong results when trb was full
+  - Fixed UPDATE_TCS macro; it gave wrong results when trb was full
   - in SerialInit(), ensure that the pty is fully transparent by default
   - in SerialInit(), slave pty must have O_NONBLOCK set, otherwise
     SerialClose() could hang (rare)
@@ -393,13 +393,13 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 /*---------------------------------------------------------------------------
         Helper macros
 
-  CheckIRQ	This macro checks the current status of ioc, rcs, and tcs,
+  CHECK_IRQ	This macro checks the current status of ioc, rcs, and tcs,
                 and posts an interrupt request if appropriate.  It should be
                 called by all functions that modify the above-mentioned
                 registers, after the modification has been made.
                 Interrupt requests are posted only when IOC_SON is set.
 
-  UpdateRCS	This macro updates the rcs register according to the
+  UPDATE_RCS	This macro updates the rcs register according to the
                 current rrb COUNT_FULL_SLOTS:
                 - if the receiver ring buffer holds more than 1 character,
                   RCS_RBZ and RCS_RBF are both set
@@ -412,7 +412,7 @@ static int slave_pty;  /* File descriptor of pty's slave side */
                      always left clear and only RCS_RBF is updated;
                      this is simpler and works well on the 48, too.
 
-  UpdateTCS	This macro updates the tcs register according to the
+  UPDATE_TCS	This macro updates the tcs register according to the
                 current trb COUNT_EMPTY_SLOTS:
                 - if the transmitter ring buffer has more than 1 empty slot,
                   TCS_TBZ and TCS_TBF are both reset
@@ -423,19 +423,19 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 
   ---------------------------------------------------------------------------*/
 
-#define CheckIRQ                                                                                                                           \
+#define CHECK_IRQ                                                                                                                          \
     if ( ( ioc & IOC_SON ) && ( ( ( ioc & IOC_ETBE ) && ( !( tcs & TCS_TBF ) ) ) || ( ( ioc & IOC_ERBF ) && ( rcs & RCS_RBF ) ) ||         \
                                 ( ( ioc & IOC_ERBZ ) && ( rcs & RCS_RBZ ) ) ) )                                                            \
     CpuIntRequest( INT_REQUEST_IRQ )
 
-#define UpdateRCS                                                                                                                          \
+#define UPDATE_RCS                                                                                                                         \
     if ( COUNT_FULL_SLOTS( rrb ) > 0 ) {                                                                                                   \
         rcs |= RCS_RBF;                                                                                                                    \
     } else {                                                                                                                               \
         rcs &= ~( RCS_RBF );                                                                                                               \
     }
 
-#define UpdateTCS                                                                                                                          \
+#define UPDATE_TCS                                                                                                                         \
     if ( COUNT_EMPTY_SLOTS( trb ) > 1 ) {                                                                                                  \
         tcs &= ~( TCS_TBF | TCS_TBZ );                                                                                                     \
     } else if ( COUNT_EMPTY_SLOTS( trb ) > 0 ) {                                                                                           \
@@ -802,8 +802,8 @@ Nibble Serial_TCS_Read( void )
 
   Reading RBR triggers the following additional actions:
   - pulls one character from receiver ring buffer
-  - UpdateRCS
-  - CheckIRQ
+  - UPDATE_RCS
+  - CHECK_IRQ
 
 .call         :
                 d = Serial_RBR_Read();
@@ -835,10 +835,10 @@ int8 Serial_RBR_Read( void )
     }
 
     /* Update receiver status */
-    UpdateRCS;
+    UPDATE_RCS;
 
     /* Post a new IRQ if necessary */
-    CheckIRQ;
+    CHECK_IRQ;
 
     DEBUG( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_RBR, rx )
 
@@ -854,7 +854,7 @@ int8 Serial_RBR_Read( void )
 
   Writing IOC triggers the following additional actions:
 
-  - CheckIRQ is executed
+  - CHECK_IRQ is executed
 
 .call         :
                 Serial_IOC_Write(n);
@@ -876,7 +876,7 @@ void Serial_IOC_Write( Nibble n )
 
     ioc = n;
 
-    CheckIRQ;
+    CHECK_IRQ;
 }
 
 /* .+
@@ -980,8 +980,8 @@ void Serial_CRER_Write( Nibble n )
 
   Writing RBR triggers the following additional actions:
   - pushes one character into transmitter ring buffer
-  - UpdateTCS
-  - CheckIRQ
+  - UPDATE_TCS
+  - CHECK_IRQ
 
 .call         :
                 Serial_TBR_Write(d);
@@ -1011,10 +1011,10 @@ void Serial_TBR_Write( int8 d )
     }
 
     /* Update transmitter status */
-    UpdateTCS;
+    UPDATE_TCS;
 
     /* Post a new IRQ if necessary */
-    CheckIRQ;
+    CHECK_IRQ;
 }
 
 /* .+
@@ -1026,13 +1026,13 @@ void Serial_TBR_Write( int8 d )
 
   - attempt to pull as many characters as possible from the transmitter
     ring buffer and to write them on master_pty (PullAndWrite)
-  - UpdateTCS
+  - UPDATE_TCS
 
   - attempt to read as many characters are possible from master_pty and
     to push them into the receiver ring buffer (ReadAndPush)
-  - UpdateRCS
+  - UPDATE_RCS
 
-  - CheckIRQ
+  - CHECK_IRQ
 
 .call         :
                 HandleSerial();
@@ -1066,7 +1066,7 @@ void HandleSerial( void )
     }
 
     /* Update tcs */
-    UpdateTCS;
+    UPDATE_TCS;
 
     if ( ioc & IOC_SON ) {
         /* Attempt to charge receiver buffer */
@@ -1079,10 +1079,10 @@ void HandleSerial( void )
         }
 
         /* Update receiver status */
-        UpdateRCS;
+        UPDATE_RCS;
 
         /* Post an IRQ if necessary */
-        CheckIRQ;
+        CHECK_IRQ;
     }
 #endif
 }

@@ -270,7 +270,7 @@ static void RebuildPageTable( int lo, int hi )
     /* Scan all pages in the [lo, hi] range */
     for ( int page = lo; page <= hi; page++ ) {
         /* Calculate the base page address for the current page */
-        page_addr = ModAddress( page );
+        page_addr = MOD_ADDRESS( page );
 
         /* Scan the module mapping information table, searching for the module
            with the highest access priority that responds to the address
@@ -1158,8 +1158,8 @@ void ModConfig( Address config_info )
             MOD_MAP.map_info[ mod ].config = MOD_CONFIGURED;
 
             /* Rebuild the page table */
-            RebuildPageTable( ModPage( MOD_MAP.map_info[ mod ].abs_base_addr ),
-                              ModPage( MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size - 1 ) );
+            RebuildPageTable( MOD_PAGE( MOD_MAP.map_info[ mod ].abs_base_addr ),
+                              MOD_PAGE( MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size - 1 ) );
 
             /* Mark the current struct ModMap to be a configuration point;
                this flag is used by the unconfig cache code to correctly
@@ -1213,7 +1213,7 @@ void ModConfig( Address config_info )
 void ModUnconfig( Address unconfig_info )
 {
     struct ModMap *nxt, *old;
-    int mod = MOD_MAP.page_table[ ModPage( unconfig_info ) ].index;
+    int mod = MOD_MAP.page_table[ MOD_PAGE( unconfig_info ) ].index;
 
     /* Determine the module to unconfigure */
     if ( mod == MOD_NO_MOD_INDEX ) {
@@ -1262,8 +1262,8 @@ void ModUnconfig( Address unconfig_info )
         MOD_MAP.map_info[ mod ].config = mod_description[ mod ].r_config;
 
         /* Rebuild the page table */
-        RebuildPageTable( ModPage( MOD_MAP.map_info[ mod ].abs_base_addr ),
-                          ModPage( MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size - 1 ) );
+        RebuildPageTable( MOD_PAGE( MOD_MAP.map_info[ mod ].abs_base_addr ),
+                          MOD_PAGE( MOD_MAP.map_info[ mod ].abs_base_addr + MOD_MAP.map_info[ mod ].size - 1 ) );
 
         /* Reset the module configuration status; the abs_base_addr of the module
            is not reset because its old value is still needed by ModGetId()
@@ -1330,9 +1330,9 @@ void ModUnconfig( Address unconfig_info )
 .- */
 Nibble FetchNibble( Address addr )
 {
-    register int page = ModPage( addr );
+    register int page = MOD_PAGE( addr );
 
-    return MOD_MAP.page_table[ page ].read( MOD_MAP.page_table[ page ].rel_base_addr | ModOffset( addr ) );
+    return MOD_MAP.page_table[ page ].read( MOD_MAP.page_table[ page ].rel_base_addr | MOD_OFFSET( addr ) );
 }
 
 /* .+
@@ -1362,11 +1362,11 @@ Nibble FetchNibble( Address addr )
 .- */
 Nibble ReadNibble( Address addr )
 {
-    register int page = ModPage( addr );
+    register int page = MOD_PAGE( addr );
     register Nibble d;
 
     /* Read the nibble from the peripheral module */
-    d = MOD_MAP.page_table[ page ].read( MOD_MAP.page_table[ page ].rel_base_addr | ModOffset( addr ) );
+    d = MOD_MAP.page_table[ page ].read( MOD_MAP.page_table[ page ].rel_base_addr | MOD_OFFSET( addr ) );
 
     /* Update the crc register, if appropriate */
     if ( MOD_MAP.page_table[ page ].index != MOD_HDW_INDEX )
@@ -1400,9 +1400,9 @@ Nibble ReadNibble( Address addr )
 .- */
 void WriteNibble( Address addr, Nibble datum )
 {
-    register int page = ModPage( addr );
+    register int page = MOD_PAGE( addr );
 
-    MOD_MAP.page_table[ page ].write( MOD_MAP.page_table[ page ].rel_base_addr | ModOffset( addr ), datum );
+    MOD_MAP.page_table[ page ].write( MOD_MAP.page_table[ page ].rel_base_addr | MOD_OFFSET( addr ), datum );
 }
 
 /*---------------------------------------------------------------------------
@@ -1430,8 +1430,8 @@ void WriteNibble( Address addr, Nibble datum )
 .- */
 void ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] )
 {
-    int page = ModPage( addr );
-    Address offset = ModOffset( addr );
+    int page = MOD_PAGE( addr );
+    Address offset = MOD_OFFSET( addr );
     int mod = MOD_MAP.page_table[ page ].index;
 
     if ( mod == MOD_NO_MOD_INDEX )

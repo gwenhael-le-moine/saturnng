@@ -138,14 +138,14 @@
 /*---------------------------------------------------------------------------
         Macros
 
-  ModAddress returns the base address of a page, given its number (Address)
-  ModOffset returns the page offset of an address (int)
-  ModPage returns the page number of an address (Address)
+  MOD_ADDRESS returns the base address of a page, given its number (Address)
+  MOD_OFFSET returns the page offset of an address (int)
+  MOD_PAGE returns the page number of an address (Address)
   ---------------------------------------------------------------------------*/
 
-#  define ModAddress( page ) ( ( Address )( page ) << 6 )
-#  define ModPage( address ) ( ( int )( ( ( address ) & 0xFFFC0 ) >> 6 ) )
-#  define ModOffset( address ) ( ( address ) & 0x0003F )
+#  define MOD_ADDRESS( page ) ( ( Address )( page ) << 6 )
+#  define MOD_PAGE( address ) ( ( int )( ( ( address ) & 0xFFFC0 ) >> 6 ) )
+#  define MOD_OFFSET( address ) ( ( address ) & 0x0003F )
 
 /*
         ModDescription
