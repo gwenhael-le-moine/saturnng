@@ -549,8 +549,10 @@ config_t* config_init( int argc, char* argv[] )
 
         if ( optind < argc ) {
             fprintf( stderr, "%i invalid arguments : ", argc - optind );
-            while ( optind < argc )
-                fprintf( stderr, "%s\n", argv[ optind++ ] );
+            while ( optind < argc ) {
+                fprintf( stderr, "%s\n", argv[ optind ] );
+                optind++;
+            }
             fprintf( stderr, "\n" );
         }
     }

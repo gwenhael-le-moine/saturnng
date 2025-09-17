@@ -33,7 +33,7 @@ fi
 [ ! -e "$CONFIGDIR"/port1 ] && dd if=/dev/zero of="$CONFIGDIR"/port1 bs=1k count=128
 [ ! -e "$CONFIGDIR"/port2 ] && dd if=/dev/zero of="$CONFIGDIR"/port2 bs=1k count=128
 
-RESET=''
+RESET=
 if [ ! -e "$CONFIGDIR"/ram ]; then
     RESET=--reset
 fi
@@ -42,4 +42,4 @@ if [ ! -e "$CONFIGDIR"/config.lua ]; then
     ./saturn --48sx --state-dir "$CONFIGDIR" --print-config > "$CONFIGDIR"/config.lua
 fi
 
-./saturn --48sx --state-dir "$CONFIGDIR" "$RESET" "$@"
+./saturn --48sx --state-dir "$CONFIGDIR" $RESET "$@"

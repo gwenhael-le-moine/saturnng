@@ -30,7 +30,7 @@ if [ ! -e "$CONFIGDIR"/rom ]; then
     cp "$CONFIGDIR"/ROMs/rom.49g "$CONFIGDIR"/rom
 fi
 
-RESET=''
+RESET=
 if [ ! -e "$CONFIGDIR"/ram ]; then
     RESET=--reset
 fi
@@ -39,4 +39,4 @@ if [ ! -e "$CONFIGDIR"/config.lua ]; then
     ./saturn --49g --state-dir "$CONFIGDIR" --print-config > "$CONFIGDIR"/config.lua
 fi
 
-./saturn --49g --state-dir "$CONFIGDIR" "$RESET" "$@"
+./saturn --49g --state-dir "$CONFIGDIR" $RESET "$@"
