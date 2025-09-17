@@ -151,27 +151,27 @@ static int lhit_c = 0;  /* Cache late unconfig hit counter */
 static int miss_c = 0;  /* Cache miss (without replacement) counter */
 static int repl_c = 0;  /* Entry replacement counter */
 
-#  define IncPerfCtr( x ) x++
-#  define DecPerfCtr( x ) x--
-#  define PrintPerfCtr( x ) DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
+#  define INCR_PERF_COUNTER( x ) x++
+#  define DECR_PERF_COUNTER( x ) x--
+#  define PRINT_PERF_COUNTER( x ) DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
 
-#  define PrintCacheStats                                                                                                                  \
+#  define PRINT_CACHE_STATS                                                                                                                  \
       {                                                                                                                                    \
-          PrintPerfCtr( alloc_c );                                                                                                         \
-          PrintPerfCtr( flush_c );                                                                                                         \
-          PrintPerfCtr( hit_c );                                                                                                           \
-          PrintPerfCtr( lhit_c );                                                                                                          \
-          PrintPerfCtr( miss_c );                                                                                                          \
-          PrintPerfCtr( repl_c );                                                                                                          \
+          PRINT_PERF_COUNTER( alloc_c );                                                                                                         \
+          PRINT_PERF_COUNTER( flush_c );                                                                                                         \
+          PRINT_PERF_COUNTER( hit_c );                                                                                                           \
+          PRINT_PERF_COUNTER( lhit_c );                                                                                                          \
+          PRINT_PERF_COUNTER( miss_c );                                                                                                          \
+          PRINT_PERF_COUNTER( repl_c );                                                                                                          \
       }
 
 #else
 
-#  define IncPerfCtr( x )
-#  define DecPerfCtr( x )
-#  define PrintPerfCtr( x )
+#  define INCR_PERF_COUNTER( x )
+#  define DECR_PERF_COUNTER( x )
+#  define PRINT_PERF_COUNTER( x )
 
-#  define PrintCacheStats
+#  define PRINT_CACHE_STATS
 
 #endif
 
@@ -366,7 +366,7 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
   way; in particular, it does not clear the caching information.
 
   If DEBUG is appropriately enabled, this function prints out the
-  current value of all cache performance counters (PrintCacheStats).
+  current value of all cache performance counters (PRINT_CACHE_STATS).
 
 .call         :
                 p = NewModMap();
@@ -395,8 +395,8 @@ static struct ModMap* NewModMap( void )
     new->cache.link = cache_head;
     cache_head = new;
 
-    IncPerfCtr( alloc_c );
-    PrintCacheStats;
+    INCR_PERF_COUNTER( alloc_c );
+    PRINT_CACHE_STATS;
 
     return new;
 }
@@ -473,7 +473,7 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
         *d = CopyModMap( NewModMap(), s );
     else {
         CopyModMap( *d, s );
-        IncPerfCtr( repl_c );
+        INCR_PERF_COUNTER( repl_c );
     }
 }
 
@@ -511,7 +511,7 @@ static void FlushCache( struct ModMap* save )
 
         if ( p != save ) {
             free( p );
-            DecPerfCtr( alloc_c );
+            DECR_PERF_COUNTER( alloc_c );
         }
 
         p = n;
@@ -524,7 +524,7 @@ static void FlushCache( struct ModMap* save )
     /* Clear the caching information in 'save' */
     ClearCachingInfo( save );
 
-    IncPerfCtr( flush_c );
+    INCR_PERF_COUNTER( flush_c );
 
 #ifdef DEBUG
     /* The alloc_c performance counter must be exactly 1 now */
@@ -764,7 +764,7 @@ static void FreeModMap( struct ModMap* p )
         /* Free the list head */
         cache_head = p->cache.link;
         free( p );
-        DecPerfCtr( alloc_c );
+        DECR_PERF_COUNTER( alloc_c );
     } else {
         /* Scan the cache; at end, n is either null (!) or points to the
            cache entry that immediately precedes p
@@ -781,7 +781,7 @@ static void FreeModMap( struct ModMap* p )
         /* Bypass element pointed by p and free it */
         n->cache.link = p->cache.link;
         free( p );
-        DecPerfCtr( alloc_c );
+        DECR_PERF_COUNTER( alloc_c );
     }
 }
 
@@ -1106,14 +1106,14 @@ void ModConfig( Address config_info )
         /* CACHE HIT; switch mod_map_ptr */
         mod_map_ptr = nxt;
 
-        IncPerfCtr( hit_c );
+        INCR_PERF_COUNTER( hit_c );
 
         DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info )
         return;
     }
 
     /* CACHE MISS */
-    IncPerfCtr( miss_c );
+    INCR_PERF_COUNTER( miss_c );
 
     /* Select a 'victim' cache table entry and update victim
        selection info; retry after flushing the cache if necessary.
@@ -1231,7 +1231,7 @@ void ModUnconfig( Address unconfig_info )
             /* CACHE HIT; switch mod_map_ptr */
             mod_map_ptr = nxt;
 
-            IncPerfCtr( hit_c );
+            INCR_PERF_COUNTER( hit_c );
 
             DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_UNCONFIG )
             return;
@@ -1283,7 +1283,7 @@ void ModUnconfig( Address unconfig_info )
             FreeModMap( mod_map_ptr );
             mod_map_ptr = nxt;
 
-            IncPerfCtr( lhit_c );
+            INCR_PERF_COUNTER( lhit_c );
             DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT )
         } else {
             /* Continue to use the new map with no caching information,
@@ -1297,7 +1297,7 @@ void ModUnconfig( Address unconfig_info )
             */
             MOD_MAP.cache.config_point = 1;
 
-            IncPerfCtr( miss_c );
+            INCR_PERF_COUNTER( miss_c );
 
             DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS )
 

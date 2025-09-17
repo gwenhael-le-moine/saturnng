@@ -72,13 +72,13 @@
 #define BLOCK_SIZE 0x10000
 #define BLOCK_BASE_MASK 0xFFFF
 
-#define ByteAddress( address ) ( ( address ) >> 1 )
-#define NibbleAddress( address ) ( ( address ) << 1 )
-#define BlockBase( address ) ( ( address ) & ~BLOCK_BASE_MASK )
-#define IsOdd( address ) ( ( address ) & 0x1 )
-#define LowNibble( d ) ( ( Nibble )( ( d ) & NIBBLE_MASK ) )
-#define HighNibble( d ) ( ( Nibble )( ( ( d ) >> 4 ) & NIBBLE_MASK ) )
-#define ShiftHigh( d ) ( ( d ) << 4 )
+#define BYTE_ADDRESS( address ) ( ( address ) >> 1 )
+#define NIBBLE_ADDRESS( address ) ( ( address ) << 1 )
+#define BLOCK_BASE( address ) ( ( address ) & ~BLOCK_BASE_MASK )
+#define IS_ODD( address ) ( ( address ) & 0x1 )
+#define LOW_NIBBLE( d ) ( ( Nibble )( ( d ) & NIBBLE_MASK ) )
+#define HIGH_NIBBLE( d ) ( ( Nibble )( ( ( d ) >> 4 ) & NIBBLE_MASK ) )
+#define SHIFT_HIGH( d ) ( ( d ) << 4 )
 
 /* Flash cycle types */
 enum FlashCycle {
@@ -128,7 +128,7 @@ static int BadCommand( enum FlashState* state, enum FlashCycle cycle, XAddress a
 static int ReadArray( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
     /* Read a byte from the array; no state transitions */
-    return mod_status_49->flash[ NibbleAddress( address ) ] | ShiftHigh( mod_status_49->flash[ NibbleAddress( address ) + 1 ] );
+    return mod_status_49->flash[ NIBBLE_ADDRESS( address ) ] | SHIFT_HIGH( mod_status_49->flash[ NIBBLE_ADDRESS( address ) + 1 ] );
 }
 
 /* This function is called to parse the first byte of any command */
@@ -278,8 +278,8 @@ static int WriteConfirm( enum FlashState* state, enum FlashCycle cycle, XAddress
            Remember that wb_count is the byte count MINUS 1.
         */
         for ( int i = 0; i <= wb_count; i++ ) {
-            mod_status_49->flash[ NibbleAddress( wb_start + i ) ] = LowNibble( wb[ i ] );
-            mod_status_49->flash[ NibbleAddress( wb_start + i ) + 1 ] = HighNibble( wb[ i ] );
+            mod_status_49->flash[ NIBBLE_ADDRESS( wb_start + i ) ] = LOW_NIBBLE( wb[ i ] );
+            mod_status_49->flash[ NIBBLE_ADDRESS( wb_start + i ) + 1 ] = HIGH_NIBBLE( wb[ i ] );
         }
     }
 
@@ -299,12 +299,12 @@ static int BlockErase( enum FlashState* state, enum FlashCycle cycle, XAddress a
 
     /* Expect Write to Buffer confirmation code */
     if ( data == FLASH_CMD_BL_ERASE_2 ) {
-        XAddress block_base = BlockBase( address );
+        XAddress block_base = BLOCK_BASE( address );
 
         /* Confirmation OK; erase */
         for ( int i = 0; i < BLOCK_SIZE; i++ ) {
-            mod_status_49->flash[ NibbleAddress( block_base + i ) ] = ( Nibble )0xF;
-            mod_status_49->flash[ NibbleAddress( block_base + i ) + 1 ] = ( Nibble )0xF;
+            mod_status_49->flash[ NIBBLE_ADDRESS( block_base + i ) ] = ( Nibble )0xF;
+            mod_status_49->flash[ NIBBLE_ADDRESS( block_base + i ) + 1 ] = ( Nibble )0xF;
         }
     }
 
@@ -381,13 +381,13 @@ Nibble FlashRead49( XAddress address )
 {
     Nibble result;
 
-    if ( IsOdd( address ) )
+    if ( IS_ODD( address ) )
         /* Odd address, return buffered data from previous read */
-        result = HighNibble( r_buffer );
+        result = HIGH_NIBBLE( r_buffer );
     else {
         /* Even address, invoke FSM */
-        r_buffer = FSM( FLASH_CYCLE_READ, ByteAddress( address ), 0 );
-        result = LowNibble( r_buffer );
+        r_buffer = FSM( FLASH_CYCLE_READ, BYTE_ADDRESS( address ), 0 );
+        result = LOW_NIBBLE( r_buffer );
     }
 
     return result;
@@ -420,9 +420,9 @@ Nibble FlashRead49( XAddress address )
 .- */
 void FlashWrite49( XAddress address, Nibble datum )
 {
-    if ( IsOdd( address ) )
+    if ( IS_ODD( address ) )
         /* Odd address, invoke FSM; ignore result */
-        FSM( FLASH_CYCLE_WRITE, ByteAddress( address ), w_buffer | ShiftHigh( datum ) );
+        FSM( FLASH_CYCLE_WRITE, BYTE_ADDRESS( address ), w_buffer | SHIFT_HIGH( datum ) );
     else
         /* Even address, buffer datum */
         w_buffer = datum;

@@ -194,93 +194,93 @@ struct RingBuffer {
 
 /* Basic macros:
 
-   Min(a, b)		returns the minimum (as told by '<') between a and b;
+   MIN(a, b)		returns the minimum (as told by '<') between a and b;
                         warning: evaluates a and b twice.
 
-   ReadPointer(rb)	returns the read pointer of a given buffer; it
+   READ_POINTER(rb)	returns the read pointer of a given buffer; it
                         points to ContFullSlots() full buffer slots.
 
-   FullSlots(rb)	returns the number of full slots of a given buffer;
+   COUNT_FULL_SLOTS(rb)	returns the number of full slots of a given buffer;
                         the slots are not necessarily contiguous.
 
-   ContFullSlots(rb)	returns the number of *contiguous* full slots of a
-                        given buffer, starting at the current ReadPointer;
+   COUNT_CONTIGUOUS_FULL_SLOTS(rb)	returns the number of *contiguous* full slots of a
+                        given buffer, starting at the current READ_POINTER;
                         this macro is guaranteed to return a strictly
                         positive value if the buffer is not empty.
 
-   EmptySlots(rb)	returns the number of empty slots of a given buffer;
+   COUNT_EMPTY_SLOTS(rb)	returns the number of empty slots of a given buffer;
                         the slots are not necessarily contiguous.
 
-   ContEmptySlots(rb)	returns the number of *contiguous* empty slots of a
-                        given buffer, starting at the current WritePointer;
+   COUNT_CONTIGUOUS_EMPTY_SLOTS(rb)	returns the number of *contiguous* empty slots of a
+                        given buffer, starting at the current WRITE_POINTER;
                         this macro is guaranteed to return a strictly
                         positive value if the buffer is not full.
 
-   UpdateReadPointer(rb, n)
+   UPDATE_READ_POINTER(rb, n)
                         moves the read pointer of ring buffer rb n slots
                         forward
 
-   UpdateWritePointer(rb, n)
+   UPDATE_WRITE_POINTER(rb, n)
                         moves the write pointer of ring buffer rb n slots
                         forward
 
-   Push(rb, c)		pushes character c into ring buffer rb; this macro
-                        must be invoked only if EmptySlots(rb) is strictly
+   PUSH(rb, c)		pushes character c into ring buffer rb; this macro
+                        must be invoked only if COUNT_EMPTY_SLOTS(rb) is strictly
                         positive.
 
-   Pull(rb, cp)		pulls a character from ring buffer rb and stores it
+   PULL(rb, cp)		pulls a character from ring buffer rb and stores it
                         into *cp; this macro must be invoked only if
-                        EmptySlots(rb) is strictly positive.
+                        COUNT_EMPTY_SLOTS(rb) is strictly positive.
 
-   InitRingBuffer(rb)	initializes ring buffer rb; it must be called
+   INIT_RING_BUFFER(rb)	initializes ring buffer rb; it must be called
                         before using the ring buffer in any way.
 */
-#define Min( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
-#define ReadPointer( rb ) ( ( rb ).rp )
-#define FullSlots( rb ) ( ( rb ).n )
-#define ContFullSlots( rb ) ( Min( FullSlots( rb ), ( rb ).ep - ReadPointer( rb ) ) )
-#define WritePointer( rb ) ( ( rb ).wp )
-#define EmptySlots( rb ) ( RB_SIZE - FullSlots( rb ) )
-#define ContEmptySlots( rb ) ( Min( EmptySlots( rb ), ( rb ).ep - WritePointer( rb ) ) )
+#define MIN( a, b ) ( ( ( a ) < ( b ) ) ? ( a ) : ( b ) )
+#define READ_POINTER( rb ) ( ( rb ).rp )
+#define COUNT_FULL_SLOTS( rb ) ( ( rb ).n )
+#define COUNT_CONTIGUOUS_FULL_SLOTS( rb ) ( MIN( COUNT_FULL_SLOTS( rb ), ( rb ).ep - READ_POINTER( rb ) ) )
+#define WRITE_POINTER( rb ) ( ( rb ).wp )
+#define COUNT_EMPTY_SLOTS( rb ) ( RB_SIZE - COUNT_FULL_SLOTS( rb ) )
+#define COUNT_CONTIGUOUS_EMPTY_SLOTS( rb ) ( MIN( COUNT_EMPTY_SLOTS( rb ), ( rb ).ep - WRITE_POINTER( rb ) ) )
 
-#define UpdateReadPointer( rb, n )                                                                                                         \
+#define UPDATE_READ_POINTER( rb, n )                                                                                                       \
     {                                                                                                                                      \
-        FullSlots( rb ) -= ( n );                                                                                                          \
-        ReadPointer( rb ) += ( n );                                                                                                        \
-        if ( ReadPointer( rb ) >= ( rb ).ep )                                                                                              \
-            ReadPointer( rb ) -= RB_SIZE;                                                                                                  \
+        COUNT_FULL_SLOTS( rb ) -= ( n );                                                                                                   \
+        READ_POINTER( rb ) += ( n );                                                                                                       \
+        if ( READ_POINTER( rb ) >= ( rb ).ep )                                                                                             \
+            READ_POINTER( rb ) -= RB_SIZE;                                                                                                 \
     }
 
-#define UpdateWritePointer( rb, n )                                                                                                        \
+#define UPDATE_WRITE_POINTER( rb, n )                                                                                                      \
     {                                                                                                                                      \
-        FullSlots( rb ) += ( n );                                                                                                          \
-        WritePointer( rb ) += ( n );                                                                                                       \
-        if ( WritePointer( rb ) >= ( rb ).ep )                                                                                             \
-            WritePointer( rb ) -= RB_SIZE;                                                                                                 \
+        COUNT_FULL_SLOTS( rb ) += ( n );                                                                                                   \
+        WRITE_POINTER( rb ) += ( n );                                                                                                      \
+        if ( WRITE_POINTER( rb ) >= ( rb ).ep )                                                                                            \
+            WRITE_POINTER( rb ) -= RB_SIZE;                                                                                                \
     }
 
-#define Push( rb, c )                                                                                                                      \
+#define PUSH( rb, c )                                                                                                                      \
     {                                                                                                                                      \
-        FullSlots( rb )++;                                                                                                                 \
-        *( WritePointer( rb ) ) = c;                                                                                                       \
-        WritePointer( rb )++;                                                                                                              \
-        if ( WritePointer( rb ) >= ( rb ).ep )                                                                                             \
-            WritePointer( rb ) -= RB_SIZE;                                                                                                 \
+        COUNT_FULL_SLOTS( rb )++;                                                                                                          \
+        *( WRITE_POINTER( rb ) ) = c;                                                                                                      \
+        WRITE_POINTER( rb )++;                                                                                                             \
+        if ( WRITE_POINTER( rb ) >= ( rb ).ep )                                                                                            \
+            WRITE_POINTER( rb ) -= RB_SIZE;                                                                                                \
     }
 
-#define Pull( rb, cp )                                                                                                                     \
+#define PULL( rb, cp )                                                                                                                     \
     {                                                                                                                                      \
-        FullSlots( rb )--;                                                                                                                 \
-        *cp = *( ReadPointer( rb ) );                                                                                                      \
-        ReadPointer( rb )++;                                                                                                               \
-        if ( ReadPointer( rb ) >= ( rb ).ep )                                                                                              \
-            ReadPointer( rb ) -= RB_SIZE;                                                                                                  \
+        COUNT_FULL_SLOTS( rb )--;                                                                                                          \
+        *cp = *( READ_POINTER( rb ) );                                                                                                     \
+        READ_POINTER( rb )++;                                                                                                              \
+        if ( READ_POINTER( rb ) >= ( rb ).ep )                                                                                             \
+            READ_POINTER( rb ) -= RB_SIZE;                                                                                                 \
     }
 
-#define InitRingBuffer( rb )                                                                                                               \
+#define INIT_RING_BUFFER( rb )                                                                                                             \
     {                                                                                                                                      \
-        FullSlots( rb ) = 0;                                                                                                               \
-        ReadPointer( rb ) = WritePointer( rb ) = ( rb ).data;                                                                              \
+        COUNT_FULL_SLOTS( rb ) = 0;                                                                                                        \
+        READ_POINTER( rb ) = WRITE_POINTER( rb ) = ( rb ).data;                                                                            \
         ( rb ).ep = ( rb ).data + RB_SIZE;                                                                                                 \
     }
 
@@ -303,21 +303,21 @@ static int PullAndWrite( struct RingBuffer* rbp, int fd )
 {
     int total = 0; /* Total # of chars written */
 
-    while ( FullSlots( *rbp ) > 0 ) {
-        int chunk = ContFullSlots( *rbp ); /* Chunk size */
-        int result;                        /* # of chars written */
+    while ( COUNT_FULL_SLOTS( *rbp ) > 0 ) {
+        int chunk = COUNT_CONTIGUOUS_FULL_SLOTS( *rbp ); /* Chunk size */
+        int result;                                      /* # of chars written */
 
-        /* write() takes its data from ReadPointer (full slots) */
-        result = write( fd, ReadPointer( *rbp ), chunk );
+        /* write() takes its data from READ_POINTER (full slots) */
+        result = write( fd, READ_POINTER( *rbp ), chunk );
 
         if ( result < 0 && errno != EAGAIN )
             /* write() failed; return an error indication */
             return -1;
 
         if ( result > 0 ) {
-            /* write() wrote at least one character; update ReadPointer */
+            /* write() wrote at least one character; update READ_POINTER */
             total += result;
-            UpdateReadPointer( *rbp, result );
+            UPDATE_READ_POINTER( *rbp, result );
         }
 
         if ( result != chunk )
@@ -332,21 +332,21 @@ static int ReadAndPush( struct RingBuffer* rbp, int fd )
 {
     int total = 0; /* Total # of chars read */
 
-    while ( EmptySlots( *rbp ) > 0 ) {
-        int chunk = ContEmptySlots( *rbp ); /* Chunk size */
-        int result;                         /* # of chars read */
+    while ( COUNT_EMPTY_SLOTS( *rbp ) > 0 ) {
+        int chunk = COUNT_CONTIGUOUS_EMPTY_SLOTS( *rbp ); /* Chunk size */
+        int result;                                       /* # of chars read */
 
-        /* read() puts its data into WritePointer (empty slots) */
-        result = read( fd, WritePointer( *rbp ), chunk );
+        /* read() puts its data into WRITE_POINTER (empty slots) */
+        result = read( fd, WRITE_POINTER( *rbp ), chunk );
 
         if ( result < 0 && errno != EAGAIN )
             /* read() failed; return an error indication */
             return -1;
 
         if ( result > 0 ) {
-            /* read() read at least one character; update WritePointer */
+            /* read() read at least one character; update WRITE_POINTER */
             total += result;
-            UpdateWritePointer( *rbp, result );
+            UPDATE_WRITE_POINTER( *rbp, result );
         }
 
         if ( result != chunk )
@@ -401,7 +401,7 @@ static int slave_pty;  /* File descriptor of pty's slave side */
                 Interrupt requests are posted only when IOC_SON is set.
 
   UpdateRCS	This macro updates the rcs register according to the
-                current rrb FullSlots:
+                current rrb COUNT_FULL_SLOTS:
                 - if the receiver ring buffer holds more than 1 character,
                   RCS_RBZ and RCS_RBF are both set
                 - if the receiver ring buffer holds exactly 1 character,
@@ -414,7 +414,7 @@ static int slave_pty;  /* File descriptor of pty's slave side */
                      this is simpler and works well on the 48, too.
 
   UpdateTCS	This macro updates the tcs register according to the
-                current trb EmptySlots:
+                current trb COUNT_EMPTY_SLOTS:
                 - if the transmitter ring buffer has more than 1 empty slot,
                   TCS_TBZ and TCS_TBF are both reset
                 - if the transmitter ring buffer has 1 empty slot,
@@ -430,16 +430,16 @@ static int slave_pty;  /* File descriptor of pty's slave side */
     CpuIntRequest( INT_REQUEST_IRQ )
 
 #define UpdateRCS                                                                                                                          \
-    if ( FullSlots( rrb ) > 0 ) {                                                                                                          \
+    if ( COUNT_FULL_SLOTS( rrb ) > 0 ) {                                                                                                   \
         rcs |= RCS_RBF;                                                                                                                    \
     } else {                                                                                                                               \
         rcs &= ~( RCS_RBF );                                                                                                               \
     }
 
 #define UpdateTCS                                                                                                                          \
-    if ( EmptySlots( trb ) > 1 ) {                                                                                                         \
+    if ( COUNT_EMPTY_SLOTS( trb ) > 1 ) {                                                                                                  \
         tcs &= ~( TCS_TBF | TCS_TBZ );                                                                                                     \
-    } else if ( EmptySlots( trb ) > 0 ) {                                                                                                  \
+    } else if ( COUNT_EMPTY_SLOTS( trb ) > 0 ) {                                                                                           \
         tcs &= ~TCS_TBF;                                                                                                                   \
         tcs |= TCS_TBZ;                                                                                                                    \
     } else {                                                                                                                               \
@@ -498,8 +498,8 @@ static int slave_pty;  /* File descriptor of pty's slave side */
 const char* SerialInit( void )
 {
     /* Initialize ring buffers */
-    InitRingBuffer( rrb );
-    InitRingBuffer( trb );
+    INIT_RING_BUFFER( rrb );
+    INIT_RING_BUFFER( trb );
 
 #ifndef USE_NOPTY
 #  ifdef USE_OPENPTY
@@ -829,8 +829,8 @@ int8 Serial_RBR_Read( void )
     int8 rx;
 
     /* Pull one character from rbr, if not empty */
-    if ( FullSlots( rrb ) > 0 ) {
-        Pull( rrb, &rx );
+    if ( COUNT_FULL_SLOTS( rrb ) > 0 ) {
+        PULL( rrb, &rx );
     } else {
         /* rrb is empty */
 
@@ -1006,8 +1006,8 @@ void Serial_TBR_Write( int8 d )
     DEBUG( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_TBR, d )
 
     /* Pull one character from rbr, if not empty */
-    if ( EmptySlots( trb ) > 0 ) {
-        Push( trb, d );
+    if ( COUNT_EMPTY_SLOTS( trb ) > 0 ) {
+        PUSH( trb, d );
     } else {
         /* trb is full; discard character */
         WARNING( SERIAL_CHF_MODULE_ID, SERIAL_W_FULL_TRB, tcs )
