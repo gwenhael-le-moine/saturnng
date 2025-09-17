@@ -262,7 +262,8 @@ struct RingBuffer {
 #define Push( rb, c )                                                                                                                      \
     {                                                                                                                                      \
         FullSlots( rb )++;                                                                                                                 \
-        *( WritePointer( rb )++ ) = c;                                                                                                     \
+        *( WritePointer( rb ) ) = c;                                                                                                       \
+        WritePointer( rb )++;                                                                                                              \
         if ( WritePointer( rb ) >= ( rb ).ep )                                                                                             \
             WritePointer( rb ) -= RB_SIZE;                                                                                                 \
     }
@@ -270,7 +271,8 @@ struct RingBuffer {
 #define Pull( rb, cp )                                                                                                                     \
     {                                                                                                                                      \
         FullSlots( rb )--;                                                                                                                 \
-        *cp = *( ReadPointer( rb )++ );                                                                                                    \
+        *cp = *( ReadPointer( rb ) );                                                                                                      \
+        ReadPointer( rb )++;                                                                                                               \
         if ( ReadPointer( rb ) >= ( rb ).ep )                                                                                              \
             ReadPointer( rb ) -= RB_SIZE;                                                                                                  \
     }
