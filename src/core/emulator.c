@@ -196,19 +196,15 @@ static void EmulatorLoop( void )
         }
 
         /* LCD update */
-        if ( ( t1_count & LCD_T1_MASK ) == 0 ) {
-            /* DrawLcd(); */
-        }
+        /* if ( ( t1_count & LCD_T1_MASK ) == 0 ) */
+        /*     /\* DrawLcd(); *\/ */
         t1_count++;
 
         /* Emulator Interrupt Request */
-        if ( ( t1_count & INT_T1_MASK ) == 0 && emulator_int_req ) {
+        if ( ( t1_count & INT_T1_MASK ) == 0 && emulator_int_req )
             INFO0( CPU_CHF_MODULE_ID, CPU_I_EMULATOR_INT )
-        }
-        t1_count++;
 
-        /* UI Events handling */
-        // ui_get_event();
+        t1_count++;
 
         /* Handle serial port */
         HandleSerial();
@@ -230,12 +226,11 @@ static void EmulatorLoop( void )
            well, I hope.
            The special value cpu.inner_loop_max==0 gives maximum speed.
         */
-        if ( config.throttle )
-            if ( cpu.inner_loop_max != 0 && inner_loop >= cpu.inner_loop_max ) {
-                inner_loop = cpu.inner_loop_max;
-                if ( T1_INTERVAL > ela )
-                    usleep( T1_INTERVAL - ela );
-            }
+        if ( config.throttle && cpu.inner_loop_max != 0 && inner_loop >= cpu.inner_loop_max ) {
+            inner_loop = cpu.inner_loop_max;
+            if ( T1_INTERVAL > ela )
+                usleep( T1_INTERVAL - ela );
+        }
 
         cpu.inner_loop = inner_loop;
         old_t = cur_t;
@@ -500,9 +495,8 @@ void Emulator( void )
 
         /* Activate emulator loop */
         EmulatorLoop();
-    } else {
+    } // else
         /* Unwinding after an emulator interrupt */
-    }
 }
 
 /* .+

@@ -36,6 +36,7 @@ static config_t __config = {
     .model = MODEL_48GX,
     .throttle = false,
     .verbose = false,
+
     .shiftless = false,
     .big_screen = false,
     .black_lcd = false,
@@ -58,13 +59,15 @@ static config_t __config = {
     .tiny = false,
     .small = false,
 
-    /* from args.h */
     .reset = false,
     .monitor = false,
-    .state_dir_path = ( char* )".",
+
+    .speed = 0,
 
     .debug_level = DEBUG_C_NONE,
     .enable_BUSCC = false,
+
+    .state_dir_path = ( char* )".",
 };
 
 lua_State* config_lua_values;
@@ -154,6 +157,7 @@ static void print_config( void )
 
     fprintf( stdout, "verbose = %s\n", __config.verbose ? "true" : "false" );
     fprintf( stdout, "throttle = %s\n", __config.throttle ? "true" : "false" );
+    fprintf( stdout, "speed = %i\n", __config.speed );
     fprintf( stdout, "\n" );
     fprintf( stdout, "monitor = %s\n", __config.monitor ? "true" : "false" );
     fprintf( stdout, "\n" );
@@ -235,6 +239,8 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_monitor = -1;
     int clopt_enable_BUSCC = -1;
 
+    int clopt_speed = -1;
+
     char* clopt_state_dir_path = ( char* )".";
 
     const char* optstring = "h";
@@ -245,6 +251,8 @@ config_t* config_init( int argc, char* argv[] )
 
         {"throttle",             no_argument,       &clopt_throttle,        true            },
         /* {"big-screen",           no_argument,       &clopt_big_screen,      true            }, */
+
+        {"speed",                required_argument, NULL,                   7111            },
 
         {"48sx",                 no_argument,       &clopt_model,           MODEL_48SX      },
         {"48gx",                 no_argument,       &clopt_model,           MODEL_48GX      },
@@ -298,6 +306,8 @@ config_t* config_init( int argc, char* argv[] )
                             "     --print-config output current configuration to stdout and exit (in config.lua formatting)\n"
                             "     --verbose      display more informations\n"
                             "     --throttle     throttle CPU speed\n"
+                            "     --speed=<n>    set cpu's speed to <n> MHz "
+                            "(default: 1.0)\n"
                             /* "     --big-screen   131×80 screen (default: false)\n" */
                             "     --black-lcd    (default: false)\n"
                             "     --48gx         emulate a HP 48GX\n"
@@ -359,6 +369,9 @@ config_t* config_init( int argc, char* argv[] )
                 break;
             case 7110:
                 clopt_scale = atof( optarg );
+                break;
+            case 7111:
+                clopt_speed = atof( optarg );
                 break;
             case 8999:
                 clopt_state_dir_path = optarg;
@@ -478,6 +491,9 @@ config_t* config_init( int argc, char* argv[] )
 
         lua_getglobal( config_lua_values, "scale" );
         __config.scale = luaL_optnumber( config_lua_values, -1, 1.0 );
+
+        lua_getglobal( config_lua_values, "speed" );
+        __config.speed = luaL_optnumber( config_lua_values, -1, 1 );
     }
 
     /****************************************************/
@@ -518,6 +534,9 @@ config_t* config_init( int argc, char* argv[] )
         __config.monitor = clopt_monitor;
     if ( clopt_enable_BUSCC != -1 )
         __config.enable_BUSCC = clopt_enable_BUSCC;
+
+    if ( clopt_speed > 0 )
+        __config.speed = clopt_speed;
 
     __config.progname = basename( strdup( argv[ 0 ] ) );
     switch ( __config.model ) {

@@ -13,6 +13,7 @@
 #include "core/chf_wrapper.h"
 #include "core/emulator.h"
 #include "core/monitor.h"
+#include "core/x_func.h"
 
 #define UI_REFRESH_RATE_Hz 64
 
@@ -75,6 +76,7 @@ int main( int argc, char** argv )
              "This program is free software, and comes with ABSOLUTELY NO WARRANTY;\nfor details see the accompanying documentation.\n\n" );
 
     init_emulator( &config );
+    set_speed( config.speed );
 
     /* (G)UI */
     setup_ui( &config );

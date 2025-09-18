@@ -31,9 +31,12 @@ typedef struct {
     char* wire_name;
     char* ir_name;
 
-    /* from args.h */
     bool reset;   /* 2.1: Force emulator reset */
     bool monitor; /* 2.1: Call monitor() on startup */
+    int speed;
+
+    int debug_level;
+    bool enable_BUSCC;
 
     char* state_dir_path;
 
@@ -45,9 +48,6 @@ typedef struct {
     char* ram_path;
     char* port1_path;
     char* port2_path;
-
-    int debug_level;
-    bool enable_BUSCC;
 } config_t;
 
 /*---------------------------------------------------------------------------
