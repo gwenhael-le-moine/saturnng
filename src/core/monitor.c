@@ -62,7 +62,6 @@
 #include "../libChf/src/Chf.h"
 #include "../options.h"
 
-#include "config.h"
 #include "cpu.h"
 #include "chf_wrapper.h"
 #include "modules.h"

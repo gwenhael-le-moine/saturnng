@@ -11,7 +11,6 @@
 #include "ui4x/common.h"
 
 #include "core/chf_wrapper.h"
-#include "core/config.h"
 #include "core/cpu.h"
 #include "core/monitor.h"
 

@@ -57,9 +57,7 @@
   Revision 3.3  2000/09/26 15:30:14  cibrario
   *** empty log message ***
 .- */
-#include "../libChf/src/Chf.h"
 
-#include "config.h"
 #include "cpu.h"
 #include "modules.h"
 #include "flash49.h"

@@ -60,9 +60,7 @@
   Revision 3.2  2000/09/22  14:40:18  cibrario
   *** empty log message ***
 .- */
-#include "../libChf/src/Chf.h"
 
-#include "config.h"
 #include "modules.h"
 #include "chf_wrapper.h"
 #include "romram48.h"

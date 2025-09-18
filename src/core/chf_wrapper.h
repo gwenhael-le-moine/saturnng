@@ -162,4 +162,21 @@ typedef enum {
 extern ChfTable message_table[];
 extern size_t message_table_size;
 
+/* Chf Module Identifiers:
+   Each main module of the emulator has its own Chf Module Identifier; the
+   values defined here must match those actually used in the message catalogs.
+*/
+typedef enum {
+    MAIN_CHF_MODULE_ID = 10,
+    CPU_CHF_MODULE_ID = 11,
+    MOD_CHF_MODULE_ID = 12,
+    DISK_IO_CHF_MODULE_ID = 13,
+    X11_CHF_MODULE_ID = 14,
+    SERIAL_CHF_MODULE_ID = 15, /* 2.5 */
+    FLASH_CHF_MODULE_ID = 16,  /* 3.3 */
+    UTIL_CHF_MODULE_ID = 17,   /* 3.6 */
+    X_FUNC_CHF_MODULE_ID = 18, /* 3.13 */
+    DEBUG_CHF_MODULE_ID = 30,
+} chf_module_id_t;
+
 #endif /*!_CHF_WRAPPER_H*/

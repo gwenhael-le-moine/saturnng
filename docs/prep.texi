@@ -114,7 +114,7 @@ $ dd if=/dev/zero of=@var{~/saturn_state}/port2 bs=1k count=1024
 @end example
 
 This example assumes that you have not modified the
-@code{N_PORT_2_BANK} configuration option.
+@code{N_PORT_2_BANK_48} configuration option.
 
 Then, you can invoke @code{saturn} with either:
 

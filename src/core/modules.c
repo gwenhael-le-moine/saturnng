@@ -105,7 +105,6 @@
 
 #include "../libChf/src/Chf.h"
 
-#include "config.h"
 #include "modules.h"
 #include "disk_io.h"
 #include "chf_wrapper.h"

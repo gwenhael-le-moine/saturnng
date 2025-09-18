@@ -112,22 +112,30 @@
 #  include "cpu.h"
 
 /*---------------------------------------------------------------------------
-        Data type definitions - require config.h, types.h, cpu.h
+        Data type definitions
   ---------------------------------------------------------------------------*/
 
 #  define N_MOD 6
 #  define N_PAGE_TABLE_ENTRIES 16384
-#  define N_ROM_SIZE 512 * 1024 * 2
-#  define N_RAM_SIZE 128 * 1024 * 2
+#  define N_HDW_SIZE 256
+
+#  define N_ROM_SIZE_48 512 * 1024 * 2
+#  define N_RAM_SIZE_48 128 * 1024 * 2
+/* 2.4: Port_1 (CE2) size */
+#  define N_PORT_1_SIZE_48 128 * 1024 * 2
+/* 2.4: N_PORT_2_BANK_48
+   This symbol is used to dimension the HP48GX Port_2: it denotes the
+   number of 128 Kbyte banks the port must have and must be a power of 2
+   between 1 and 32, inclusive.  When undefined, Port_2 is not emulated at all.
+   The default value is 8, that is, Port_2 is emulated and its size is 1Mbyte.
+*/
+// #define N_PORT_2_BANK_48 ( config.model == MODEL_48GX ? 32 : 1 )
+#  define N_PORT_2_BANK_48 32
+/* 2.4: Port_2 (NCE3) size */
+#  define N_PORT_2_SIZE_48 N_PORT_2_BANK_48 * 128 * 1024 * 2
+
 #  define N_FLASH_SIZE_49 2048 * 1024 * 2 /* 3.2 */
 #  define N_RAM_SIZE_49 512 * 1024 * 2    /* 3.2 */
-
-/* 2.4: Port_1 (CE2) size */
-#  define N_PORT_1_SIZE 128 * 1024 * 2
-/* 2.4: Port_2 (NCE3) size */
-#  define N_PORT_2_SIZE N_PORT_2_BANK * 128 * 1024 * 2
-
-#  define N_HDW_SIZE 256
 
 #  define MOD_MAP_CHECK_OB_SIZE 128
 #  define MOD_MAP_TABLE_OB_SIZE 512
@@ -469,13 +477,13 @@ struct ModStatus {
 };
 
 struct ModStatus_48 {
-    Nibble rom[ N_ROM_SIZE ];       /* Internal ROM */
-    Nibble ram[ N_RAM_SIZE ];       /* Internal RAM */
-    Nibble port_1[ N_PORT_1_SIZE ]; /* 2.4: Port_1 (CE2) storage */
+    Nibble rom[ N_ROM_SIZE_48 ];       /* Internal ROM */
+    Nibble ram[ N_RAM_SIZE_48 ];       /* Internal RAM */
+    Nibble port_1[ N_PORT_1_SIZE_48 ]; /* 2.4: Port_1 (CE2) storage */
 
-    /* 2.4: Port_2 (NCE3) storage; only needed if N_PORT_2_BANK is defined */
-#  ifdef N_PORT_2_BANK
-    Nibble port_2[ N_PORT_2_SIZE ];
+    /* 2.4: Port_2 (NCE3) storage; only needed if N_PORT_2_BANK_48 is defined */
+#  ifdef N_PORT_2_BANK_48
+    Nibble port_2[ N_PORT_2_SIZE_48 ];
 #  endif
 };
 

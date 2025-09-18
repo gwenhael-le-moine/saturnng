@@ -1,4 +1,3 @@
-#include "config.h"
 #include "cpu.h"
 #include "modules.h"
 #include "chf_wrapper.h"

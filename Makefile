@@ -51,7 +51,6 @@ endif
 LIBS = -L./src/libChf -lChf $(NCURSES_LIBS) $(LUA_LIBS) $(SDL_LIBS) $(GTK_LIBS)
 
 HEADERS = src/options.h \
-	src/core/config.h \
 	src/core/disk_io.h \
 	src/core/flash49.h \
 	src/core/romram49.h \

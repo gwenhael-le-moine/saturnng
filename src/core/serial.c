@@ -92,7 +92,6 @@
 #include <stdlib.h>
 #include <errno.h>
 
-#include "config.h"
 #include "types.h"
 #include "cpu.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
@@ -116,6 +115,15 @@
   to conditionally select the implementation-dependent portions of code.
 
   ---------------------------------------------------------------------------*/
+
+/* 2.5: SERIAL_FORCE_OPENPTY, SERIAL_FORCE_STREAMSPTY
+   Optionally define exactly one of these symbols to force the use of a
+   particular pty implementation; if no symbols are defined, the
+   serial port emulation modules will do their best to automatically
+   determine the most appropriate implementation for the platform at hand.
+*/
+/* #define SERIAL_FORCE_OPENPTY */
+/* #define SERIAL_FORCE_STREAMSPTY */
 
 #ifdef SERIAL_FORCE_OPENPTY
 #  define USE_OPENPTY

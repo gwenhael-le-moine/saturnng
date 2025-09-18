@@ -90,7 +90,6 @@
 
 #include <string.h> /* 3.1: memset() */
 
-#include "config.h"
 #include "types.h"
 #include "cpu.h"
 #include "modules.h"

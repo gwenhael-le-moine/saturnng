@@ -92,7 +92,6 @@
 
 #include "../libChf/src/Chf.h"
 
-#include "config.h"
 #include "cpu.h"
 #include "cpu_buscc.h"
 #include "modules.h"
@@ -100,6 +99,15 @@
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
 #include "chf_wrapper.h"
 #include "dis.h"
+
+/* 3.14: CPU_SLOW_IN
+   Define this symbol (recommended) to slow down the A=IN and C=IN
+   instructions depending on the current emulated CPU speed.
+
+   The value of the macro determines the gain of the relation between
+   CPU speed and slow down ratio.
+*/
+#define CPU_SLOW_IN 16
 
 /*---------------------------------------------------------------------------
         Global variables

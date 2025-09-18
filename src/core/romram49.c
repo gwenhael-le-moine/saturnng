@@ -83,8 +83,6 @@
 #include <string.h>
 #include <unistd.h> /* access() */
 
-#include "config.h"
-#include "cpu.h"
 #include "modules.h"
 #include "flash49.h"
 #include "disk_io.h"
