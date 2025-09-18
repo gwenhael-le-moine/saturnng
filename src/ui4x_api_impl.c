@@ -4,6 +4,7 @@
 
 #include "options.h"
 
+#include "core/emulator.h"
 #include "core/keyb.h"
 #include "core/modules.h"
 #include "core/serial.h"

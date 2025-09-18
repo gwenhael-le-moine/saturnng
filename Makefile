@@ -64,6 +64,7 @@ HEADERS = src/options.h \
 	src/core/x_func.h \
 	src/core/dis.h \
 	src/core/hdw.h \
+	src/core/emulator.h \
 	src/core/cpu.h \
 	src/core/cpu_buscc.h \
 	src/core/chf_wrapper.h \

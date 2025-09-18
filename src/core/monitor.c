@@ -59,10 +59,10 @@
 #include <string.h>
 #include <signal.h>
 
-#include "../libChf/src/Chf.h"
 #include "../options.h"
 
 #include "cpu.h"
+#include "emulator.h"
 #include "chf_wrapper.h"
 #include "modules.h"
 #include "monitor.h"

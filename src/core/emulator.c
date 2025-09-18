@@ -106,6 +106,7 @@
 #include "modules.h"
 #include "hw_config.h"
 #include "serial.h"
+#include "emulator.h"
 #include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------

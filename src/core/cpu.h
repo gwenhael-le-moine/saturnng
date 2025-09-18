@@ -248,10 +248,6 @@ struct Cpu {
 #  define INNER_LOOP_MIN 2
 };
 
-typedef enum /* 2.1: EmulatorExit() option */
-{ IMMEDIATE_EXIT,
-  SAVE_AND_EXIT } exit_option_t;
-
 /*---------------------------------------------------------------------------
         Global variables
   ---------------------------------------------------------------------------*/
@@ -303,12 +299,8 @@ void CpuSave( void );
 void OneStep( void );
 void CpuIntRequest( int_request_t ireq );
 void CpuWake( void );
-void Emulator( void );
-void EmulatorIntRequest( void );
-void EmulatorInit( void );              /* 2.1 */
-void EmulatorExit( exit_option_t opt ); /* 2.1 */
-int CpuHaltRequest( void );             /* 3.13 */
-int CpuRunRequest( void );              /* 3.13 */
-bool CpuHaltAllowed( void );            /* 3.13 */
+int CpuHaltRequest( void );  /* 3.13 */
+int CpuRunRequest( void );   /* 3.13 */
+bool CpuHaltAllowed( void ); /* 3.13 */
 
 #endif /*!_CPU_H*/
