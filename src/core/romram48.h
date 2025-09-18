@@ -1,9 +1,7 @@
 #ifndef _ROMRAM_H
 #  define _ROMRAM_H 1
 
-#  include "cpu.h"
-#  include "hdw.h"
-#  include "modules.h"
+#  include "types.h"
 
 extern void RomInit48( void );
 extern void RamInit48( void );

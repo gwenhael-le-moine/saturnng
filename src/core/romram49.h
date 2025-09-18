@@ -1,9 +1,7 @@
 #ifndef _ROMRAM49_H
 #  define _ROMRAM49_H 1
 
-#  include "cpu.h"
-#  include "hdw.h"
-#  include "modules.h"
+#  include "types.h"
 
 /* External storage */
 extern struct ModStatus_49* mod_status_49;

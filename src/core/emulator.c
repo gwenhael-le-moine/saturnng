@@ -108,6 +108,7 @@
 #include "hw_config.h"
 #include "modules.h"
 #include "serial.h"
+#include "types.h"
 
 /*---------------------------------------------------------------------------
         Private macros / variables / functions

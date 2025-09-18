@@ -94,7 +94,6 @@
 .- */
 
 #  include "../libChf/src/Chf.h"
-
 #  include "../options.h"
 
 #  define _DEBUG_PREFIX( module_id, debug_class, message_id )                                                                              \

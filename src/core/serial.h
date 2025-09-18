@@ -72,7 +72,7 @@
   *** empty log message ***
 .- */
 
-#  include "cpu.h"
+#  include "types.h"
 
 /*---------------------------------------------------------------------------
         Macro/Data type definitions

@@ -32,8 +32,6 @@
    email: cibrario@iriti.cnr.it
    ------------------------------------------------------------------------- */
 
-#  include "cpu.h"
-
 #  define DUMP_CPU_OB_SIZE 512
 void DumpCpu( char ob[ DUMP_CPU_OB_SIZE ] );
 

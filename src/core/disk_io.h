@@ -62,7 +62,7 @@
 
 #  include <sys/types.h>
 
-#  include "cpu.h"
+#  include "types.h"
 
 /*---------------------------------------------------------------------------
         Chf condition codes

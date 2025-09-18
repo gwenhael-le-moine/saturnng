@@ -1,7 +1,7 @@
 #ifndef _HDW_H
 #  define _HDW_H 1
 
-#  include "cpu.h"
+#  include "types.h"
 
 extern void HdwInit( void );
 extern void HdwSave( void );

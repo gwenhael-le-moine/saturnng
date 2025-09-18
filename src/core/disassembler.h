@@ -1,7 +1,7 @@
 #ifndef _DIS_H
 #  define _DIS_H 1
 
-#  include "cpu.h"
+#  include "types.h"
 
 #  define DISASSEMBLE_OB_SIZE 128
 

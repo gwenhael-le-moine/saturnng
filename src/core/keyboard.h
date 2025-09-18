@@ -68,7 +68,7 @@
   Initial revision
 .- */
 
-#  include "cpu.h"
+#  include "types.h"
 
 /*---------------------------------------------------------------------------
         Function prototypes

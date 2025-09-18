@@ -109,7 +109,7 @@
   Initial revision
 .- */
 
-#  include "cpu.h"
+#  include "types.h"
 
 /*---------------------------------------------------------------------------
         Data type definitions

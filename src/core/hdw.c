@@ -90,8 +90,9 @@
 
 #include <string.h> /* 3.1: memset() */
 
+#include "../options.h"
+
 #include "chf_wrapper.h"
-#include "cpu.h"
 #include "disk_io.h"
 #include "modules.h"
 #include "serial.h" /* 2.5: Serial port emulation module */

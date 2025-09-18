@@ -62,6 +62,7 @@
 .- */
 
 #include "chf_wrapper.h"
+#include "hdw.h"
 #include "modules.h"
 #include "romram48.h"
 #include "romram49.h"
