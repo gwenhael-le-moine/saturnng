@@ -74,10 +74,10 @@
 #include "../libChf/src/Chf.h"
 #include "../options.h"
 
-#include "cpu.h"
-#include "modules.h"
-#include "disk_io.h"
 #include "chf_wrapper.h"
+#include "cpu.h"
+#include "disk_io.h"
+#include "modules.h"
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
    a private struct ModStatus_48. The dynamic allocation is performed during

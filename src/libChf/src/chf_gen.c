@@ -16,8 +16,8 @@
   Initial revision
 .- */
 
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "Chf.h"

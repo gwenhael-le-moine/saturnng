@@ -56,8 +56,8 @@ Public release.
 
 #include "../libChf/src/Chf.h"
 
-#include "disk_io.h"
 #include "chf_wrapper.h"
+#include "disk_io.h"
 #include "modules.h"
 
 /* .+

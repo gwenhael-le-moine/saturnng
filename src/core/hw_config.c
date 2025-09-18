@@ -61,8 +61,8 @@
   *** empty log message ***
 .- */
 
-#include "modules.h"
 #include "chf_wrapper.h"
+#include "modules.h"
 #include "romram48.h"
 #include "romram49.h"
 

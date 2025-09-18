@@ -83,10 +83,10 @@
 #include <string.h>
 #include <unistd.h> /* access() */
 
-#include "modules.h"
-#include "flash49.h"
-#include "disk_io.h"
 #include "chf_wrapper.h"
+#include "disk_io.h"
+#include "flash49.h"
+#include "modules.h"
 
 #define FLASH_VIEW_SELECTOR 0x40000
 #define FLASH_BANK_MASK 0x3FFFF

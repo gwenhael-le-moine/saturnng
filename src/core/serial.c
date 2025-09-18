@@ -89,13 +89,13 @@
   *** empty log message ***
 .- */
 
-#include <stdlib.h>
 #include <errno.h>
+#include <stdlib.h>
 
-#include "types.h"
+#include "chf_wrapper.h"
 #include "cpu.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
-#include "chf_wrapper.h"
+#include "types.h"
 
 /*---------------------------------------------------------------------------
         Determine pty implementation
@@ -159,22 +159,22 @@
   ---------------------------------------------------------------------------*/
 
 #ifdef USE_OPENPTY
-#  undef ADDRESS_MASK  /* 2.6: Avoid name clash 8-( */
-#  include <fcntl.h>   /* fcntl() */
-#  include <unistd.h>  /* ttyname() */
-#  include <pty.h>     /* openpty() */
-#  include <termios.h> /* tcgetattr()/tcsetattr() */
-#  include <sys/termios.h>
+#  undef ADDRESS_MASK /* 2.6: Avoid name clash 8-( */
+#  include <fcntl.h>  /* fcntl() */
+#  include <pty.h>    /* openpty() */
 #  include <sys/ioctl.h>
+#  include <sys/termios.h>
+#  include <termios.h> /* tcgetattr()/tcsetattr() */
+#  include <unistd.h>  /* ttyname() */
 #endif
 
 #ifdef USE_STREAMSPTY
 #  undef ADDRESS_MASK /* 2.6: Avoid name clash 8-( */
 /* stdlib.h already included */
-#  include <fcntl.h> /* open(), fcntl() */
+#  include <fcntl.h>   /* open(), fcntl() */
+#  include <stropts.h> /* ioctl() */
+#  include <termios.h> /* tcgetattr()/tcsetattr() */
 #  include <unistd.h>
-#  include <termios.h>           /* tcgetattr()/tcsetattr() */
-#  include <stropts.h>           /* ioctl() */
 #  define PTY_MASTER "/dev/ptmx" /* Master cloning device */
 #endif
 

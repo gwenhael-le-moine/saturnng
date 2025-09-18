@@ -54,19 +54,19 @@
   Initial revision
 .- */
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <signal.h>
 
 #include "../options.h"
 
-#include "cpu.h"
-#include "emulator.h"
 #include "chf_wrapper.h"
+#include "cpu.h"
+#include "dis.h"
+#include "emulator.h"
 #include "modules.h"
 #include "monitor.h"
-#include "dis.h"
 
 /*---------------------------------------------------------------------------
         Macro & Data type definitions

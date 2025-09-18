@@ -90,12 +90,12 @@
 
 #include <string.h> /* 3.1: memset() */
 
-#include "types.h"
-#include "cpu.h"
-#include "modules.h"
-#include "disk_io.h"
-#include "serial.h" /* 2.5: Serial port emulation module */
 #include "chf_wrapper.h"
+#include "cpu.h"
+#include "disk_io.h"
+#include "modules.h"
+#include "serial.h" /* 2.5: Serial port emulation module */
+#include "types.h"
 
 static const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
 

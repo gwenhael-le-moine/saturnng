@@ -76,10 +76,10 @@
 
 #include "../options.h"
 
+#include "chf_wrapper.h"
 #include "cpu.h"
 #include "disk_io.h"
 #include "x_func.h"
-#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Private functions: action routines

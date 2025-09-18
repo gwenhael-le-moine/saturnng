@@ -72,9 +72,9 @@
 #include <stdio.h>
 #include <string.h> /* 3.1: strcpy(), strcat(), strlen() */
 
+#include "chf_wrapper.h"
 #include "cpu.h"
 #include "dis.h"
-#include "chf_wrapper.h"
 #include "modules.h"
 
 /*---------------------------------------------------------------------------

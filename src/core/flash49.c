@@ -58,11 +58,11 @@
   *** empty log message ***
 .- */
 
+#include "flash49.h"
+#include "chf_wrapper.h"
 #include "cpu.h"
 #include "modules.h"
-#include "flash49.h"
 #include "romram49.h"
-#include "chf_wrapper.h"
 
 /*---------------------------------------------------------------------------
         Private Macro/Data type definitions

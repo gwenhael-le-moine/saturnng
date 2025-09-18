@@ -97,17 +97,17 @@
 .- */
 
 #include <setjmp.h>
-#include <unistd.h>
 #include <sys/time.h>
+#include <unistd.h>
 
 #include "../libChf/src/Chf.h"
 
-#include "cpu.h"
-#include "modules.h"
-#include "hw_config.h"
-#include "serial.h"
-#include "emulator.h"
 #include "chf_wrapper.h"
+#include "cpu.h"
+#include "emulator.h"
+#include "hw_config.h"
+#include "modules.h"
+#include "serial.h"
 
 /*---------------------------------------------------------------------------
         Private macros / variables / functions

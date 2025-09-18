@@ -1,6 +1,6 @@
+#include "chf_wrapper.h"
 #include "cpu.h"
 #include "modules.h"
-#include "chf_wrapper.h"
 
 /*
   https://groups.google.com/g/comp.sys.hp48/c/-d2r5Z78YTc/m/gnKxCmRa-wAJ

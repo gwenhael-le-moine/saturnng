@@ -46,8 +46,8 @@
   Initial revision
 .- */
 
-#  include <stdlib.h>
 #  include <errno.h>
+#  include <stdlib.h>
 
 /* -------------------------------------------------------------------------
    CHF implementation limits and other symbolic constants

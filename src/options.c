@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <errno.h>
+#include <libgen.h>
 #include <pwd.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -7,15 +8,14 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <libgen.h>
 
 #include <getopt.h>
 
-#include <lua.h>
 #include <lauxlib.h>
+#include <lua.h>
 
-#include "options.h"
 #include "core/chf_wrapper.h"
+#include "options.h"
 
 #ifndef LUA_OK
 #  define LUA_OK 0
