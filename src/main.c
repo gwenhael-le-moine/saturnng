@@ -11,9 +11,9 @@
 #include "ui4x/common.h"
 
 #include "core/chf_wrapper.h"
+#include "core/cpu.h"
 #include "core/emulator.h"
 #include "core/monitor.h"
-#include "core/x_func.h"
 
 #define UI_REFRESH_RATE_Hz 64
 

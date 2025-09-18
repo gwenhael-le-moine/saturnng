@@ -303,4 +303,6 @@ int CpuHaltRequest( void );  /* 3.13 */
 int CpuRunRequest( void );   /* 3.13 */
 bool CpuHaltAllowed( void ); /* 3.13 */
 
+void set_speed( unsigned int new_speed_mhz );
+
 #endif /*!_CPU_H*/

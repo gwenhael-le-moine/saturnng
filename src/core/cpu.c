@@ -2652,3 +2652,13 @@ void OneStep( void )
         fprintf( stderr, "%s\n", dis_opcode );
     }
 }
+
+void set_speed( unsigned int new_speed_mhz )
+{
+    /* Compute inner loop limit; 4 is the real CPU speed in MHz when
+       the limit is set to INNER_LOOP_MAX.  No overflow checks,
+       because new_speed is >=0, has an architectural upper limit of 2^20,
+       and int are at least 2^31.
+     */
+    cpu.inner_loop_max = ( new_speed_mhz * INNER_LOOP_MAX ) / 4;
+}

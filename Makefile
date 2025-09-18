@@ -61,7 +61,6 @@ HEADERS = src/options.h \
 	src/core/hw_config.h \
 	src/core/monitor.h \
 	src/core/serial.h \
-	src/core/x_func.h \
 	src/core/disassembler.h \
 	src/core/hdw.h \
 	src/core/emulator.h \
@@ -93,7 +92,6 @@ SRC = src/main.c \
 	src/core/romram48.c \
 	src/core/romram49.c \
 	src/core/serial.c \
-	src/core/x_func.c \
 	src/core/chf_messages.c \
 	src/ui4x/fonts.c \
 	src/ui4x/48sx.c \

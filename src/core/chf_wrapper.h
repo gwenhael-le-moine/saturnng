@@ -175,7 +175,6 @@ typedef enum {
     SERIAL_CHF_MODULE_ID = 15, /* 2.5 */
     FLASH_CHF_MODULE_ID = 16,  /* 3.3 */
     UTIL_CHF_MODULE_ID = 17,   /* 3.6 */
-    X_FUNC_CHF_MODULE_ID = 18, /* 3.13 */
     DEBUG_CHF_MODULE_ID = 30,
 } chf_module_id_t;
 

@@ -54,11 +54,38 @@ Public release.
 #include <stdlib.h>
 #include <string.h>
 
-#include "../libChf/src/Chf.h"
-
 #include "chf_wrapper.h"
 #include "disk_io.h"
 #include "modules.h"
+
+/*---------------------------------------------------------------------------
+        Private functions: action routines
+  ---------------------------------------------------------------------------*/
+
+/* Return the header of binary files for current hw configuration;
+   '?' is a wildcard character when reading from file
+   (see ReadObjectFromFile()) and is replaced by 'S' when writing
+   to file (see WriteObjectToFile()).
+   return NULL if the header cannot be determined.  In the latter case,
+   generate an appropriate condition.
+*/
+static const char* BinaryHeader( void )
+{
+    switch ( config.model ) {
+        case MODEL_48SX:
+        case MODEL_48GX:
+            return "HPHP48-?";
+            break;
+        case MODEL_40G:
+        case MODEL_49G:
+        case MODEL_50G:
+            return "HPHP49-?";
+            break;
+        default:
+            fprintf( stderr, "Error: Unknown model %i\n", config.model );
+            return ( char* )NULL;
+    }
+}
 
 /* .+
 
@@ -503,4 +530,39 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
     }
 
     return st;
+}
+
+void import_file( char* filename )
+{
+    /* const char* bin_hdr = BinaryHeader(); */
+
+    /* if ( bin_hdr == ( const char* )NULL ) */
+    /*     return; */
+
+    /* int start_addr = R2int( cpu.A ); */
+    /* int end_addr = R2int( cpu.C ); */
+
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ) */
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr ) */
+
+    /* ReadObjectFromFile( filename, bin_hdr, ( Address )start_addr, ( Address )end_addr ); */
+}
+
+/* This is the emulator's extended function for 'send': this function
+   transfers an object from the calculator's memory into a disk file.
+*/
+void export_file( char* filename )
+{
+    /* const char* bin_hdr = BinaryHeader(); */
+
+    /* if ( bin_hdr == ( const char* )NULL ) */
+    /*     return; */
+
+    /* int start_addr = R2int( cpu.A ); */
+    /* int end_addr = R2int( cpu.C ); */
+
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ) */
+    /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr ) */
+
+    /* WriteObjectToFile( ( Address )start_addr, ( Address )end_addr, bin_hdr, filename ); */
 }

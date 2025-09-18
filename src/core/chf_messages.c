@@ -8,7 +8,6 @@
 #include "flash49.h"
 #include "modules.h"
 #include "serial.h"
-#include "x_func.h"
 
 ChfTable message_table[] = {
     {CHF_MODULE_NAMES_SET,  CHF_SET,                 "Chf"                                                                                   },
@@ -20,7 +19,6 @@ ChfTable message_table[] = {
     {CHF_MODULE_NAMES_SET,  SERIAL_CHF_MODULE_ID,    "SERIAL"                                                                                },
     {CHF_MODULE_NAMES_SET,  FLASH_CHF_MODULE_ID,     "FLASH"                                                                                 },
     {CHF_MODULE_NAMES_SET,  UTIL_CHF_MODULE_ID,      "UTIL"                                                                                  },
-    {CHF_MODULE_NAMES_SET,  X_FUNC_CHF_MODULE_ID,    "X_FUNC"                                                                                },
     {CHF_MODULE_NAMES_SET,  DEBUG_CHF_MODULE_ID,     "DEBUG"                                                                                 },
 
     {CHF_SET,               CHF_S_OK,                ""                                                                                      },
@@ -163,23 +161,6 @@ ChfTable message_table[] = {
     {SERIAL_CHF_MODULE_ID,  SERIAL_F_PUSH,           "ioctl(I_PUSH,[%s]) failed on slave pty"                                                },
     {SERIAL_CHF_MODULE_ID,  SERIAL_F_TCGETATTR,      "tcgetattr() failed on master pty"                                                      },
     {SERIAL_CHF_MODULE_ID,  SERIAL_F_TCSETATTR,      "tcsetattr() failed on master pty"                                                      },
-
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_CALLED,         "Function [%s] called"                                                                  },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_CODE,           "Emulator's extended function #[%01X]"                                                  },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_SET_SPEED,      "Emulator speed set to [%d]MHz"                                                         },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_MAX_SPEED,      "Emulator at maximum speed"                                                             },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_FILE_NAME,      "Transferring [%s]"                                                                     },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_KGET,           "Kget START[%05X] END[%05X] HDR[%s]"                                                    },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_I_SEND,           "Send START[%05X] END[%05X] HDR[%s]"                                                    },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_W_BAD_CODE,       "Invalid function code #[%01X] ignored"                                                 },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_W_ABORTED,        "Operation aborted by user"                                                             },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_W_FAILED,         "Operation failed"                                                                      },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_E_NO_HALT,        "Cpu Halt requests not allowed.\n\tRebuild with CPU_SPIN_SHUTDN undefined in config.h"  },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_E_NO_SPEED,       "Cpu speed control not available.\n\tRebuild with REAL_CPU_SPEED defined in config.h"   },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_E_NO_BIN_HDR,     "Can't determine binary header for hw [%s]"                                             },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_F_xxx,            "X_FUNC_F_xxx"                                                                          },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_M_KGET,           "Load object from disk..."                                                              },
-    {X_FUNC_CHF_MODULE_ID,  X_FUNC_M_SEND,           "Save object to disk..."                                                                },
 };
 
 size_t message_table_size = sizeof( message_table ) / sizeof( message_table[ 0 ] );

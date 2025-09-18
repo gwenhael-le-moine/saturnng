@@ -92,4 +92,7 @@ int WriteStructToFile( const void* s, size_t s_size, const char* name );
 int ReadObjectFromFile( const char* name, const char* hdr, Address start, Address end );
 int WriteObjectToFile( Address start, Address end, const char* hdr, const char* name );
 
+void import_file( char* filename );
+void export_file( char* filename );
+
 #endif /*!_DISK_IO_H*/
