@@ -74,7 +74,7 @@
 
 #include "chf_wrapper.h"
 #include "cpu.h"
-#include "dis.h"
+#include "disassembler.h"
 #include "modules.h"
 
 /*---------------------------------------------------------------------------

@@ -63,7 +63,7 @@
 
 #include "chf_wrapper.h"
 #include "cpu.h"
-#include "dis.h"
+#include "disassembler.h"
 #include "emulator.h"
 #include "modules.h"
 #include "monitor.h"

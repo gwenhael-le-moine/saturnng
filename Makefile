@@ -62,7 +62,7 @@ HEADERS = src/options.h \
 	src/core/monitor.h \
 	src/core/serial.h \
 	src/core/x_func.h \
-	src/core/dis.h \
+	src/core/disassembler.h \
 	src/core/hdw.h \
 	src/core/emulator.h \
 	src/core/cpu.h \
@@ -81,7 +81,7 @@ SRC = src/main.c \
 	src/ui4x_api_impl.c \
 	src/core/cpu.c \
 	src/core/cpu_buscc.c \
-	src/core/dis.c \
+	src/core/disassembler.c \
 	src/core/disk_io.c \
 	src/core/emulator.c \
 	src/core/flash49.c \
