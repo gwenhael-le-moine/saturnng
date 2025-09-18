@@ -55,7 +55,7 @@ HEADERS = src/options.h \
 	src/core/flash49.h \
 	src/core/romram49.h \
 	src/core/romram48.h \
-	src/core/keyb.h \
+	src/core/keyboard.h \
 	src/core/types.h \
 	src/core/modules.h \
 	src/core/hw_config.h \
@@ -86,7 +86,7 @@ SRC = src/main.c \
 	src/core/flash49.c \
 	src/core/hdw.c \
 	src/core/hw_config.c \
-	src/core/keyb.c \
+	src/core/keyboard.c \
 	src/core/modules.c \
 	src/core/monitor.c \
 	src/core/romram48.c \

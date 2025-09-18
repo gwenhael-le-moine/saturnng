@@ -97,7 +97,7 @@
 #include "cpu_buscc.h"
 #include "disassembler.h"
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
-#include "keyb.h"
+#include "keyboard.h"
 #include "modules.h"
 
 /* 3.14: CPU_SLOW_IN

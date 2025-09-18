@@ -1,11 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "options.h"
 
 #include "core/emulator.h"
-#include "core/keyb.h"
+#include "core/keyboard.h"
 #include "core/modules.h"
 #include "core/serial.h"
 

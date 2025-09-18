@@ -70,7 +70,7 @@
   Initial revision
 .- */
 
-#include "keyb.h"
+#include "keyboard.h"
 #include "cpu.h"
 
 #define OUT_BITS 12
