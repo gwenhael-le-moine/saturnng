@@ -51,7 +51,7 @@
   Implemented fast load/save; improved keyboard interface emulation at
   high emulated CPU speed:
 
-  - Added a delay loop in ExecIN(), when CPU_SLOW_IN is defined. the loop
+  - Added a delay loop in copy_in_to_(), when CPU_SLOW_IN is defined. the loop
     is implemented executing the same instruction multiple times and is
     needed because the HP firmware uses an active loop instead of a
     timer to determine the keyboard automatic repeat rate.
@@ -172,16 +172,13 @@ static const int dec_one_c[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0 };
 /*---------------------------------------------------------------------------
         Private functions: return stack handling
   ---------------------------------------------------------------------------*/
-
-/* PushRSTK */
-static void PushRSTK( const Address r )
+static void rstk_push( const Address r )
 {
     cpu.rstk[ cpu.rstk_ptr ] = r;
     cpu.rstk_ptr = ( cpu.rstk_ptr + 1 ) & RSTK_PTR_MASK;
 }
 
-/* PopRSTK */
-static Address PopRSTK( void )
+static Address rstk_pop( void )
 {
     cpu.rstk_ptr = ( cpu.rstk_ptr - 1 ) & RSTK_PTR_MASK;
 
@@ -197,7 +194,7 @@ static Address PopRSTK( void )
   ---------------------------------------------------------------------------*/
 
 /* IN */
-static void ExecIN( Nibble* r )
+static void copy_in_to_( Nibble* r )
 {
     /* In */
 #ifdef CPU_SLOW_IN
@@ -242,7 +239,7 @@ static void ExecIN( Nibble* r )
         Private functions: CPU control
   ---------------------------------------------------------------------------*/
 
-static void ExecSHUTDN( void )
+static void op807( void ) /* SHUTDN */
 {
     /* Set shutdown flag */
     cpu.shutdn = true;
@@ -307,7 +304,7 @@ static void Addr2RS( Nibble* d, Address a )
   ---------------------------------------------------------------------------*/
 
 /* Read a field of a DataRegister from memory */
-static void ReadDAT( Nibble* d, Address s, int fs )
+static void bus_read( Nibble* d, Address s, int fs )
 {
     register int lo = cpu.fs_idx_lo[ fs ];
     register int hi = cpu.fs_idx_hi[ fs ];
@@ -319,14 +316,14 @@ static void ReadDAT( Nibble* d, Address s, int fs )
 }
 
 /* Read a field of a DataRegister from memory, with immediate fs */
-static void ReadDATImm( Nibble* d, Address s, int imm_fs )
+static void bus_read_immediate( Nibble* d, Address s, int imm_fs )
 {
     for ( register int n = 0; n <= imm_fs; n++ )
         d[ n ] = ReadNibble( s++ );
 }
 
 /* Write a field of a DataRegister into memory */
-static void WriteDAT( Address d, const Nibble* r, int fs )
+static void bus_write( Address d, const Nibble* r, int fs )
 {
     register int lo = cpu.fs_idx_lo[ fs ];
     register int hi = cpu.fs_idx_hi[ fs ];
@@ -338,7 +335,7 @@ static void WriteDAT( Address d, const Nibble* r, int fs )
 }
 
 /* Write a field of a DataRegister into memory, with immediate fs */
-static void WriteDATImm( Address d, const Nibble* r, int imm_fs )
+static void bus_write_immediate( Address d, const Nibble* r, int imm_fs )
 {
     for ( register int n = 0; n <= imm_fs; n++ ) {
         WriteNibble( d, r[ n ] );
@@ -917,7 +914,7 @@ static void ExecGOYES_RTNYES( void )
 
         if ( offset == 0 )
             /* RTNYES */
-            cpu.pc = PopRSTK();
+            cpu.pc = rstk_pop();
         else
             cpu.pc += offset;
     } else
@@ -1314,18 +1311,18 @@ static void ExecGroup_0( void )
     switch ( n ) {
         case 0x0: /* RTNSXM */
             cpu.hst |= HST_XM_MASK;
-            cpu.pc = PopRSTK();
+            cpu.pc = rstk_pop();
             break;
         case 0x1: /* RTN */
-            cpu.pc = PopRSTK();
+            cpu.pc = rstk_pop();
             break;
         case 0x2: /* RTNSC */
             cpu.carry = true;
-            cpu.pc = PopRSTK();
+            cpu.pc = rstk_pop();
             break;
         case 0x3: /* RTNCC */
             cpu.carry = false;
-            cpu.pc = PopRSTK();
+            cpu.pc = rstk_pop();
             break;
         case 0x4: /* SETHEX */
             cpu.hexmode = true;
@@ -1334,10 +1331,10 @@ static void ExecGroup_0( void )
             cpu.hexmode = false;
             break;
         case 0x6: /* RSTK=C */
-            PushRSTK( R2Addr( cpu.reg[ C ] ) );
+            rstk_push( R2Addr( cpu.reg[ C ] ) );
             break;
         case 0x7: /* C=RSTK */
-            Addr2R( cpu.reg[ C ], PopRSTK() );
+            Addr2R( cpu.reg[ C ], rstk_pop() );
             break;
         case 0x8: /* CLRST */
             cpu.st &= CLRST_MASK;
@@ -1400,7 +1397,7 @@ static void ExecGroup_0( void )
                 DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RTI_END )
 
                 cpu.int_service = false;
-                cpu.pc = PopRSTK();
+                cpu.pc = rstk_pop();
             }
             break;
 
@@ -1495,52 +1492,52 @@ static void ExecGroup_14( void )
     /* Load/Store A/C to @D0/@D1, Field selector A or B */
     switch ( n ) {
         case 0x0: /* DAT0=A A */
-            WriteDAT( cpu.d[ 0 ], cpu.reg[ A ], FS_A );
+            bus_write( cpu.d[ 0 ], cpu.reg[ A ], FS_A );
             break;
         case 0x1: /* DAT1=A A */
-            WriteDAT( cpu.d[ 1 ], cpu.reg[ A ], FS_A );
+            bus_write( cpu.d[ 1 ], cpu.reg[ A ], FS_A );
             break;
         case 0x2: /* A=DAT0 A */
-            ReadDAT( cpu.reg[ A ], cpu.d[ 0 ], FS_A );
+            bus_read( cpu.reg[ A ], cpu.d[ 0 ], FS_A );
             break;
         case 0x3: /* A=DAT1 A */
-            ReadDAT( cpu.reg[ A ], cpu.d[ 1 ], FS_A );
+            bus_read( cpu.reg[ A ], cpu.d[ 1 ], FS_A );
             break;
         case 0x4: /* DAT0=C A */
-            WriteDAT( cpu.d[ 0 ], cpu.reg[ C ], FS_A );
+            bus_write( cpu.d[ 0 ], cpu.reg[ C ], FS_A );
             break;
         case 0x5: /* DAT1=C A */
-            WriteDAT( cpu.d[ 1 ], cpu.reg[ C ], FS_A );
+            bus_write( cpu.d[ 1 ], cpu.reg[ C ], FS_A );
             break;
         case 0x6: /* C=DAT0 A */
-            ReadDAT( cpu.reg[ C ], cpu.d[ 0 ], FS_A );
+            bus_read( cpu.reg[ C ], cpu.d[ 0 ], FS_A );
             break;
         case 0x7: /* C=DAT1 A */
-            ReadDAT( cpu.reg[ C ], cpu.d[ 1 ], FS_A );
+            bus_read( cpu.reg[ C ], cpu.d[ 1 ], FS_A );
             break;
         case 0x8: /* DAT0=A B */
-            WriteDAT( cpu.d[ 0 ], cpu.reg[ A ], FS_B );
+            bus_write( cpu.d[ 0 ], cpu.reg[ A ], FS_B );
             break;
         case 0x9: /* DAT1=A B */
-            WriteDAT( cpu.d[ 1 ], cpu.reg[ A ], FS_B );
+            bus_write( cpu.d[ 1 ], cpu.reg[ A ], FS_B );
             break;
         case 0xA: /* A=DAT0 B */
-            ReadDAT( cpu.reg[ A ], cpu.d[ 0 ], FS_B );
+            bus_read( cpu.reg[ A ], cpu.d[ 0 ], FS_B );
             break;
         case 0xB: /* A=DAT1 B */
-            ReadDAT( cpu.reg[ A ], cpu.d[ 1 ], FS_B );
+            bus_read( cpu.reg[ A ], cpu.d[ 1 ], FS_B );
             break;
         case 0xC: /* DAT0=C B */
-            WriteDAT( cpu.d[ 0 ], cpu.reg[ C ], FS_B );
+            bus_write( cpu.d[ 0 ], cpu.reg[ C ], FS_B );
             break;
         case 0xD: /* DAT1=C B */
-            WriteDAT( cpu.d[ 1 ], cpu.reg[ C ], FS_B );
+            bus_write( cpu.d[ 1 ], cpu.reg[ C ], FS_B );
             break;
         case 0xE: /* C=DAT0 B */
-            ReadDAT( cpu.reg[ C ], cpu.d[ 0 ], FS_B );
+            bus_read( cpu.reg[ C ], cpu.d[ 0 ], FS_B );
             break;
         case 0xF: /* C=DAT1 B */
-            ReadDAT( cpu.reg[ C ], cpu.d[ 1 ], FS_B );
+            bus_read( cpu.reg[ C ], cpu.d[ 1 ], FS_B );
             break;
     }
 }
@@ -1564,51 +1561,51 @@ static void ExecGroup_15( void )
     switch ( oc ) {
         case 0x0: /* DAT0=A */
             if ( is_immediate )
-                WriteDATImm( cpu.d[ 0 ], cpu.reg[ A ], f );
+                bus_write_immediate( cpu.d[ 0 ], cpu.reg[ A ], f );
             else
-                WriteDAT( cpu.d[ 0 ], cpu.reg[ A ], f );
+                bus_write( cpu.d[ 0 ], cpu.reg[ A ], f );
             break;
         case 0x1: /* DAT1=A */
             if ( is_immediate )
-                WriteDATImm( cpu.d[ 1 ], cpu.reg[ A ], f );
+                bus_write_immediate( cpu.d[ 1 ], cpu.reg[ A ], f );
             else
-                WriteDAT( cpu.d[ 1 ], cpu.reg[ A ], f );
+                bus_write( cpu.d[ 1 ], cpu.reg[ A ], f );
             break;
         case 0x2: /* A=DAT0 */
             if ( is_immediate )
-                ReadDATImm( cpu.reg[ A ], cpu.d[ 0 ], f );
+                bus_read_immediate( cpu.reg[ A ], cpu.d[ 0 ], f );
             else
-                ReadDAT( cpu.reg[ A ], cpu.d[ 0 ], f );
+                bus_read( cpu.reg[ A ], cpu.d[ 0 ], f );
             break;
         case 0x3: /* A=DAT1 */
             if ( is_immediate )
-                ReadDATImm( cpu.reg[ A ], cpu.d[ 1 ], f );
+                bus_read_immediate( cpu.reg[ A ], cpu.d[ 1 ], f );
             else
-                ReadDAT( cpu.reg[ A ], cpu.d[ 1 ], f );
+                bus_read( cpu.reg[ A ], cpu.d[ 1 ], f );
             break;
         case 0x4: /* DAT0=C */
             if ( is_immediate )
-                WriteDATImm( cpu.d[ 0 ], cpu.reg[ C ], f );
+                bus_write_immediate( cpu.d[ 0 ], cpu.reg[ C ], f );
             else
-                WriteDAT( cpu.d[ 0 ], cpu.reg[ C ], f );
+                bus_write( cpu.d[ 0 ], cpu.reg[ C ], f );
             break;
         case 0x5: /* DAT1=C */
             if ( is_immediate )
-                WriteDATImm( cpu.d[ 1 ], cpu.reg[ C ], f );
+                bus_write_immediate( cpu.d[ 1 ], cpu.reg[ C ], f );
             else
-                WriteDAT( cpu.d[ 1 ], cpu.reg[ C ], f );
+                bus_write( cpu.d[ 1 ], cpu.reg[ C ], f );
             break;
         case 0x6: /* C=DAT0 */
             if ( is_immediate )
-                ReadDATImm( cpu.reg[ C ], cpu.d[ 0 ], f );
+                bus_read_immediate( cpu.reg[ C ], cpu.d[ 0 ], f );
             else
-                ReadDAT( cpu.reg[ C ], cpu.d[ 0 ], f );
+                bus_read( cpu.reg[ C ], cpu.d[ 0 ], f );
             break;
         case 0x7: /* C=DAT1 */
             if ( is_immediate )
-                ReadDATImm( cpu.reg[ C ], cpu.d[ 1 ], f );
+                bus_read_immediate( cpu.reg[ C ], cpu.d[ 1 ], f );
             else
-                ReadDAT( cpu.reg[ C ], cpu.d[ 1 ], f );
+                bus_read( cpu.reg[ C ], cpu.d[ 1 ], f );
             break;
 
         default:
@@ -1840,10 +1837,10 @@ static void ExecGroup_80( void )
                       ( ( OutputRegister )cpu.reg[ C ][ 2 ] << 8 );
             break;
         case 0x2: /* A=IN */
-            ExecIN( cpu.reg[ A ] );
+            copy_in_to_( cpu.reg[ A ] );
             break;
         case 0x3: /* C=IN */
-            ExecIN( cpu.reg[ C ] );
+            copy_in_to_( cpu.reg[ C ] );
             break;
         case 0x4: /* UNCNFG */
             ModUnconfig( R2Addr( cpu.reg[ C ] ) );
@@ -1855,7 +1852,7 @@ static void ExecGroup_80( void )
             Addr2R( cpu.reg[ C ], ModGetID() );
             break;
         case 0x7: /* SHUTDN */
-            ExecSHUTDN();
+            op807();
             break;
         case 0x8: /* Group 808 */
             ExecGroup_808();
@@ -2142,11 +2139,11 @@ static void ExecGroup_8( void )
         case 0xE: /* GOSUBL */
             addr = Get4Nibbles2C( cpu.pc );
             cpu.pc += 4;
-            PushRSTK( cpu.pc );
+            rstk_push( cpu.pc );
             cpu.pc += addr;
             break;
         case 0xF: /* GOSBVL */
-            PushRSTK( cpu.pc + 5 );
+            rstk_push( cpu.pc + 5 );
             cpu.pc = Get5NibblesAbs( cpu.pc );
             break;
 
@@ -2353,7 +2350,7 @@ void CpuIntRequest( int_request_t ireq )
             /* Vector immediately */
             cpu.int_service = true;
             cpu.int_pending = INT_REQUEST_NONE;
-            PushRSTK( cpu.pc );
+            rstk_push( cpu.pc );
             cpu.pc = INT_HANDLER_PC;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_INT, ( ireq == INT_REQUEST_NMI ? "NMI" : "IRQ" ) )
@@ -2461,7 +2458,7 @@ void OneStep( void )
             if ( cpu.carry ) {
                 offset = Get2Nibbles2C( cpu.pc );
                 if ( offset == 0 )
-                    cpu.pc = PopRSTK();
+                    cpu.pc = rstk_pop();
                 else
                     cpu.pc += offset;
             } else
@@ -2472,7 +2469,7 @@ void OneStep( void )
             if ( !cpu.carry ) {
                 offset = Get2Nibbles2C( cpu.pc );
                 if ( offset == 0 )
-                    cpu.pc = PopRSTK();
+                    cpu.pc = rstk_pop();
                 else
                     cpu.pc += offset;
             } else
@@ -2485,7 +2482,7 @@ void OneStep( void )
         case 0x7: /* GOSUB */
             offset = Get3Nibbles2C( cpu.pc );
             cpu.pc += 3;
-            PushRSTK( cpu.pc );
+            rstk_push( cpu.pc );
             cpu.pc += offset;
             break;
         case 0x8: /* Group_8 */

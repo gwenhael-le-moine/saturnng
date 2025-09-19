@@ -168,10 +168,10 @@
 typedef enum {
     FS_P = 0,
     FS_WP = 1,
-    /* FS_XS = 2, */
-    /* FS_X = 3, */
-    /* FS_S = 4, */
-    /* FS_M = 5, */
+    FS_XS = 2,
+    FS_X = 3,
+    FS_S = 4,
+    FS_M = 5,
     FS_B = 6,
     FS_W = 7,
     FS_A = 15,
