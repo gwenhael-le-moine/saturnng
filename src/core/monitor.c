@@ -153,13 +153,13 @@ void DumpCpu( char ob[ DUMP_CPU_OB_SIZE ] )
     int n;
 
     /* Dump PC and current instruction */
-    ( void )Disassemble( cpu.PC, dob );
+    ( void )Disassemble( cpu.pc, dob );
     sprintf( ob, "\n%s\n\n", dob );
     ob += strlen( ob );
 
     /* Dump A, B, C, D */
     for ( n = 0; n < N_WORKING_REGISTER; n++ ) {
-        sprintf( ob, "%s:\t%s\n", work_n[ n ], DumpR( cpu.work[ n ] ) );
+        sprintf( ob, "%s:\t%s\n", work_n[ n ], DumpR( cpu.reg[ n ] ) );
         ob += strlen( ob );
     }
 
@@ -168,20 +168,20 @@ void DumpCpu( char ob[ DUMP_CPU_OB_SIZE ] )
 
     /* Dump Rn */
     for ( n = 0; n < N_SCRATCH_REGISTER; n++ ) {
-        sprintf( ob, "R%d:\t%s\n", n, DumpR( cpu.R[ n ] ) );
+        sprintf( ob, "R%d:\t%s\n", n, DumpR( cpu.reg_r[ n ] ) );
         ob += strlen( ob );
     }
 
     sprintf( ob, "\n" );
     ob += strlen( ob );
 
-    sprintf( ob, "D0:\t%05X\t\tD1:\t%05X\n", cpu.D0, cpu.D1 );
+    sprintf( ob, "D0:\t%05X\t\tD1:\t%05X\n", cpu.d[ 0 ], cpu.d[ 1 ] );
     ob += strlen( ob );
 
-    sprintf( ob, "P:\t%01X\t\tIN:\t%04X\t\tOUT:\t%03X\n", cpu.P, cpu.IN, cpu.OUT );
+    sprintf( ob, "P:\t%01X\t\tIN:\t%04X\t\tOUT:\t%03X\n", cpu.p, cpu.in, cpu.out );
     ob += strlen( ob );
 
-    sprintf( ob, "HST:\t%01X\t\tST:\t%04X\n", cpu.HST, cpu.ST );
+    sprintf( ob, "HST:\t%01X\t\tST:\t%04X\n", cpu.hst, cpu.st );
     ob += strlen( ob );
 
     sprintf( ob, "hexmode: %d, carry: %d, int_enable/pending/service: %d/%d/%d, shutdn:%d\n", cpu.hexmode, cpu.carry, cpu.int_enable,

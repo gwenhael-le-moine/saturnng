@@ -186,45 +186,32 @@ typedef enum {
 
 #  define CLRST_MASK ( ( ProgramStatusRegister )0xF000 )
 #  define D_S_MASK ( ( Address )0xF0000 )
-#  define RETURN_SP_MASK 0x7
+#  define RSTK_PTR_MASK 0x7
 
 typedef int16 ProgramStatusRegister;
 typedef Nibble DataRegister[ NIBBLE_PER_REGISTER ];
 
 typedef enum { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI } int_request_t;
 
-struct Cpu {
-    DataRegister work[ N_WORKING_REGISTER ];
-#  define A work[ 0 ]
-#  define B work[ 1 ]
-#  define C work[ 2 ]
-#  define D work[ 3 ]
+typedef struct {
+    DataRegister reg[ N_WORKING_REGISTER ];
+    DataRegister reg_r[ N_SCRATCH_REGISTER_ALL ];
+    Address d[ N_DATA_POINTER_REGISTER ];
 
-    DataRegister R[ N_SCRATCH_REGISTER_ALL ];
-#  define R0 R[ 0 ]
-#  define R1 R[ 1 ]
-#  define R2 R[ 2 ]
-#  define R3 R[ 3 ]
-#  define R4 R[ 4 ]
+    Nibble p;
+    Address pc;
+    InputRegister in;
+    OutputRegister out;
+    ProgramStatusRegister st;
 
-    Address DAT[ N_DATA_POINTER_REGISTER ];
-#  define D0 DAT[ 0 ]
-#  define D1 DAT[ 1 ]
-
-    Nibble P;
-    Address PC;
-    InputRegister IN;
-    OutputRegister OUT;
-    ProgramStatusRegister ST;
-
-    Nibble HST;
+    Nibble hst;
 #  define HST_MP_MASK 0x08
 #  define HST_SR_MASK 0x04
 #  define HST_SB_MASK 0x02
 #  define HST_XM_MASK 0x01
 
-    Address return_stack[ RETURN_STACK_SIZE ];
-    int return_sp;
+    Address rstk[ RETURN_STACK_SIZE ];
+    int rstk_ptr;
 
     int fs_idx_lo[ N_FS ];
     int fs_idx_hi[ N_FS ];
@@ -246,13 +233,15 @@ struct Cpu {
 #  define INNER_LOOP_MAX 26
 #  define INNER_LOOP_MED 13
 #  define INNER_LOOP_MIN 2
-};
+} Cpu;
+
+enum RegisterNames { A, B, C, D };
 
 /*---------------------------------------------------------------------------
         Global variables
   ---------------------------------------------------------------------------*/
 
-extern struct Cpu cpu;
+extern Cpu cpu;
 
 extern int opcode;
 

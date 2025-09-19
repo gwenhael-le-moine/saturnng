@@ -10,8 +10,8 @@
 // FIXME: 49g bugs here on display change
 static void ExecGroup_80B0( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -56,8 +56,8 @@ static void ExecGroup_80B0( void )
 
 static void ExecGroup_80B1( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -66,7 +66,7 @@ static void ExecGroup_80B1( void )
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: OFF" )
             break;
         case 0x1:
-            cpu.PC += 2;
+            cpu.pc += 2;
             // do not do gettime, just skip the RTN after it to fall in the normal gettime function (only valid in untouched ROM)
             break;
         case 0x2:
@@ -94,8 +94,8 @@ static void ExecGroup_80B1( void )
 
 static void ExecGroup_80B2( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -104,13 +104,13 @@ static void ExecGroup_80B2( void )
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: HST=1.x" )
             break;
         case 0x9: // screen height = 0x50 = 80 or 0x40 = 64
-            cpu.A[ 4 ] = cpu.A[ 3 ] = cpu.A[ 2 ] = cpu.A[ 0 ] = 0;
-            cpu.A[ 1 ] = config.big_screen ? 5 : 4;
+            cpu.reg[ A ][ 4 ] = cpu.reg[ A ][ 3 ] = cpu.reg[ A ][ 2 ] = cpu.reg[ A ][ 0 ] = 0;
+            cpu.reg[ A ][ 1 ] = config.big_screen ? 5 : 4;
             break;
         case 0xA: // screen width = 0x83 = 131
-            cpu.A[ 4 ] = cpu.A[ 3 ] = cpu.A[ 2 ] = 0;
-            cpu.A[ 1 ] = 8;
-            cpu.A[ 0 ] = 3;
+            cpu.reg[ A ][ 4 ] = cpu.reg[ A ][ 3 ] = cpu.reg[ A ][ 2 ] = 0;
+            cpu.reg[ A ][ 1 ] = 8;
+            cpu.reg[ A ][ 0 ] = 3;
             break;
         case 0xB: // it is medium apple
             cpu.carry = !config.big_screen;
@@ -131,8 +131,8 @@ static void ExecGroup_80B2( void )
 
 static void ExecGroup_80B3( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -159,8 +159,8 @@ static void ExecGroup_80B3( void )
             /* Nunpack(w.C, w.d0offset, 5); */
             break;
         case 0x8:
-            // cpu.HST |= I[5]; // Emu48:apple.c:500
-            cpu.PC += 3;
+            // cpu.hst |= I[5]; // Emu48:apple.c:500
+            cpu.pc += 3;
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: ?HST=1.x" )
             break;
 
@@ -173,8 +173,8 @@ static void ExecGroup_80B3( void )
 
 static void ExecGroup_80B4( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -201,8 +201,8 @@ static void ExecGroup_80B4( void )
 
 static void ExecGroup_80B5( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -217,7 +217,7 @@ static void ExecGroup_80B5( void )
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: OUTBYT" )
             break;
         case 0x7:
-            cpu.D0 = cpu.D1 = 0;
+            cpu.d[ 0 ] = cpu.d[ 1 ] = 0;
             break;
 
         default:
@@ -229,8 +229,8 @@ static void ExecGroup_80B5( void )
 
 static void ExecGroup_80B6( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -257,15 +257,15 @@ static void ExecGroup_80B6( void )
 
 static void ExecGroup_80B7( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
     switch ( n ) {
         case 0xF: // SETFLDn not implemented, set carry for failed
             cpu.carry = false;
-            cpu.PC++;
+            cpu.pc++;
             break;
 
         default:
@@ -277,8 +277,8 @@ static void ExecGroup_80B7( void )
 
 static void ExecGroup_80B8( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -327,8 +327,8 @@ static void ExecGroup_80B8( void )
 
 static void ExecGroup_80B9( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -346,8 +346,8 @@ static void ExecGroup_80B9( void )
 
 static void ExecGroup_80BE( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -368,8 +368,8 @@ static void ExecGroup_80BE( void )
 
 static void ExecGroup_80BF( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -387,8 +387,8 @@ static void ExecGroup_80BF( void )
 
 static void ExecGroup_80B_catch_all( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 
@@ -402,8 +402,8 @@ static void ExecGroup_80B_catch_all( void )
 
 void ExecGroup_80B( void )
 {
-    Nibble n = FetchNibble( cpu.PC );
-    cpu.PC++;
+    Nibble n = FetchNibble( cpu.pc );
+    cpu.pc++;
     opcode *= 0x10;
     opcode += n;
 

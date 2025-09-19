@@ -487,7 +487,7 @@ void Ce2Init48( void )
        interrupt request.
      */
     mod_status.hdw.card_status = new_status;
-    cpu.HST |= HST_MP_MASK;
+    cpu.hst |= HST_MP_MASK;
     CpuIntRequest( INT_REQUEST_IRQ );
 }
 
@@ -633,7 +633,7 @@ void NCe3Init48( void )
        interrupt request.
      */
     mod_status.hdw.card_status = new_status;
-    cpu.HST |= HST_MP_MASK;
+    cpu.hst |= HST_MP_MASK;
     CpuIntRequest( INT_REQUEST_IRQ );
 }
 

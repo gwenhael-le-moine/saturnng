@@ -539,8 +539,8 @@ void import_file( char* filename )
     /* if ( bin_hdr == ( const char* )NULL ) */
     /*     return; */
 
-    /* int start_addr = R2int( cpu.A ); */
-    /* int end_addr = R2int( cpu.C ); */
+    /* int start_addr = R2int( cpu.reg[ A ] ); */
+    /* int end_addr = R2int( cpu.reg[ C ] ); */
 
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ) */
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_KGET, start_addr, end_addr, bin_hdr ) */
@@ -558,8 +558,8 @@ void export_file( char* filename )
     /* if ( bin_hdr == ( const char* )NULL ) */
     /*     return; */
 
-    /* int start_addr = R2int( cpu.A ); */
-    /* int end_addr = R2int( cpu.C ); */
+    /* int start_addr = R2int( cpu.reg[ A ] ); */
+    /* int end_addr = R2int( cpu.reg[ C ] ); */
 
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_FILE_NAME, filename ) */
     /* DEBUG( X_FUNC_CHF_MODULE_ID, DEBUG_C_X_FUNC, X_FUNC_I_SEND, start_addr, end_addr, bin_hdr ) */
