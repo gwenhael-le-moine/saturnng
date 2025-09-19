@@ -99,6 +99,8 @@
 
 #  include <stdbool.h>
 
+#  include "types.h"
+
 /*---------------------------------------------------------------------------
         Macro/Data type definitions - require types.h
 
@@ -106,10 +108,6 @@
   is larger than necessary to avoid additional checks on the validity of
   the R register index fields during emulation
   ---------------------------------------------------------------------------*/
-#  include "types.h"
-
-#  define OPCODE_LENGTH( oc )                                                                                                              \
-      ( ( oc / 0x100000 > 0 ) + ( oc / 0x10000 > 0 ) + ( oc / 0x1000 > 0 ) + ( oc / 0x100 > 0 ) + ( oc / 0x10 > 0 ) + 1 )
 
 /* General */
 #  define NIBBLE_PER_REGISTER 16
@@ -126,10 +124,10 @@
      GET_FS(f)		returns the short field-selector value from the
                         given nibble (bits 2..0)
 
-     GET_IMMEDIATE_FS_FLAG(f)	returns the immediate-field-selector flag from the
+     CHECK_IMMEDIATE_FS_FLAG(f)	returns the immediate-field-selector flag from the
                         given nibble (bit 3)
-                         =0: regular field selector
-                        !=0: immediate field selector
+                        !=0 (true): immediate field selector
+                        =0 (false): regular field selector
 
      GET_OC_1(o)		returns the short operation code from the given
                         nibble (bits 3..2 >>2)
@@ -146,34 +144,34 @@
      GET_Rn(r)		returns the R register index from the given nibble
                         (bits 2..0)
 
-     GET_AC(r)		returns the A/C register flag from the given nibble
+     CHECK_FLAG_C_OR_A(r)		returns the A/C register flag from the given nibble
                         (bit 3)
-                         =0: register A
-                        !=0: register C
+                        !=0 (true): register C
+                        =0 (false): register A
 
-     GET_AS(r)		returns the add/subtract flag from the given nibble
+     CHECK_FLAG_SUBTRACT_OR_ADD(r)		returns the add/subtract flag from the given nibble
                         (bit 3)
-                         =0: add
-                        !=0: subtract
+                        !=0 (true): subtract
+                        =0 (false): add
 */
 #  define GET_FS( f ) ( ( f ) & 0x7 )
-#  define GET_IMMEDIATE_FS_FLAG( o ) ( ( o ) & 0x8 )
+#  define CHECK_IMMEDIATE_FS_FLAG( o ) ( ( o ) & 0x8 )
 #  define GET_OC_1( o ) ( ( ( o ) & 0xC ) >> 2 )
 #  define GET_OC_2( f, o ) ( ( ( ( f ) & 0x8 ) >> 1 ) | ( ( ( o ) & 0xC ) >> 2 ) )
 #  define GET_OC_3b( o ) ( ( o ) & 0x7 )
 #  define GET_RP( o ) ( ( o ) & 0x3 )
 #  define GET_Rn( r ) ( ( r ) & 0x7 )
-#  define GET_AC( r ) ( ( r ) & 0x8 )
-#  define GET_AS( r ) ( ( r ) & 0x8 )
+#  define CHECK_FLAG_C_OR_A( r ) ( ( r ) & 0x8 )
+#  define CHECK_FLAG_SUBTRACT_OR_ADD( r ) ( ( r ) & 0x8 )
 
 /* Field selector codes */
 typedef enum {
     FS_P = 0,
     FS_WP = 1,
-    FS_XS = 2,
-    FS_X = 3,
-    FS_S = 4,
-    FS_M = 5,
+    /* FS_XS = 2, */
+    /* FS_X = 3, */
+    /* FS_S = 4, */
+    /* FS_M = 5, */
     FS_B = 6,
     FS_W = 7,
     FS_A = 15,

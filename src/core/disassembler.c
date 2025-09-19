@@ -1266,8 +1266,8 @@ static Address DisGroup_1( Address pc, char* ob )
     Nibble n = FetchNibble( pc );
     pc++;
     Nibble f;
-    int rn, ac;
-    int oc, is;
+    int rn, c_or_a;
+    int oc, is_immediate;
 
     switch ( n ) {
         case 0x0:
@@ -1275,9 +1275,9 @@ static Address DisGroup_1( Address pc, char* ob )
             n = FetchNibble( pc );
             pc++;
             rn = GET_Rn( n );
-            ac = GET_AC( n );
+            c_or_a = CHECK_FLAG_C_OR_A( n );
 
-            sprintf( ob, "%s=%s", rn_name[ rn ], ( ac ? "C" : "A" ) );
+            sprintf( ob, "%s=%s", rn_name[ rn ], ( c_or_a ? "C" : "A" ) );
             break;
 
         case 0x1:
@@ -1285,9 +1285,9 @@ static Address DisGroup_1( Address pc, char* ob )
             n = FetchNibble( pc );
             pc++;
             rn = GET_Rn( n );
-            ac = GET_AC( n );
+            c_or_a = CHECK_FLAG_C_OR_A( n );
 
-            sprintf( ob, "%s=%s", ( ac ? "C" : "A" ), rn_name[ rn ] );
+            sprintf( ob, "%s=%s", ( c_or_a ? "C" : "A" ), rn_name[ rn ] );
             break;
 
         case 0x2:
@@ -1295,9 +1295,9 @@ static Address DisGroup_1( Address pc, char* ob )
             n = FetchNibble( pc );
             pc++;
             rn = GET_Rn( n );
-            ac = GET_AC( n );
+            c_or_a = CHECK_FLAG_C_OR_A( n );
 
-            sprintf( ob, "%s%sEX", ( ac ? "C" : "A" ), rn_name[ rn ] );
+            sprintf( ob, "%s%sEX", ( c_or_a ? "C" : "A" ), rn_name[ rn ] );
             break;
 
         case 0x3:
@@ -1321,12 +1321,12 @@ static Address DisGroup_1( Address pc, char* ob )
             f = FetchNibble( pc );
             pc++;
             oc = GET_OC_3b( n );
-            is = GET_IMMEDIATE_FS_FLAG( n );
+            is_immediate = CHECK_IMMEDIATE_FS_FLAG( n );
 
             /* Decode operation code */
             strcpy( ob, group_15_opc[ oc ] );
 
-            if ( is )
+            if ( is_immediate )
                 /* Immediate field selector */
                 DisIMM_FIELD_SEL( f, ob );
             else
@@ -1679,7 +1679,7 @@ static Address DisGroup_80( Address pc, char* ob )
 static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
 {
     Nibble n, f, m;
-    int rn, ac;
+    int rn, c_or_a;
 
     switch ( rp ) {
         case 0x0:
@@ -1692,7 +1692,7 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
             pc++;
             rp = GET_RP( n );
 
-            sprintf( ob, "%c=%c%cCON", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], ( GET_AS( n ) ? '-' : '+' ) );
+            sprintf( ob, "%c=%c%cCON", reg_pair[ rp ][ 0 ], reg_pair[ rp ][ 0 ], ( CHECK_FLAG_SUBTRACT_OR_ADD( n ) ? '-' : '+' ) );
 
             /* Decode field selector */
             DisFIELD_SEL( f, ob );
@@ -1725,24 +1725,24 @@ static Address DisSpecialGroup_81( Address pc, char* ob, int rp )
             m = FetchNibble( pc );
             pc++;
             rn = GET_Rn( m );
-            ac = GET_AC( m );
+            c_or_a = CHECK_FLAG_C_OR_A( m );
 
             switch ( n ) {
                 case 0x0:
                     /* Rn=r.F fs */
-                    sprintf( ob, "%s=%s.F", rn_name[ rn ], ( ac ? "C" : "A" ) );
+                    sprintf( ob, "%s=%s.F", rn_name[ rn ], ( c_or_a ? "C" : "A" ) );
                     DisFIELD_SEL( f, ob );
                     break;
 
                 case 0x1:
                     /* r=R0.F fs */
-                    sprintf( ob, "%s=%s.F", ( ac ? "C" : "A" ), rn_name[ rn ] );
+                    sprintf( ob, "%s=%s.F", ( c_or_a ? "C" : "A" ), rn_name[ rn ] );
                     DisFIELD_SEL( f, ob );
                     break;
 
                 case 0x2:
                     /* rRnEX.F fs */
-                    sprintf( ob, "%s%sEX.F", ( ac ? "C" : "A" ), rn_name[ rn ] );
+                    sprintf( ob, "%s%sEX.F", ( c_or_a ? "C" : "A" ), rn_name[ rn ] );
                     DisFIELD_SEL( f, ob );
                     break;
 

@@ -1559,53 +1559,53 @@ static void ExecGroup_15( void )
     opcode += f;
 
     int oc = GET_OC_3b( n );
-    int is = GET_IMMEDIATE_FS_FLAG( n );
+    int is_immediate = CHECK_IMMEDIATE_FS_FLAG( n );
 
     switch ( oc ) {
         case 0x0: /* DAT0=A */
-            if ( is )
+            if ( is_immediate )
                 WriteDATImm( cpu.d[ 0 ], cpu.reg[ A ], f );
             else
                 WriteDAT( cpu.d[ 0 ], cpu.reg[ A ], f );
             break;
         case 0x1: /* DAT1=A */
-            if ( is )
+            if ( is_immediate )
                 WriteDATImm( cpu.d[ 1 ], cpu.reg[ A ], f );
             else
                 WriteDAT( cpu.d[ 1 ], cpu.reg[ A ], f );
             break;
         case 0x2: /* A=DAT0 */
-            if ( is )
+            if ( is_immediate )
                 ReadDATImm( cpu.reg[ A ], cpu.d[ 0 ], f );
             else
                 ReadDAT( cpu.reg[ A ], cpu.d[ 0 ], f );
             break;
         case 0x3: /* A=DAT1 */
-            if ( is )
+            if ( is_immediate )
                 ReadDATImm( cpu.reg[ A ], cpu.d[ 1 ], f );
             else
                 ReadDAT( cpu.reg[ A ], cpu.d[ 1 ], f );
             break;
         case 0x4: /* DAT0=C */
-            if ( is )
+            if ( is_immediate )
                 WriteDATImm( cpu.d[ 0 ], cpu.reg[ C ], f );
             else
                 WriteDAT( cpu.d[ 0 ], cpu.reg[ C ], f );
             break;
         case 0x5: /* DAT1=C */
-            if ( is )
+            if ( is_immediate )
                 WriteDATImm( cpu.d[ 1 ], cpu.reg[ C ], f );
             else
                 WriteDAT( cpu.d[ 1 ], cpu.reg[ C ], f );
             break;
         case 0x6: /* C=DAT0 */
-            if ( is )
+            if ( is_immediate )
                 ReadDATImm( cpu.reg[ C ], cpu.d[ 0 ], f );
             else
                 ReadDAT( cpu.reg[ C ], cpu.d[ 0 ], f );
             break;
         case 0x7: /* C=DAT1 */
-            if ( is )
+            if ( is_immediate )
                 ReadDATImm( cpu.reg[ C ], cpu.d[ 1 ], f );
             else
                 ReadDAT( cpu.reg[ C ], cpu.d[ 1 ], f );
@@ -1625,7 +1625,7 @@ static void ExecGroup_1( void )
     opcode *= 0x10;
     opcode += n;
 
-    int rn, ac;
+    int rn, c_or_a;
     Address ta;
 
     switch ( n ) {
@@ -1635,9 +1635,9 @@ static void ExecGroup_1( void )
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
-            ac = GET_AC( n );
+            c_or_a = CHECK_FLAG_C_OR_A( n );
 
-            CopyRR( cpu.reg_r[ rn ], ( ac ? cpu.reg[ C ] : cpu.reg[ A ] ), FS_W );
+            CopyRR( cpu.reg_r[ rn ], ( c_or_a ? cpu.reg[ C ] : cpu.reg[ A ] ), FS_W );
             break;
         case 0x1: /* A/C=Rn */
             n = FetchNibble( cpu.pc );
@@ -1645,9 +1645,9 @@ static void ExecGroup_1( void )
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
-            ac = GET_AC( n );
+            c_or_a = CHECK_FLAG_C_OR_A( n );
 
-            CopyRR( ( ac ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], FS_W );
+            CopyRR( ( c_or_a ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], FS_W );
             break;
         case 0x2: /* ARnEX, CRnEX */
             n = FetchNibble( cpu.pc );
@@ -1655,9 +1655,9 @@ static void ExecGroup_1( void )
             opcode *= 0x10;
             opcode += n;
             rn = GET_Rn( n );
-            ac = GET_AC( n );
+            c_or_a = CHECK_FLAG_C_OR_A( n );
 
-            ExchRR( ( ac ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], FS_W );
+            ExchRR( ( c_or_a ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], FS_W );
             break;
         case 0x3:
             ExecGroup_13();
@@ -1908,7 +1908,7 @@ static void ExecGroup_80( void )
 static void ExecSpecialGroup_81( int rp )
 {
     Nibble n, f, m;
-    int rn, ac;
+    int rn, c_or_a;
 
     switch ( rp ) {
         case 0x0: /* r=r+-CON fs, d */
@@ -1926,7 +1926,7 @@ static void ExecSpecialGroup_81( int rp )
             opcode += m;
             rp = GET_RP( n );
 
-            if ( GET_AS( n ) ) /* Subtract */
+            if ( CHECK_FLAG_SUBTRACT_OR_ADD( n ) ) /* Subtract */
                 SubRImm( reg_pair_0[ rp ], f, m );
             else /* Add */
                 AddRImm( reg_pair_0[ rp ], f, m );
@@ -1957,19 +1957,19 @@ static void ExecSpecialGroup_81( int rp )
             opcode *= 0x10;
             opcode += m;
             rn = GET_Rn( m );
-            ac = GET_AC( m );
+            c_or_a = CHECK_FLAG_C_OR_A( m );
 
             switch ( n ) {
                 case 0x0: /* Rn=r.F fs */
-                    CopyRR( cpu.reg_r[ rn ], ( ac ? cpu.reg[ C ] : cpu.reg[ A ] ), f );
+                    CopyRR( cpu.reg_r[ rn ], ( c_or_a ? cpu.reg[ C ] : cpu.reg[ A ] ), f );
                     break;
 
                 case 0x1: /* r=R0.F fs */
-                    CopyRR( ( ac ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], f );
+                    CopyRR( ( c_or_a ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], f );
                     break;
 
                 case 0x2: /* rRnEX.F fs */
-                    ExchRR( ( ac ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], f );
+                    ExchRR( ( c_or_a ? cpu.reg[ C ] : cpu.reg[ A ] ), cpu.reg_r[ rn ], f );
                     break;
 
                 default:
@@ -2522,7 +2522,6 @@ void OneStep( void )
         char dis_opcode[ DISASSEMBLE_OB_SIZE ];
         Disassemble( opcode, dis_opcode );
 
-        // fprintf( stderr, "opcode: %x (%i) => %s\n", opcode, OPCODE_LENGTH( opcode ), dis_opcode );
         fprintf( stderr, "%s\n", dis_opcode );
     }
 }
