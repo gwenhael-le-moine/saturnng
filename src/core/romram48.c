@@ -119,13 +119,14 @@ void RomInit48( void )
         FATAL( MOD_CHF_MODULE_ID, MOD_F_MOD_STATUS_ALLOC, sizeof( struct ModStatus_48 ) )
     }
 
-    bool err = ReadNibblesFromFile( config.rom_path, N_ROM_SIZE_48, mod_status_48->rom );
-    if ( err ) {
+    bool err = true;
+    if ( config.model == MODEL_48GX )
+        err = ReadNibblesFromFile( config.rom_path, N_ROM_SIZE_48, mod_status_48->rom );
+    if ( config.model == MODEL_48SX )
         // To load 48SX ROM, try again with half the size this time.
         err = ReadNibblesFromFile( config.rom_path, N_ROM_SIZE_48 / 2, mod_status_48->rom );
-        if ( err )
-            FATAL0( MOD_CHF_MODULE_ID, MOD_F_ROM_INIT )
-    }
+    if ( err )
+        FATAL0( MOD_CHF_MODULE_ID, MOD_F_ROM_INIT )
 }
 
 /* .+
