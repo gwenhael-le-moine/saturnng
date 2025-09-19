@@ -51,8 +51,6 @@ The scripts will take care of creating `$XDG_CONFIG_HOME/saturn<model>/`, downlo
 ## Known bugs
 - some bugs in emulation:
   - 48gx: ON-D A can hang because it tries to write data in ROM space
-  - 48gx: VERSION spouts messages in the console
-  - 49g: spouts messages in the console every second
 
 ## Todo
 - fix emulation bugs
