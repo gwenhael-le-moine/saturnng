@@ -221,7 +221,7 @@ typedef Nibble ( *ModReadFunction )( Address rel_addr );
 
 typedef void ( *ModWriteFunction )( Address rel_addr, Nibble data );
 
-enum ModConfig { MOD_UNCONFIGURED, MOD_SIZE_CONFIGURED, MOD_CONFIGURED };
+typedef enum { MOD_UNCONFIGURED, MOD_SIZE_CONFIGURED, MOD_CONFIGURED } mod_config_t;
 
 struct ModDescriptionEntry {
     const char* name;
@@ -233,7 +233,7 @@ struct ModDescriptionEntry {
     ModSaveFunction save;
     ModReadFunction read;
     ModWriteFunction write;
-    enum ModConfig r_config;
+    mod_config_t r_config;
     Address r_abs_base_addr;
     Address r_size;
 
@@ -260,7 +260,7 @@ typedef const struct ModDescriptionEntry ModDescription[ N_MOD ];
                 It's valid only if the module is currently configured.
 */
 struct ModMapInfoEntry {
-    enum ModConfig config;
+    mod_config_t config;
     Address abs_base_addr;
     Address size;
 };

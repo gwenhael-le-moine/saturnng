@@ -308,7 +308,7 @@ static void RebuildPageTable( int lo, int hi )
                                                            ? page_addr
                                                            : page_addr - MOD_MAP.map_info[ winner ].abs_base_addr;
             MOD_MAP.page_table[ page ].read = mod_description[ winner ].read;
-            // FIXME: 48gx VERSION bug: This is the place where the RomWrite fonction is set. Should we avoid ROM being able to win?
+            // FIXME: 48gx bug: This is the place where the RomWrite fonction is set. Should we avoid ROM being able to win?
             MOD_MAP.page_table[ page ].write = mod_description[ winner ].write;
         }
     }
@@ -342,10 +342,12 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
 
     for ( i = 0; i < N_MOD_CACHE_ENTRIES; i++ )
         d->cache.config[ i ] = empty;
+
     d->cache.victim = 0;
 
     for ( i = 0; i < N_MOD; i++ )
         d->cache.unconfig[ i ] = ( struct ModMap* )NULL;
+
     d->cache.config_point = 0;
     d->cache.ref_count = 0;
 
@@ -1129,8 +1131,9 @@ void ModConfig( Address config_info )
 
     if ( mod == N_MOD ) {
         /* All modules are configured - Signal a warning */
-        // FIXME: 48gx bugs here when running VERSION
-        WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_CONFIG, config_info )
+        // 48gx bugs here when running VERSION
+        // both x48ng and hpemung silently ignore this
+        INFO( MOD_CHF_MODULE_ID, MOD_W_BAD_CONFIG, config_info )
         return;
     }
 
@@ -1208,7 +1211,8 @@ void ModUnconfig( Address unconfig_info )
         /* The module is automatically configured after reset; it can never
            be unconfigured.
          */
-        WARNING( MOD_CHF_MODULE_ID, MOD_W_BAD_UNCONFIG, unconfig_info )
+        // both x48ng and hpemung silently ignore this
+        INFO( MOD_CHF_MODULE_ID, MOD_W_BAD_UNCONFIG, unconfig_info )
         return;
     }
 

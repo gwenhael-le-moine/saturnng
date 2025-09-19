@@ -193,7 +193,7 @@ Nibble RomRead48( Address rel_address ) { return mod_status_48->rom[ rel_address
 .- */
 void RomWrite48( Address rel_address, Nibble datum )
 {
-    // FIXME: 48gx: saturn48gx-Mid <12>d (src/romram.c,235)-E-Write into ROM A[1B632] D[9]
+    // FIXME: 48gx: saturn48gx-Mid <12>d (src/core/romram48.c,197 */)-E-Write into ROM A[1B632] D[9]
     ERROR( MOD_CHF_MODULE_ID, MOD_E_ROM_WRITE, rel_address, datum )
 }
 
