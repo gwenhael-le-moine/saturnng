@@ -188,10 +188,18 @@ typedef enum {
 #  define D_S_MASK ( ( Address )0xF0000 )
 #  define RSTK_PTR_MASK 0x7
 
+#  define HST_MP_MASK 0x08
+#  define HST_SR_MASK 0x04
+#  define HST_SB_MASK 0x02
+#  define HST_XM_MASK 0x01
+
 typedef int16 ProgramStatusRegister;
 typedef Nibble DataRegister[ NIBBLE_PER_REGISTER ];
 
 typedef enum { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI } int_request_t;
+#  define INNER_LOOP_MAX 26
+#  define INNER_LOOP_MED 13
+#  define INNER_LOOP_MIN 2
 
 typedef struct {
     DataRegister reg[ N_WORKING_REGISTER ];
@@ -205,20 +213,16 @@ typedef struct {
     ProgramStatusRegister st;
 
     Nibble hst;
-#  define HST_MP_MASK 0x08
-#  define HST_SR_MASK 0x04
-#  define HST_SB_MASK 0x02
-#  define HST_XM_MASK 0x01
 
     Address rstk[ RETURN_STACK_SIZE ];
     int rstk_ptr;
 
     int fs_idx_lo[ N_FS ];
     int fs_idx_hi[ N_FS ];
+
     bool hexmode;              /* DEC/HEX mode */
     bool carry;                /* Carry bit */
     bool shutdn;               /* SHUTDN flag */
-    bool halt;                 /* Halt flag */
     bool int_enable;           /* Int. enable */
     bool int_service;          /* Int. service */
     int_request_t int_pending; /* Pending interrupt request */
@@ -230,9 +234,6 @@ typedef struct {
     */
     int inner_loop;     /* Inner loop multiplier */
     int inner_loop_max; /* Max value of inner_loop */
-#  define INNER_LOOP_MAX 26
-#  define INNER_LOOP_MED 13
-#  define INNER_LOOP_MIN 2
 } Cpu;
 
 enum RegisterNames { A, B, C, D };
@@ -266,16 +267,12 @@ typedef enum {
     CPU_I_TIMER_EXP = 115,       /* 3.1: Timer %s expiration %d ms */
     CPU_I_IDLE_X_LOOP = 116,     /* 3.1: Start idle loop, t/out %d ms */
     CPU_I_ELAPSED = 117,         /* 3.1: Spent %d us in idle loop */
-    CPU_I_HALT = 118,            /* 3.13: CPU halted */
-    CPU_I_RUN = 119,             /* 3.13: CPU running */
     CPU_W_RESETTING = 201,       /* Resetting CPU */
     CPU_W_BAD_MONITOR_CMD = 202, /* Bad monitor command: %s */
     CPU_E_BAD_OPCODE = 301,      /* Bad opc. pc=%x, value=%x */
     CPU_E_SAVE = 302,            /* Can't save CPU status */
-    CPU_E_NO_HALT = 303,         /* 3.13: Halt/Run not allowed */
     CPU_E_BAD_OPCODE2 = 304,     /* Bad opc. pc=%x, value=%x */
     CPU_F_INTERR = 401,          /* Internal error %s */
-    CPU_F_BAD_SHUTDN = 402,      /* Unexpected CPU shutdown */
 } cpu_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
@@ -288,9 +285,6 @@ void CpuSave( void );
 void OneStep( void );
 void CpuIntRequest( int_request_t ireq );
 void CpuWake( void );
-int CpuHaltRequest( void );  /* 3.13 */
-int CpuRunRequest( void );   /* 3.13 */
-bool CpuHaltAllowed( void ); /* 3.13 */
 
 void set_speed( unsigned int new_speed_mhz );
 

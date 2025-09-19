@@ -2247,7 +2247,7 @@ void CpuReset( void )
     cpu.int_pending = false;
 
     /* The CPU is running */
-    cpu.shutdn = cpu.halt = false;
+    cpu.shutdn = false;
 
     /* Set inner_loop and inner_loop_max to default values */
     cpu.inner_loop = INNER_LOOP_MED;
@@ -2286,7 +2286,7 @@ void CpuInit( void )
     }
 
     /* The CPU is running */
-    cpu.shutdn = cpu.halt = false;
+    cpu.shutdn = false;
 }
 
 /* .+
@@ -2393,7 +2393,7 @@ void CpuIntRequest( int_request_t ireq )
 .- */
 void CpuWake( void )
 {
-    if ( cpu.shutdn && !cpu.halt ) {
+    if ( cpu.shutdn ) {
         DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_WAKE )
 
         /* Clear SHUTDN flag */
@@ -2405,132 +2405,6 @@ void CpuWake( void )
          */
     }
 }
-
-/* .+
-
-.creation     : 2-Nov-2000
-.description  :
-  This function makes an halt request to the CPU emulator.
-
-  The halt condition is similar to the shutdn condition, and
-  actually forces a shutdn, but it cannot be broken by CpuWake();
-  only CpuRunRequest() can do this.  When the CPU is halted:
-
-  - instruction execution is suspended
-  - IRQ and NMI service is delayed until the halt condition is broken
-  - timers are not updated (they will be resynchronized later)
-  - GUI events are handled
-
-  Multiple calls to CpuHaltRequest()/CpuRunRequest() can be nested;
-  the CPU remains halted as long as there are more than zero pending
-  halt requests.
-
-  CpuHaltRequest() relies on the presence of a suitable handler
-  of the CPU_I_SHUTDN condition; this is currently true only
-  if CpuHaltRequest() is invoked when the emulator loop is active.
-
-  Notice that setting the CPU_SPIN_SHUTDN build-time option
-  in config.h disables all halt requests; both CpuHaltRequest()
-  and CpuRunRequest() return -1 in this case.
-
-  The function returns the updated number of pending halt requests,
-  or -1 if halt/run requests are disabled; in the latter case,
-  the CPU_E_NO_HALT condition is generated and signalled, too.
-
-  The function may never return to the caller if the CPU_SPIN_SHUTDN
-  is handled locally by the handler, or if an unwind occurs.
-
-.call         :
-                ph = CpuHaltRequest();
-.input        :
-                void
-.output       :
-                int ph, updated number of pending halt requests, or
-                        -1 if halt/run requests are disabled
-.status_codes :
-                CPU_I_CALLED
-                CPU_I_HALT
-                CPU_E_NO_HALT
-.notes        :
-  3.13, 2-Nov-2000, creation
-
-*/
-int CpuHaltRequest( void )
-{
-    if ( !cpu.halt ) {
-        DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_HALT )
-
-        cpu.halt = true;
-        /* CPU must actually be halted: call ExecSHUTDN() to simulate
-           the execution of a regular SHUTDN instruction.
-
-           CpuWake() will check .halt before clearing this condition.
-        */
-        ExecSHUTDN();
-    }
-
-    return cpu.halt;
-}
-
-/* .+
-
-.creation     : 2-Nov-2000
-.description  :
-  This function undoes exactly one CpuHaltRequest(); it has no effect
-  if the CPU is not halted.  See CpuHaltRequest() for more information.
-
-  The function returns the updated number of pending halt requests,
-  or -1 if halt/run requests are disabled; in the latter case,
-  the CPU_W_NO_HALT condition is generated, but not signalled, too.
-
-.call         :
-                ph = CpuRunRequest();
-.input        :
-                void
-.output       :
-                int ph, updated number of pending halt requests, or
-                        -1 if halt requests are disabled
-.status_codes :
-                CPU_I_CALLED
-                CPU_I_RUN
-                CPU_E_NO_HALT
-.notes        :
-  3.13, 2-Nov-2000, creation
-
-*/
-int CpuRunRequest( void )
-{
-    if ( cpu.halt ) {
-        DEBUG0( CPU_CHF_MODULE_ID, DEBUG_C_INT, CPU_I_RUN )
-
-        cpu.halt = false;
-        /* CPU must actually be awoken: call CpuWake() */
-        CpuWake();
-    }
-
-    return cpu.halt;
-}
-
-/* .+
-
-.creation     : 7-Nov-2000
-.description  :
-  This function return a non-zero value if CpuHaltRequest()
-  is allowed, zero otherwise.
-
-.call         :
-                s = CpuHaltRequest();
-.input        :
-                void
-.output       :
-                int s, non-zero if CpuHaltRequest() is allowed, 0 otherwise
-.status_codes :
-                CPU_I_CALLED
-.notes        :
-  3.13, 7-Nov-2000, creation
-
-*/
-bool CpuHaltAllowed( void ) { return true; }
 
 /* .+
 
