@@ -66,6 +66,7 @@ typedef int int20;
 typedef int int32;
 
 typedef int4 Nibble;
+typedef int8 Byte;
 typedef int20 Address;
 typedef int12 OutputRegister;
 typedef int16 InputRegister;

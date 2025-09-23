@@ -194,9 +194,9 @@
 /* Hello, I am a RingBuffer... 8-} */
 struct RingBuffer {
     int n;                /* Number of full slots: 0 <= n <= RB_SIZE */
-    int8 *rp, *wp;        /* Read/Write pointers */
-    int8* ep;             /* Pointer to the end of .data[] */
-    int8 data[ RB_SIZE ]; /* Buffer storage */
+    Byte *rp, *wp;        /* Read/Write pointers */
+    Byte* ep;             /* Pointer to the end of .data[] */
+    Byte data[ RB_SIZE ]; /* Buffer storage */
 };
 
 /* Basic macros:
@@ -818,7 +818,7 @@ Nibble Serial_TCS_Read( void )
 .input        :
                 void
 .output       :
-                int8 d, current value of emulated register
+                Byte d, current value of emulated register
 .status_codes :
                 SERIAL_I_CALLED
                 SERIAL_I_RBR
@@ -829,9 +829,9 @@ Nibble Serial_TCS_Read( void )
     - removed warning message
       when reading from an empty RRB.
 .- */
-int8 Serial_RBR_Read( void )
+Byte Serial_RBR_Read( void )
 {
-    int8 rx;
+    Byte rx;
 
     /* Pull one character from rbr, if not empty */
     if ( COUNT_FULL_SLOTS( rrb ) > 0 ) {
@@ -839,7 +839,7 @@ int8 Serial_RBR_Read( void )
     } else {
         /* rrb is empty */
 
-        rx = ( int8 )0xFF;
+        rx = ( Byte )0xFF;
     }
 
     /* Update receiver status */
@@ -994,7 +994,7 @@ void Serial_CRER_Write( Nibble n )
 .call         :
                 Serial_TBR_Write(d);
 .input        :
-                int8 d, value to be written into the emulated register
+                Byte d, value to be written into the emulated register
 .output       :
                 void
 .status_codes :
@@ -1005,7 +1005,7 @@ void Serial_CRER_Write( Nibble n )
   2.5, 13-Sep-2000, creation
 
 .- */
-void Serial_TBR_Write( int8 d )
+void Serial_TBR_Write( Byte d )
 {
 
     DEBUG( SERIAL_CHF_MODULE_ID, DEBUG_C_SERIAL, SERIAL_I_TBR, d )

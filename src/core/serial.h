@@ -121,14 +121,14 @@ const char* SerialPtyName( void );
 Nibble Serial_IOC_Read( void );
 Nibble Serial_RCS_Read( void );
 Nibble Serial_TCS_Read( void );
-int8 Serial_RBR_Read( void );
+Byte Serial_RBR_Read( void );
 
 /* Register write */
 void Serial_IOC_Write( Nibble n );
 void Serial_RCS_Write( Nibble n );
 void Serial_TCS_Write( Nibble n );
 void Serial_CRER_Write( Nibble n );
-void Serial_TBR_Write( int8 d );
+void Serial_TBR_Write( Byte d );
 
 /* Event handling */
 void HandleSerial( void );

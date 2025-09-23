@@ -465,8 +465,8 @@ struct ModHdw {
     } accel;
 
     /* 2.5: Serial port buffer registers */
-    int8 serial_rbr;
-    int8 serial_tbr;
+    Byte serial_rbr;
+    Byte serial_tbr;
 
     /* Misc */
     int16 crc; /* CRC */

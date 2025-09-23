@@ -402,11 +402,11 @@ void HdwWrite( Address rel_address, Nibble data )
            when the MS nibble is written; serial_tbr buffers the LS nibble.
         */
         case 0x16:
-            mod_status.hdw.serial_tbr = ( mod_status.hdw.serial_tbr & 0xF0 ) | ( int8 )data;
+            mod_status.hdw.serial_tbr = ( mod_status.hdw.serial_tbr & 0xF0 ) | ( Byte )data;
             break;
 
         case 0x17:
-            mod_status.hdw.serial_tbr = ( mod_status.hdw.serial_tbr & 0x0F ) | ( ( int8 )data << 4 );
+            mod_status.hdw.serial_tbr = ( mod_status.hdw.serial_tbr & 0x0F ) | ( ( Byte )data << 4 );
             Serial_TBR_Write( mod_status.hdw.serial_tbr );
             break;
 
