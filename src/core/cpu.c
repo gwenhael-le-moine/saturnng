@@ -56,7 +56,7 @@
     needed because the HP firmware uses an active loop instead of a
     timer to determine the keyboard automatic repeat rate.
 
-  - Changed initial value of cpu.inner_loop_max after a CPU reset,
+  - Changed initial value of inner_loop_max after a CPU reset,
     to be as documented (that is, maximum speed).
 
   - During CPU initialization, both shutdn and halt flags are now
@@ -115,7 +115,9 @@
 
 int opcode;
 
-Cpu cpu;
+cpu_t cpu;
+int inner_loop;     /* Inner loop multiplier */
+int inner_loop_max; /* Max value of inner_loop */
 
 /*---------------------------------------------------------------------------
         Private variables
@@ -193,8 +195,8 @@ static void copy_in_to_( Nibble* r )
        the PC as appropriate.
 
        The number of repetions depends linearly, with gain CPU_SLOW_IN,
-       from the current value of cpu.inner_loop:
-       cpu.inner_loop==INNER_LOOP_MAX corresponds to the nominal
+       from the current value of inner_loop:
+       inner_loop==INNER_LOOP_MAX corresponds to the nominal
        CPU speed of 4MHz and to a repetition rate of 1 (instructions are
        executed once as usual).
     */
@@ -209,7 +211,7 @@ static void copy_in_to_( Nibble* r )
     }
 
     /* Counter expired; reset counter and execute the instruction */
-    count_down = ( ( cpu.inner_loop + ( INNER_LOOP_MAX / 2 ) ) / INNER_LOOP_MAX ) * CPU_SLOW_IN;
+    count_down = ( ( inner_loop + ( INNER_LOOP_MAX / 2 ) ) / INNER_LOOP_MAX ) * CPU_SLOW_IN;
 #endif
     cpu.in = KeybIN( cpu.out );
 
@@ -2173,9 +2175,9 @@ static void ExecGroup_8( void )
     - cpu.rstk_ptr and .reset_req were not reset; this gave troubles
       when attempting to override a corrupt status with CpuReset().
   3.13, 2-Nov-2000, update
-    - cpu.halt and cpu.inner_loop_max need reset
+    - cpu.halt and inner_loop_max need reset
   3.14, 10-Nov-2000, bug fix
-    - cpu.inner_loop_max must be reset to 0, because the default
+    - inner_loop_max must be reset to 0, because the default
       emulator speed is maximum speed.
 .- */
 void CpuReset( void )
@@ -2247,8 +2249,8 @@ void CpuReset( void )
     cpu.shutdn = false;
 
     /* Set inner_loop and inner_loop_max to default values */
-    cpu.inner_loop = INNER_LOOP_MED;
-    cpu.inner_loop_max = 0;
+    inner_loop = INNER_LOOP_MED;
+    inner_loop_max = 0;
 }
 
 /* .+
@@ -2530,5 +2532,5 @@ void set_speed( unsigned int new_speed_mhz )
        because new_speed is >=0, has an architectural upper limit of 2^20,
        and int are at least 2^31.
      */
-    cpu.inner_loop_max = ( new_speed_mhz * INNER_LOOP_MAX ) / 4;
+    inner_loop_max = ( new_speed_mhz * INNER_LOOP_MAX ) / 4;
 }

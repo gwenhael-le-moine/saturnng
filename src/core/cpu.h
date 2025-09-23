@@ -206,6 +206,7 @@ typedef struct {
 
     Nibble p;
     Address pc;
+
     InputRegister in;
     OutputRegister out;
     ProgramStatusRegister st;
@@ -225,14 +226,8 @@ typedef struct {
     bool int_service;          /* Int. service */
     int_request_t int_pending; /* Pending interrupt request */
 
-    /* 3.13: inner_loop_max gives the upper limit of the CPU speed if the
-       compile-time option REAL_CPU_SPEED is defined.  When the CPU is reset
-       it has the default value INNER_LOOP_MAX, that should be close to the
-       real cpu speed (~4MHz).
-    */
-    int inner_loop;     /* Inner loop multiplier */
-    int inner_loop_max; /* Max value of inner_loop */
-} Cpu;
+    unsigned int cycles;
+} cpu_t;
 
 enum RegisterNames { A, B, C, D };
 
@@ -240,7 +235,15 @@ enum RegisterNames { A, B, C, D };
         Global variables
   ---------------------------------------------------------------------------*/
 
-extern Cpu cpu;
+extern cpu_t cpu;
+
+/* 3.13: inner_loop_max gives the upper limit of the CPU speed if the
+   compile-time option REAL_CPU_SPEED is defined.  When the CPU is reset
+   it has the default value INNER_LOOP_MAX, that should be close to the
+   real cpu speed (~4MHz).
+ */
+extern int inner_loop;     /* Inner loop multiplier */
+extern int inner_loop_max; /* Max value of inner_loop */
 
 extern int opcode;
 

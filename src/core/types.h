@@ -58,7 +58,6 @@
   ---------------------------------------------------------------------------*/
 
 /* Machine-dependent */
-typedef char int1;
 typedef char int4;
 typedef char int8;
 typedef int int12;
@@ -66,7 +65,6 @@ typedef int int16;
 typedef int int20;
 typedef int int32;
 
-/* typedef int1 Bit; */
 typedef int4 Nibble;
 typedef int20 Address;
 typedef int12 OutputRegister;

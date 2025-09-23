@@ -149,7 +149,7 @@ static void EmulatorLoop( void )
 {
     struct timeval old_t, cur_t;
     int ela;
-    int inner_loop = cpu.inner_loop;
+    int tmp_inner_loop = inner_loop;
     int t1_count = 0;
 
     /* Ignore past interrupt requests */
@@ -162,7 +162,7 @@ static void EmulatorLoop( void )
         /* T1 loop */
         for ( int j = 0; j < T1_MULTIPLIER; j++ ) {
             /* Inner loop */
-            for ( int i = 0; i < inner_loop; i++ )
+            for ( int i = 0; i < tmp_inner_loop; i++ )
                 OneStep();
 
             /* T2 update */
@@ -215,25 +215,25 @@ static void EmulatorLoop( void )
 
         ela = ( cur_t.tv_sec - old_t.tv_sec ) * 1000000 + ( cur_t.tv_usec - old_t.tv_usec );
 
-        inner_loop = inner_loop * T1_INTERVAL / ela;
-        if ( inner_loop < INNER_LOOP_MIN )
-            inner_loop = INNER_LOOP_MIN;
+        tmp_inner_loop = tmp_inner_loop * T1_INTERVAL / ela;
+        if ( tmp_inner_loop < INNER_LOOP_MIN )
+            tmp_inner_loop = INNER_LOOP_MIN;
 
         /* 3.13: Force an upper limit to the CPU speed if the run-time option
-           config.throttle is defined: inner_loop is limited to
-           cpu.inner_loop_max
+           config.throttle is defined: tmp_inner_loop is limited to
+           inner_loop_max
            and the excess time, if any, is spent sleeping; usleep() is
            BSD 4.3-specific, but most recent systems should offer it anyway,
            well, I hope.
-           The special value cpu.inner_loop_max==0 gives maximum speed.
+           The special value inner_loop_max==0 gives maximum speed.
         */
-        if ( config.throttle && cpu.inner_loop_max != 0 && inner_loop >= cpu.inner_loop_max ) {
-            inner_loop = cpu.inner_loop_max;
+        if ( config.throttle && inner_loop_max != 0 && tmp_inner_loop >= inner_loop_max ) {
+            tmp_inner_loop = inner_loop_max;
             if ( T1_INTERVAL > ela )
                 usleep( T1_INTERVAL - ela );
         }
 
-        cpu.inner_loop = inner_loop;
+        inner_loop = tmp_inner_loop;
         old_t = cur_t;
     }
 }
