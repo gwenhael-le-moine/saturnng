@@ -61,9 +61,9 @@
   *** empty log message ***
 .- */
 
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "hdw.h"
-#include "modules.h"
 #include "romram48.h"
 #include "romram49.h"
 
@@ -96,7 +96,7 @@ static const ModDescription hw49_description = {
 
 .creation     : 21-Sep-2000
 .description  :
-  This function selects and registers (invoking ModRegisterDescription())
+  This function selects and registers (invoking bus_set_description())
   a module description table depending on the hardware configuration
   string passed as argument.
 
@@ -118,12 +118,12 @@ void ModSelectDescription( int model )
     switch ( model ) {
         case MODEL_48SX:
         case MODEL_48GX:
-            ModRegisterDescription( hw48_description );
+            bus_set_description( hw48_description );
             break;
         case MODEL_40G:
         case MODEL_49G:
         case MODEL_50G:
-            ModRegisterDescription( hw49_description );
+            bus_set_description( hw49_description );
             break;
         default:
             ERROR( MOD_CHF_MODULE_ID, MOD_E_NO_MATCH, "Unknown model" )

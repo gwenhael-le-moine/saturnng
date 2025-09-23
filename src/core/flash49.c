@@ -59,9 +59,9 @@
 .- */
 
 #include "flash49.h"
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "cpu.h"
-#include "modules.h"
 #include "romram49.h"
 
 /*---------------------------------------------------------------------------

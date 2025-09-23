@@ -61,11 +61,11 @@
 
 #include "../options.h"
 
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "cpu.h"
 #include "disassembler.h"
 #include "emulator.h"
-#include "modules.h"
 #include "monitor.h"
 
 /*---------------------------------------------------------------------------
@@ -251,7 +251,7 @@ static int w( void )
     if ( ReadHexAddress( &addr ) )
         return FAILED;
     while ( ReadHexDatum( &n ) == OK ) {
-        WriteNibble( addr, n );
+        bus_write_nibble( addr, n );
         addr++;
     }
     return OK;
@@ -271,7 +271,7 @@ static int r( void )
         count = 1;
 
     while ( count-- > 0 ) {
-        printf( "A_%05X\t%X\n", addr, ( int )FetchNibble( addr ) );
+        printf( "A_%05X\t%X\n", addr, ( int )bus_fetch_nibble( addr ) );
         addr++;
     }
 
@@ -322,7 +322,7 @@ static int reset_cpu( void )
 /* Save & Exit */
 static int mon_exit( void )
 {
-    ModSave();
+    bus_save();
     CpuSave();
     exit( EXIT_SUCCESS );
 

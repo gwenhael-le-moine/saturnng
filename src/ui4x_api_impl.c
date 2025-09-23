@@ -2,9 +2,9 @@
 
 #include "options.h"
 
+#include "core/bus.h"
 #include "core/emulator.h"
 #include "core/keyboard.h"
-#include "core/modules.h"
 #include "core/serial.h"
 
 #include "ui4x/api.h"
@@ -192,7 +192,7 @@ void get_lcd_buffer( int* target )
     for ( y = 0; y <= mod_status.hdw.lcd_vlc; y++ ) {
         /* Scan columns */
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
-            v = FetchNibble( addr++ );
+            v = bus_fetch_nibble( addr++ );
 
             // split nibble
             for ( int nx = 0; nx < 4; nx++ )
@@ -207,7 +207,7 @@ void get_lcd_buffer( int* target )
     for ( ; y < LCD_HEIGHT; y++ ) {
         /* Scan columns */
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
-            v = FetchNibble( addr++ );
+            v = bus_fetch_nibble( addr++ );
 
             // split nibble
             for ( int nx = 0; nx < 4; nx++ )

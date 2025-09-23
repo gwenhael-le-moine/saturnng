@@ -83,10 +83,10 @@
 #include <string.h>
 #include <unistd.h> /* access() */
 
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "disk_io.h"
 #include "flash49.h"
-#include "modules.h"
 
 #define FLASH_VIEW_SELECTOR 0x40000
 #define FLASH_BANK_MASK 0x3FFFF
@@ -136,7 +136,7 @@ void RomInit49( void )
         FATAL( MOD_CHF_MODULE_ID, MOD_F_MOD_STATUS_ALLOC, sizeof( struct ModStatus_49 ) )
     }
 
-    bool err = ReadNibblesFromFile( config.rom_path, N_FLASH_SIZE_49, mod_status_49->flash );
+    bool err = bus_read_nibblesFromFile( config.rom_path, N_FLASH_SIZE_49, mod_status_49->flash );
     if ( err )
         FATAL0( MOD_CHF_MODULE_ID, MOD_F_ROM_INIT )
 }
@@ -163,7 +163,7 @@ void RomInit49( void )
 .- */
 void RomSave49( void )
 {
-    bool err = WriteNibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_path );
+    bool err = bus_write_nibblesToFile( mod_status_49->flash, N_FLASH_SIZE_49, config.rom_path );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( MOD_CHF_MODULE_ID, MOD_E_ROM_SAVE )
@@ -254,7 +254,7 @@ void RomWrite49( Address rel_address, Nibble datum )
 .- */
 void RamInit49( void )
 {
-    bool err = ReadNibblesFromFile( config.ram_path, N_RAM_SIZE_49, mod_status_49->ram );
+    bool err = bus_read_nibblesFromFile( config.ram_path, N_RAM_SIZE_49, mod_status_49->ram );
     if ( err ) {
         WARNING0( MOD_CHF_MODULE_ID, MOD_W_RAM_INIT )
 
@@ -283,7 +283,7 @@ void RamInit49( void )
 .- */
 void RamSave49( void )
 {
-    bool err = WriteNibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_path );
+    bool err = bus_write_nibblesToFile( mod_status_49->ram, N_RAM_SIZE_49, config.ram_path );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( MOD_CHF_MODULE_ID, MOD_E_RAM_SAVE )

@@ -1,5 +1,5 @@
-#ifndef _MODULES_H
-#  define _MODULES_H 1
+#ifndef _BUS_H
+#  define _BUS_H 1
 
 /* -------------------------------------------------------------------------
    saturn - A poor-man's emulator of some HP calculators
@@ -47,7 +47,7 @@
     x48 source code by Eddie C. Dost  (ecd@dressler.de)
 
 .notes        :
-  $Log: modules.h,v $
+  $Log: bus.h,v $
   Revision 4.1  2000/12/11 09:54:19  cibrario
   Public release.
 
@@ -67,7 +67,7 @@
   - added new status codes: MOD_E_NO_MATCH, MOD_F_MOD_STATUS_ALLOC,
     MOD_F_NO_DESCRIPTION
   - added prototype of new functions: ModSelectDescription(),
-    ModRegisterDescription()
+    bus_set_description()
 
   Revision 3.1  2000/09/20  14:00:40  cibrario
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
@@ -213,9 +213,9 @@
   and equal to MOD_HDW_INDEX... this is unfortunate.
 */
 
-typedef void ( *ModInitFunction )( void );
+typedef void ( *bus_initFunction )( void );
 
-typedef void ( *ModSaveFunction )( void );
+typedef void ( *bus_saveFunction )( void );
 
 typedef Nibble ( *ModReadFunction )( Address rel_addr );
 
@@ -229,8 +229,8 @@ struct ModDescriptionEntry {
     int access_prio;
 #  define MOD_MIN_ACCESS_PRIO ( -1 )
 
-    ModInitFunction init;
-    ModSaveFunction save;
+    bus_initFunction init;
+    bus_saveFunction save;
     ModReadFunction read;
     ModWriteFunction write;
     mod_config_t r_config;
@@ -506,9 +506,9 @@ typedef enum {
     MOD_I_CALLED = 101,            /* Function %s called */
     MOD_I_INITIALIZING = 102,      /* Initializing module %s */
     MOD_I_RESETTING = 103,         /* Resetting module %s */
-    MOD_I_GET_ID = 106,            /* ModGetID returning %x */
-    MOD_I_CONFIG = 107,            /* ModConfig %s %x %x completed */
-    MOD_I_UNCONFIG = 108,          /* ModUnconfig %s %x %x completed */
+    MOD_I_GET_ID = 106,            /* bus_get_id returning %x */
+    MOD_I_CONFIG = 107,            /* bus_configure %s %x %x completed */
+    MOD_I_UNCONFIG = 108,          /* bus_unconfigure %s %x %x completed */
     MOD_I_SAVING = 109,            /* Saving status of module %s */
     MOD_I_NOT_IMPLEMENTED = 110,   /* Function %s not implemented */
     MOD_I_REVISION = 111,          /* Modules revision: %s */
@@ -516,12 +516,12 @@ typedef enum {
     MOD_I_PORT_1_WP = 113,         /* 2.4: Port 1 is write protected */
     MOD_I_PORT_2_WP = 114,         /* 2.4: Port 2 is write protected */
     MOD_I_PERF_CTR = 115,          /* 2.7: Value of PerfCtr %s is %d */
-    MOD_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached ModUnconfig completed */
-    MOD_I_CACHED_CONFIG = 117,     /* 2.7: Cached ModConfig %x comp. */
+    MOD_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached bus_unconfigure completed */
+    MOD_I_CACHED_CONFIG = 117,     /* 2.7: Cached bus_configure %x comp. */
     MOD_I_UNCONFIG_L_HIT = 118,    /* 2.7: Late unconfig hit */
     MOD_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
-    MOD_W_BAD_CONFIG = 202,        /* Bad ModConfig %x ignored */
-    MOD_W_BAD_UNCONFIG = 203,      /* Bad ModUnconfig %x ignored */
+    MOD_W_BAD_CONFIG = 202,        /* Bad bus_configure %x ignored */
+    MOD_W_BAD_UNCONFIG = 203,      /* Bad bus_unconfigure %x ignored */
     MOD_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
     MOD_W_HDW_READ = 205,          /* Bad HdwRead %x */
     MOD_W_RESETTING_ALL = 206,     /* Resetting all modules */
@@ -566,23 +566,23 @@ typedef enum {
   ---------------------------------------------------------------------------*/
 
 /* Initialization */
-void ModRegisterDescription( ModDescription p );
-void ModInit( void );
-void ModSave( void );
-void ModReset( void );
+void bus_set_description( ModDescription p );
+void bus_init( void );
+void bus_save( void );
+void bus_reset( void );
 
 /* Configuration */
-Address ModGetID( void );
-void ModConfig( Address config_info );
-void ModUnconfig( Address unconfig_info );
+Address bus_get_id( void );
+void bus_configure( Address config_info );
+void bus_unconfigure( Address unconfig_info );
 
 /* Read/Write */
-Nibble FetchNibble( Address addr );
-Nibble ReadNibble( Address addr );
-void WriteNibble( Address addr, Nibble datum );
+Nibble bus_fetch_nibble( Address addr );
+Nibble bus_read_nibble( Address addr );
+void bus_write_nibble( Address addr, Nibble datum );
 
 /* Monitor */
 void monitor_ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] );
 void monitor_ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] );
 
-#endif /*!_MODULES_H*/
+#endif /*!_BUS_H*/

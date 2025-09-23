@@ -84,8 +84,8 @@ typedef enum {
         Function prototypes
   ---------------------------------------------------------------------------*/
 
-int ReadNibblesFromFile( const char* name, int size, Nibble* dest );
-int WriteNibblesToFile( const Nibble* src, int size, const char* name );
+int bus_read_nibblesFromFile( const char* name, int size, Nibble* dest );
+int bus_write_nibblesToFile( const Nibble* src, int size, const char* name );
 int ReadStructFromFile( const char* name, size_t s_size, void* s );
 int WriteStructToFile( const void* s, size_t s_size, const char* name );
 

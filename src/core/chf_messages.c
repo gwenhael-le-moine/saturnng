@@ -2,11 +2,11 @@
 
 #include "../libChf/src/Chf.h"
 
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "cpu.h"
 #include "disk_io.h"
 #include "flash49.h"
-#include "modules.h"
 #include "serial.h"
 
 ChfTable message_table[] = {
@@ -81,7 +81,7 @@ ChfTable message_table[] = {
     {MOD_CHF_MODULE_ID,     MOD_I_CALLED,            "Function [%s] called"                                                                  },
     {MOD_CHF_MODULE_ID,     MOD_I_INITIALIZING,      "Initializing module [%s]"                                                              },
     {MOD_CHF_MODULE_ID,     MOD_I_RESETTING,         "Resetting module [%s]"                                                                 },
-    {MOD_CHF_MODULE_ID,     MOD_I_GET_ID,            "ModGetID -> [%05X]"                                                                    },
+    {MOD_CHF_MODULE_ID,     MOD_I_GET_ID,            "bus_get_id -> [%05X]"                                                                  },
     {MOD_CHF_MODULE_ID,     MOD_I_CONFIG,            "CONFIG M[%s] A[%05X] S[%05X]"                                                          },
     {MOD_CHF_MODULE_ID,     MOD_I_UNCONFIG,          "UNCNFG M[%s] A[%05X] S[%05X]"                                                          },
     {MOD_CHF_MODULE_ID,     MOD_I_SAVING,            "Saving module [%s]"                                                                    },
@@ -95,8 +95,8 @@ ChfTable message_table[] = {
     {MOD_CHF_MODULE_ID,     MOD_I_CACHED_CONFIG,     "Cached CONFIG A[%05X] completed"                                                       },
     {MOD_CHF_MODULE_ID,     MOD_I_UNCONFIG_L_HIT,    "Late UNCNFG cache hit"                                                                 },
     {MOD_CHF_MODULE_ID,     MOD_I_UNCONFIG_L_MISS,   "Late UNCNFG cache miss"                                                                },
-    {MOD_CHF_MODULE_ID,     MOD_W_BAD_CONFIG,        "Bad ModConfig [%05X] ignored"                                                          },
-    {MOD_CHF_MODULE_ID,     MOD_W_BAD_UNCONFIG,      "Bad ModUnconfig [%05X] ignored"                                                        },
+    {MOD_CHF_MODULE_ID,     MOD_W_BAD_CONFIG,        "Bad bus_configure [%05X] ignored"                                                      },
+    {MOD_CHF_MODULE_ID,     MOD_W_BAD_UNCONFIG,      "Bad bus_unconfigure [%05X] ignored"                                                    },
     {MOD_CHF_MODULE_ID,     MOD_W_HDW_WRITE,         "Bad HdwWrite A[%05X] N[%01X]"                                                          },
     {MOD_CHF_MODULE_ID,     MOD_W_HDW_READ,          "Bad HdwRead A[%05X]"                                                                   },
     {MOD_CHF_MODULE_ID,     MOD_W_RESETTING_ALL,     "Resetting all modules"                                                                 },
@@ -126,7 +126,7 @@ ChfTable message_table[] = {
     {MOD_CHF_MODULE_ID,     MOD_F_CHAIN_CORRUPTED,   "Cached struct ModMap chain corrupted; freeing unlinked entry"                          },
     {MOD_CHF_MODULE_ID,     MOD_F_NO_VICTIM,         "Unable to find CONFIG cache victim after cache flush"                                  },
     {MOD_CHF_MODULE_ID,     MOD_F_MOD_STATUS_ALLOC,  "Allocation of ModStatus_xx failed ([%d]d bytes needed)"                                },
-    {MOD_CHF_MODULE_ID,     MOD_F_NO_DESCRIPTION,    "ModInit() invoked without registering a ModDescription first"                          },
+    {MOD_CHF_MODULE_ID,     MOD_F_NO_DESCRIPTION,    "bus_init() invoked without registering a ModDescription first"                         },
     {MOD_CHF_MODULE_ID,     MOD_M_NOT_MAPPED,        "A[%05X] -> *Not Mapped*"                                                               },
     {MOD_CHF_MODULE_ID,     MOD_M_MAPPED,            "A[%05X] -> M[%s] R[%05X]"                                                              },
     {MOD_CHF_MODULE_ID,     MOD_M_MAP_TABLE_TITLE,   "Device\t\t\tAddress\tSize\tStatus"                                                     },

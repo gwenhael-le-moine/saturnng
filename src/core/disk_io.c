@@ -54,9 +54,9 @@ Public release.
 #include <stdlib.h>
 #include <string.h>
 
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "disk_io.h"
-#include "modules.h"
 
 /*---------------------------------------------------------------------------
         Private functions: action routines
@@ -96,7 +96,7 @@ and stores them into main memory starting from 'dest'. It returns to the
 caller a status code.
 
 .call         :
-st = ReadNibbledFromFile(name, size, dest);
+st = bus_read_nibbledFromFile(name, size, dest);
 .input        :
 const char *name, file name
 int size, size of the file (nibbles, NOT bytes)
@@ -111,7 +111,7 @@ DISK_IO_E_GETC
 1.1, 11-Feb-1998, creation
 
 .- */
-int ReadNibblesFromFile( const char* name, int size, Nibble* dest )
+int bus_read_nibblesFromFile( const char* name, int size, Nibble* dest )
 {
     FILE* f = fopen( name, "rb" );
 
@@ -153,7 +153,7 @@ This function writes 'size' nibbles taken from 'src' into the file 'name'.
 It returns to the caller a status code
 
 .call         :
-st = WriteNibblesToFile(src, size, name);
+st = bus_write_nibblesToFile(src, size, name);
 .input        :
 const Nibble *src, pointer to data to be written
 int size, # of nibble to write
@@ -169,7 +169,7 @@ DISK_IO_E_CLOSE
 1.1, 11-Feb-1998, creation
 
 .- */
-int WriteNibblesToFile( const Nibble* src, int size, const char* name )
+int bus_write_nibblesToFile( const Nibble* src, int size, const char* name )
 {
     FILE* f = fopen( name, "wb" );
 
@@ -365,7 +365,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
 
     /* Save first nibbles of target space into save_area */
     for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
-        save_area[ i ] = ReadNibble( cur );
+        save_area[ i ] = bus_read_nibble( cur );
 
     FILE* f = fopen( name, "rb" );
     if ( f == ( FILE* )NULL ) {
@@ -407,8 +407,8 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
             }
 
             /* Store it */
-            WriteNibble( cur++, ( Nibble )( by & 0x0F ) );
-            WriteNibble( cur++, ( Nibble )( ( by & 0xF0 ) >> 4 ) );
+            bus_write_nibble( cur++, ( Nibble )( by & 0x0F ) );
+            bus_write_nibble( cur++, ( Nibble )( ( by & 0xF0 ) >> 4 ) );
         }
 
         /* Check why getc() failed */
@@ -422,7 +422,7 @@ int ReadObjectFromFile( const char* name, const char* hdr, Address start, Addres
         /* Recover from save_area if transfer failed */
         if ( st )
             for ( cur = start, i = 0; cur < end && i < N_SAVE_AREA; cur++, i++ )
-                WriteNibble( cur, save_area[ i ] );
+                bus_write_nibble( cur, save_area[ i ] );
     }
 
     ( void )fclose( f );
@@ -494,8 +494,8 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
         while ( cur < end - 1 ) {
             /* Make a byte with two nibbles */
-            by = ( int )ReadNibble( cur++ );
-            by |= ( int )ReadNibble( cur++ ) << 4;
+            by = ( int )bus_read_nibble( cur++ );
+            by |= ( int )bus_read_nibble( cur++ ) << 4;
 
             ret = putc( by, f );
             if ( ret == EOF ) {
@@ -509,7 +509,7 @@ int WriteObjectToFile( Address start, Address end, const char* hdr, const char* 
 
         /* Write the last odd nibble, if necessary */
         if ( st == DISK_IO_S_OK && cur == end - 1 ) {
-            by = ( int )ReadNibble( cur++ );
+            by = ( int )bus_read_nibble( cur++ );
 
             ret = putc( by, f );
             if ( ret == EOF ) {

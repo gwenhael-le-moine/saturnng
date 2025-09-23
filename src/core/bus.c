@@ -55,7 +55,7 @@
         listing of per-function cpu time.
 
         Moreover, even during intensive calculations, over 30% of the CPU
-        time is spent in either FetchNibble() or RomRead() in either case.
+        time is spent in either bus_fetch_nibble() or RomRead() in either case.
 
 .notes        :
   $Log: modules.c,v $
@@ -81,12 +81,12 @@
   Implemented preliminary support of HP49 hw architecture:
   - The module description table can now be registered dynamically; its
     definition has been moved into hw_config.c
-  - New function ModRegisterDescription(), to register a module
+  - New function bus_set_description(), to register a module
     description table dynamically.
-  - ModInit() now refuses to work if no module description table has
+  - bus_init() now refuses to work if no module description table has
     been registered yet.
   - enabled forced alignment of
-    module configuration sizes and addresses in ModConfig()
+    module configuration sizes and addresses in bus_configure()
 
   Revision 3.1  2000/09/20  14:00:02  cibrario
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
@@ -105,9 +105,9 @@
 
 #include "../libChf/src/Chf.h"
 
+#include "bus.h"
 #include "chf_wrapper.h"
 #include "disk_io.h"
-#include "modules.h"
 
 /*---------------------------------------------------------------------------
         Static/Global variables
@@ -131,7 +131,7 @@ static struct ModMap* mod_map_ptr; /* Module mapping information */
 static struct ModMap* cache_head = ( struct ModMap* )NULL;
 
 /* 3.2: The ModDescription table is now configured invoking
-   ModRegisterDescription() before invoking any other function in this
+   bus_set_description() before invoking any other function in this
    module.
 */
 static const struct ModDescriptionEntry* mod_description;
@@ -798,7 +798,7 @@ static void FreeModMap( struct ModMap* p )
   returns 'void' to the caller.
 
 .call         :
-                ModRegisterDescription(p);
+                bus_set_description(p);
 .input        :
                 ModDescription p, module description table to be registered
 .output       :
@@ -810,7 +810,7 @@ static void FreeModMap( struct ModMap* p )
   3.2, 21-Sep-2000, creation
 
 .- */
-void ModRegisterDescription( ModDescription p ) { mod_description = p; }
+void bus_set_description( ModDescription p ) { mod_description = p; }
 
 /* .+
 
@@ -825,7 +825,7 @@ void ModRegisterDescription( ModDescription p ) { mod_description = p; }
   returns 'void' to the caller.
 
 .call         :
-                ModInit();
+                bus_init();
 .input        :
                 void
 .output       :
@@ -850,10 +850,10 @@ void ModRegisterDescription( ModDescription p ) { mod_description = p; }
     - added sanity check on mod_description
 
 .- */
-void ModInit( void )
+void bus_init( void )
 {
     /* First, a little sanity check on mod_description: ensure that
-       ModRegisterDescription() has been called at least once with a
+       bus_set_description() has been called at least once with a
        non-NULL argument.
     */
     if ( mod_description == NULL )
@@ -878,7 +878,7 @@ void ModInit( void )
         WARNING0( MOD_CHF_MODULE_ID, MOD_W_RESETTING_ALL )
 
         /* Reset all modules */
-        ModReset();
+        bus_reset();
     } else
         /* Rebuild page table (not saved on disk) */
         RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
@@ -895,7 +895,7 @@ void ModInit( void )
   returns 'void' to the caller.
 
 .call         :
-                ModSave();
+                bus_save();
 .input        :
                 void
 .output       :
@@ -912,7 +912,7 @@ void ModInit( void )
   1.1, 11-Feb-1998, creation
 
 .- */
-void ModSave( void )
+void bus_save( void )
 {
     /* Scan the mod_description table, initializing all modules */
     for ( int mod = 0; mod < N_MOD; mod++ ) {
@@ -960,7 +960,7 @@ void ModSave( void )
   1.1, 26-Jan-1998, creation
 
 .- */
-Address ModGetID( void )
+Address bus_get_id( void )
 {
     int mod;
     Address id;
@@ -992,7 +992,7 @@ Address ModGetID( void )
   table used for module access.
 
 .call         :
-                ModReset();
+                bus_reset();
 .input        :
                 void
 .output       :
@@ -1007,7 +1007,7 @@ Address ModGetID( void )
     - revised to implement module config/unconfig cache
 
 .- */
-void ModReset( void )
+void bus_reset( void )
 {
     /* Scan the mod_description table, initializing the module
        mapping information MOD_MAP.map_info.
@@ -1043,18 +1043,18 @@ void ModReset( void )
   The target module will be the first unconfigured or partially configured
   module found in the MOD_MAP.map_info table.
 
-  If the target module is unconfigured, ModConfig sets the size of its
+  If the target module is unconfigured, bus_configure sets the size of its
   address space to 0x100000 - 'config_info'; the module then becomes
   partially configured.
 
-  If the target module is already partially configured, ModConfig sets
+  If the target module is already partially configured, bus_configure sets
   its base address to 'config_info', completing the configuration process.
 
-  In the latter case, ModConfig rebuilds the page table used for module access
+  In the latter case, bus_configure rebuilds the page table used for module access
   to reflect the visibility of the new module in the CPU address space.
 
 .call         :
-                void ModConfig(config_info);
+                void bus_configure(config_info);
 .input        :
                 Address config_info, configuration information
 .output       :
@@ -1076,7 +1076,7 @@ void ModReset( void )
     - enabled forced alignment
       of config_info
 .- */
-void ModConfig( Address config_info )
+void bus_configure( Address config_info )
 {
     int mod;
 
@@ -1175,11 +1175,11 @@ void ModConfig( Address config_info )
   This function unconfigures the module currently configured at address
   'unconfig_info' and returns it to its after-reset configuration status.
 
-  ModUnconfig also rebuilds the page table used for module access
+  bus_unconfigure also rebuilds the page table used for module access
   to reflect the loss of visibility of the module in the CPU address space.
 
 .call         :
-                ModUnconfig(unconfig_info);
+                bus_unconfigure(unconfig_info);
 .input        :
                 Address unconfig_info, Unconfig information
 .output       :
@@ -1198,7 +1198,7 @@ void ModConfig( Address config_info )
     - implemented module config/unconfig cache
 
 .- */
-void ModUnconfig( Address unconfig_info )
+void bus_unconfigure( Address unconfig_info )
 {
     int mod = MOD_MAP.page_table[ MOD_PAGE( unconfig_info ) ].index;
 
@@ -1307,7 +1307,7 @@ void ModUnconfig( Address unconfig_info )
   NOTE: This function DOES NOT update the hardware CRC register.
 
 .call         :
-                d = FetchNibble(addr);
+                d = bus_fetch_nibble(addr);
 .input        :
                 Address addr, address
 .output       :
@@ -1319,7 +1319,7 @@ void ModUnconfig( Address unconfig_info )
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble FetchNibble( Address addr )
+Nibble bus_fetch_nibble( Address addr )
 {
     register int page = MOD_PAGE( addr );
 
@@ -1339,7 +1339,7 @@ Nibble FetchNibble( Address addr )
         access.
 
 .call         :
-                d = ReadNibble(addr);
+                d = bus_read_nibble(addr);
 .input        :
                 Address addr, address
 .output       :
@@ -1351,7 +1351,7 @@ Nibble FetchNibble( Address addr )
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble ReadNibble( Address addr )
+Nibble bus_read_nibble( Address addr )
 {
     register int page = MOD_PAGE( addr );
 
@@ -1375,7 +1375,7 @@ Nibble ReadNibble( Address addr )
   NOTE: This function DOES NOT update the hardware CRC register.
 
 .call         :
-                WriteNibble(addr, datum);
+                bus_write_nibble(addr, datum);
 .input        :
                 Address addr, destination address
                 Nibble datum, nibble to be written
@@ -1388,7 +1388,7 @@ Nibble ReadNibble( Address addr )
   1.1, 26-Jan-1998, creation
 
 .- */
-void WriteNibble( Address addr, Nibble datum )
+void bus_write_nibble( Address addr, Nibble datum )
 {
     register int page = MOD_PAGE( addr );
 
