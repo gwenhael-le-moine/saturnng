@@ -121,22 +121,6 @@ Cpu cpu;
         Private variables
   ---------------------------------------------------------------------------*/
 
-/* Field selector indexes, lo/hi nibble.
-   NOTE: The P and WP elements of the array must be dynamically adjusted
-         since they depend on the current value of the P CPU register
-*/
-static const int fs_idx_lo[ N_FS ] =
-    /*	P,  WP,  XS,   X,   S,   M,   B,    W
-            ??,  ??,  ??,  ??,  ??,  ??,  ??,   A
-    */
-    { 0, 0, 2, 0, 15, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-static const int fs_idx_hi[ N_FS ] =
-    /*	 P,  WP,  XS,   X,   S,   M,   B,   W
-            ??,  ??,  ??,  ??,  ??,  ??,  ??,   A
-    */
-    { 0, 0, 2, 2, 15, 14, 1, 15, 0, 0, 0, 0, 0, 0, 0, 4 };
-
 /* Register Pair pointers */
 static Nibble* const reg_pair_0[] =
     /*	AB,		BC,		CA,		DC		*/
@@ -2199,7 +2183,23 @@ void CpuReset( void )
     int n;
 
     /* Copy field selector index arrays to the cpu structure */
+
+    /* Field selector indexes, lo/hi nibble.
+       NOTE: The P and WP elements of the array must be dynamically adjusted
+       since they depend on the current value of the P CPU register
+     */
+    const int fs_idx_lo[ N_FS ] =
+        /*	P,  WP,  XS,   X,   S,   M,   B,    W
+           ??,  ??,  ??,  ??,  ??,  ??,  ??,   A
+         */
+        { 0, 0, 2, 0, 15, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
     ( void )memcpy( cpu.fs_idx_lo, fs_idx_lo, sizeof( fs_idx_lo ) );
+
+    const int fs_idx_hi[ N_FS ] =
+        /*	 P,  WP,  XS,   X,   S,   M,   B,   W
+             ??,  ??,  ??,  ??,  ??,  ??,  ??,   A
+         */
+        { 0, 0, 2, 2, 15, 14, 1, 15, 0, 0, 0, 0, 0, 0, 0, 4 };
     ( void )memcpy( cpu.fs_idx_hi, fs_idx_hi, sizeof( fs_idx_hi ) );
 
     /* Set P=0 and adjust fs index arrays */
