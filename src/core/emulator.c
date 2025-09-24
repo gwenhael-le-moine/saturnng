@@ -113,6 +113,15 @@
 /*---------------------------------------------------------------------------
         Private macros / variables / functions
   ---------------------------------------------------------------------------*/
+#define T1_CTRL_EXTRA 0x01
+#define T1_CTRL_INT 0x02
+#define T1_CTRL_WAKE 0x04
+#define T1_CTRL_SREQ 0x08
+
+#define T2_CTRL_TRUN 0x01
+#define T2_CTRL_INT 0x02
+#define T2_CTRL_WAKE 0x04
+#define T2_CTRL_SREQ 0x08
 
 #define T1_MULTIPLIER ( 8192 / 16 ) /* T2/T1 increment ratio */
 #define T1_INTERVAL 62500           /* us per T1 increment */

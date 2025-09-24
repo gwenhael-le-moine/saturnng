@@ -110,6 +110,20 @@
 #include "disk_io.h"
 
 /*---------------------------------------------------------------------------
+        Macros
+
+  MOD_OFFSET returns the page offset of an address (int)
+  MOD_PAGE returns the page number of an address (Address)
+  ---------------------------------------------------------------------------*/
+
+#define MOD_PAGE( address ) ( ( int )( ( ( address ) & 0xFFFC0 ) >> 6 ) )
+#define MOD_OFFSET( address ) ( ( address ) & 0x0003F )
+
+#define MOD_MIN_ACCESS_PRIO ( -1 )
+#define MOD_HDW_INDEX 1
+#define MOD_NO_MOD_INDEX ( -1 )
+
+/*---------------------------------------------------------------------------
         Static/Global variables
   ---------------------------------------------------------------------------*/
 
@@ -231,7 +245,7 @@ static void RebuildPageTable( int lo, int hi )
     /* Scan all pages in the [lo, hi] range */
     for ( int page = lo; page <= hi; page++ ) {
         /* Calculate the base page address for the current page */
-        page_addr = MOD_ADDRESS( page );
+        page_addr = ( Address )( page ) << 6; // returns the base address of a page, given its number (Address)
 
         /* Scan the module mapping information table, searching for the module
            with the highest access priority that responds to the address

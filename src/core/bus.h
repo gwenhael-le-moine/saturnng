@@ -143,17 +143,7 @@
 /* 2.7: Number of entries in module config cache */
 #  define N_MOD_CACHE_ENTRIES 8
 
-/*---------------------------------------------------------------------------
-        Macros
-
-  MOD_ADDRESS returns the base address of a page, given its number (Address)
-  MOD_OFFSET returns the page offset of an address (int)
-  MOD_PAGE returns the page number of an address (Address)
-  ---------------------------------------------------------------------------*/
-
-#  define MOD_ADDRESS( page ) ( ( Address )( page ) << 6 )
-#  define MOD_PAGE( address ) ( ( int )( ( ( address ) & 0xFFFC0 ) >> 6 ) )
-#  define MOD_OFFSET( address ) ( ( address ) & 0x0003F )
+#  define MOD_MAP_FLAGS_ABS 0x1 /* Abs addresses to r/w */
 
 /*
         ModDescription
@@ -227,7 +217,6 @@ struct ModDescriptionEntry {
     const char* name;
     Address id;
     int access_prio;
-#  define MOD_MIN_ACCESS_PRIO ( -1 )
 
     bus_initFunction init;
     bus_saveFunction save;
@@ -237,11 +226,9 @@ struct ModDescriptionEntry {
     Address r_abs_base_addr;
     Address r_size;
 
-    int map_flags;              /* 3.3 */
-#  define MOD_MAP_FLAGS_ABS 0x1 /* Abs addresses to r/w */
+    int map_flags; /* 3.3 */
 };
 
-#  define MOD_HDW_INDEX 1
 typedef const struct ModDescriptionEntry ModDescription[ N_MOD ];
 
 /*
@@ -305,7 +292,6 @@ typedef struct ModMapInfoEntry ModMapInfo[ N_MOD ];
 */
 struct ModPageTableEntry {
     int index;
-#  define MOD_NO_MOD_INDEX ( -1 )
 
     Address rel_base_addr;
     ModReadFunction read;
@@ -418,6 +404,11 @@ struct ModHdw49Accel {
     XAddress view[ 2 ]; /* Base of Flash views */
 };
 
+#  define NCE3_CARD_PRESENT 0x01
+#  define CE2_CARD_PRESENT 0x02
+#  define NCE3_CARD_WE 0x04
+#  define CE2_CARD_WE 0x08
+
 struct ModHdw {
     Nibble hdw[ N_HDW_SIZE ]; /* HDW registers */
 
@@ -433,26 +424,14 @@ struct ModHdw {
 
     /* Timers */
     Nibble t1_ctrl; /* Timer 1 control */
-#  define T1_CTRL_EXTRA 0x01
-#  define T1_CTRL_INT 0x02
-#  define T1_CTRL_WAKE 0x04
-#  define T1_CTRL_SREQ 0x08
 
     Nibble t2_ctrl; /* Timer 2 control */
-#  define T2_CTRL_TRUN 0x01
-#  define T2_CTRL_INT 0x02
-#  define T2_CTRL_WAKE 0x04
-#  define T2_CTRL_SREQ 0x08
 
     Nibble t1_val; /* Timer 1 value */
     int32 t2_val;  /* Timer 2 value */
 
     /* 2.4: New member required to support Port emulation */
     Nibble card_status; /* Card status (hdw register 0x0F) */
-#  define NCE3_CARD_PRESENT 0x01
-#  define CE2_CARD_PRESENT 0x02
-#  define NCE3_CARD_WE 0x04
-#  define CE2_CARD_WE 0x08
 
     /* 2.4: Hw configuration-specific members used as accelerators;
        accel_valid is non-zero if the accelerators are valid
