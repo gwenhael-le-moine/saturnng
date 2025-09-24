@@ -137,43 +137,6 @@ static struct ModMap* cache_head = ( struct ModMap* )NULL;
 static const struct ModDescriptionEntry* mod_description;
 
 /*---------------------------------------------------------------------------
-        Debugging & performance analysis data
-  ---------------------------------------------------------------------------*/
-
-#ifdef DEBUG_MODULES
-
-static int alloc_c = 0; /* Counter of live AllocModMap() invocations */
-static int flush_c = 0; /* Counter of FlushCache() invocations */
-static int hit_c = 0;   /* Cache hit counter */
-static int lhit_c = 0;  /* Cache late unconfig hit counter */
-static int miss_c = 0;  /* Cache miss (without replacement) counter */
-static int repl_c = 0;  /* Entry replacement counter */
-
-#  define INCR_PERF_COUNTER( x ) x++
-#  define DECR_PERF_COUNTER( x ) x--
-#  define PRINT_PERF_COUNTER( x ) DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_PERF_CTR, #x, x )
-
-#  define PRINT_CACHE_STATS                                                                                                                \
-      {                                                                                                                                    \
-          PRINT_PERF_COUNTER( alloc_c );                                                                                                   \
-          PRINT_PERF_COUNTER( flush_c );                                                                                                   \
-          PRINT_PERF_COUNTER( hit_c );                                                                                                     \
-          PRINT_PERF_COUNTER( lhit_c );                                                                                                    \
-          PRINT_PERF_COUNTER( miss_c );                                                                                                    \
-          PRINT_PERF_COUNTER( repl_c );                                                                                                    \
-      }
-
-#else
-
-#  define INCR_PERF_COUNTER( x )
-#  define DECR_PERF_COUNTER( x )
-#  define PRINT_PERF_COUNTER( x )
-
-#  define PRINT_CACHE_STATS
-
-#endif
-
-/*---------------------------------------------------------------------------
         Private functions
   ---------------------------------------------------------------------------*/
 
@@ -365,9 +328,6 @@ static struct ModMap* ClearCachingInfo( struct ModMap* d )
   Notice that this function does not initialize the struct ModMap in any
   way; in particular, it does not clear the caching information.
 
-  If DEBUG is appropriately enabled, this function prints out the
-  current value of all cache performance counters (PRINT_CACHE_STATS).
-
 .call         :
                 p = NewModMap();
 .input        :
@@ -394,9 +354,6 @@ static struct ModMap* NewModMap( void )
     /* Link new structure to the cache list */
     new->cache.link = cache_head;
     cache_head = new;
-
-    INCR_PERF_COUNTER( alloc_c );
-    PRINT_CACHE_STATS;
 
     return new;
 }
@@ -471,10 +428,8 @@ static void ReplaceModMap( struct ModMap** d, const struct ModMap* s )
     if ( *d == ( struct ModMap* )NULL )
         /* Allocation needed; cache cleared after allocation */
         *d = CopyModMap( NewModMap(), s );
-    else {
+    else
         CopyModMap( *d, s );
-        INCR_PERF_COUNTER( repl_c );
-    }
 }
 
 /* .+
@@ -508,10 +463,8 @@ static void FlushCache( struct ModMap* save )
     while ( p != ( struct ModMap* )NULL ) {
         n = p->cache.link;
 
-        if ( p != save ) {
+        if ( p != save )
             free( p );
-            DECR_PERF_COUNTER( alloc_c );
-        }
 
         p = n;
     }
@@ -522,14 +475,6 @@ static void FlushCache( struct ModMap* save )
 
     /* Clear the caching information in 'save' */
     ClearCachingInfo( save );
-
-    INCR_PERF_COUNTER( flush_c );
-
-#ifdef DEBUG_MODULES
-    /* The alloc_c performance counter must be exactly 1 now */
-    if ( alloc_c != 1 )
-        ERROR( MOD_CHF_MODULE_ID, MOD_F_BAD_ALLOC_C, alloc_c )
-#endif
 }
 
 /* .+
@@ -758,7 +703,6 @@ static void FreeModMap( struct ModMap* p )
         /* Free the list head */
         cache_head = p->cache.link;
         free( p );
-        DECR_PERF_COUNTER( alloc_c );
     } else {
         /* Scan the cache; at end, n is either null (!) or points to the
            cache entry that immediately precedes p
@@ -775,7 +719,6 @@ static void FreeModMap( struct ModMap* p )
         /* Bypass element pointed by p and free it */
         n->cache.link = p->cache.link;
         free( p );
-        DECR_PERF_COUNTER( alloc_c );
     }
 }
 
@@ -1092,14 +1035,11 @@ void bus_configure( Address config_info )
         /* CACHE HIT; switch mod_map_ptr */
         mod_map_ptr = nxt;
 
-        INCR_PERF_COUNTER( hit_c );
-
         DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_CONFIG, config_info )
         return;
     }
 
     /* CACHE MISS */
-    INCR_PERF_COUNTER( miss_c );
 
     /* Select a 'victim' cache table entry and update victim
        selection info; retry after flushing the cache if necessary.
@@ -1222,8 +1162,6 @@ void bus_unconfigure( Address unconfig_info )
         /* CACHE HIT; switch mod_map_ptr */
         mod_map_ptr = nxt;
 
-        INCR_PERF_COUNTER( hit_c );
-
         DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_CACHED_UNCONFIG )
         return;
     }
@@ -1275,7 +1213,6 @@ void bus_unconfigure( Address unconfig_info )
         FreeModMap( mod_map_ptr );
         mod_map_ptr = nxt;
 
-        INCR_PERF_COUNTER( lhit_c );
         DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_HIT )
     } else {
         /* Continue to use the new map with no caching information,
@@ -1288,8 +1225,6 @@ void bus_unconfigure( Address unconfig_info )
            undo the last config
         */
         MOD_MAP.cache.config_point = 1;
-
-        INCR_PERF_COUNTER( miss_c );
 
         DEBUG0( MOD_CHF_MODULE_ID, DEBUG_C_MOD_CACHE, MOD_I_UNCONFIG_L_MISS )
 
