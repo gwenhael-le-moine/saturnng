@@ -236,14 +236,14 @@ static void BadWrite( Address addr, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID, M
       module configurations.
 
 .- */
-static void RebuildPageTable( int lo, int hi )
+static void RebuildPageTable( int page_start, int page_end )
 {
     Address page_addr;
     int prio;
     int winner = -1;
 
     /* Scan all pages in the [lo, hi] range */
-    for ( int page = lo; page <= hi; page++ ) {
+    for ( int page = page_start; page <= page_end; page++ ) {
         /* Calculate the base page address for the current page */
         page_addr = ( Address )( page ) << 6; // returns the base address of a page, given its number (Address)
 
