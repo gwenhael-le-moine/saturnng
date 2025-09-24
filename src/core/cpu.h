@@ -242,8 +242,6 @@ extern cpu_t cpu;
 extern int inner_loop;     /* Inner loop multiplier */
 extern int inner_loop_max; /* Max value of inner_loop */
 
-extern int opcode;
-
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
