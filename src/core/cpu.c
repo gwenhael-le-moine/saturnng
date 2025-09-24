@@ -125,13 +125,13 @@ int inner_loop_max; /* Max value of inner_loop */
 NOTE: The P and WP elements of the array must be dynamically adjusted
 since they depend on the current value of the P CPU register
 */
-static int fs_idx_lo[ N_FS ] =
+static int fs_idx_start[ N_FS ] =
     /*	P,  WP,  XS,   X,   S,   M,   B,    W
     ??,  ??,  ??,  ??,  ??,  ??,  ??,   A
     */
     { 0, 0, 2, 0, 15, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
-static int fs_idx_hi[ N_FS ] =
+static int fs_idx_end[ N_FS ] =
     /*	 P,  WP,  XS,   X,   S,   M,   B,   W
     ??,  ??,  ??,  ??,  ??,  ??,  ??,   A
     */
@@ -306,8 +306,8 @@ static void Addr2RS( Nibble* d, Address a )
 /* Read a field of a DataRegister from memory */
 static void bus_read( Nibble* d, Address s, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ ) {
         d[ n ] = bus_read_nibble( s );
@@ -325,8 +325,8 @@ static void bus_read_immediate( Nibble* d, Address s, int imm_fs )
 /* Write a field of a DataRegister into memory */
 static void bus_write( Address d, const Nibble* r, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ ) {
         bus_write_nibble( d, r[ n ] );
@@ -425,9 +425,9 @@ static void SetP( Nibble n )
 {
     cpu.p = n;
 
-    fs_idx_lo[ FS_P ] = n;
-    fs_idx_hi[ FS_P ] = n;
-    fs_idx_hi[ FS_WP ] = n;
+    fs_idx_start[ FS_P ] = n;
+    fs_idx_end[ FS_P ] = n;
+    fs_idx_end[ FS_WP ] = n;
 }
 
 /*---------------------------------------------------------------------------
@@ -439,8 +439,8 @@ static void TestRREq( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
@@ -455,8 +455,8 @@ static void TestRREq( int rp, int fs )
 static void TestRZ( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
@@ -472,8 +472,8 @@ static void TestRRNe( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != s[ n ] ) {
@@ -488,8 +488,8 @@ static void TestRRNe( int rp, int fs )
 static void TestRNZ( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         if ( r[ n ] != ( Nibble )0 ) {
@@ -505,8 +505,8 @@ static void TestRRGt( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
@@ -527,8 +527,8 @@ static void TestRRGe( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] > s[ n ] ) {
@@ -549,8 +549,8 @@ static void TestRRLt( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
@@ -571,8 +571,8 @@ static void TestRRLe( int rp, int fs )
 {
     register const Nibble* const r = reg_pair_0[ rp ];
     register const Nibble* const s = reg_pair_1[ rp ];
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = hi; n >= lo; n-- ) {
         if ( r[ n ] < s[ n ] ) {
@@ -596,8 +596,8 @@ static void TestRRLe( int rp, int fs )
 static void AddRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
     register int carry = 0;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -618,8 +618,8 @@ static void AddRR( register Nibble* d, register const Nibble* a, register const 
 static void IncrR( register Nibble* d, int fs )
 {
     register int carry = 1;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -641,8 +641,8 @@ static void IncrR( register Nibble* d, int fs )
 static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, int fs )
 {
     register int carry = 0;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -664,8 +664,8 @@ static void SubRR( register Nibble* d, register Nibble* a, register Nibble* b, i
 static void DecrR( register Nibble* d, int fs )
 {
     register int carry = 1;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -686,8 +686,8 @@ static void DecrR( register Nibble* d, int fs )
 /* r=0 */
 static void ClearR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = ( Nibble )0;
@@ -696,8 +696,8 @@ static void ClearR( register Nibble* d, int fs )
 /* r=r */
 static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = s[ n ];
@@ -706,8 +706,8 @@ static void CopyRR( register Nibble* d, register Nibble* s, int fs )
 /* rrEX */
 static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register Nibble t;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -720,8 +720,8 @@ static void ExchRR( register Nibble* d, register Nibble* s, int fs )
 /* rSL */
 static void ShiftLeftR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = hi; n > lo; n-- )
         d[ n ] = d[ n - 1 ];
@@ -732,8 +732,8 @@ static void ShiftLeftR( register Nibble* d, int fs )
 /* rSR */
 static void ShiftRightR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     if ( d[ lo ] != ( Nibble )0 )
         cpu.hst |= HST_SB_MASK;
@@ -747,8 +747,8 @@ static void ShiftRightR( register Nibble* d, int fs )
 /* rSRB */
 static void ShiftRightBitR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     if ( ( d[ lo ] & nibble_bit_mask[ 0 ] ) != ( Nibble )0 )
         cpu.hst |= HST_SB_MASK;
@@ -764,8 +764,8 @@ static void ShiftRightBitR( register Nibble* d, int fs )
 /* rSLC */
 static void ShiftLeftCircR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register Nibble s = d[ hi ];
 
     for ( register int n = hi; n > lo; n-- )
@@ -777,8 +777,8 @@ static void ShiftLeftCircR( register Nibble* d, int fs )
 /* rSRC */
 static void ShiftRightCircR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register Nibble s;
 
     if ( ( s = d[ lo ] ) != ( Nibble )0 )
@@ -794,8 +794,8 @@ static void ShiftRightCircR( register Nibble* d, int fs )
 static void TwoComplR( register Nibble* d, int fs )
 {
     register int carry = 0;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
     register int nz = 0;
 
@@ -819,8 +819,8 @@ static void TwoComplR( register Nibble* d, int fs )
 /* r=-r-1 */
 static void OneComplR( register Nibble* d, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ ) {
         if ( cpu.hexmode )
@@ -835,8 +835,8 @@ static void OneComplR( register Nibble* d, int fs )
 /* r=r&r */
 static void AndRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = a[ n ] & b[ n ];
@@ -845,8 +845,8 @@ static void AndRR( register Nibble* d, register const Nibble* a, register const 
 /* r=r!r */
 static void OrRR( register Nibble* d, register const Nibble* a, register const Nibble* b, int fs )
 {
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
 
     for ( register int n = lo; n <= hi; n++ )
         d[ n ] = a[ n ] | b[ n ];
@@ -858,8 +858,8 @@ static void OrRR( register Nibble* d, register const Nibble* a, register const N
 static void AddRImm( Nibble* r, int fs, Nibble v )
 {
     register int carry = ( int )v + 1;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -878,8 +878,8 @@ static void AddRImm( Nibble* r, int fs, Nibble v )
 static void SubRImm( register Nibble* r, int fs, Nibble v )
 {
     register int carry = ( int )v + 1;
-    register int lo = fs_idx_lo[ fs ];
-    register int hi = fs_idx_hi[ fs ];
+    register int lo = fs_idx_start[ fs ];
+    register int hi = fs_idx_end[ fs ];
     register int s;
 
     for ( register int n = lo; n <= hi; n++ ) {
@@ -1083,7 +1083,7 @@ static void ExecRegOp_A( void )
             FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
-    cpu.cycles += 3 + fs_idx_hi[ ( int )f ];
+    cpu.cycles += 3 + (fs_idx_end[ ( int )f ] - fs_idx_start[ ( int )f ]);
 }
 
 /* ..., Register Operation with Field Selector, opcode Bfo, length 3 */
@@ -1128,7 +1128,7 @@ static void ExecRegOp_B( void )
             FATAL( CPU_CHF_MODULE_ID, CPU_F_INTERR, "Bad_Operation_Code" )
             break;
     }
-    cpu.cycles += 3 + fs_idx_hi[ ( int )f ];
+    cpu.cycles += 3 + (fs_idx_end[ ( int )f ] - fs_idx_start[ ( int )f ]);
 }
 
 /* ..., Register Operation on A Fields, opcode Co, length 2 */
@@ -1645,7 +1645,7 @@ static void ExecGroup_15( void )
     if ( is_immediate )
         cpu.cycles += 15 + f + 1;
     else
-        cpu.cycles += 16 + fs_idx_hi[ ( int )f ];
+        cpu.cycles += 16 + (fs_idx_end[ ( int )f ] - fs_idx_start[ ( int )f ]);
 }
 
 /* Instruction Group_1 */
