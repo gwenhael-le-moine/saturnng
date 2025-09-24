@@ -424,43 +424,23 @@ static ChfAction do_SHUTDN( void )
 /* Condition handler for the EmulatorLoop */
 static ChfAction EmulatorLoopHandler( const ChfDescriptor* descriptor, const ChfState state, void* _ctx )
 {
-    ChfAction act;
+    if ( state != CHF_SIGNALING || descriptor->module_id != CPU_CHF_MODULE_ID )
+        return CHF_RESIGNAL;
 
-    /* Check Chf state */
-    switch ( state ) {
-        /* 2.1: Chf release 2 fixed the spelling of 'SIGNALING' */
-        case CHF_SIGNALING:
-            /* ChfSignal() in progress */
-            switch ( descriptor->module_id ) {
-                case CPU_CHF_MODULE_ID:
-                    /* Condition from CPU modules; check Message ID (Condition Code) */
-                    switch ( descriptor->condition_code ) {
-                        case CPU_I_SHUTDN:
-                            act = do_SHUTDN();
-                            break;
+    switch ( descriptor->condition_code ) {
+        case CPU_I_SHUTDN:
+            return do_SHUTDN();
+            break;
 
-                        case CPU_I_EMULATOR_INT:
-                            /* Emulator interrupt; unwind */
-                            act = CHF_UNWIND;
-                            break;
-
-                        default:
-                            /* Condition Code not handled; resignal */
-                            act = CHF_RESIGNAL;
-                    }
-                    break;
-                default:
-                    /* Condition from other modules; resignal */
-                    act = CHF_RESIGNAL;
-            }
+        case CPU_I_EMULATOR_INT:
+            /* Emulator interrupt; unwind */
+            return CHF_UNWIND;
             break;
 
         default:
-            /* Other states; resignal the condition */
-            act = CHF_RESIGNAL;
+            /* Condition Code not handled; resignal */
+            return CHF_RESIGNAL;
     }
-
-    return act;
 }
 
 /*---------------------------------------------------------------------------
