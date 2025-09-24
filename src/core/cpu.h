@@ -216,9 +216,6 @@ typedef struct {
     Address rstk[ RETURN_STACK_SIZE ];
     int rstk_ptr;
 
-    int fs_idx_lo[ N_FS ];
-    int fs_idx_hi[ N_FS ];
-
     bool hexmode;              /* DEC/HEX mode */
     bool carry;                /* Carry bit */
     bool shutdn;               /* SHUTDN flag */
