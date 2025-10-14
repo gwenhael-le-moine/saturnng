@@ -652,7 +652,7 @@ void NCe3Save49( void ) { /* Do nothing; the whole RAM is saved by RamSave49() *
   In both cases, address translation is done here.
 
   This module must have the BUS_MAP_FLAGS_ABS set in
-  its bus_description[].map_flags; this way, rel_address will be
+  its bus[].map_flags; this way, rel_address will be
   the ABSOLUTE address of the memory access.
 
 .call         :
@@ -688,7 +688,7 @@ Nibble NCe3Read49( Address rel_address )
   In both cases, address translation is done here.
 
   This module must have the BUS_MAP_FLAGS_ABS set in
-  its bus_description[].map_flags; this way, rel_address will be
+  its bus[].map_flags; this way, rel_address will be
   the ABSOLUTE address of the memory access.
 .call         :
                 NCe3Write49(rel_address, datum);

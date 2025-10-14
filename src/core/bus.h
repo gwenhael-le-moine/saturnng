@@ -56,7 +56,7 @@ Public release.
 
   Revision 3.3  2000/09/26 15:10:22  cibrario
   Revised to implement Flash ROM write access:
-  - Added .map_flags field to struct BusDescriptionEntry
+  - Added .map_flags field to struct bus_module_t
     - New status code BUS_E_ROM_SAVE
 
   Revision 3.2  2000/09/22  14:05:32  cibrario
@@ -206,18 +206,18 @@ typedef enum {
 
 #  define BUS_MAP_FLAGS_ABS 0x1 /* Abs addresses to r/w */
 
-typedef void ( *BusModule_init_function )( void );
-typedef void ( *BusModule_save_function )( void );
-typedef Nibble ( *BusModule_read_function )( Address rel_addr );
-typedef void ( *BusModule_write_function )( Address rel_addr, Nibble data );
-typedef enum { BUS_MODULE_UNCONFIGURED, BUS_MODULE_SIZE_CONFIGURED, BUS_MODULE_CONFIGURED } BusModule_config_t;
+typedef void ( *module_init_function )( void );
+typedef void ( *module_save_function )( void );
+typedef Nibble ( *module_read_function )( Address rel_addr );
+typedef void ( *module_write_function )( Address rel_addr, Nibble data );
+typedef enum { MODULE_UNCONFIGURED, MODULE_SIZE_CONFIGURED, MODULE_CONFIGURED } module_config_t;
 
-struct BusModule {
+typedef struct bus_module_t {
     /* This const array contains an entry for each peripheral module connected
        to the peripheral bus of the Saturn CPU; the entry describes the
        characteristics of the module.
        (Notice that the current implementation requires that the index of
-       the HDW registers in the bus_description table must be fixed
+       the HDW registers in the bus table must be fixed
        and equal to BUS_HDW_INDEX... this is unfortunate.)
      */
     const char* name; /* the mnemonic name of the module; the Saturn CPU doesn't
@@ -235,52 +235,51 @@ struct BusModule {
       descriptions into the array. The modules that come first
       in the array are configured first. */
 
-    BusModule_init_function init; /* this function is called, without arguments, during VM startup
+    module_init_function init; /* this function is called, without arguments, during VM startup
     to initialize the device. For example, the initialization
     function for the ROM module will read the ROM image from
     disk and store them into the module status structure. */
-    BusModule_save_function save;
-    BusModule_read_function read;   /* this function reads a nibble from the module. It receives the
+    module_save_function save;
+    module_read_function read;   /* this function reads a nibble from the module. It receives the
    relative address of the nibble to be read. The read function
    can return an interrupt request for the CPU. */
-    BusModule_write_function write; /* this function writes a nibble to the module. It receives the
+    module_write_function write; /* this function writes a nibble to the module. It receives the
    relative address and the value of the nibble to be written.
    The write function can return an interrupt request for the CPU. */
-    BusModule_config_t r_config;    /* this flag contains the configuration status of the module after
+    module_config_t r_config;    /* this flag contains the configuration status of the module after
      a bus reset. If the after-reset configuration status is
      BUS_CONFIGURED, the module can never be unconfigured. */
-    Address r_abs_base_addr;        /* absolute base address of the module after a bus reset.
-           It should be set only if the module is at least partially
-           configured automatically after a bus reset. */
-    Address r_size;                 /* size of the address window of the module after a bus reset.
-           It should be set only if the module is at least partially
-           configured automatically after a bus reset. */
+    Address r_abs_base_addr;     /* absolute base address of the module after a bus reset.
+        It should be set only if the module is at least partially
+        configured automatically after a bus reset. */
+    Address r_size;              /* size of the address window of the module after a bus reset.
+        It should be set only if the module is at least partially
+        configured automatically after a bus reset. */
 
     int map_flags; /* special map flags:
     BUS_MAP_FLAGS_ABS	pass absolute addresses to module
     read/write functions (3.3) */
-};
+} bus_module_t;
 
-typedef const struct BusModule BusDescription[ N_BUS_SIZE ];
+/* A bus is an array of N_BUS_SIZE bus_module_t */
+typedef const bus_module_t bus_t[ N_BUS_SIZE ];
 
-struct BusMapInfoEntry {
+/*  */
+
+typedef struct bus_module_info_t {
     /*
       This array contains an entry for each peripheral module connected
       to the peripheral bus of the Saturn CPU; the entry describes the
       dynamic mapping information of the module:
      */
-    BusModule_config_t config; /* configuration status of the module. */
-    Address abs_base_addr;     /* absolute base address of the module. It's valid only if the module is currently configured. */
-    Address size;              /* size of the address window of the module. It's valid only if the module is currently configured. */
-};
+    module_config_t config; /* configuration status of the module. */
+    Address abs_base_addr;  /* absolute base address of the module. It's valid only if the module is currently configured. */
+    Address size;           /* size of the address window of the module. It's valid only if the module is currently configured. */
+} bus_module_info_t;
 
-typedef struct BusMapInfoEntry BusMapInfo[ N_BUS_SIZE ];
+/*  */
 
-struct BusPageTableEntry {
-    /*   This array contains an entry (of type BusPageTableEntry) for each 'page'
-         (of size #40 nibbles) of the Saturn CPU physical address space. For
-         each page, the following information is stored:
-     */
+typedef struct bus_page_table_entry_t {
     /*
       The Saturn Physical Address (SPA) is divided into two portions:
 
@@ -298,33 +297,31 @@ struct BusPageTableEntry {
      */
 
     int index; /* the index of the module that responds to the address range of
-the page in the BusDescription table.The special value
+the page in the bus_t table.The special value
 BUS_NO_BUS_INDEX indicates that no module responds to the
 address range. */
 
-    Address rel_base_addr;          /* the relative base address of the page in the address
-        space of the module that responds to the address range of
-        the page, if any. */
-    BusModule_read_function read;   /* the read functions of the module that responds to the
+    Address rel_base_addr;       /* the relative base address of the page in the address
+     space of the module that responds to the address range of
+     the page, if any. */
+    module_read_function read;   /* the read functions of the module that responds to the
 address range of the page, if any. */
-    BusModule_write_function write; /* the write functions of the module that responds to the
+    module_write_function write; /* the write functions of the module that responds to the
 address range of the page, if any. */
-};
+} bus_page_table_entry_t;
 
-typedef struct BusPageTableEntry BusPageTable[ N_PAGE_TABLE_ENTRIES ];
-
-struct BusCacheTableEntry {
+typedef struct bus_cache_table_entry_t {
     Address tag;
-    struct BusMap* map_ptr;
-};
+    struct bus_map_t* map_ptr;
+} bus_cache_table_entry_t;
 
-struct BusCache {
+typedef struct bus_cache_t {
     /* This structure holds the caching information for module config/unconfig.
 
   The .config field is an array of BusCacheConfigEntry, and contains
   the module configuration cache information. Each entry is a pair
   (tag, map_ptr).  The map_ptr field, when non-null,
-  points to the struct BusMap to be used when a module config command,
+  points to the bus_map_t to be used when a module config command,
   with the given tag address as argument, is executed.
 
   The .victim field points to the entry of .config to be used
@@ -332,45 +329,50 @@ struct BusCache {
   Currently, It is incremented by one at each replacement, thus
   implementing a very simple fifo replacement policy.
 
-  The .unconfig field is an array of struct BusMap pointers, and
+  The .unconfig field is an array of bus_map_t pointers, and
   contains the module unconfiguration cache information.
   The .unconfig[i] array element, when non-null, points to the
-  struct BusMap to be used when a module unconfig command, unconfiguring
+  bus_map_t to be used when a module unconfig command, unconfiguring
   the i-th module, is executed.
 
-  The .config_point field is set if the struct BusMap is a point
+  The .config_point field is set if the bus_map_t is a point
   of the module configuration tree where a config was completed.
   It it used to walk back correctly when caching an unconfig.
 
-  This .ref_count is incremented by one when the struct BusMap
+  This .ref_count is incremented by one when the bus_map_t
   is referenced by an unconfig link; it is used to avoid freeing
   referenced structures.
 
-  The .link field links all cached struct BusMap together.
+  The .link field links all cached bus_map_t together.
      */
-    struct BusCacheTableEntry config[ N_BUS_CACHE_ENTRIES ];
+    bus_cache_table_entry_t config[ N_BUS_CACHE_ENTRIES ];
     int victim;
 
-    struct BusMap*( unconfig[ N_BUS_SIZE ] );
+    struct bus_map_t*( unconfig[ N_BUS_SIZE ] );
 
     int config_point;
     int ref_count;
 
-    struct BusMap* link;
-};
+    struct bus_map_t* link;
+} bus_cache_t;
 
-struct BusMap {
+typedef struct bus_map_t {
     /*
       This structure contains all the mapping information about the peripheral
       modules of the Saturn CPU. Its components are:
      */
-    BusMapInfo map_info;     /* this array describes the dynamic mapping information of
- each module connected to the Saturn peripheral bus. */
-    BusPageTable page_table; /* this array describes the current layout of the address space
- of the Saturn CPU. */
-    struct BusCache cache;   /* this structure holds caching information used to speed up
- module config/unconfig instructions */
-};
+    bus_module_info_t map_info[ N_BUS_SIZE ]; /* this array describes the dynamic mapping information of
+each module connected to the Saturn peripheral bus. */
+
+    /*   This array contains an entry (of type bus_page_table_entry_t) for each 'page'
+         (of size #40 nibbles) of the Saturn CPU physical address space. For
+         each page, the following information is stored:
+     */
+    bus_page_table_entry_t page_table[ N_PAGE_TABLE_ENTRIES ]; /* this array describes the current layout of the address space
+    of the Saturn CPU. */
+    bus_cache_t cache;                                         /* this structure holds caching information used to speed up
+                                       module config/unconfig instructions */
+} bus_map_t;
 
 #  define NCE3_CARD_PRESENT 0x01
 #  define CE2_CARD_PRESENT 0x02
@@ -399,7 +401,6 @@ struct BusStatus_49 {
   ---------------------------------------------------------------------------*/
 
 /* Initialization */
-void bus_set_description( BusDescription p );
 void bus_init( void );
 void bus_save( void );
 void bus_reset( void );
