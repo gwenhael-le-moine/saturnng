@@ -109,6 +109,8 @@ Public release.
   Initial revision
   .- */
 
+#  include "types.h"
+
 /*---------------------------------------------------------------------------
   Chf condition codes
   ---------------------------------------------------------------------------*/
@@ -132,8 +134,8 @@ typedef enum {
     BUS_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
     BUS_W_BAD_CONFIG = 202,        /* Bad bus_configure %x ignored */
     BUS_W_BAD_UNCONFIG = 203,      /* Bad bus_unconfigure %x ignored */
-    BUS_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
-    BUS_W_HDW_READ = 205,          /* Bad HdwRead %x */
+    BUS_W_HDW_WRITE = 204,         /* Bad hdw_write %x, %x */
+    BUS_W_HDW_READ = 205,          /* Bad hdw_read %x */
     BUS_W_RESETTING_ALL = 206,     /* Resetting all modules */
     BUS_W_RAM_INIT = 207,          /* Can't initialize internal RAM */
     BUS_W_HDW_INIT = 208,          /* Can't initialize HDW */
@@ -171,15 +173,12 @@ typedef enum {
     BUS_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
 } modules_chf_message_id_t;
 
-#  include "types.h"
-
 /*---------------------------------------------------------------------------
   Data type definitions
   ---------------------------------------------------------------------------*/
 
 #  define N_BUS_SIZE 6
 #  define N_PAGE_TABLE_ENTRIES 16384
-#  define N_HDW_SIZE 256
 
 #  define N_ROM_SIZE_48 512 * 1024 * 2
 #  define N_RAM_SIZE_48 128 * 1024 * 2
@@ -373,83 +372,10 @@ struct BusMap {
  module config/unconfig instructions */
 };
 
-struct HdwModule48Accel {
-    XAddress bs_address; /* Bank Switcher ext. address */
-};
-
-struct HdwModule49Accel {
-    XAddress view[ 2 ]; /* Base of Flash views */
-};
-
 #  define NCE3_CARD_PRESENT 0x01
 #  define CE2_CARD_PRESENT 0x02
 #  define NCE3_CARD_WE 0x04
 #  define CE2_CARD_WE 0x08
-
-struct HdwModule {
-    /*
-      This structure contains the actual status of all peripheral modules of the
-      Saturn CPU. The status of all modules is centralized to allow any device
-      to easily access the status of other devices.
-
-        struct HdwModule
-
-  This substructure contains the status of all peripheral devices controlled
-  by the hdw module.
-
-  3.2: To support the HP49 hw configuration, the original BusStatus structure
-  has been splitted in two:
-
-  - (new) struct BusStatus: contains configuration-independent status
-    information (.hdw), and configuration-dependent accelerators (.hdw.accel).
-    The overall layout of the structure is the same for all configurations,
-    and it is publicily accessible.
-
-  - struct BusStatus_xx (corresponding to all fields of the original
-    BusStatus structure except .hdw): contains the storage areas for
-    ROM and RAM in configuration 'xx', and is private to the
-    configuration-specific ROM/RAM emulation module.
-     */
-    Nibble hdw[ N_HDW_SIZE ]; /* HDW registers */
-
-    /* LCD driver */
-    Address lcd_base_addr; /* LCD driver base address */
-    int lcd_on;            /* LCD driver enable flag */
-    int lcd_contrast;      /* LCD contrast value */
-    int lcd_vlc;           /* LCD vertical line count */
-    int lcd_offset;        /* LCD horizontal offset */
-    int lcd_line_offset;   /* LCD line offset */
-    Address lcd_menu_addr; /* LCD menu base address */
-    int lcd_ann;           /* LCD annunciators status */
-
-    /* Timers */
-    Nibble t1_ctrl; /* Timer 1 control */
-
-    Nibble t2_ctrl; /* Timer 2 control */
-
-    Nibble t1_val; /* Timer 1 value */
-    int32 t2_val;  /* Timer 2 value */
-
-    /* 2.4: New member required to support Port emulation */
-    Nibble card_status; /* Card status (hdw register 0x0F) */
-
-    /* 2.4: Hw configuration-specific members used as accelerators;
-       accel_valid is non-zero if the accelerators are valid
-     */
-    int accel_valid;
-
-    union {
-        struct HdwModule48Accel a48;
-        struct HdwModule49Accel a49;
-    } accel;
-
-    /* 2.5: Serial port buffer registers */
-    Byte serial_rbr;
-    Byte serial_tbr;
-
-    /* Misc */
-    int16 crc; /* CRC */
-};
 
 struct BusStatus_48 {
     Nibble rom[ N_ROM_SIZE_48 ];       /* Internal ROM */
@@ -467,12 +393,6 @@ struct BusStatus_49 {
     Nibble ram[ N_RAM_SIZE_49 ];     /* Internal RAM */
     Nibble *ce2, *nce3;              /* ERAM bases */
 };
-
-/*---------------------------------------------------------------------------
-  Global variables
-  ---------------------------------------------------------------------------*/
-
-extern struct HdwModule hdw_status;
 
 /*---------------------------------------------------------------------------
   Function prototypes

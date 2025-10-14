@@ -106,6 +106,7 @@
 #include "chf_wrapper.h"
 #include "cpu.h"
 #include "emulator.h"
+#include "hdw.h"
 #include "serial.h"
 
 /*---------------------------------------------------------------------------
@@ -173,33 +174,33 @@ static void EmulatorLoop( void )
                 OneStep();
 
             /* T2 update */
-            if ( hdw_status.t2_ctrl & T2_CTRL_TRUN ) {
-                --hdw_status.t2_val;
-                if ( hdw_status.t2_val == ( int )0xFFFFFFFF ) {
-                    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, hdw_status.t2_ctrl )
+            if ( hdw.t2_ctrl & T2_CTRL_TRUN ) {
+                --hdw.t2_val;
+                if ( hdw.t2_val == ( int )0xFFFFFFFF ) {
+                    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, hdw.t2_ctrl )
 
-                    hdw_status.t2_ctrl |= T2_CTRL_SREQ;
+                    hdw.t2_ctrl |= T2_CTRL_SREQ;
 
-                    if ( hdw_status.t2_ctrl & T2_CTRL_WAKE )
+                    if ( hdw.t2_ctrl & T2_CTRL_WAKE )
                         CpuWake();
 
-                    if ( hdw_status.t2_ctrl & T2_CTRL_INT )
+                    if ( hdw.t2_ctrl & T2_CTRL_INT )
                         CpuIntRequest( INT_REQUEST_IRQ );
                 }
             }
         }
 
         /* T1 update */
-        hdw_status.t1_val = ( hdw_status.t1_val - 1 ) & NIBBLE_MASK;
-        if ( hdw_status.t1_val == 0xF ) {
-            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, hdw_status.t1_ctrl )
+        hdw.t1_val = ( hdw.t1_val - 1 ) & NIBBLE_MASK;
+        if ( hdw.t1_val == 0xF ) {
+            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, hdw.t1_ctrl )
 
-            hdw_status.t1_ctrl |= T1_CTRL_SREQ;
+            hdw.t1_ctrl |= T1_CTRL_SREQ;
 
-            if ( hdw_status.t1_ctrl & T1_CTRL_WAKE )
+            if ( hdw.t1_ctrl & T1_CTRL_WAKE )
                 CpuWake();
 
-            if ( hdw_status.t1_ctrl & T1_CTRL_INT )
+            if ( hdw.t1_ctrl & T1_CTRL_INT )
                 CpuIntRequest( INT_REQUEST_IRQ );
         }
 
@@ -304,19 +305,19 @@ static ChfAction do_SHUTDN( void )
        process it immediately.  It is not clear why it was
        not processed *before* shutdown, though.
     */
-    if ( hdw_status.t1_ctrl & T1_CTRL_SREQ ) {
-        if ( hdw_status.t1_ctrl & T1_CTRL_WAKE )
+    if ( hdw.t1_ctrl & T1_CTRL_SREQ ) {
+        if ( hdw.t1_ctrl & T1_CTRL_WAKE )
             CpuWake();
 
-        if ( hdw_status.t1_ctrl & T1_CTRL_INT )
+        if ( hdw.t1_ctrl & T1_CTRL_INT )
             CpuIntRequest( INT_REQUEST_IRQ );
     }
 
-    if ( hdw_status.t2_ctrl & T2_CTRL_SREQ ) {
-        if ( hdw_status.t2_ctrl & T2_CTRL_WAKE )
+    if ( hdw.t2_ctrl & T2_CTRL_SREQ ) {
+        if ( hdw.t2_ctrl & T2_CTRL_WAKE )
             CpuWake();
 
-        if ( hdw_status.t2_ctrl & T2_CTRL_INT )
+        if ( hdw.t2_ctrl & T2_CTRL_INT )
             CpuIntRequest( INT_REQUEST_IRQ );
     }
 
@@ -326,13 +327,13 @@ static ChfAction do_SHUTDN( void )
         int ela;
         int ela_ticks;
 
-        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", hdw_status.t1_ctrl, hdw_status.t1_val )
-        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", hdw_status.t2_ctrl, hdw_status.t2_val )
+        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", hdw.t1_ctrl, hdw.t1_val )
+        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", hdw.t2_ctrl, hdw.t2_val )
 
         /* Determine which timer will expire first */
-        if ( hdw_status.t1_ctrl & ( T1_CTRL_INT | T1_CTRL_WAKE ) ) {
+        if ( hdw.t1_ctrl & ( T1_CTRL_INT | T1_CTRL_WAKE ) ) {
             /* T1 will do something on expiration */
-            mst = ( ( unsigned long )hdw_status.t1_val + 1 ) * T1_MS_MULTIPLIER;
+            mst = ( ( unsigned long )hdw.t1_val + 1 ) * T1_MS_MULTIPLIER;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T1", mst )
 
@@ -340,9 +341,9 @@ static ChfAction do_SHUTDN( void )
                 ms = mst;
         }
 
-        if ( ( hdw_status.t2_ctrl & T2_CTRL_TRUN ) && ( hdw_status.t2_ctrl & ( T2_CTRL_INT | T2_CTRL_WAKE ) ) ) {
+        if ( ( hdw.t2_ctrl & T2_CTRL_TRUN ) && ( hdw.t2_ctrl & ( T2_CTRL_INT | T2_CTRL_WAKE ) ) ) {
             /* T2 is running and will do something on expiration */
-            mst = ( ( unsigned long )hdw_status.t2_val + 1 ) / T2_MS_DIVISOR;
+            mst = ( ( unsigned long )hdw.t2_val + 1 ) / T2_MS_DIVISOR;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T2", mst )
 
@@ -379,42 +380,42 @@ static ChfAction do_SHUTDN( void )
         ela_ticks = ( ( ela + frac_t1 ) + T1_INTERVAL / 2 ) / T1_INTERVAL;
         frac_t1 = ( ela + frac_t1 ) - ela_ticks * T1_INTERVAL;
 
-        if ( ela_ticks > hdw_status.t1_val ) {
-            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, hdw_status.t1_ctrl )
+        if ( ela_ticks > hdw.t1_val ) {
+            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, hdw.t1_ctrl )
 
-            hdw_status.t1_ctrl |= T1_CTRL_SREQ;
+            hdw.t1_ctrl |= T1_CTRL_SREQ;
 
-            if ( hdw_status.t1_ctrl & T1_CTRL_WAKE )
+            if ( hdw.t1_ctrl & T1_CTRL_WAKE )
                 CpuWake();
 
-            if ( hdw_status.t1_ctrl & T1_CTRL_INT )
+            if ( hdw.t1_ctrl & T1_CTRL_INT )
                 CpuIntRequest( INT_REQUEST_IRQ );
         }
 
-        hdw_status.t1_val = ( hdw_status.t1_val - ela_ticks ) & T1_OVF_MASK;
+        hdw.t1_val = ( hdw.t1_val - ela_ticks ) & T1_OVF_MASK;
 
-        if ( hdw_status.t2_ctrl & T2_CTRL_TRUN ) {
+        if ( hdw.t2_ctrl & T2_CTRL_TRUN ) {
             ela_ticks = ( ( ela + frac_t2 ) + T2_INTERVAL / 2 ) / T2_INTERVAL;
             frac_t2 = ( ela + frac_t2 ) - ela_ticks * T2_INTERVAL;
 
-            if ( ela_ticks > hdw_status.t2_val ) {
-                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, hdw_status.t2_ctrl )
+            if ( ela_ticks > hdw.t2_val ) {
+                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, hdw.t2_ctrl )
 
-                hdw_status.t2_ctrl |= T2_CTRL_SREQ;
+                hdw.t2_ctrl |= T2_CTRL_SREQ;
 
-                if ( hdw_status.t2_ctrl & T2_CTRL_WAKE )
+                if ( hdw.t2_ctrl & T2_CTRL_WAKE )
                     CpuWake();
 
-                if ( hdw_status.t2_ctrl & T2_CTRL_INT )
+                if ( hdw.t2_ctrl & T2_CTRL_INT )
                     CpuIntRequest( INT_REQUEST_IRQ );
             }
 
-            hdw_status.t2_val = ( hdw_status.t2_val - ela_ticks ) & T2_OVF_MASK;
+            hdw.t2_val = ( hdw.t2_val - ela_ticks ) & T2_OVF_MASK;
         }
     }
 
-    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", hdw_status.t1_ctrl, hdw_status.t1_val )
-    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", hdw_status.t2_ctrl, hdw_status.t2_val )
+    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", hdw.t1_ctrl, hdw.t1_val )
+    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", hdw.t2_ctrl, hdw.t2_val )
 
     return CHF_CONTINUE;
 }

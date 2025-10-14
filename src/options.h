@@ -7,7 +7,7 @@ typedef enum { FRONTEND_SDL, FRONTEND_NCURSES, FRONTEND_GTK } frontend_t;
 
 typedef enum { MODEL_48SX = 485, MODEL_48GX = 486, MODEL_40G = 406, MODEL_49G = 496, MODEL_50G = 506 } model_t;
 
-typedef struct {
+typedef struct config_t {
     char* progname;
 
     model_t model;

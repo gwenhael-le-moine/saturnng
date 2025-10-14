@@ -87,6 +87,7 @@
 #include "chf_wrapper.h"
 #include "disk_io.h"
 #include "flash49.h"
+#include "hdw.h"
 
 #define FLASH_VIEW_SELECTOR 0x40000
 #define FLASH_BANK_MASK 0x3FFFF
@@ -191,7 +192,7 @@ void RomSave49( void )
 .- */
 Nibble RomRead49( Address rel_address )
 {
-    register XAddress view = hdw_status.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ];
+    register XAddress view = hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ];
 
     return bus_status_49->flash[ view | ( rel_address & FLASH_BANK_MASK ) ];
 }
@@ -362,9 +363,9 @@ void Ce1Init49( void )
        them to a reasonable value (that is, select Flash Rom bank 0 for
        both views).
     */
-    if ( !hdw_status.accel_valid ) {
-        hdw_status.accel_valid = 1;
-        hdw_status.accel.a49.view[ 0 ] = hdw_status.accel.a49.view[ 1 ] = ( XAddress )0;
+    if ( !hdw.accel_valid ) {
+        hdw.accel_valid = 1;
+        hdw.accel.a49.view[ 0 ] = hdw.accel.a49.view[ 1 ] = ( XAddress )0;
     }
 }
 
@@ -399,9 +400,9 @@ void Ce1Save49( void )
 */
 #define CE1_SET_VIEWS                                                                                                                      \
     {                                                                                                                                      \
-        hdw_status.accel.a49.view[ 0 ] = ( ( XAddress )( ( rel_address >> 5 ) & 0x03 ) << 18 );                                            \
+        hdw.accel.a49.view[ 0 ] = ( ( XAddress )( ( rel_address >> 5 ) & 0x03 ) << 18 );                                                   \
                                                                                                                                            \
-        hdw_status.accel.a49.view[ 1 ] = ( ( XAddress )( ( rel_address >> 1 ) & 0x0F ) << 18 );                                            \
+        hdw.accel.a49.view[ 1 ] = ( ( XAddress )( ( rel_address >> 1 ) & 0x0F ) << 18 );                                                   \
     }
 
 /* .+
@@ -509,7 +510,7 @@ void Ce2Init49( void )
     bus_status_49->ce2 = bus_status_49->ram + CE2_RAM_OFFSET;
 
     /* CE2 always present and write enabled */
-    hdw_status.card_status |= ( CE2_CARD_PRESENT | CE2_CARD_WE );
+    hdw.card_status |= ( CE2_CARD_PRESENT | CE2_CARD_WE );
 
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
@@ -611,7 +612,7 @@ void NCe3Init49( void )
     bus_status_49->nce3 = bus_status_49->ram + NCE3_RAM_OFFSET;
 
     /* NCE3 always present and write enabled */
-    hdw_status.card_status |= ( NCE3_CARD_PRESENT | NCE3_CARD_WE );
+    hdw.card_status |= ( NCE3_CARD_PRESENT | NCE3_CARD_WE );
 
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
@@ -670,8 +671,8 @@ void NCe3Save49( void ) { /* Do nothing; the whole RAM is saved by RamSave49() *
 .- */
 Nibble NCe3Read49( Address rel_address )
 {
-    if ( hdw_status.hdw[ HDW_LCR_OFFSET ] & LCR_LED )
-        return FlashRead49( hdw_status.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] | ( rel_address & FLASH_BANK_MASK ) );
+    if ( hdw.registers[ HDW_LCR_OFFSET ] & LCR_LED )
+        return FlashRead49( hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] | ( rel_address & FLASH_BANK_MASK ) );
     else
         return bus_status_49->nce3[ rel_address & NCE3_RAM_MASK ];
 }
@@ -706,8 +707,8 @@ Nibble NCe3Read49( Address rel_address )
 .- */
 void NCe3Write49( Address rel_address, Nibble datum )
 {
-    if ( hdw_status.hdw[ HDW_LCR_OFFSET ] & LCR_LED )
-        FlashWrite49( hdw_status.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] | ( rel_address & FLASH_BANK_MASK ), datum );
+    if ( hdw.registers[ HDW_LCR_OFFSET ] & LCR_LED )
+        FlashWrite49( hdw.accel.a49.view[ ( rel_address & FLASH_VIEW_SELECTOR ) != 0 ] | ( rel_address & FLASH_BANK_MASK ), datum );
     else
         bus_status_49->nce3[ rel_address & NCE3_RAM_MASK ] = datum;
 }

@@ -132,7 +132,7 @@
 
 static const BusDescription hw48_description = {
     {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  BUS_MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, hdw_init,    hdw_save,    hdw_read,    hdw_write,    BUS_MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
     {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
     {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
     {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
@@ -140,7 +140,7 @@ static const BusDescription hw48_description = {
 };
 static const BusDescription hw49_description = {
     {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  BUS_MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, hdw_init,    hdw_save,    hdw_read,    hdw_write,    BUS_MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
     {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
     {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
     {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
@@ -151,8 +151,6 @@ static const BusDescription hw49_description = {
 /*---------------------------------------------------------------------------
         Static/Global variables
   ---------------------------------------------------------------------------*/
-
-struct HdwModule hdw_status;
 
 /* 2.7: Replaced the statically-allocated module mapping structure with a
    pointer to a dynamically-allocated structure, to be able to switch
@@ -1342,7 +1340,7 @@ Nibble bus_read_nibble( Address addr )
 
     /* Update the crc register, if appropriate */
     if ( BUS_MAP.page_table[ page ].index != BUS_HDW_INDEX )
-        hdw_status.crc = ( hdw_status.crc >> 4 ) ^ ( ( ( hdw_status.crc ^ d ) & 0x0F ) * 0x1081 );
+        hdw.crc = ( hdw.crc >> 4 ) ^ ( ( ( hdw.crc ^ d ) & 0x0F ) * 0x1081 );
 
     /* Return to the caller */
     return d;

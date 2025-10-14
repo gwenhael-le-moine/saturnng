@@ -37,7 +37,7 @@
 .description  :
   This module emulates the Hdw peripheral module, that controls all
   peripheral devices of the HP48. The Hdw Read/Write functions simply update
-  the contents of the hdw_status structure to reflect the contents of the
+  the contents of the hdw structure to reflect the contents of the
   actual Hdw registers. The actual emulation of the devices is performed
   by other source modules. References:
 
@@ -73,15 +73,15 @@
   when -ansi -pedantic -Wall options are selected.
 
   Revision 2.5  2000/09/14  15:08:59  cibrario
-  Update HdwRead() and HdwWrite() to support serial port emulation;
+  Update hdw_read() and hdw_write() to support serial port emulation;
   read/write from/to serial port register are mapped into invocation
   of functions in the serial port emulation module.  This module
   merely provides buffering for multi-nibble hdw registers.
 
   Revision 2.4  2000/09/12  15:24:27  cibrario
   Bug fix and update required to implement emulation of Port 1 and 2:
-  - fixed an improper memset() call in HdwInit()
-  - HdwRead() now returns the value of hdw_status_card_status when
+  - fixed an improper memset() call in hdw_init()
+  - hdw_read() now returns the value of hdw_card_status when
     relative address 0x0F is read from.
 
   Revision 1.1  1998/02/17  11:49:59  cibrario
@@ -95,8 +95,11 @@
 #include "bus.h"
 #include "chf_wrapper.h"
 #include "disk_io.h"
+#include "hdw.h"
 #include "serial.h" /* 2.5: Serial port emulation module */
 #include "types.h"
+
+hdw_t hdw;
 
 /* .+
 
@@ -106,7 +109,7 @@
   peripheral devices associated to it from disk.
 
 .call         :
-                HdwInit();
+                hdw_init();
 .input        :
                 void
 .output       :
@@ -120,13 +123,13 @@
     memset() invocation was improper, and could lead to memory corruption
 
 .- */
-void HdwInit( void )
+void hdw_init( void )
 {
-    bool err = ReadStructFromFile( config.hdw_path, sizeof( hdw_status ), &hdw_status );
+    bool err = ReadStructFromFile( config.hdw_path, sizeof( hdw ), &hdw );
     if ( err ) {
         WARNING0( BUS_CHF_MODULE_ID, BUS_W_HDW_INIT )
 
-        ( void )memset( &hdw_status, 0, sizeof( hdw_status ) );
+        ( void )memset( &hdw, 0, sizeof( hdw ) );
     }
 }
 
@@ -138,7 +141,7 @@ void HdwInit( void )
   to the Hdw module to disk.
 
 .call         :
-                HdwSave();
+                hdw_save();
 .input        :
                 void
 .output       :
@@ -150,9 +153,9 @@ void HdwInit( void )
   1.1, 11-Feb-1998, creation
 
 .- */
-void HdwSave( void )
+void hdw_save( void )
 {
-    bool err = WriteStructToFile( &hdw_status, sizeof( hdw_status ), config.hdw_path );
+    bool err = WriteStructToFile( &hdw, sizeof( hdw ), config.hdw_path );
     if ( err )
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_HDW_SAVE )
 }
@@ -164,7 +167,7 @@ void HdwSave( void )
   This function reads a nibble from the Hdw module.
 
 .call         :
-                d = HdwRead(rel_address);
+                d = hdw_read(rel_address);
 .input        :
                 Address rel_address, relative address
 .output       :
@@ -176,16 +179,16 @@ void HdwSave( void )
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, update
     - read from rel_address 0x0F now returns the current value of
-      hdw_status.card_status; its value is set during the
+      hdw.card_status; its value is set during the
       initialization of other peripheral modules.
   2.5, 14-Sep-2000, update
     - added support for serial port emulation
 
 .- */
-Nibble HdwRead( Address rel_address )
+Nibble hdw_read( Address rel_address )
 {
     /* In the following switch, each case corresponds to one hdw register.
-       If the register must be read from the shadow space hdw_status.hdw[],
+       If the register must be read from the shadow space hdw.registers[],
        simply put a break in the case, otherwise code any special action for
        the register and end the case with a return.
     */
@@ -207,7 +210,7 @@ Nibble HdwRead( Address rel_address )
         case 0x05:
         case 0x06:
         case 0x07:
-            return ( Nibble )( ( hdw_status.crc >> ( ( rel_address - 0x04 ) * 4 ) ) & 0x0F );
+            return ( Nibble )( ( hdw.crc >> ( ( rel_address - 0x04 ) * 4 ) ) & 0x0F );
 
         case 0x08: /* Power status */
             /* No power status related interrupt have occoured */
@@ -232,17 +235,17 @@ Nibble HdwRead( Address rel_address )
            when the LS nibble is read; serial_rbr buffers the MS nibble.
         */
         case 0x14:
-            return ( hdw_status.serial_rbr = Serial_RBR_Read() ) & 0x0F;
+            return ( hdw.serial_rbr = Serial_RBR_Read() ) & 0x0F;
 
         case 0x15:
-            return ( hdw_status.serial_rbr >> 4 ) & 0x0F;
+            return ( hdw.serial_rbr >> 4 ) & 0x0F;
 
         case 0x0E: /* Card interface */
             break;
 
         case 0x0F: /* Card interface */
             /* 2.4: Return current card status */
-            return hdw_status.card_status;
+            return hdw.card_status;
 
         case 0x18: /* Service request */
         case 0x19:
@@ -263,10 +266,10 @@ Nibble HdwRead( Address rel_address )
             break;
 
         case 0x2E: /* Timer 1 Control */
-            return hdw_status.t1_ctrl;
+            return hdw.t1_ctrl;
 
         case 0x2F: /* Timer 2 Control */
-            return hdw_status.t2_ctrl;
+            return hdw.t2_ctrl;
 
         /* 3.2: The HP49 firmware (1.19-4) reads a nibble from 0x30 */
         case 0x30:
@@ -277,7 +280,7 @@ Nibble HdwRead( Address rel_address )
             return ( Nibble )0x0;
 
         case 0x37: /* Timer 1 value */
-            return hdw_status.t1_val;
+            return hdw.t1_val;
 
         case 0x38: /* Timer 2 value */
         case 0x39:
@@ -287,7 +290,7 @@ Nibble HdwRead( Address rel_address )
         case 0x3D:
         case 0x3E:
         case 0x3F:
-            return ( Nibble )( ( hdw_status.t2_val >> ( ( rel_address - 0x38 ) * 4 ) ) & 0x0F );
+            return ( Nibble )( ( hdw.t2_val >> ( ( rel_address - 0x38 ) * 4 ) ) & 0x0F );
 
         default:
             WARNING( BUS_CHF_MODULE_ID, BUS_W_HDW_READ, rel_address )
@@ -295,7 +298,7 @@ Nibble HdwRead( Address rel_address )
     }
 
     /* Read from hdw register array */
-    return hdw_status.hdw[ rel_address ];
+    return hdw.registers[ rel_address ];
 }
 
 /* .+
@@ -305,7 +308,7 @@ Nibble HdwRead( Address rel_address )
   This function writes a nibble to the Hdw module.
 
 .call         :
-                HdwWrite(rel_address, data);
+                hdw_write(rel_address, data);
 .input        :
                 Address rel_address, relative address
                 Nibble data, data to be written
@@ -320,7 +323,7 @@ Nibble HdwRead( Address rel_address )
     - added support for serial port emulation
 
 .- */
-void HdwWrite( Address rel_address, Nibble data )
+void hdw_write( Address rel_address, Nibble data )
 {
     const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
     const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F000, 0x000F0000, 0x00F00000, 0x0F000000, 0xF0000000 };
@@ -328,22 +331,22 @@ void HdwWrite( Address rel_address, Nibble data )
     /* This switch has a case for each 'known' hdw register. The code inside the
        case performs the actions specific for that register; the code following
        the switch, instead, simply takes care to shadow the hdw register into
-       the hdw_status.hdw[] array
+       the hdw.registers[] array
     */
     switch ( rel_address ) {
         case 0x00: /* LCD horizontal offset, LCD enable flag */
-            hdw_status.lcd_offset = ( int )data & 0x07;
-            hdw_status.lcd_on = ( ( data & 0x08 ) != 0 );
+            hdw.lcd_offset = ( int )data & 0x07;
+            hdw.lcd_on = ( ( data & 0x08 ) != 0 );
             break;
 
         case 0x01: /* LCD contrast, LS nibble */
-            hdw_status.lcd_contrast &= 0x10;
-            hdw_status.lcd_contrast |= ( int )data;
+            hdw.lcd_contrast &= 0x10;
+            hdw.lcd_contrast |= ( int )data;
             break;
 
         case 0x02: /* LCD contrast, MS bit */
-            hdw_status.lcd_contrast &= 0x0F;
-            hdw_status.lcd_contrast |= ( ( ( int )data & 0x01 ) << 4 );
+            hdw.lcd_contrast &= 0x0F;
+            hdw.lcd_contrast |= ( ( ( int )data & 0x01 ) << 4 );
             break;
 
         case 0x03: /* LCD test control */
@@ -353,8 +356,8 @@ void HdwWrite( Address rel_address, Nibble data )
         case 0x05:
         case 0x06:
         case 0x07:
-            hdw_status.crc &= ~addr_mask[ rel_address - 0x04 ];
-            hdw_status.crc |= ( ( int )data << ( ( rel_address - 0x04 ) * 4 ) );
+            hdw.crc &= ~addr_mask[ rel_address - 0x04 ];
+            hdw.crc |= ( ( int )data << ( ( rel_address - 0x04 ) * 4 ) );
             break;
 
         case 0x08: /* Power status and power control */
@@ -362,13 +365,13 @@ void HdwWrite( Address rel_address, Nibble data )
             break;
 
         case 0x0B: /* LCD annunciator control (low nibble) */
-            hdw_status.lcd_ann &= 0xF0;
-            hdw_status.lcd_ann |= ( int )data;
+            hdw.lcd_ann &= 0xF0;
+            hdw.lcd_ann |= ( int )data;
             break;
 
         case 0x0C: /* LCD annunciator control (high nibble) */
-            hdw_status.lcd_ann &= 0x0F;
-            hdw_status.lcd_ann |= ( ( int )data << 4 );
+            hdw.lcd_ann &= 0x0F;
+            hdw.lcd_ann |= ( ( int )data << 4 );
             break;
 
         case 0x0D: /* Serial port baud rate */
@@ -401,12 +404,12 @@ void HdwWrite( Address rel_address, Nibble data )
            when the MS nibble is written; serial_tbr buffers the LS nibble.
         */
         case 0x16:
-            hdw_status.serial_tbr = ( hdw_status.serial_tbr & 0xF0 ) | ( Byte )data;
+            hdw.serial_tbr = ( hdw.serial_tbr & 0xF0 ) | ( Byte )data;
             break;
 
         case 0x17:
-            hdw_status.serial_tbr = ( hdw_status.serial_tbr & 0x0F ) | ( ( Byte )data << 4 );
-            Serial_TBR_Write( hdw_status.serial_tbr );
+            hdw.serial_tbr = ( hdw.serial_tbr & 0x0F ) | ( ( Byte )data << 4 );
+            Serial_TBR_Write( hdw.serial_tbr );
             break;
 
         case 0x18: /* Service request */
@@ -436,33 +439,33 @@ void HdwWrite( Address rel_address, Nibble data )
         case 0x22:
         case 0x23:
         case 0x24:
-            hdw_status.lcd_base_addr &= ~addr_mask[ rel_address - 0x20 ];
-            hdw_status.lcd_base_addr |= ( ( int )data << ( ( rel_address - 0x20 ) * 4 ) );
+            hdw.lcd_base_addr &= ~addr_mask[ rel_address - 0x20 ];
+            hdw.lcd_base_addr |= ( ( int )data << ( ( rel_address - 0x20 ) * 4 ) );
             break;
 
         case 0x25: /* LCD line offset register */
         case 0x26:
         case 0x27:
-            hdw_status.lcd_line_offset &= ~addr_mask[ rel_address - 0x25 ];
-            hdw_status.lcd_line_offset |= ( ( int )data << ( ( rel_address - 0x25 ) * 4 ) );
+            hdw.lcd_line_offset &= ~addr_mask[ rel_address - 0x25 ];
+            hdw.lcd_line_offset |= ( ( int )data << ( ( rel_address - 0x25 ) * 4 ) );
             break;
 
         case 0x28: /* LCD vertical line count (low nibble) */
-            hdw_status.lcd_vlc &= 0x30;
-            hdw_status.lcd_vlc |= ( int )data;
+            hdw.lcd_vlc &= 0x30;
+            hdw.lcd_vlc |= ( int )data;
             break;
 
         case 0x29: /* LCD vertical line count (higher 2 bits), others (TBD) */
-            hdw_status.lcd_vlc &= 0x0F;
-            hdw_status.lcd_vlc |= ( ( ( int )data & 0x03 ) << 4 );
+            hdw.lcd_vlc &= 0x0F;
+            hdw.lcd_vlc |= ( ( ( int )data & 0x03 ) << 4 );
             break;
 
         case 0x2E: /* Timer 1 Control */
-            hdw_status.t1_ctrl = data;
+            hdw.t1_ctrl = data;
             break;
 
         case 0x2F: /* Timer 2 Control */
-            hdw_status.t2_ctrl = data;
+            hdw.t2_ctrl = data;
             break;
 
         case 0x30: /* LCD menu address register (write only) */
@@ -470,12 +473,12 @@ void HdwWrite( Address rel_address, Nibble data )
         case 0x32:
         case 0x33:
         case 0x34:
-            hdw_status.lcd_menu_addr &= ~addr_mask[ rel_address - 0x30 ];
-            hdw_status.lcd_menu_addr |= ( ( int )data << ( ( rel_address - 0x30 ) * 4 ) );
+            hdw.lcd_menu_addr &= ~addr_mask[ rel_address - 0x30 ];
+            hdw.lcd_menu_addr |= ( ( int )data << ( ( rel_address - 0x30 ) * 4 ) );
             break;
 
         case 0x37: /* Timer 1 value */
-            hdw_status.t1_val = data;
+            hdw.t1_val = data;
             break;
 
         case 0x38: /* Timer 2 value */
@@ -486,8 +489,8 @@ void HdwWrite( Address rel_address, Nibble data )
         case 0x3D:
         case 0x3E:
         case 0x3F:
-            hdw_status.t2_val &= ~int32_mask[ rel_address - 0x38 ];
-            hdw_status.t2_val |= ( ( int32 )data << ( ( rel_address - 0x38 ) * 4 ) );
+            hdw.t2_val &= ~int32_mask[ rel_address - 0x38 ];
+            hdw.t2_val |= ( ( int32 )data << ( ( rel_address - 0x38 ) * 4 ) );
             break;
 
         default:
@@ -495,5 +498,5 @@ void HdwWrite( Address rel_address, Nibble data )
     }
 
     /* Save copy into hdw register array */
-    hdw_status.hdw[ rel_address ] = data;
+    hdw.registers[ rel_address ] = data;
 }

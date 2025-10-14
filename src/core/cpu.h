@@ -228,7 +228,7 @@ typedef enum { INT_REQUEST_NONE, INT_REQUEST_IRQ, INT_REQUEST_NMI } int_request_
 #  define INNER_LOOP_MED 13
 #  define INNER_LOOP_MIN 2
 
-typedef struct {
+typedef struct cpu_t {
     DataRegister reg[ N_WORKING_REGISTER ];
     DataRegister reg_r[ N_SCRATCH_REGISTER_ALL ];
     Address d[ N_DATA_POINTER_REGISTER ];

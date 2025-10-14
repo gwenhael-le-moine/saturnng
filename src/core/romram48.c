@@ -78,6 +78,7 @@
 #include "chf_wrapper.h"
 #include "cpu.h"
 #include "disk_io.h"
+#include "hdw.h"
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
    a private struct BusStatus_48. The dynamic allocation is performed during
@@ -333,11 +334,11 @@ void Ce1Init48( void )
     /* Check if bank-switcher accelerators are valid; if not, initialize
        them to a reasonable value (that is, select Port_2 bank 0).
     */
-    if ( hdw_status.accel_valid )
+    if ( hdw.accel_valid )
         return;
 
-    hdw_status.accel_valid = 1;
-    hdw_status.accel.a48.bs_address = ( XAddress )0;
+    hdw.accel_valid = 1;
+    hdw.accel.a48.bs_address = ( XAddress )0;
 }
 
 /* .+
@@ -372,7 +373,7 @@ void Ce1Save48( void )
 .description  :
   This function reads a nibble from the Ce1 module; the address of
   the access cycle is converted into an XAddress and saved in
-  hdw_status.accel.a48.bs_address.  It will be used to supply the
+  hdw.accel.a48.bs_address.  It will be used to supply the
   most significant bits of Port_2 addresses when accessing that port.
 
 .call         :
@@ -399,7 +400,7 @@ Nibble Ce1Read48( Address rel_address )
        obtain a valid index in Port_2
     */
 #ifdef N_PORT_2_BANK_48
-    hdw_status.accel.a48.bs_address = ( ( XAddress )( ( rel_address >> 1 ) & 0x1F ) << 18 ) & ( N_PORT_2_SIZE_48 - 1 );
+    hdw.accel.a48.bs_address = ( ( XAddress )( ( rel_address >> 1 ) & 0x1F ) << 18 ) & ( N_PORT_2_SIZE_48 - 1 );
 #endif
 
     return ( Nibble )0x0;
@@ -411,7 +412,7 @@ Nibble Ce1Read48( Address rel_address )
 .description  :
   This function writes a nibble to the Ce1 module; the write attempt
   is ignored and the status code BUS_E_CE1_WRITE is signaled. The
-  state of hdw_status.accel.a48.bs_address is *not* changed.
+  state of hdw.accel.a48.bs_address is *not* changed.
 
 .call         :
                 Ce1Write(rel_address, datum);
@@ -462,7 +463,7 @@ void Ce2Init48( void )
     bool err = bus_read_nibblesFromFile( config.port1_path, N_PORT_1_SIZE_48, bus_status_48->port_1 );
     if ( !err ) {
         /* Card present; check write protection */
-        new_status = hdw_status.card_status | CE2_CARD_PRESENT;
+        new_status = hdw.card_status | CE2_CARD_PRESENT;
 
         if ( access( config.port1_path, W_OK ) == 0 )
             new_status |= CE2_CARD_WE;
@@ -477,16 +478,16 @@ void Ce2Init48( void )
 
         ( void )memset( bus_status_48->port_1, 0, sizeof( bus_status_48->port_1 ) );
 
-        new_status = hdw_status.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
+        new_status = hdw.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
     }
 
-    if ( new_status == hdw_status.card_status )
+    if ( new_status == hdw.card_status )
         return;
 
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
      */
-    hdw_status.card_status = new_status;
+    hdw.card_status = new_status;
     cpu.hst |= HST_MP_MASK;
     CpuIntRequest( INT_REQUEST_IRQ );
 }
@@ -515,7 +516,7 @@ void Ce2Init48( void )
 void Ce2Save48( void )
 {
     /* Attempt to save only if port is write-enabled */
-    if ( !( hdw_status.card_status & CE2_CARD_WE ) )
+    if ( !( hdw.card_status & CE2_CARD_WE ) )
         return;
 
     bool err = bus_write_nibblesToFile( bus_status_48->port_1, N_PORT_1_SIZE_48, config.port1_path );
@@ -602,7 +603,7 @@ void NCe3Init48( void )
     bool err = bus_read_nibblesFromFile( config.port2_path, N_PORT_2_SIZE_48, bus_status_48->port_2 );
     if ( !err ) {
         /* Card present; check write protection */
-        new_status = hdw_status.card_status | NCE3_CARD_PRESENT;
+        new_status = hdw.card_status | NCE3_CARD_PRESENT;
 
         if ( access( config.port2_path, W_OK ) == 0 )
             new_status |= NCE3_CARD_WE;
@@ -617,22 +618,22 @@ void NCe3Init48( void )
 
         ( void )memset( bus_status_48->port_2, 0, sizeof( bus_status_48->port_2 ) );
 
-        new_status = hdw_status.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
+        new_status = hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
     }
 
 #else
     /* If N_PORT_2_BANK_48 is undefined, Port 2 is not emulated */
-    new_status = hdw_status.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
+    new_status = hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
 
 #endif
 
-    if ( new_status == hdw_status.card_status )
+    if ( new_status == hdw.card_status )
         return;
 
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
      */
-    hdw_status.card_status = new_status;
+    hdw.card_status = new_status;
     cpu.hst |= HST_MP_MASK;
     CpuIntRequest( INT_REQUEST_IRQ );
 }
@@ -661,7 +662,7 @@ void NCe3Save48( void )
 {
 #ifdef N_PORT_2_BANK_48
     /* Attempt to save only if port is write-enabled */
-    if ( !( hdw_status.card_status & NCE3_CARD_WE ) )
+    if ( !( hdw.card_status & NCE3_CARD_WE ) )
         return;
 
     bool err = bus_write_nibblesToFile( bus_status_48->port_2, N_PORT_2_SIZE_48, config.port2_path );
@@ -696,7 +697,7 @@ void NCe3Save48( void )
 Nibble NCe3Read48( Address rel_address )
 {
 #ifdef N_PORT_2_BANK_48
-    return bus_status_48->port_2[ rel_address | hdw_status.accel.a48.bs_address ];
+    return bus_status_48->port_2[ rel_address | hdw.accel.a48.bs_address ];
 #else
     ERROR( BUS_CHF_MODULE_ID, BUS_E_NCE3_READ, rel_address )
 
@@ -730,7 +731,7 @@ Nibble NCe3Read48( Address rel_address )
 void NCe3Write48( Address rel_address, Nibble datum )
 {
 #ifdef N_PORT_2_BANK_48
-    bus_status_48->port_2[ rel_address | hdw_status.accel.a48.bs_address ] = datum;
+    bus_status_48->port_2[ rel_address | hdw.accel.a48.bs_address ] = datum;
 #else
     ERROR( BUS_CHF_MODULE_ID, BUS_E_NCE3_WRITE, rel_address, datum )
 #endif
