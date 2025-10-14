@@ -118,6 +118,7 @@
   BUS_OFFSET returns the page offset of an address (int)
   BUS_PAGE returns the page number of an address (Address)
   ---------------------------------------------------------------------------*/
+#define USE_BUS_CACHE 1
 
 #define BUS_PAGE( address ) ( ( int )( ( ( address ) & 0xFFFC0 ) >> 6 ) )
 #define BUS_OFFSET( address ) ( ( address ) & 0x0003F )
@@ -150,7 +151,6 @@ static const bus_t hw49_description = {
 /*---------------------------------------------------------------------------
         Static/Global variables
   ---------------------------------------------------------------------------*/
-
 /* 2.7: Replaced the statically-allocated module mapping structure with a
    pointer to a dynamically-allocated structure, to be able to switch
    between different structures fast.  The BUS_MAP macro can be used to
@@ -980,8 +980,10 @@ void bus_reset( void )
     /* Rebuild the module page table */
     RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
 
+#ifdef USE_BUS_CACHE
     /* Flush the whole bus_map_t cache, preserving the current map */
     cache__flush_except( bus_map_ptr );
+#endif
 
     /* Mark the current bus_map_t to be a configuration point;
        this flag is used by the unconfig cache code to correctly
@@ -1041,7 +1043,7 @@ void bus_configure( Address config_info )
             silently align them here.
     */
     config_info &= ~0xFF;
-
+#ifdef USE_BUS_CACHE
     /* ACCESS CONFIG CACHE */
     bus_map_t* nxt = cache__config_get( config_info );
     if ( nxt != ( bus_map_t* )NULL ) {
@@ -1075,7 +1077,7 @@ void bus_configure( Address config_info )
 
     bus_map_t* old = bus_map_ptr;
     bus_map_ptr = victim->map_ptr;
-
+#endif
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
     */
@@ -1103,22 +1105,26 @@ void bus_configure( Address config_info )
         RebuildPageTable( BUS_PAGE( BUS_MAP.map_info[ mod ].abs_base_addr ),
                           BUS_PAGE( BUS_MAP.map_info[ mod ].abs_base_addr + BUS_MAP.map_info[ mod ].size - 1 ) );
 
+#ifdef USE_BUS_CACHE
         /* Mark the current bus_map_t to be a configuration point;
            this flag is used by the unconfig cache code to correctly
            undo the last config
         */
         BUS_MAP.cache.config_point = 1;
+#endif
 
         DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_BUS_CACHE, BUS_I_CONFIG, bus[ mod ].name, BUS_MAP.map_info[ mod ].abs_base_addr,
                BUS_MAP.map_info[ mod ].size )
     }
 
+#ifdef USE_BUS_CACHE
     /* Set the unconfig cache pointer of module 'mod' to the old BusMap,
        and increment its reference counter, to avoid freeing it
        improperly.
     */
     BUS_MAP.cache.unconfig[ mod ] = old;
     old->cache.ref_count++;
+#endif
 }
 
 /* .+
@@ -1155,6 +1161,7 @@ void bus_unconfigure( Address unconfig_info )
 {
     int mod = BUS_MAP.page_table[ BUS_PAGE( unconfig_info ) ].index;
 
+#ifdef USE_BUS_CACHE
     /* Determine the module to unconfigure */
     if ( ( mod == BUS_NO_BUS_INDEX ) || ( bus[ mod ].r_config == MODULE_CONFIGURED ) ) {
         /* There isn't any module configured at the given address -
@@ -1199,6 +1206,7 @@ void bus_unconfigure( Address unconfig_info )
     /* Save pointer to the old map and switch to a temporary one */
     bus_map_t* old = bus_map_ptr;
     bus_map_ptr = bus_map__copy( bus_map__new(), bus_map_ptr );
+#endif
 
     /* Update the mapping information table */
     BUS_MAP.map_info[ mod ].config = bus[ mod ].r_config;
@@ -1214,6 +1222,7 @@ void bus_unconfigure( Address unconfig_info )
     */
     BUS_MAP.map_info[ mod ].size = bus[ mod ].r_size;
 
+#ifdef USE_BUS_CACHE
     nxt = cache__check_for_late_hit();
     if ( nxt != ( bus_map_t* )NULL ) {
         /* Update pointer from the old map to the new one, and increment
@@ -1238,12 +1247,15 @@ void bus_unconfigure( Address unconfig_info )
            undo the last config
         */
         BUS_MAP.cache.config_point = 1;
+#endif
 
         DEBUG0( BUS_CHF_MODULE_ID, DEBUG_C_BUS_CACHE, BUS_I_UNCONFIG_L_MISS )
 
         DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_BUS_CACHE, BUS_I_UNCONFIG, bus[ mod ].name,
                BUS_MAP.map_info[ mod ].abs_base_addr, BUS_MAP.map_info[ mod ].size );
+#ifdef USE_BUS_CACHE
     }
+#endif
 }
 
 /* .+
