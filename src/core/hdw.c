@@ -98,10 +98,6 @@
 #include "serial.h" /* 2.5: Serial port emulation module */
 #include "types.h"
 
-static const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
-
-static const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F000, 0x000F0000, 0x00F00000, 0x0F000000, 0xF0000000 };
-
 /* .+
 
 .creation     : 23-Jan-1998
@@ -326,6 +322,9 @@ Nibble HdwRead( Address rel_address )
 .- */
 void HdwWrite( Address rel_address, Nibble data )
 {
+    const int addr_mask[] = { 0x0000F, 0x000F0, 0x00F00, 0x0F000, 0xF0000 };
+    const int32 int32_mask[] = { 0x0000000F, 0x000000F0, 0x00000F00, 0x0000F000, 0x000F0000, 0x00F00000, 0x0F000000, 0xF0000000 };
+
     /* This switch has a case for each 'known' hdw register. The code inside the
        case performs the actions specific for that register; the code following
        the switch, instead, simply takes care to shadow the hdw register into

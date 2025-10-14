@@ -159,14 +159,10 @@ static const int dec_carry[] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1,
 
 /* Decimal sub/borrow tables, range -10..15 */
 static const int dec_sub_t[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5 };
+static const int* const dec_sub = dec_sub_t + 10;
 
 static const int dec_borrow_t[] = { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-
-static const int* const dec_sub = dec_sub_t + 10;
 static const int* const dec_borrow = dec_borrow_t + 10;
-
-/* Decimal one's complement table */
-static const int dec_one_c[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0 };
 
 /*---------------------------------------------------------------------------
         Private functions: return stack handling
@@ -822,6 +818,9 @@ static void OneComplR( register Nibble* d, int fs )
 {
     register int fs_start = fs_idx_start[ fs ];
     register int fs_end = fs_idx_end[ fs ];
+
+    /* Decimal one's complement table */
+    const int dec_one_c[] = { 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0 };
 
     for ( register int n = fs_start; n <= fs_end; n++ ) {
         if ( cpu.hexmode )
