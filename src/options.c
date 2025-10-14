@@ -22,7 +22,7 @@
 #endif
 
 #define CONFIG_FILE_NAME "config.lua"
-#define MOD_FILE_NAME "mod"
+#define BUS_FILE_NAME "mod"
 #define CPU_FILE_NAME "cpu"
 #define HDW_FILE_NAME "hdw"
 #define ROM_FILE_NAME "rom"
@@ -387,7 +387,7 @@ config_t* config_init( int argc, char* argv[] )
                 __config.debug_level |= DEBUG_C_IMPLEMENTATION;
                 break;
             case 38606:
-                __config.debug_level |= DEBUG_C_MOD_CACHE;
+                __config.debug_level |= DEBUG_C_BUS_CACHE;
                 break;
             case 38607:
                 __config.debug_level |= DEBUG_C_SERIAL;
@@ -411,7 +411,7 @@ config_t* config_init( int argc, char* argv[] )
         __config.state_dir_path = strdup( clopt_state_dir_path );
 
     __config.config_path = normalize_filename( __config.state_dir_path, CONFIG_FILE_NAME );
-    __config.mod_path = normalize_filename( __config.state_dir_path, MOD_FILE_NAME );
+    __config.bus_path = normalize_filename( __config.state_dir_path, BUS_FILE_NAME );
     __config.cpu_path = normalize_filename( __config.state_dir_path, CPU_FILE_NAME );
     __config.hdw_path = normalize_filename( __config.state_dir_path, HDW_FILE_NAME );
     __config.rom_path = normalize_filename( __config.state_dir_path, ROM_FILE_NAME );

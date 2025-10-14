@@ -166,8 +166,8 @@ InputRegister KeybIN( OutputRegister out )
 .output       :
                 void
 .status_codes :
-                MOD_W_BAD_KEY
-                MOD_W_BAD_OUT_BIT
+                BUS_W_BAD_KEY
+                BUS_W_BAD_OUT_BIT
 .notes        :
   1.1, 17-Feb-1998, creation
   2.1, 6-Sep-2000,
@@ -203,8 +203,8 @@ void KeybPress( int keycode )
 .output       :
                 void
 .status_codes :
-                MOD_W_BAD_KEY
-                MOD_W_BAD_OUT_BIT
+                BUS_W_BAD_KEY
+                BUS_W_BAD_OUT_BIT
 .notes        :
   1.1, 17-Feb-1998, creation
   2.1, 6-Sep-2000,

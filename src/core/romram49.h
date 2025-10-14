@@ -4,7 +4,7 @@
 #  include "types.h"
 
 /* External storage */
-extern struct ModStatus_49* mod_status_49;
+extern struct BusStatus_49* bus_status_49;
 
 extern void RomInit49( void );
 extern void RamInit49( void );

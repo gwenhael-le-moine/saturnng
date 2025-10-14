@@ -53,7 +53,7 @@
 
   Revision 3.2  2000/09/22 14:10:25  cibrario
   Implemented preliminary support of HP49 hw architecture:
-  - Revised to handle the split of struct ModStatus in two
+  - Revised to handle the split of struct BusStatus in two
 
   Revision 3.1  2000/09/20  13:57:24  cibrario
   Minor updates and fixes to avoid gcc compiler warnings on Solaris
@@ -80,11 +80,11 @@
 #include "disk_io.h"
 
 /* 3.2: The rom/ram storage areas are now dynamically allocated in
-   a private struct ModStatus_48. The dynamic allocation is performed during
+   a private struct BusStatus_48. The dynamic allocation is performed during
    Rom initialization, and the following macro allows us to reuse the
    existing code with minimal updates.
 */
-static struct ModStatus_48* mod_status_48;
+static struct BusStatus_48* bus_status_48;
 
 /*---------------------------------------------------------------------------
         Rom module
@@ -104,29 +104,29 @@ static struct ModStatus_48* mod_status_48;
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_F_ROM_INIT
-                MOD_F_MOD_STATUS_ALLOC
+                BUS_I_CALLED
+                BUS_F_ROM_INIT
+                BUS_F_BUS_STATUS_ALLOC
 .notes        :
   1.1, 23-Jan-1998, creation
 
 .- */
 void RomInit48( void )
 {
-    mod_status_48 = ( struct ModStatus_48* )malloc( sizeof( struct ModStatus_48 ) );
-    if ( mod_status_48 == ( struct ModStatus_48* )NULL ) {
+    bus_status_48 = ( struct BusStatus_48* )malloc( sizeof( struct BusStatus_48 ) );
+    if ( bus_status_48 == ( struct BusStatus_48* )NULL ) {
         SIGNAL_ERRNO
-        FATAL( MOD_CHF_MODULE_ID, MOD_F_MOD_STATUS_ALLOC, sizeof( struct ModStatus_48 ) )
+        FATAL( BUS_CHF_MODULE_ID, BUS_F_BUS_STATUS_ALLOC, sizeof( struct BusStatus_48 ) )
     }
 
     bool err = true;
     if ( config.model == MODEL_48GX )
-        err = bus_read_nibblesFromFile( config.rom_path, N_ROM_SIZE_48, mod_status_48->rom );
+        err = bus_read_nibblesFromFile( config.rom_path, N_ROM_SIZE_48, bus_status_48->rom );
     if ( config.model == MODEL_48SX )
         // To load 48SX ROM, try again with half the size this time.
-        err = bus_read_nibblesFromFile( config.rom_path, N_ROM_SIZE_48 / 2, mod_status_48->rom );
+        err = bus_read_nibblesFromFile( config.rom_path, N_ROM_SIZE_48 / 2, bus_status_48->rom );
     if ( err )
-        FATAL0( MOD_CHF_MODULE_ID, MOD_F_ROM_INIT )
+        FATAL0( BUS_CHF_MODULE_ID, BUS_F_ROM_INIT )
 }
 
 /* .+
@@ -143,7 +143,7 @@ void RomInit48( void )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 11-Feb-1998, creation
 
@@ -164,12 +164,12 @@ void RomSave48( void ) {}
 .output       :
                 Nibble *d, datum read from memory
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RomRead48( Address rel_address ) { return mod_status_48->rom[ rel_address ]; }
+Nibble RomRead48( Address rel_address ) { return bus_status_48->rom[ rel_address ]; }
 
 /* .+
 
@@ -186,8 +186,8 @@ Nibble RomRead48( Address rel_address ) { return mod_status_48->rom[ rel_address
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_ROM_WRITE
+                BUS_I_CALLED
+                BUS_E_ROM_WRITE
 .notes        :
   1.1, 26-Jan-1998, creation
 
@@ -195,7 +195,7 @@ Nibble RomRead48( Address rel_address ) { return mod_status_48->rom[ rel_address
 void RomWrite48( Address rel_address, Nibble datum )
 {
     // FIXME: 48gx: saturn48gx-Mid <12>d (src/core/romram48.c,197 */)-E-Write into ROM A[1B632] D[9]
-    ERROR( MOD_CHF_MODULE_ID, MOD_E_ROM_WRITE, rel_address, datum )
+    ERROR( BUS_CHF_MODULE_ID, BUS_E_ROM_WRITE, rel_address, datum )
 }
 
 /*---------------------------------------------------------------------------
@@ -215,19 +215,19 @@ void RomWrite48( Address rel_address, Nibble datum )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_W_RAM_INIT
+                BUS_I_CALLED
+                BUS_W_RAM_INIT
 .notes        :
   1.1, 23-Jan-1998, creation
 
 .- */
 void RamInit48( void )
 {
-    bool err = bus_read_nibblesFromFile( config.ram_path, N_RAM_SIZE_48, mod_status_48->ram );
+    bool err = bus_read_nibblesFromFile( config.ram_path, N_RAM_SIZE_48, bus_status_48->ram );
     if ( err ) {
-        WARNING0( MOD_CHF_MODULE_ID, MOD_W_RAM_INIT )
+        WARNING0( BUS_CHF_MODULE_ID, BUS_W_RAM_INIT )
 
-        ( void )memset( mod_status_48->ram, 0, sizeof( mod_status_48->ram ) );
+        ( void )memset( bus_status_48->ram, 0, sizeof( bus_status_48->ram ) );
     }
 }
 
@@ -244,8 +244,8 @@ void RamInit48( void )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_RAM_SAVE
+                BUS_I_CALLED
+                BUS_E_RAM_SAVE
 .notes        :
   1.1, 11-Feb-1998, creation
   2.4, 12-Sep-2000, update
@@ -254,10 +254,10 @@ void RamInit48( void )
 .- */
 void RamSave48( void )
 {
-    bool err = bus_write_nibblesToFile( mod_status_48->ram, N_RAM_SIZE_48, config.ram_path );
+    bool err = bus_write_nibblesToFile( bus_status_48->ram, N_RAM_SIZE_48, config.ram_path );
     if ( err ) {
         SIGNAL_ERRNO
-        ERROR0( MOD_CHF_MODULE_ID, MOD_E_RAM_SAVE )
+        ERROR0( BUS_CHF_MODULE_ID, BUS_E_RAM_SAVE )
     }
 }
 
@@ -275,12 +275,12 @@ void RamSave48( void )
 .output       :
                 Nibble *d, datum read from memory
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
-Nibble RamRead48( Address rel_address ) { return mod_status_48->ram[ rel_address ]; }
+Nibble RamRead48( Address rel_address ) { return bus_status_48->ram[ rel_address ]; }
 
 /* .+
 
@@ -297,12 +297,12 @@ Nibble RamRead48( Address rel_address ) { return mod_status_48->ram[ rel_address
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 26-Jan-1998, creation
 
 .- */
-void RamWrite48( Address rel_address, Nibble datum ) { mod_status_48->ram[ rel_address ] = datum; }
+void RamWrite48( Address rel_address, Nibble datum ) { bus_status_48->ram[ rel_address ] = datum; }
 
 /*---------------------------------------------------------------------------
         Ce1  module
@@ -322,7 +322,7 @@ void RamWrite48( Address rel_address, Nibble datum ) { mod_status_48->ram[ rel_a
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -333,11 +333,11 @@ void Ce1Init48( void )
     /* Check if bank-switcher accelerators are valid; if not, initialize
        them to a reasonable value (that is, select Port_2 bank 0).
     */
-    if ( mod_status.hdw.accel_valid )
+    if ( bus_status.hdw.accel_valid )
         return;
 
-    mod_status.hdw.accel_valid = 1;
-    mod_status.hdw.accel.a48.bs_address = ( XAddress )0;
+    bus_status.hdw.accel_valid = 1;
+    bus_status.hdw.accel.a48.bs_address = ( XAddress )0;
 }
 
 /* .+
@@ -353,7 +353,7 @@ void Ce1Init48( void )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -372,7 +372,7 @@ void Ce1Save48( void )
 .description  :
   This function reads a nibble from the Ce1 module; the address of
   the access cycle is converted into an XAddress and saved in
-  mod_status.hdw.accel.a48.bs_address.  It will be used to supply the
+  bus_status.hdw.accel.a48.bs_address.  It will be used to supply the
   most significant bits of Port_2 addresses when accessing that port.
 
 .call         :
@@ -382,8 +382,8 @@ void Ce1Save48( void )
 .output       :
                 Nibble *d, datum read from memory
 .status_codes :
-                MOD_I_CALLED
-                MOD_I_BS_ADDRESS
+                BUS_I_CALLED
+                BUS_I_BS_ADDRESS
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -392,14 +392,14 @@ void Ce1Save48( void )
 Nibble Ce1Read48( Address rel_address )
 {
 
-    DEBUG( MOD_CHF_MODULE_ID, DEBUG_C_MODULES, MOD_I_BS_ADDRESS, rel_address )
+    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_BS_ADDRESS, rel_address )
 
     /* Save the read address into the hdw accelerators.
        bs_address can be directly or-ed with a relative port address to
        obtain a valid index in Port_2
     */
 #ifdef N_PORT_2_BANK_48
-    mod_status.hdw.accel.a48.bs_address = ( ( XAddress )( ( rel_address >> 1 ) & 0x1F ) << 18 ) & ( N_PORT_2_SIZE_48 - 1 );
+    bus_status.hdw.accel.a48.bs_address = ( ( XAddress )( ( rel_address >> 1 ) & 0x1F ) << 18 ) & ( N_PORT_2_SIZE_48 - 1 );
 #endif
 
     return ( Nibble )0x0;
@@ -410,8 +410,8 @@ Nibble Ce1Read48( Address rel_address )
 .creation     : 23-Jan-1998
 .description  :
   This function writes a nibble to the Ce1 module; the write attempt
-  is ignored and the status code MOD_E_CE1_WRITE is signaled. The
-  state of mod_status.hdw.accel.a48.bs_address is *not* changed.
+  is ignored and the status code BUS_E_CE1_WRITE is signaled. The
+  state of bus_status.hdw.accel.a48.bs_address is *not* changed.
 
 .call         :
                 Ce1Write(rel_address, datum);
@@ -421,14 +421,14 @@ Nibble Ce1Read48( Address rel_address )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_CE1_WRITE
+                BUS_I_CALLED
+                BUS_E_CE1_WRITE
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce1Write48( Address rel_address, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID, MOD_E_CE1_WRITE, rel_address, datum ) }
+void Ce1Write48( Address rel_address, Nibble datum ) { ERROR( BUS_CHF_MODULE_ID, BUS_E_CE1_WRITE, rel_address, datum ) }
 
 /*---------------------------------------------------------------------------
         Ce2  module
@@ -447,9 +447,9 @@ void Ce1Write48( Address rel_address, Nibble datum ) { ERROR( MOD_CHF_MODULE_ID,
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_W_PORT_1_INIT
-                MOD_I_PORT_1_WP
+                BUS_I_CALLED
+                BUS_W_PORT_1_INIT
+                BUS_I_PORT_1_WP
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -459,10 +459,10 @@ void Ce2Init48( void )
 {
     Nibble new_status;
 
-    bool err = bus_read_nibblesFromFile( config.port1_path, N_PORT_1_SIZE_48, mod_status_48->port_1 );
+    bool err = bus_read_nibblesFromFile( config.port1_path, N_PORT_1_SIZE_48, bus_status_48->port_1 );
     if ( !err ) {
         /* Card present; check write protection */
-        new_status = mod_status.hdw.card_status | CE2_CARD_PRESENT;
+        new_status = bus_status.hdw.card_status | CE2_CARD_PRESENT;
 
         if ( access( config.port1_path, W_OK ) == 0 )
             new_status |= CE2_CARD_WE;
@@ -470,23 +470,23 @@ void Ce2Init48( void )
             new_status &= ~CE2_CARD_WE;
 
             SIGNAL_ERRNO
-            SIGNAL0( MOD_CHF_MODULE_ID, MOD_I_PORT_1_WP, CHF_INFO )
+            SIGNAL0( BUS_CHF_MODULE_ID, BUS_I_PORT_1_WP, CHF_INFO )
         }
     } else {
-        WARNING0( MOD_CHF_MODULE_ID, MOD_W_PORT_1_INIT )
+        WARNING0( BUS_CHF_MODULE_ID, BUS_W_PORT_1_INIT )
 
-        ( void )memset( mod_status_48->port_1, 0, sizeof( mod_status_48->port_1 ) );
+        ( void )memset( bus_status_48->port_1, 0, sizeof( bus_status_48->port_1 ) );
 
-        new_status = mod_status.hdw.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
+        new_status = bus_status.hdw.card_status & ~( CE2_CARD_PRESENT | CE2_CARD_WE );
     }
 
-    if ( new_status == mod_status.hdw.card_status )
+    if ( new_status == bus_status.hdw.card_status )
         return;
 
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
      */
-    mod_status.hdw.card_status = new_status;
+    bus_status.hdw.card_status = new_status;
     cpu.hst |= HST_MP_MASK;
     CpuIntRequest( INT_REQUEST_IRQ );
 }
@@ -505,8 +505,8 @@ void Ce2Init48( void )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_PORT_1_SAVE
+                BUS_I_CALLED
+                BUS_E_PORT_1_SAVE
 .notes        :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -515,13 +515,13 @@ void Ce2Init48( void )
 void Ce2Save48( void )
 {
     /* Attempt to save only if port is write-enabled */
-    if ( !( mod_status.hdw.card_status & CE2_CARD_WE ) )
+    if ( !( bus_status.hdw.card_status & CE2_CARD_WE ) )
         return;
 
-    bool err = bus_write_nibblesToFile( mod_status_48->port_1, N_PORT_1_SIZE_48, config.port1_path );
+    bool err = bus_write_nibblesToFile( bus_status_48->port_1, N_PORT_1_SIZE_48, config.port1_path );
     if ( err ) {
         SIGNAL_ERRNO
-        ERROR0( MOD_CHF_MODULE_ID, MOD_E_PORT_1_SAVE )
+        ERROR0( BUS_CHF_MODULE_ID, BUS_E_PORT_1_SAVE )
     }
 }
 
@@ -538,13 +538,13 @@ void Ce2Save48( void )
 .output       :
                 Nibble *d, datum read from memory
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-Nibble Ce2Read48( Address rel_address ) { return mod_status_48->port_1[ rel_address ]; }
+Nibble Ce2Read48( Address rel_address ) { return bus_status_48->port_1[ rel_address ]; }
 
 /* .+
 
@@ -560,13 +560,13 @@ Nibble Ce2Read48( Address rel_address ) { return mod_status_48->port_1[ rel_addr
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
+                BUS_I_CALLED
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
 
 .- */
-void Ce2Write48( Address rel_address, Nibble datum ) { mod_status_48->port_1[ rel_address ] = datum; }
+void Ce2Write48( Address rel_address, Nibble datum ) { bus_status_48->port_1[ rel_address ] = datum; }
 
 /*---------------------------------------------------------------------------
         NCe3  module
@@ -586,9 +586,9 @@ void Ce2Write48( Address rel_address, Nibble datum ) { mod_status_48->port_1[ re
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_W_PORT_2_INIT
-                MOD_I_PORT_2_WP
+                BUS_I_CALLED
+                BUS_W_PORT_2_INIT
+                BUS_I_PORT_2_WP
 .notes        :
   1.1, 23-Jan-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -599,10 +599,10 @@ void NCe3Init48( void )
     Nibble new_status;
 
 #ifdef N_PORT_2_BANK_48
-    bool err = bus_read_nibblesFromFile( config.port2_path, N_PORT_2_SIZE_48, mod_status_48->port_2 );
+    bool err = bus_read_nibblesFromFile( config.port2_path, N_PORT_2_SIZE_48, bus_status_48->port_2 );
     if ( !err ) {
         /* Card present; check write protection */
-        new_status = mod_status.hdw.card_status | NCE3_CARD_PRESENT;
+        new_status = bus_status.hdw.card_status | NCE3_CARD_PRESENT;
 
         if ( access( config.port2_path, W_OK ) == 0 )
             new_status |= NCE3_CARD_WE;
@@ -610,29 +610,29 @@ void NCe3Init48( void )
             new_status &= ~NCE3_CARD_WE;
 
             SIGNAL_ERRNO
-            SIGNAL0( MOD_CHF_MODULE_ID, MOD_I_PORT_2_WP, CHF_INFO )
+            SIGNAL0( BUS_CHF_MODULE_ID, BUS_I_PORT_2_WP, CHF_INFO )
         }
     } else {
-        WARNING0( MOD_CHF_MODULE_ID, MOD_W_PORT_2_INIT )
+        WARNING0( BUS_CHF_MODULE_ID, BUS_W_PORT_2_INIT )
 
-        ( void )memset( mod_status_48->port_2, 0, sizeof( mod_status_48->port_2 ) );
+        ( void )memset( bus_status_48->port_2, 0, sizeof( bus_status_48->port_2 ) );
 
-        new_status = mod_status.hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
+        new_status = bus_status.hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
     }
 
 #else
     /* If N_PORT_2_BANK_48 is undefined, Port 2 is not emulated */
-    new_status = mod_status.hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
+    new_status = bus_status.hdw.card_status & ~( NCE3_CARD_PRESENT | NCE3_CARD_WE );
 
 #endif
 
-    if ( new_status == mod_status.hdw.card_status )
+    if ( new_status == bus_status.hdw.card_status )
         return;
 
     /* card_status changed; update, set MP bit in HST and post
        interrupt request.
      */
-    mod_status.hdw.card_status = new_status;
+    bus_status.hdw.card_status = new_status;
     cpu.hst |= HST_MP_MASK;
     CpuIntRequest( INT_REQUEST_IRQ );
 }
@@ -650,8 +650,8 @@ void NCe3Init48( void )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_PORT_2_SAVE
+                BUS_I_CALLED
+                BUS_E_PORT_2_SAVE
 .notes        :
   1.1, 11-Feb-1998, creation
   2.4, 11-Sep-2000, implemented
@@ -661,13 +661,13 @@ void NCe3Save48( void )
 {
 #ifdef N_PORT_2_BANK_48
     /* Attempt to save only if port is write-enabled */
-    if ( !( mod_status.hdw.card_status & NCE3_CARD_WE ) )
+    if ( !( bus_status.hdw.card_status & NCE3_CARD_WE ) )
         return;
 
-    bool err = bus_write_nibblesToFile( mod_status_48->port_2, N_PORT_2_SIZE_48, config.port2_path );
+    bool err = bus_write_nibblesToFile( bus_status_48->port_2, N_PORT_2_SIZE_48, config.port2_path );
     if ( err ) {
         SIGNAL_ERRNO
-        ERROR0( MOD_CHF_MODULE_ID, MOD_E_PORT_2_SAVE )
+        ERROR0( BUS_CHF_MODULE_ID, BUS_E_PORT_2_SAVE )
     }
 #endif
 }
@@ -685,8 +685,8 @@ void NCe3Save48( void )
 .output       :
                 Nibble *d, datum read from memory
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_NCE3_READ
+                BUS_I_CALLED
+                BUS_E_NCE3_READ
 
 .notes        :
   1.1, 23-Jan-1998, creation
@@ -696,9 +696,9 @@ void NCe3Save48( void )
 Nibble NCe3Read48( Address rel_address )
 {
 #ifdef N_PORT_2_BANK_48
-    return mod_status_48->port_2[ rel_address | mod_status.hdw.accel.a48.bs_address ];
+    return bus_status_48->port_2[ rel_address | bus_status.hdw.accel.a48.bs_address ];
 #else
-    ERROR( MOD_CHF_MODULE_ID, MOD_E_NCE3_READ, rel_address )
+    ERROR( BUS_CHF_MODULE_ID, BUS_E_NCE3_READ, rel_address )
 
     return ( Nibble )0;
 #endif
@@ -719,8 +719,8 @@ Nibble NCe3Read48( Address rel_address )
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_NCE3_WRITE
+                BUS_I_CALLED
+                BUS_E_NCE3_WRITE
 
 .notes        :
   1.1, 23-Jan-1998, creation
@@ -730,8 +730,8 @@ Nibble NCe3Read48( Address rel_address )
 void NCe3Write48( Address rel_address, Nibble datum )
 {
 #ifdef N_PORT_2_BANK_48
-    mod_status_48->port_2[ rel_address | mod_status.hdw.accel.a48.bs_address ] = datum;
+    bus_status_48->port_2[ rel_address | bus_status.hdw.accel.a48.bs_address ] = datum;
 #else
-    ERROR( MOD_CHF_MODULE_ID, MOD_E_NCE3_WRITE, rel_address, datum )
+    ERROR( BUS_CHF_MODULE_ID, BUS_E_NCE3_WRITE, rel_address, datum )
 #endif
 }

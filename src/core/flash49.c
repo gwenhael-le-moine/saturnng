@@ -124,7 +124,7 @@ static int BadCommand( enum FlashState* state, enum FlashCycle cycle, XAddress a
 static int ReadArray( enum FlashState* state, enum FlashCycle cycle, XAddress address, int data )
 {
     /* Read a byte from the array; no state transitions */
-    return mod_status_49->flash[ NIBBLE_ADDRESS( address ) ] | SHIFT_HIGH( mod_status_49->flash[ NIBBLE_ADDRESS( address ) + 1 ] );
+    return bus_status_49->flash[ NIBBLE_ADDRESS( address ) ] | SHIFT_HIGH( bus_status_49->flash[ NIBBLE_ADDRESS( address ) + 1 ] );
 }
 
 /* This function is called to parse the first byte of any command */
@@ -274,8 +274,8 @@ static int WriteConfirm( enum FlashState* state, enum FlashCycle cycle, XAddress
            Remember that wb_count is the byte count MINUS 1.
         */
         for ( int i = 0; i <= wb_count; i++ ) {
-            mod_status_49->flash[ NIBBLE_ADDRESS( wb_start + i ) ] = LOW_NIBBLE( wb[ i ] );
-            mod_status_49->flash[ NIBBLE_ADDRESS( wb_start + i ) + 1 ] = HIGH_NIBBLE( wb[ i ] );
+            bus_status_49->flash[ NIBBLE_ADDRESS( wb_start + i ) ] = LOW_NIBBLE( wb[ i ] );
+            bus_status_49->flash[ NIBBLE_ADDRESS( wb_start + i ) + 1 ] = HIGH_NIBBLE( wb[ i ] );
         }
     }
 
@@ -299,8 +299,8 @@ static int BlockErase( enum FlashState* state, enum FlashCycle cycle, XAddress a
 
         /* Confirmation OK; erase */
         for ( int i = 0; i < BLOCK_SIZE; i++ ) {
-            mod_status_49->flash[ NIBBLE_ADDRESS( block_base + i ) ] = ( Nibble )0xF;
-            mod_status_49->flash[ NIBBLE_ADDRESS( block_base + i ) + 1 ] = ( Nibble )0xF;
+            bus_status_49->flash[ NIBBLE_ADDRESS( block_base + i ) ] = ( Nibble )0xF;
+            bus_status_49->flash[ NIBBLE_ADDRESS( block_base + i ) + 1 ] = ( Nibble )0xF;
         }
     }
 

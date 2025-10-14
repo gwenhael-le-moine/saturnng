@@ -84,7 +84,7 @@
   - Added new debug class: DEBUG_C_FLASH
 
   Revision 2.7  2000/09/19  10:51:13  cibrario
-  Added new debug class: DEBUG_C_MOD_CACHE
+  Added new debug class: DEBUG_C_BUS_CACHE
 
   Revision 2.5  2000/09/14  14:34:13  cibrario
   Added new debug class: DEBUG_C_SERIAL
@@ -151,7 +151,7 @@ typedef enum {
     DEBUG_C_INT = 0x1000,            /* Interrupt activity */
     DEBUG_C_TIMERS = 0x0800,         /* Timers activity */
     DEBUG_C_SERIAL = 0x0400,         /* 2.5: Serial port activity */
-    DEBUG_C_MOD_CACHE = 0x0200,      /* 2.7: Module cache */
+    DEBUG_C_BUS_CACHE = 0x0200,      /* 2.7: Module cache */
     DEBUG_C_IMPLEMENTATION = 0x0100, /* Feature implementation */
     DEBUG_C_FLASH = 0x0080,          /* 3.3: Flash ROM */
     DEBUG_C_OPCODES = 0x0001,        /* OpCodes */
@@ -168,7 +168,7 @@ extern size_t message_table_size;
 typedef enum {
     MAIN_CHF_MODULE_ID = 10,
     CPU_CHF_MODULE_ID = 11,
-    MOD_CHF_MODULE_ID = 12,
+    BUS_CHF_MODULE_ID = 12,
     DISK_IO_CHF_MODULE_ID = 13,
     X11_CHF_MODULE_ID = 14,
     SERIAL_CHF_MODULE_ID = 15, /* 2.5 */

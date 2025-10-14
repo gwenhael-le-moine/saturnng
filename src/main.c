@@ -58,8 +58,7 @@ int main( int argc, char** argv )
 
     config = *config_init( argc, argv );
 
-    /* Chf initialization with msgcat subsystem
-     */
+    /* Chf initialization */
     int ret = ChfStaticInit( MAIN_CHF_MODULE_ID, config.progname, CHF_DEFAULT, message_table, message_table_size, CONDITION_STACK_SIZE,
                              HANDLER_STACK_SIZE, EXIT_FAILURE );
     if ( ret != CHF_S_OK ) {

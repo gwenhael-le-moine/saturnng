@@ -56,17 +56,17 @@
 
   Revision 3.3  2000/09/26 15:10:22  cibrario
   Revised to implement Flash ROM write access:
-  - Added .map_flags field to struct ModDescriptionEntry
-  - New status code MOD_E_ROM_SAVE
+  - Added .map_flags field to struct BusDescriptionEntry
+  - New status code BUS_E_ROM_SAVE
 
   Revision 3.2  2000/09/22  14:05:32  cibrario
   Implemented preliminary support of HP49 hw architecture:
-  - moved ROM/RAM storage areas in ModStatus into private,
+  - moved ROM/RAM storage areas in BusStatus into private,
     configuration-specific, dynamically allocated data structures.
   - added flash-rom access accelerators for the hp49 hw configuration
-  - added new status codes: MOD_E_NO_MATCH, MOD_F_MOD_STATUS_ALLOC,
-    MOD_F_NO_DESCRIPTION
-  - added prototype of new functions: ModSelectDescription(),
+  - added new status codes: BUS_E_NO_MATCH, BUS_F_BUS_STATUS_ALLOC,
+    BUS_F_NO_DESCRIPTION
+  - added prototype of new functions: BusSelectDescription(),
     bus_set_description()
 
   Revision 3.1  2000/09/20  14:00:40  cibrario
@@ -78,31 +78,31 @@
 
   Revision 2.5  2000/09/14  15:20:18  cibrario
   Added serial port buffer registers .serial_rbr and .serial_tbr
-  in struct ModHdw; the hdw module uses them to buffer nibbles
+  in struct BusHdw; the hdw module uses them to buffer nibbles
   to/from multi-nibble registers.
 
   Revision 2.4  2000/09/12  15:47:32  cibrario
   The follwing updates were required to implement emulation of Port 1
   and 2, and to prepare the support of additional hw configurations:
-  - added an hw configuration-dependent field to struct ModHdw: .accel;
+  - added an hw configuration-dependent field to struct BusHdw: .accel;
     this field holds information useful to accelerate frequently executed
     operations on a given hw architecture.
     In the current hw configuration, it is used to hold the last
     address extension loaded into the bank switcher's F/F.
     The .accel_valid field indicates whether .accel is valid or not;
-    .accel_valid is cleared when the ModHdw structure has not been read
+    .accel_valid is cleared when the BusHdw structure has not been read
     back correctly from mass storage.
-  - added a new member to ModHdw: .card_status;
+  - added a new member to BusHdw: .card_status;
     it represent the current card status (HDW relative address 0x0F).
-  - added storage space in struct ModStatus to accommodate Port 1 and 2.
-  - added new status codes: MOD_I_BS_ADDRESS, MOD_I_PORT_1_WP,
-    MOD_I_PORT_2_WP, MOD_W_PORT_1_INIT, MOD_W_PORT_2_INIT,
-    MOD_E_PORT_1_SAVE, MOD_E_CE1_WRITE, MOD_E_PORT_2_SAVE,
-    MOD_E_NCE3_READ, MOD_E_NCE3_WRITE.
+  - added storage space in struct BusStatus to accommodate Port 1 and 2.
+  - added new status codes: BUS_I_BS_ADDRESS, BUS_I_PORT_1_WP,
+    BUS_I_PORT_2_WP, BUS_W_PORT_1_INIT, BUS_W_PORT_2_INIT,
+    BUS_E_PORT_1_SAVE, BUS_E_CE1_WRITE, BUS_E_PORT_2_SAVE,
+    BUS_E_NCE3_READ, BUS_E_NCE3_WRITE.
 
   Revision 2.1  2000/09/08  15:20:50  cibrario
-  Updated template of MOD_W_BAD_KEY status code; added new status
-  code MOD_W_BAD_OUT_BIT.  Both changes reflect the updates made to
+  Updated template of BUS_W_BAD_KEY status code; added new status
+  code BUS_W_BAD_OUT_BIT.  Both changes reflect the updates made to
   the keyboard emulation module in order to accommodate the new GUI.
 
   Revision 1.1  1998/02/17  14:55:04  cibrario
@@ -115,7 +115,7 @@
         Data type definitions
   ---------------------------------------------------------------------------*/
 
-#  define N_MOD 6
+#  define N_BUS_SIZE 6
 #  define N_PAGE_TABLE_ENTRIES 16384
 #  define N_HDW_SIZE 256
 
@@ -137,16 +137,16 @@
 #  define N_FLASH_SIZE_49 2048 * 1024 * 2 /* 3.2 */
 #  define N_RAM_SIZE_49 512 * 1024 * 2    /* 3.2 */
 
-#  define MOD_MAP_CHECK_OB_SIZE 128
-#  define MOD_MAP_TABLE_OB_SIZE 512
+#  define BUS_MAP_CHECK_OB_SIZE 128
+#  define BUS_MAP_TABLE_OB_SIZE 512
 
 /* 2.7: Number of entries in module config cache */
-#  define N_MOD_CACHE_ENTRIES 8
+#  define N_BUS_CACHE_ENTRIES 8
 
-#  define MOD_MAP_FLAGS_ABS 0x1 /* Abs addresses to r/w */
+#  define BUS_MAP_FLAGS_ABS 0x1 /* Abs addresses to r/w */
 
 /*
-        ModDescription
+        BusDescription
 
   This const array contains an entry for each peripheral module connected
   to the peripheral bus of the Saturn CPU; the entry describes the
@@ -184,7 +184,7 @@
 
   r_config:     this flag contains the configuration status of the module after
                 a bus reset. If the after-reset configuration status is
-                MOD_CONFIGURED, the module can never be unconfigured.
+                BUS_CONFIGURED, the module can never be unconfigured.
 
   r_abs_base_addr: absolute base address of the module after a bus reset.
                 It should be set only if the module is at least partially
@@ -195,44 +195,44 @@
                 configured automatically after a bus reset.
 
   map_flags:	special map flags:
-        MOD_MAP_FLAGS_ABS	pass absolute addresses to module
+        BUS_MAP_FLAGS_ABS	pass absolute addresses to module
                                 read/write functions
 
   Notice that the current implementation requires that the index of
-  the HDW registers in the mod_description table must be fixed
-  and equal to MOD_HDW_INDEX... this is unfortunate.
+  the HDW registers in the bus_description table must be fixed
+  and equal to BUS_HDW_INDEX... this is unfortunate.
 */
 
 typedef void ( *bus_initFunction )( void );
 
 typedef void ( *bus_saveFunction )( void );
 
-typedef Nibble ( *ModReadFunction )( Address rel_addr );
+typedef Nibble ( *BusReadFunction )( Address rel_addr );
 
-typedef void ( *ModWriteFunction )( Address rel_addr, Nibble data );
+typedef void ( *BusWriteFunction )( Address rel_addr, Nibble data );
 
-typedef enum { MOD_UNCONFIGURED, MOD_SIZE_CONFIGURED, MOD_CONFIGURED } mod_config_t;
+typedef enum { BUS_UNCONFIGURED, BUS_SIZE_CONFIGURED, BUS_CONFIGURED } bus_config_t;
 
-struct ModDescriptionEntry {
+struct BusDescriptionEntry {
     const char* name;
     Address id;
     int access_prio;
 
     bus_initFunction init;
     bus_saveFunction save;
-    ModReadFunction read;
-    ModWriteFunction write;
-    mod_config_t r_config;
+    BusReadFunction read;
+    BusWriteFunction write;
+    bus_config_t r_config;
     Address r_abs_base_addr;
     Address r_size;
 
     int map_flags; /* 3.3 */
 };
 
-typedef const struct ModDescriptionEntry ModDescription[ N_MOD ];
+typedef const struct BusDescriptionEntry BusDescription[ N_BUS_SIZE ];
 
 /*
-        ModMapInfo
+        BusMapInfo
 
   This array contains an entry for each peripheral module connected
   to the peripheral bus of the Saturn CPU; the entry describes the
@@ -246,24 +246,24 @@ typedef const struct ModDescriptionEntry ModDescription[ N_MOD ];
   size:		contains the current size of the address window of the module.
                 It's valid only if the module is currently configured.
 */
-struct ModMapInfoEntry {
-    mod_config_t config;
+struct BusMapInfoEntry {
+    bus_config_t config;
     Address abs_base_addr;
     Address size;
 };
 
-typedef struct ModMapInfoEntry ModMapInfo[ N_MOD ];
+typedef struct BusMapInfoEntry BusMapInfo[ N_BUS_SIZE ];
 
 /*
-        ModPageTable
+        BusPageTable
 
-  This array contains an entry (of type ModPageTableEntry) for each 'page'
+  This array contains an entry (of type BusPageTableEntry) for each 'page'
   (of size #40 nibbles) of the Saturn CPU physical address space. For
   each page, the following information is stored:
 
   index:	the index of the module that responds to the address range of
-                the page in the ModDescription table.The special value
-                MOD_NO_MOD_INDEX indicates that no module responds to the
+                the page in the BusDescription table.The special value
+                BUS_NO_BUS_INDEX indicates that no module responds to the
                 address range.
 
   rel_base_addr: the relative base address of the page in the address
@@ -281,33 +281,33 @@ typedef struct ModMapInfoEntry ModMapInfo[ N_MOD ];
   * Offset (OFF):	OFF = (SPA & 0x0003F)
 
   The Page Index determines which module will respond to the module
-  access operation. ModPageTable[PI] contains the following information:
+  access operation. BusPageTable[PI] contains the following information:
 
   * Relative Base Address (RBA)
 
   The relative address (RA) therefore will be RA = RBA | OFF; then, the
-  appropriate module access function, found again in ModPageTable[PI],
+  appropriate module access function, found again in BusPageTable[PI],
   is called.
 
 */
-struct ModPageTableEntry {
+struct BusPageTableEntry {
     int index;
 
     Address rel_base_addr;
-    ModReadFunction read;
-    ModWriteFunction write;
+    BusReadFunction read;
+    BusWriteFunction write;
 };
 
-typedef struct ModPageTableEntry ModPageTable[ N_PAGE_TABLE_ENTRIES ];
+typedef struct BusPageTableEntry BusPageTable[ N_PAGE_TABLE_ENTRIES ];
 
-/*	struct ModCache (2.7)
+/*	struct BusCache (2.7)
 
   This structure holds the caching information for module config/unconfig.
 
-  The .config field is an array of ModCacheConfigEntry, and contains
+  The .config field is an array of BusCacheConfigEntry, and contains
   the module configuration cache information. Each entry is a pair
   (tag, map_ptr).  The map_ptr field, when non-null,
-  points to the struct ModMap to be used when a module config command,
+  points to the struct BusMap to be used when a module config command,
   with the given tag address as argument, is executed.
 
   The .victim field points to the entry of .config to be used
@@ -315,41 +315,41 @@ typedef struct ModPageTableEntry ModPageTable[ N_PAGE_TABLE_ENTRIES ];
   Currently, It is incremented by one at each replacement, thus
   implementing a very simple fifo replacement policy.
 
-  The .unconfig field is an array of struct ModMap pointers, and
+  The .unconfig field is an array of struct BusMap pointers, and
   contains the module unconfiguration cache information.
   The .unconfig[i] array element, when non-null, points to the
-  struct ModMap to be used when a module unconfig command, unconfiguring
+  struct BusMap to be used when a module unconfig command, unconfiguring
   the i-th module, is executed.
 
-  The .config_point field is set if the struct ModMap is a point
+  The .config_point field is set if the struct BusMap is a point
   of the module configuration tree where a config was completed.
   It it used to walk back correctly when caching an unconfig.
 
-  This .ref_count is incremented by one when the struct ModMap
+  This .ref_count is incremented by one when the struct BusMap
   is referenced by an unconfig link; it is used to avoid freeing
   referenced structures.
 
-  The .link field links all cached struct ModMap together.
+  The .link field links all cached struct BusMap together.
 */
-struct ModCacheTableEntry {
+struct BusCacheTableEntry {
     Address tag;
-    struct ModMap* map_ptr;
+    struct BusMap* map_ptr;
 };
 
-struct ModCache {
-    struct ModCacheTableEntry config[ N_MOD_CACHE_ENTRIES ];
+struct BusCache {
+    struct BusCacheTableEntry config[ N_BUS_CACHE_ENTRIES ];
     int victim;
 
-    struct ModMap*( unconfig[ N_MOD ] );
+    struct BusMap*( unconfig[ N_BUS_SIZE ] );
 
     int config_point;
     int ref_count;
 
-    struct ModMap* link;
+    struct BusMap* link;
 };
 
 /*
-        struct ModMap
+        struct BusMap
 
   This structure contains all the mapping information about the peripheral
   modules of the Saturn CPU. Its components are:
@@ -364,43 +364,43 @@ struct ModCache {
                 module config/unconfig instructions
 
 */
-struct ModMap {
-    ModMapInfo map_info;
-    ModPageTable page_table;
-    struct ModCache cache;
+struct BusMap {
+    BusMapInfo map_info;
+    BusPageTable page_table;
+    struct BusCache cache;
 };
 
 /*
-        struct ModStatus
+        struct BusStatus
 
   This structure contains the actual status of all peripheral modules of the
   Saturn CPU. The status of all modules is centralized to allow any device
   to easily access the status of other devices.
 
-        struct ModHdw
+        struct BusHdw
 
   This substructure contains the status of all peripheral devices controlled
   by the hdw module.
 
-  3.2: To support the HP49 hw configuration, the original ModStatus structure
+  3.2: To support the HP49 hw configuration, the original BusStatus structure
   has been splitted in two:
 
-  - (new) struct ModStatus: contains configuration-independent status
+  - (new) struct BusStatus: contains configuration-independent status
     information (.hdw), and configuration-dependent accelerators (.hdw.accel).
     The overall layout of the structure is the same for all configurations,
     and it is publicily accessible.
 
-  - struct ModStatus_xx (corresponding to all fields of the original
-    ModStatus structure except .hdw): contains the storage areas for
+  - struct BusStatus_xx (corresponding to all fields of the original
+    BusStatus structure except .hdw): contains the storage areas for
     ROM and RAM in configuration 'xx', and is private to the
     configuration-specific ROM/RAM emulation module.
 
 */
-struct ModHdw48Accel {
+struct BusHdw48Accel {
     XAddress bs_address; /* Bank Switcher ext. address */
 };
 
-struct ModHdw49Accel {
+struct BusHdw49Accel {
     XAddress view[ 2 ]; /* Base of Flash views */
 };
 
@@ -409,7 +409,7 @@ struct ModHdw49Accel {
 #  define NCE3_CARD_WE 0x04
 #  define CE2_CARD_WE 0x08
 
-struct ModHdw {
+struct BusHdw {
     Nibble hdw[ N_HDW_SIZE ]; /* HDW registers */
 
     /* LCD driver */
@@ -439,8 +439,8 @@ struct ModHdw {
     int accel_valid;
 
     union {
-        struct ModHdw48Accel a48;
-        struct ModHdw49Accel a49;
+        struct BusHdw48Accel a48;
+        struct BusHdw49Accel a49;
     } accel;
 
     /* 2.5: Serial port buffer registers */
@@ -451,11 +451,11 @@ struct ModHdw {
     int16 crc; /* CRC */
 };
 
-struct ModStatus {
-    struct ModHdw hdw; /* HDW status */
+struct BusStatus {
+    struct BusHdw hdw; /* HDW status */
 };
 
-struct ModStatus_48 {
+struct BusStatus_48 {
     Nibble rom[ N_ROM_SIZE_48 ];       /* Internal ROM */
     Nibble ram[ N_RAM_SIZE_48 ];       /* Internal RAM */
     Nibble port_1[ N_PORT_1_SIZE_48 ]; /* 2.4: Port_1 (CE2) storage */
@@ -466,7 +466,7 @@ struct ModStatus_48 {
 #  endif
 };
 
-struct ModStatus_49 {
+struct BusStatus_49 {
     Nibble flash[ N_FLASH_SIZE_49 ]; /* Internal Flash ROM */
     Nibble ram[ N_RAM_SIZE_49 ];     /* Internal RAM */
     Nibble *ce2, *nce3;              /* ERAM bases */
@@ -476,68 +476,68 @@ struct ModStatus_49 {
         Global variables
   ---------------------------------------------------------------------------*/
 
-extern struct ModStatus mod_status;
+extern struct BusStatus bus_status;
 
 /*---------------------------------------------------------------------------
         Chf condition codes
   ---------------------------------------------------------------------------*/
 typedef enum {
-    MOD_I_CALLED = 101,            /* Function %s called */
-    MOD_I_INITIALIZING = 102,      /* Initializing module %s */
-    MOD_I_RESETTING = 103,         /* Resetting module %s */
-    MOD_I_GET_ID = 106,            /* bus_get_id returning %x */
-    MOD_I_CONFIG = 107,            /* bus_configure %s %x %x completed */
-    MOD_I_UNCONFIG = 108,          /* bus_unconfigure %s %x %x completed */
-    MOD_I_SAVING = 109,            /* Saving status of module %s */
-    MOD_I_NOT_IMPLEMENTED = 110,   /* Function %s not implemented */
-    MOD_I_REVISION = 111,          /* Modules revision: %s */
-    MOD_I_BS_ADDRESS = 112,        /* 2.4: Bank Switcher address: %x */
-    MOD_I_PORT_1_WP = 113,         /* 2.4: Port 1 is write protected */
-    MOD_I_PORT_2_WP = 114,         /* 2.4: Port 2 is write protected */
-    MOD_I_PERF_CTR = 115,          /* 2.7: Value of PerfCtr %s is %d */
-    MOD_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached bus_unconfigure completed */
-    MOD_I_CACHED_CONFIG = 117,     /* 2.7: Cached bus_configure %x comp. */
-    MOD_I_UNCONFIG_L_HIT = 118,    /* 2.7: Late unconfig hit */
-    MOD_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
-    MOD_W_BAD_CONFIG = 202,        /* Bad bus_configure %x ignored */
-    MOD_W_BAD_UNCONFIG = 203,      /* Bad bus_unconfigure %x ignored */
-    MOD_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
-    MOD_W_HDW_READ = 205,          /* Bad HdwRead %x */
-    MOD_W_RESETTING_ALL = 206,     /* Resetting all modules */
-    MOD_W_RAM_INIT = 207,          /* Can't initialize internal RAM */
-    MOD_W_HDW_INIT = 208,          /* Can't initialize HDW */
-    MOD_W_BAD_KEY = 209,           /* 2.1: Bad key %s ignored */
-    MOD_W_BAD_OUT_BIT = 210,       /* 2.1: Bad out_bit %x ignored */
-    MOD_W_PORT_1_INIT = 211,       /* 2.4: Can't initialize Port 1 */
-    MOD_W_PORT_2_INIT = 212,       /* 2.4: Can't initialize Port 2 */
-    MOD_W_NO_VICTIM = 213,         /* 2.7: No cache victim; flush/retry */
-    MOD_E_BAD_READ = 301,          /* Read unmapped addr %x */
-    MOD_E_BAD_WRITE = 302,         /* Write unmapped addr %x datum %x */
-    MOD_E_ROM_WRITE = 303,         /* Write into ROM addr %x datum %x */
-    MOD_E_RAM_SAVE = 304,          /* Can't save internal RAM status */
-    MOD_E_HDW_SAVE = 305,          /* Can't save HDW status */
-    MOD_E_PORT_1_SAVE = 306,       /* 2.4: Can't save Port 1 status */
-    MOD_E_CE1_WRITE = 307,         /* 2.4: Ce1Write addr %x datum %x */
-    MOD_E_PORT_2_SAVE = 308,       /* 2.4: Can't save Port 2 status */
-    MOD_E_NCE3_READ = 309,         /* 2.4: Read from NCE3 addr %x */
-    MOD_E_NCE3_WRITE = 310,        /* 2.4: Wr. to NCE3 addr %x datum %x */
-    MOD_E_NO_MATCH = 311,          /* 3.2: Hw desription %s not found */
-    MOD_E_ROM_SAVE = 312,          /* 3.3: Can't save Flash ROM */
-    MOD_F_MAP_SAVE = 401,          /* Can't save mod_map information */
-    MOD_F_ROM_INIT = 402,          /* Can't initialize internal ROM */
-    MOD_F_MAP_ALLOC = 403,         /* Dynamic map allocation failed */
-    MOD_F_BAD_ALLOC_C = 404,       /* 2.7: Bad alloc_c %d aft FlushCache*/
-    MOD_F_CHAIN_CORRUPTED = 405,   /* 2.7: ModMap chain corrupted */
-    MOD_F_NO_VICTIM = 406,         /* 2.7: No cache victim after flush */
-    MOD_F_MOD_STATUS_ALLOC = 407,  /* 3.2: ModStatus_xx alloc failed %d */
-    MOD_F_NO_DESCRIPTION = 408,    /* 3.2: No module description */
-    MOD_M_NOT_MAPPED = 501,        /* Address %x not mapped */
-    MOD_M_MAPPED = 502,            /* Address %x mapped to %s:%x */
-    MOD_M_MAP_TABLE_TITLE = 503,   /* */
-    MOD_M_MAP_TABLE_ROW = 504,     /* %s %x %x %s */
-    MOD_M_MAP_CONFIGURED = 505,    /* Configured */
-    MOD_M_MAP_SZ_CONFIGURED = 506, /* Size configured */
-    MOD_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
+    BUS_I_CALLED = 101,            /* Function %s called */
+    BUS_I_INITIALIZING = 102,      /* Initializing module %s */
+    BUS_I_RESETTING = 103,         /* Resetting module %s */
+    BUS_I_GET_ID = 106,            /* bus_get_id returning %x */
+    BUS_I_CONFIG = 107,            /* bus_configure %s %x %x completed */
+    BUS_I_UNCONFIG = 108,          /* bus_unconfigure %s %x %x completed */
+    BUS_I_SAVING = 109,            /* Saving status of module %s */
+    BUS_I_NOT_IMPLEMENTED = 110,   /* Function %s not implemented */
+    BUS_I_REVISION = 111,          /* Modules revision: %s */
+    BUS_I_BS_ADDRESS = 112,        /* 2.4: Bank Switcher address: %x */
+    BUS_I_PORT_1_WP = 113,         /* 2.4: Port 1 is write protected */
+    BUS_I_PORT_2_WP = 114,         /* 2.4: Port 2 is write protected */
+    BUS_I_PERF_CTR = 115,          /* 2.7: Value of PerfCtr %s is %d */
+    BUS_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached bus_unconfigure completed */
+    BUS_I_CACHED_CONFIG = 117,     /* 2.7: Cached bus_configure %x comp. */
+    BUS_I_UNCONFIG_L_HIT = 118,    /* 2.7: Late unconfig hit */
+    BUS_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
+    BUS_W_BAD_CONFIG = 202,        /* Bad bus_configure %x ignored */
+    BUS_W_BAD_UNCONFIG = 203,      /* Bad bus_unconfigure %x ignored */
+    BUS_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
+    BUS_W_HDW_READ = 205,          /* Bad HdwRead %x */
+    BUS_W_RESETTING_ALL = 206,     /* Resetting all modules */
+    BUS_W_RAM_INIT = 207,          /* Can't initialize internal RAM */
+    BUS_W_HDW_INIT = 208,          /* Can't initialize HDW */
+    BUS_W_BAD_KEY = 209,           /* 2.1: Bad key %s ignored */
+    BUS_W_BAD_OUT_BIT = 210,       /* 2.1: Bad out_bit %x ignored */
+    BUS_W_PORT_1_INIT = 211,       /* 2.4: Can't initialize Port 1 */
+    BUS_W_PORT_2_INIT = 212,       /* 2.4: Can't initialize Port 2 */
+    BUS_W_NO_VICTIM = 213,         /* 2.7: No cache victim; flush/retry */
+    BUS_E_BAD_READ = 301,          /* Read unmapped addr %x */
+    BUS_E_BAD_WRITE = 302,         /* Write unmapped addr %x datum %x */
+    BUS_E_ROM_WRITE = 303,         /* Write into ROM addr %x datum %x */
+    BUS_E_RAM_SAVE = 304,          /* Can't save internal RAM status */
+    BUS_E_HDW_SAVE = 305,          /* Can't save HDW status */
+    BUS_E_PORT_1_SAVE = 306,       /* 2.4: Can't save Port 1 status */
+    BUS_E_CE1_WRITE = 307,         /* 2.4: Ce1Write addr %x datum %x */
+    BUS_E_PORT_2_SAVE = 308,       /* 2.4: Can't save Port 2 status */
+    BUS_E_NCE3_READ = 309,         /* 2.4: Read from NCE3 addr %x */
+    BUS_E_NCE3_WRITE = 310,        /* 2.4: Wr. to NCE3 addr %x datum %x */
+    BUS_E_NO_MATCH = 311,          /* 3.2: Hw desription %s not found */
+    BUS_E_ROM_SAVE = 312,          /* 3.3: Can't save Flash ROM */
+    BUS_F_MAP_SAVE = 401,          /* Can't save bus_map information */
+    BUS_F_ROM_INIT = 402,          /* Can't initialize internal ROM */
+    BUS_F_MAP_ALLOC = 403,         /* Dynamic map allocation failed */
+    BUS_F_BAD_ALLOC_C = 404,       /* 2.7: Bad alloc_c %d aft FlushCache*/
+    BUS_F_CHAIN_CORRUPTED = 405,   /* 2.7: BusMap chain corrupted */
+    BUS_F_NO_VICTIM = 406,         /* 2.7: No cache victim after flush */
+    BUS_F_BUS_STATUS_ALLOC = 407,  /* 3.2: BusStatus_xx alloc failed %d */
+    BUS_F_NO_DESCRIPTION = 408,    /* 3.2: No module description */
+    BUS_M_NOT_MAPPED = 501,        /* Address %x not mapped */
+    BUS_M_MAPPED = 502,            /* Address %x mapped to %s:%x */
+    BUS_M_MAP_TABLE_TITLE = 503,   /* */
+    BUS_M_MAP_TABLE_ROW = 504,     /* %s %x %x %s */
+    BUS_M_MAP_CONFIGURED = 505,    /* Configured */
+    BUS_M_MAP_SZ_CONFIGURED = 506, /* Size configured */
+    BUS_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
 } modules_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
@@ -545,7 +545,7 @@ typedef enum {
   ---------------------------------------------------------------------------*/
 
 /* Initialization */
-void bus_set_description( ModDescription p );
+void bus_set_description( BusDescription p );
 void bus_init( void );
 void bus_save( void );
 void bus_reset( void );
@@ -561,7 +561,7 @@ Nibble bus_read_nibble( Address addr );
 void bus_write_nibble( Address addr, Nibble datum );
 
 /* Monitor */
-void monitor_ModMapCheck( Address addr, char ob[ MOD_MAP_CHECK_OB_SIZE ] );
-void monitor_ModMapTable( char ob[ MOD_MAP_TABLE_OB_SIZE ] );
+void monitor_BusMapCheck( Address addr, char ob[ BUS_MAP_CHECK_OB_SIZE ] );
+void monitor_BusMapTable( char ob[ BUS_MAP_TABLE_OB_SIZE ] );
 
 #endif /*!_BUS_H*/

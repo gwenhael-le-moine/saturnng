@@ -37,7 +37,7 @@
 .description  :
   This module contains the module description tables for all HPxx
   hardware configurations currently supported.  Moreover, it implements
-  the function ModSelectDescription(hw), to select and register a
+  the function BusSelectDescription(hw), to select and register a
   module description table depending on an hardware configuration
   selection string (hw).  References:
 
@@ -54,8 +54,8 @@
 
   Revision 3.3  2000/09/26 15:18:16  cibrario
   Revised to implement Flash ROM write access:
-  - updated description of ModDescription table components
-  - the HP49 NCE3 controller now has MOD_MAP_FLAGS_ABS set in .map_flags
+  - updated description of BusDescription table components
+  - the HP49 NCE3 controller now has BUS_MAP_FLAGS_ABS set in .map_flags
 
   Revision 3.2  2000/09/22  14:40:18  cibrario
   *** empty log message ***
@@ -71,21 +71,21 @@
         Module description tables
   ---------------------------------------------------------------------------*/
 
-static const ModDescription hw48_description = {
-    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0},
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
-    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  MOD_UNCONFIGURED,    0,       0,       0},
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  MOD_UNCONFIGURED,    0,       0,       0},
-    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  MOD_UNCONFIGURED,    0,       0,       0},
-    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, MOD_UNCONFIGURED,    0,       0,       0}
+static const BusDescription hw48_description = {
+    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  BUS_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  BUS_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  BUS_UNCONFIGURED,    0,       0,       0},
+    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  BUS_UNCONFIGURED,    0,       0,       0},
+    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, BUS_UNCONFIGURED,    0,       0,       0}
 };
-static const ModDescription hw49_description = {
-    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  MOD_CONFIGURED,      0x00000, 0xFFFFF, 0                },
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    MOD_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
-    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  MOD_UNCONFIGURED,    0,       0,       0                },
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  MOD_UNCONFIGURED,    0,       0,       0                },
-    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  MOD_UNCONFIGURED,    0,       0,       0                },
-    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, MOD_UNCONFIGURED,    0,       0,       MOD_MAP_FLAGS_ABS}
+static const BusDescription hw49_description = {
+    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  BUS_CONFIGURED,      0x00000, 0xFFFFF, 0                },
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
+    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  BUS_UNCONFIGURED,    0,       0,       0                },
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  BUS_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  BUS_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, BUS_UNCONFIGURED,    0,       0,       BUS_MAP_FLAGS_ABS}
 };
 
 /*---------------------------------------------------------------------------
@@ -101,19 +101,19 @@ static const ModDescription hw49_description = {
   string passed as argument.
 
 .call         :
-                ModSelectDescription(hw)
+                BusSelectDescription(hw)
 .input        :
                 const char *hw, hardware configuration string
 .output       :
                 void
 .status_codes :
-                MOD_I_CALLED
-                MOD_E_NO_MATCH
+                BUS_I_CALLED
+                BUS_E_NO_MATCH
 .notes        :
   1.1, 28-Jan-1998, creation
 
 .- */
-void ModSelectDescription( int model )
+void BusSelectDescription( int model )
 {
     switch ( model ) {
         case MODEL_48SX:
@@ -126,7 +126,7 @@ void ModSelectDescription( int model )
             bus_set_description( hw49_description );
             break;
         default:
-            ERROR( MOD_CHF_MODULE_ID, MOD_E_NO_MATCH, "Unknown model" )
+            ERROR( BUS_CHF_MODULE_ID, BUS_E_NO_MATCH, "Unknown model" )
             exit( EXIT_FAILURE );
     }
 }

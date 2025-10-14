@@ -41,7 +41,7 @@ typedef struct {
     char* state_dir_path;
 
     char* config_path;
-    char* mod_path;
+    char* bus_path;
     char* cpu_path;
     char* hdw_path;
     char* rom_path;

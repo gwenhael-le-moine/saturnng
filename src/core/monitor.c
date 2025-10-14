@@ -226,8 +226,8 @@ static int map_check( void )
     if ( st )
         return FAILED;
 
-    char ob[ MOD_MAP_CHECK_OB_SIZE ];
-    monitor_ModMapCheck( addr, ob );
+    char ob[ BUS_MAP_CHECK_OB_SIZE ];
+    monitor_BusMapCheck( addr, ob );
     puts( ob );
 
     return OK;
@@ -236,8 +236,8 @@ static int map_check( void )
 /* Print the current module map table */
 static int map( void )
 {
-    char ob[ MOD_MAP_TABLE_OB_SIZE ];
-    monitor_ModMapTable( ob );
+    char ob[ BUS_MAP_TABLE_OB_SIZE ];
+    monitor_BusMapTable( ob );
     puts( ob );
 
     return OK;

@@ -67,7 +67,7 @@
 
   Revision 3.2  2000/09/22 13:43:09  cibrario
   Implemented preliminary support of HP49 hw architecture:
-  - EmulatorInit() now invokes ModSelectDescription() to select
+  - EmulatorInit() now invokes BusSelectDescription() to select
     the appropriate calculator's hw configuration depending on the
     setting of the 'hw' user option.
 
@@ -175,33 +175,33 @@ static void EmulatorLoop( void )
                 OneStep();
 
             /* T2 update */
-            if ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
-                --mod_status.hdw.t2_val;
-                if ( mod_status.hdw.t2_val == ( int )0xFFFFFFFF ) {
-                    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl )
+            if ( bus_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
+                --bus_status.hdw.t2_val;
+                if ( bus_status.hdw.t2_val == ( int )0xFFFFFFFF ) {
+                    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, bus_status.hdw.t2_ctrl )
 
-                    mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
+                    bus_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
 
-                    if ( mod_status.hdw.t2_ctrl & T2_CTRL_WAKE )
+                    if ( bus_status.hdw.t2_ctrl & T2_CTRL_WAKE )
                         CpuWake();
 
-                    if ( mod_status.hdw.t2_ctrl & T2_CTRL_INT )
+                    if ( bus_status.hdw.t2_ctrl & T2_CTRL_INT )
                         CpuIntRequest( INT_REQUEST_IRQ );
                 }
             }
         }
 
         /* T1 update */
-        mod_status.hdw.t1_val = ( mod_status.hdw.t1_val - 1 ) & NIBBLE_MASK;
-        if ( mod_status.hdw.t1_val == 0xF ) {
-            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl )
+        bus_status.hdw.t1_val = ( bus_status.hdw.t1_val - 1 ) & NIBBLE_MASK;
+        if ( bus_status.hdw.t1_val == 0xF ) {
+            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, bus_status.hdw.t1_ctrl )
 
-            mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
+            bus_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
 
-            if ( mod_status.hdw.t1_ctrl & T1_CTRL_WAKE )
+            if ( bus_status.hdw.t1_ctrl & T1_CTRL_WAKE )
                 CpuWake();
 
-            if ( mod_status.hdw.t1_ctrl & T1_CTRL_INT )
+            if ( bus_status.hdw.t1_ctrl & T1_CTRL_INT )
                 CpuIntRequest( INT_REQUEST_IRQ );
         }
 
@@ -306,19 +306,19 @@ static ChfAction do_SHUTDN( void )
        process it immediately.  It is not clear why it was
        not processed *before* shutdown, though.
     */
-    if ( mod_status.hdw.t1_ctrl & T1_CTRL_SREQ ) {
-        if ( mod_status.hdw.t1_ctrl & T1_CTRL_WAKE )
+    if ( bus_status.hdw.t1_ctrl & T1_CTRL_SREQ ) {
+        if ( bus_status.hdw.t1_ctrl & T1_CTRL_WAKE )
             CpuWake();
 
-        if ( mod_status.hdw.t1_ctrl & T1_CTRL_INT )
+        if ( bus_status.hdw.t1_ctrl & T1_CTRL_INT )
             CpuIntRequest( INT_REQUEST_IRQ );
     }
 
-    if ( mod_status.hdw.t2_ctrl & T2_CTRL_SREQ ) {
-        if ( mod_status.hdw.t2_ctrl & T2_CTRL_WAKE )
+    if ( bus_status.hdw.t2_ctrl & T2_CTRL_SREQ ) {
+        if ( bus_status.hdw.t2_ctrl & T2_CTRL_WAKE )
             CpuWake();
 
-        if ( mod_status.hdw.t2_ctrl & T2_CTRL_INT )
+        if ( bus_status.hdw.t2_ctrl & T2_CTRL_INT )
             CpuIntRequest( INT_REQUEST_IRQ );
     }
 
@@ -328,13 +328,13 @@ static ChfAction do_SHUTDN( void )
         int ela;
         int ela_ticks;
 
-        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", mod_status.hdw.t1_ctrl, mod_status.hdw.t1_val )
-        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", mod_status.hdw.t2_ctrl, mod_status.hdw.t2_val )
+        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (during SHUTDN)", bus_status.hdw.t1_ctrl, bus_status.hdw.t1_val )
+        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (during SHUTDN)", bus_status.hdw.t2_ctrl, bus_status.hdw.t2_val )
 
         /* Determine which timer will expire first */
-        if ( mod_status.hdw.t1_ctrl & ( T1_CTRL_INT | T1_CTRL_WAKE ) ) {
+        if ( bus_status.hdw.t1_ctrl & ( T1_CTRL_INT | T1_CTRL_WAKE ) ) {
             /* T1 will do something on expiration */
-            mst = ( ( unsigned long )mod_status.hdw.t1_val + 1 ) * T1_MS_MULTIPLIER;
+            mst = ( ( unsigned long )bus_status.hdw.t1_val + 1 ) * T1_MS_MULTIPLIER;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T1", mst )
 
@@ -342,9 +342,9 @@ static ChfAction do_SHUTDN( void )
                 ms = mst;
         }
 
-        if ( ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) && ( mod_status.hdw.t2_ctrl & ( T2_CTRL_INT | T2_CTRL_WAKE ) ) ) {
+        if ( ( bus_status.hdw.t2_ctrl & T2_CTRL_TRUN ) && ( bus_status.hdw.t2_ctrl & ( T2_CTRL_INT | T2_CTRL_WAKE ) ) ) {
             /* T2 is running and will do something on expiration */
-            mst = ( ( unsigned long )mod_status.hdw.t2_val + 1 ) / T2_MS_DIVISOR;
+            mst = ( ( unsigned long )bus_status.hdw.t2_val + 1 ) / T2_MS_DIVISOR;
 
             DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_EXP, "T2", mst )
 
@@ -381,42 +381,42 @@ static ChfAction do_SHUTDN( void )
         ela_ticks = ( ( ela + frac_t1 ) + T1_INTERVAL / 2 ) / T1_INTERVAL;
         frac_t1 = ( ela + frac_t1 ) - ela_ticks * T1_INTERVAL;
 
-        if ( ela_ticks > mod_status.hdw.t1_val ) {
-            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, mod_status.hdw.t1_ctrl )
+        if ( ela_ticks > bus_status.hdw.t1_val ) {
+            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER1_EX, bus_status.hdw.t1_ctrl )
 
-            mod_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
+            bus_status.hdw.t1_ctrl |= T1_CTRL_SREQ;
 
-            if ( mod_status.hdw.t1_ctrl & T1_CTRL_WAKE )
+            if ( bus_status.hdw.t1_ctrl & T1_CTRL_WAKE )
                 CpuWake();
 
-            if ( mod_status.hdw.t1_ctrl & T1_CTRL_INT )
+            if ( bus_status.hdw.t1_ctrl & T1_CTRL_INT )
                 CpuIntRequest( INT_REQUEST_IRQ );
         }
 
-        mod_status.hdw.t1_val = ( mod_status.hdw.t1_val - ela_ticks ) & T1_OVF_MASK;
+        bus_status.hdw.t1_val = ( bus_status.hdw.t1_val - ela_ticks ) & T1_OVF_MASK;
 
-        if ( mod_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
+        if ( bus_status.hdw.t2_ctrl & T2_CTRL_TRUN ) {
             ela_ticks = ( ( ela + frac_t2 ) + T2_INTERVAL / 2 ) / T2_INTERVAL;
             frac_t2 = ( ela + frac_t2 ) - ela_ticks * T2_INTERVAL;
 
-            if ( ela_ticks > mod_status.hdw.t2_val ) {
-                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, mod_status.hdw.t2_ctrl )
+            if ( ela_ticks > bus_status.hdw.t2_val ) {
+                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER2_EX, bus_status.hdw.t2_ctrl )
 
-                mod_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
+                bus_status.hdw.t2_ctrl |= T2_CTRL_SREQ;
 
-                if ( mod_status.hdw.t2_ctrl & T2_CTRL_WAKE )
+                if ( bus_status.hdw.t2_ctrl & T2_CTRL_WAKE )
                     CpuWake();
 
-                if ( mod_status.hdw.t2_ctrl & T2_CTRL_INT )
+                if ( bus_status.hdw.t2_ctrl & T2_CTRL_INT )
                     CpuIntRequest( INT_REQUEST_IRQ );
             }
 
-            mod_status.hdw.t2_val = ( mod_status.hdw.t2_val - ela_ticks ) & T2_OVF_MASK;
+            bus_status.hdw.t2_val = ( bus_status.hdw.t2_val - ela_ticks ) & T2_OVF_MASK;
         }
     }
 
-    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", mod_status.hdw.t1_ctrl, mod_status.hdw.t1_val )
-    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", mod_status.hdw.t2_ctrl, mod_status.hdw.t2_val )
+    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T1 (after SHUTDN)", bus_status.hdw.t1_ctrl, bus_status.hdw.t1_val )
+    DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_TIMERS, CPU_I_TIMER_ST, "T2 (after SHUTDN)", bus_status.hdw.t2_ctrl, bus_status.hdw.t2_val )
 
     return CHF_CONTINUE;
 }
@@ -534,7 +534,7 @@ void EmulatorIntRequest( void ) { emulator_int_req = true; }
     - invoke CpuInit() before bus_init() so that interrupt requests
       generated by bus_init() are honored as they should.
   3.2, 21-Sep-2000, update:
-    - now invoking ModSelectDescription(args.hw) to select and
+    - now invoking BusSelectDescription(args.hw) to select and
       register an appropriate module description table depending on
       args.hw option.
 
@@ -542,7 +542,7 @@ void EmulatorIntRequest( void ) { emulator_int_req = true; }
 void EmulatorInit( void )
 {
     /* Select a module description table */
-    ModSelectDescription( config.model );
+    BusSelectDescription( config.model );
 
     /* Initialize cpu and modules subsystems */
     CpuInit();
