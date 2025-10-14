@@ -58,7 +58,6 @@ HEADERS = src/options.h \
 	src/core/keyboard.h \
 	src/core/types.h \
 	src/core/bus.h \
-	src/core/hw_config.h \
 	src/core/monitor.h \
 	src/core/serial.h \
 	src/core/disassembler.h \
@@ -83,7 +82,6 @@ SRC = src/main.c \
 	src/core/emulator.c \
 	src/core/flash49.c \
 	src/core/hdw.c \
-	src/core/hw_config.c \
 	src/core/keyboard.c \
 	src/core/bus.c \
 	src/core/monitor.c \

@@ -541,9 +541,6 @@ void EmulatorIntRequest( void ) { emulator_int_req = true; }
 .- */
 void EmulatorInit( void )
 {
-    /* Select a module description table */
-    BusSelectDescription( config.model );
-
     /* Initialize cpu and modules subsystems */
     CpuInit();
     bus_init();

@@ -108,6 +108,9 @@
 #include "bus.h"
 #include "chf_wrapper.h"
 #include "disk_io.h"
+#include "hdw.h"
+#include "romram48.h"
+#include "romram49.h"
 
 /*---------------------------------------------------------------------------
         Macros
@@ -122,6 +125,27 @@
 #define BUS_MIN_ACCESS_PRIO ( -1 )
 #define BUS_HDW_INDEX 1
 #define BUS_NO_BUS_INDEX ( -1 )
+
+/*---------------------------------------------------------------------------
+        Module description tables
+  ---------------------------------------------------------------------------*/
+
+static const BusDescription hw48_description = {
+    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  BUS_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  BUS_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  BUS_UNCONFIGURED,    0,       0,       0},
+    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  BUS_UNCONFIGURED,    0,       0,       0},
+    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, BUS_UNCONFIGURED,    0,       0,       0}
+};
+static const BusDescription hw49_description = {
+    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  BUS_CONFIGURED,      0x00000, 0xFFFFF, 0                },
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
+    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  BUS_UNCONFIGURED,    0,       0,       0                },
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  BUS_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  BUS_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, BUS_UNCONFIGURED,    0,       0,       BUS_MAP_FLAGS_ABS}
+};
 
 /*---------------------------------------------------------------------------
         Static/Global variables
@@ -809,12 +833,20 @@ void bus_set_description( BusDescription p ) { bus_description = p; }
 .- */
 void bus_init( void )
 {
-    /* First, a little sanity check on bus_description: ensure that
-       bus_set_description() has been called at least once with a
-       non-NULL argument.
-    */
-    if ( bus_description == NULL )
-        FATAL0( BUS_CHF_MODULE_ID, BUS_F_NO_DESCRIPTION )
+    switch ( config.model ) {
+        case MODEL_48SX:
+        case MODEL_48GX:
+            bus_set_description( hw48_description );
+            break;
+        case MODEL_40G:
+        case MODEL_49G:
+        case MODEL_50G:
+            bus_set_description( hw49_description );
+            break;
+        default:
+            ERROR( BUS_CHF_MODULE_ID, BUS_E_NO_MATCH, "Unknown model" )
+            exit( EXIT_FAILURE );
+    }
 
     /* Scan the bus_description table, initializing all modules */
     for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
