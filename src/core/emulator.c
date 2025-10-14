@@ -106,9 +106,7 @@
 #include "chf_wrapper.h"
 #include "cpu.h"
 #include "emulator.h"
-#include "hw_config.h"
 #include "serial.h"
-#include "types.h"
 
 /*---------------------------------------------------------------------------
         Private macros / variables / functions
