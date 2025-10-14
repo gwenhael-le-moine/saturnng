@@ -131,20 +131,21 @@
   ---------------------------------------------------------------------------*/
 
 static const BusDescription hw48_description = {
-    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  BUS_CONFIGURED,      0x00000, 0xFFFFF, 0},
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
-    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  BUS_UNCONFIGURED,    0,       0,       0},
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  BUS_UNCONFIGURED,    0,       0,       0},
-    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  BUS_UNCONFIGURED,    0,       0,       0},
-    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, BUS_UNCONFIGURED,    0,       0,       0}
+    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  BUS_MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, BUS_MODULE_UNCONFIGURED,    0,       0,       0}
 };
 static const BusDescription hw49_description = {
-    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  BUS_CONFIGURED,      0x00000, 0xFFFFF, 0                },
-    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
-    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  BUS_UNCONFIGURED,    0,       0,       0                },
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  BUS_UNCONFIGURED,    0,       0,       0                },
-    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  BUS_UNCONFIGURED,    0,       0,       0                },
-    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, BUS_UNCONFIGURED,    0,       0,       BUS_MAP_FLAGS_ABS}
+    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  BUS_MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs.   (HDW)",  0x19, 5, HdwInit,    HdwSave,    HdwRead,    HdwWrite,    BUS_MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
+    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  BUS_MODULE_UNCONFIGURED,    0,       0,       0},
+    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, BUS_MODULE_UNCONFIGURED,    0,       0,
+     BUS_MAP_FLAGS_ABS                                                                                                                   }
 };
 
 /*---------------------------------------------------------------------------
@@ -172,7 +173,7 @@ static struct BusMap* cache_head = ( struct BusMap* )NULL;
    bus_set_description() before invoking any other function in this
    module.
 */
-static const struct BusDescriptionEntry* bus_description;
+static const struct BusModule* bus_description;
 
 /*---------------------------------------------------------------------------
         Private functions
@@ -279,7 +280,7 @@ static void RebuildPageTable( int page_start, int page_end )
         */
         prio = BUS_MIN_ACCESS_PRIO;
         for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
-            if ( BUS_MAP.map_info[ mod ].config == BUS_CONFIGURED && page_addr >= BUS_MAP.map_info[ mod ].abs_base_addr &&
+            if ( BUS_MAP.map_info[ mod ].config == BUS_MODULE_CONFIGURED && page_addr >= BUS_MAP.map_info[ mod ].abs_base_addr &&
                  page_addr < BUS_MAP.map_info[ mod ].abs_base_addr + BUS_MAP.map_info[ mod ].size &&
                  prio < bus_description[ mod ].access_prio ) {
                 winner = mod;
@@ -957,7 +958,7 @@ Address bus_get_id( void )
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
     */
-    for ( mod = 0; mod < N_BUS_SIZE && BUS_MAP.map_info[ mod ].config == BUS_CONFIGURED; mod++ )
+    for ( mod = 0; mod < N_BUS_SIZE && BUS_MAP.map_info[ mod ].config == BUS_MODULE_CONFIGURED; mod++ )
         ;
 
     if ( mod == N_BUS_SIZE )
@@ -966,8 +967,8 @@ Address bus_get_id( void )
     else
         /* Build the module id */
         id = ( BUS_MAP.map_info[ mod ].abs_base_addr & 0xFFF00 ) |
-             ( BUS_MAP.map_info[ mod ].config == BUS_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
-             ( bus_description[ mod ].id + ( BUS_MAP.map_info[ mod ].config == BUS_UNCONFIGURED ? 0 : 1 ) );
+             ( BUS_MAP.map_info[ mod ].config == BUS_MODULE_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
+             ( bus_description[ mod ].id + ( BUS_MAP.map_info[ mod ].config == BUS_MODULE_UNCONFIGURED ? 0 : 1 ) );
 
     DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_GET_ID, id )
     return id;
@@ -1112,7 +1113,7 @@ void bus_configure( Address config_info )
     /* Scan the module information table searching for either an unconfigured
        or a partially configured module
     */
-    for ( mod = 0; mod < N_BUS_SIZE && BUS_MAP.map_info[ mod ].config == BUS_CONFIGURED; mod++ )
+    for ( mod = 0; mod < N_BUS_SIZE && BUS_MAP.map_info[ mod ].config == BUS_MODULE_CONFIGURED; mod++ )
         ;
 
     if ( mod == N_BUS_SIZE ) {
@@ -1123,14 +1124,14 @@ void bus_configure( Address config_info )
         return;
     }
 
-    if ( BUS_MAP.map_info[ mod ].config == BUS_UNCONFIGURED ) {
+    if ( BUS_MAP.map_info[ mod ].config == BUS_MODULE_UNCONFIGURED ) {
         /* First call: The module was unconfigured; configure its size */
         BUS_MAP.map_info[ mod ].size = 0x100000 - config_info;
-        BUS_MAP.map_info[ mod ].config = BUS_SIZE_CONFIGURED;
+        BUS_MAP.map_info[ mod ].config = BUS_MODULE_SIZE_CONFIGURED;
     } else {
         /* Second call: The module size was already configured; configure its base address */
         BUS_MAP.map_info[ mod ].abs_base_addr = config_info;
-        BUS_MAP.map_info[ mod ].config = BUS_CONFIGURED;
+        BUS_MAP.map_info[ mod ].config = BUS_MODULE_CONFIGURED;
 
         /* Rebuild the page table */
         RebuildPageTable( BUS_PAGE( BUS_MAP.map_info[ mod ].abs_base_addr ),
@@ -1189,7 +1190,7 @@ void bus_unconfigure( Address unconfig_info )
     int mod = BUS_MAP.page_table[ BUS_PAGE( unconfig_info ) ].index;
 
     /* Determine the module to unconfigure */
-    if ( ( mod == BUS_NO_BUS_INDEX ) || ( bus_description[ mod ].r_config == BUS_CONFIGURED ) ) {
+    if ( ( mod == BUS_NO_BUS_INDEX ) || ( bus_description[ mod ].r_config == BUS_MODULE_CONFIGURED ) ) {
         /* There isn't any module configured at the given address -
            Signal a warning
          */
@@ -1442,9 +1443,9 @@ void monitor_BusMapTable( char ob[ BUS_MAP_TABLE_OB_SIZE ] )
 
     for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
         sprintf( ob, "%s\t%05X\t%05X\t%s", bus_description[ mod ].name, BUS_MAP.map_info[ mod ].abs_base_addr, BUS_MAP.map_info[ mod ].size,
-                 BUS_MAP.map_info[ mod ].config == BUS_CONFIGURED
+                 BUS_MAP.map_info[ mod ].config == BUS_MODULE_CONFIGURED
                      ? "Configured"
-                     : ( BUS_MAP.map_info[ mod ].config == BUS_SIZE_CONFIGURED ? "Size_configured" : "*Unconfigured*" ) );
+                     : ( BUS_MAP.map_info[ mod ].config == BUS_MODULE_SIZE_CONFIGURED ? "Size_configured" : "*Unconfigured*" ) );
 
         strcat( ob, "\n" );
         ob += strlen( ob );

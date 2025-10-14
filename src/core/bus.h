@@ -78,21 +78,21 @@ Public release.
 
   Revision 2.5  2000/09/14  15:20:18  cibrario
   Added serial port buffer registers .serial_rbr and .serial_tbr
-  in struct BusHdw; the hdw module uses them to buffer nibbles
+  in struct HdwModule; the hdw module uses them to buffer nibbles
   to/from multi-nibble registers.
 
   Revision 2.4  2000/09/12  15:47:32  cibrario
   The follwing updates were required to implement emulation of Port 1
   and 2, and to prepare the support of additional hw configurations:
-  - added an hw configuration-dependent field to struct BusHdw: .accel;
+  - added an hw configuration-dependent field to struct HdwModule: .accel;
     this field holds information useful to accelerate frequently executed
     operations on a given hw architecture.
     In the current hw configuration, it is used to hold the last
     address extension loaded into the bank switcher's F/F.
     The .accel_valid field indicates whether .accel is valid or not;
-    .accel_valid is cleared when the BusHdw structure has not been read
+    .accel_valid is cleared when the HdwModule structure has not been read
     back correctly from mass storage.
-    - added a new member to BusHdw: .card_status;
+    - added a new member to HdwModule: .card_status;
       it represent the current card status (HDW relative address 0x0F).
       - added storage space in struct BusStatus to accommodate Port 1 and 2.
         - added new status codes: BUS_I_BS_ADDRESS, BUS_I_PORT_1_WP,
@@ -207,13 +207,13 @@ typedef enum {
 
 #  define BUS_MAP_FLAGS_ABS 0x1 /* Abs addresses to r/w */
 
-typedef void ( *bus_initFunction )( void );
-typedef void ( *bus_saveFunction )( void );
-typedef Nibble ( *BusReadFunction )( Address rel_addr );
-typedef void ( *BusWriteFunction )( Address rel_addr, Nibble data );
-typedef enum { BUS_UNCONFIGURED, BUS_SIZE_CONFIGURED, BUS_CONFIGURED } bus_config_t;
+typedef void ( *BusModule_init_function )( void );
+typedef void ( *BusModule_save_function )( void );
+typedef Nibble ( *BusModule_read_function )( Address rel_addr );
+typedef void ( *BusModule_write_function )( Address rel_addr, Nibble data );
+typedef enum { BUS_MODULE_UNCONFIGURED, BUS_MODULE_SIZE_CONFIGURED, BUS_MODULE_CONFIGURED } BusModule_config_t;
 
-struct BusDescriptionEntry {
+struct BusModule {
     /* This const array contains an entry for each peripheral module connected
        to the peripheral bus of the Saturn CPU; the entry describes the
        characteristics of the module.
@@ -236,33 +236,33 @@ struct BusDescriptionEntry {
       descriptions into the array. The modules that come first
       in the array are configured first. */
 
-    bus_initFunction init; /* this function is called, without arguments, during VM startup
+    BusModule_init_function init; /* this function is called, without arguments, during VM startup
     to initialize the device. For example, the initialization
     function for the ROM module will read the ROM image from
     disk and store them into the module status structure. */
-    bus_saveFunction save;
-    BusReadFunction read;    /* this function reads a nibble from the module. It receives the
-    relative address of the nibble to be read. The read function
-    can return an interrupt request for the CPU. */
-    BusWriteFunction write;  /* this function writes a nibble to the module. It receives the
-    relative address and the value of the nibble to be written.
-    The write function can return an interrupt request for the CPU. */
-    bus_config_t r_config;   /* this flag contains the configuration status of the module after
-    a bus reset. If the after-reset configuration status is
-    BUS_CONFIGURED, the module can never be unconfigured. */
-    Address r_abs_base_addr; /* absolute base address of the module after a bus reset.
-    It should be set only if the module is at least partially
-    configured automatically after a bus reset. */
-    Address r_size;          /* size of the address window of the module after a bus reset.
-    It should be set only if the module is at least partially
-    configured automatically after a bus reset. */
+    BusModule_save_function save;
+    BusModule_read_function read;   /* this function reads a nibble from the module. It receives the
+   relative address of the nibble to be read. The read function
+   can return an interrupt request for the CPU. */
+    BusModule_write_function write; /* this function writes a nibble to the module. It receives the
+   relative address and the value of the nibble to be written.
+   The write function can return an interrupt request for the CPU. */
+    BusModule_config_t r_config;    /* this flag contains the configuration status of the module after
+     a bus reset. If the after-reset configuration status is
+     BUS_CONFIGURED, the module can never be unconfigured. */
+    Address r_abs_base_addr;        /* absolute base address of the module after a bus reset.
+           It should be set only if the module is at least partially
+           configured automatically after a bus reset. */
+    Address r_size;                 /* size of the address window of the module after a bus reset.
+           It should be set only if the module is at least partially
+           configured automatically after a bus reset. */
 
     int map_flags; /* special map flags:
     BUS_MAP_FLAGS_ABS	pass absolute addresses to module
     read/write functions (3.3) */
 };
 
-typedef const struct BusDescriptionEntry BusDescription[ N_BUS_SIZE ];
+typedef const struct BusModule BusDescription[ N_BUS_SIZE ];
 
 struct BusMapInfoEntry {
     /*
@@ -270,9 +270,9 @@ struct BusMapInfoEntry {
       to the peripheral bus of the Saturn CPU; the entry describes the
       dynamic mapping information of the module:
      */
-    bus_config_t config;   /* configuration status of the module. */
-    Address abs_base_addr; /* absolute base address of the module. It's valid only if the module is currently configured. */
-    Address size;          /* size of the address window of the module. It's valid only if the module is currently configured. */
+    BusModule_config_t config; /* configuration status of the module. */
+    Address abs_base_addr;     /* absolute base address of the module. It's valid only if the module is currently configured. */
+    Address size;              /* size of the address window of the module. It's valid only if the module is currently configured. */
 };
 
 typedef struct BusMapInfoEntry BusMapInfo[ N_BUS_SIZE ];
@@ -303,12 +303,12 @@ the page in the BusDescription table.The special value
 BUS_NO_BUS_INDEX indicates that no module responds to the
 address range. */
 
-    Address rel_base_addr;  /* the relative base address of the page in the address
-space of the module that responds to the address range of
-the page, if any. */
-    BusReadFunction read;   /* the read functions of the module that responds to the
+    Address rel_base_addr;          /* the relative base address of the page in the address
+        space of the module that responds to the address range of
+        the page, if any. */
+    BusModule_read_function read;   /* the read functions of the module that responds to the
 address range of the page, if any. */
-    BusWriteFunction write; /* the write functions of the module that responds to the
+    BusModule_write_function write; /* the write functions of the module that responds to the
 address range of the page, if any. */
 };
 
@@ -373,11 +373,11 @@ struct BusMap {
  module config/unconfig instructions */
 };
 
-struct BusHdw48Accel {
+struct HdwModule48Accel {
     XAddress bs_address; /* Bank Switcher ext. address */
 };
 
-struct BusHdw49Accel {
+struct HdwModule49Accel {
     XAddress view[ 2 ]; /* Base of Flash views */
 };
 
@@ -386,7 +386,7 @@ struct BusHdw49Accel {
 #  define NCE3_CARD_WE 0x04
 #  define CE2_CARD_WE 0x08
 
-struct BusHdw {
+struct HdwModule {
     Nibble hdw[ N_HDW_SIZE ]; /* HDW registers */
 
     /* LCD driver */
@@ -416,8 +416,8 @@ struct BusHdw {
     int accel_valid;
 
     union {
-        struct BusHdw48Accel a48;
-        struct BusHdw49Accel a49;
+        struct HdwModule48Accel a48;
+        struct HdwModule49Accel a49;
     } accel;
 
     /* 2.5: Serial port buffer registers */
@@ -434,7 +434,7 @@ struct BusStatus {
       Saturn CPU. The status of all modules is centralized to allow any device
       to easily access the status of other devices.
 
-        struct BusHdw
+        struct HdwModule
 
   This substructure contains the status of all peripheral devices controlled
   by the hdw module.
@@ -452,7 +452,7 @@ struct BusStatus {
     ROM and RAM in configuration 'xx', and is private to the
     configuration-specific ROM/RAM emulation module.
      */
-    struct BusHdw hdw; /* HDW status */
+    struct HdwModule hdw; /* HDW status */
 };
 
 struct BusStatus_48 {
