@@ -387,6 +387,29 @@ struct HdwModule49Accel {
 #  define CE2_CARD_WE 0x08
 
 struct HdwModule {
+    /*
+      This structure contains the actual status of all peripheral modules of the
+      Saturn CPU. The status of all modules is centralized to allow any device
+      to easily access the status of other devices.
+
+        struct HdwModule
+
+  This substructure contains the status of all peripheral devices controlled
+  by the hdw module.
+
+  3.2: To support the HP49 hw configuration, the original BusStatus structure
+  has been splitted in two:
+
+  - (new) struct BusStatus: contains configuration-independent status
+    information (.hdw), and configuration-dependent accelerators (.hdw.accel).
+    The overall layout of the structure is the same for all configurations,
+    and it is publicily accessible.
+
+  - struct BusStatus_xx (corresponding to all fields of the original
+    BusStatus structure except .hdw): contains the storage areas for
+    ROM and RAM in configuration 'xx', and is private to the
+    configuration-specific ROM/RAM emulation module.
+     */
     Nibble hdw[ N_HDW_SIZE ]; /* HDW registers */
 
     /* LCD driver */
@@ -428,33 +451,6 @@ struct HdwModule {
     int16 crc; /* CRC */
 };
 
-struct BusStatus {
-    /*
-      This structure contains the actual status of all peripheral modules of the
-      Saturn CPU. The status of all modules is centralized to allow any device
-      to easily access the status of other devices.
-
-        struct HdwModule
-
-  This substructure contains the status of all peripheral devices controlled
-  by the hdw module.
-
-  3.2: To support the HP49 hw configuration, the original BusStatus structure
-  has been splitted in two:
-
-  - (new) struct BusStatus: contains configuration-independent status
-    information (.hdw), and configuration-dependent accelerators (.hdw.accel).
-    The overall layout of the structure is the same for all configurations,
-    and it is publicily accessible.
-
-  - struct BusStatus_xx (corresponding to all fields of the original
-    BusStatus structure except .hdw): contains the storage areas for
-    ROM and RAM in configuration 'xx', and is private to the
-    configuration-specific ROM/RAM emulation module.
-     */
-    struct HdwModule hdw; /* HDW status */
-};
-
 struct BusStatus_48 {
     Nibble rom[ N_ROM_SIZE_48 ];       /* Internal ROM */
     Nibble ram[ N_RAM_SIZE_48 ];       /* Internal RAM */
@@ -476,7 +472,7 @@ struct BusStatus_49 {
   Global variables
   ---------------------------------------------------------------------------*/
 
-extern struct BusStatus bus_status;
+extern struct HdwModule hdw_status;
 
 /*---------------------------------------------------------------------------
   Function prototypes

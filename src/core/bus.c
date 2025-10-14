@@ -152,7 +152,7 @@ static const BusDescription hw49_description = {
         Static/Global variables
   ---------------------------------------------------------------------------*/
 
-struct BusStatus bus_status; /* Status information - global */
+struct HdwModule hdw_status;
 
 /* 2.7: Replaced the statically-allocated module mapping structure with a
    pointer to a dynamically-allocated structure, to be able to switch
@@ -1342,7 +1342,7 @@ Nibble bus_read_nibble( Address addr )
 
     /* Update the crc register, if appropriate */
     if ( BUS_MAP.page_table[ page ].index != BUS_HDW_INDEX )
-        bus_status.hdw.crc = ( bus_status.hdw.crc >> 4 ) ^ ( ( ( bus_status.hdw.crc ^ d ) & 0x0F ) * 0x1081 );
+        hdw_status.crc = ( hdw_status.crc >> 4 ) ^ ( ( ( hdw_status.crc ^ d ) & 0x0F ) * 0x1081 );
 
     /* Return to the caller */
     return d;

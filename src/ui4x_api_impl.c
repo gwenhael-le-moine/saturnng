@@ -178,18 +178,18 @@ bool is_key_pressed( int hpkey )
     return KEYBOARD[ hpkey ].pressed;
 }
 
-unsigned char get_annunciators( void ) { return bus_status.hdw.lcd_ann; }
+unsigned char get_annunciators( void ) { return hdw_status.lcd_ann; }
 
-bool get_display_state( void ) { return bus_status.hdw.lcd_on; }
+bool get_display_state( void ) { return hdw_status.lcd_on; }
 
 void get_lcd_buffer( int* target )
 {
-    Address addr = bus_status.hdw.lcd_base_addr;
+    Address addr = hdw_status.lcd_base_addr;
     int x, y;
     Nibble v;
 
     /* Scan active display rows */
-    for ( y = 0; y <= bus_status.hdw.lcd_vlc; y++ ) {
+    for ( y = 0; y <= hdw_status.lcd_vlc; y++ ) {
         /* Scan columns */
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
             v = bus_fetch_nibble( addr++ );
@@ -199,11 +199,11 @@ void get_lcd_buffer( int* target )
                 target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 1 : 0;
         }
 
-        addr += bus_status.hdw.lcd_line_offset;
+        addr += hdw_status.lcd_line_offset;
     }
 
     /* Scan menu display rows */
-    addr = bus_status.hdw.lcd_menu_addr;
+    addr = hdw_status.lcd_menu_addr;
     for ( ; y < LCD_HEIGHT; y++ ) {
         /* Scan columns */
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
@@ -216,7 +216,7 @@ void get_lcd_buffer( int* target )
     }
 }
 
-int get_contrast( void ) { return bus_status.hdw.lcd_contrast - 6; }
+int get_contrast( void ) { return hdw_status.lcd_contrast - 6; }
 
 void init_emulator( config_t* conf )
 {
