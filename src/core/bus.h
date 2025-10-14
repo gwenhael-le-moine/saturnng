@@ -109,6 +109,68 @@
   Initial revision
 .- */
 
+/*---------------------------------------------------------------------------
+        Chf condition codes
+  ---------------------------------------------------------------------------*/
+typedef enum {
+    BUS_I_CALLED = 101,            /* Function %s called */
+    BUS_I_INITIALIZING = 102,      /* Initializing module %s */
+    BUS_I_RESETTING = 103,         /* Resetting module %s */
+    BUS_I_GET_ID = 106,            /* bus_get_id returning %x */
+    BUS_I_CONFIG = 107,            /* bus_configure %s %x %x completed */
+    BUS_I_UNCONFIG = 108,          /* bus_unconfigure %s %x %x completed */
+    BUS_I_SAVING = 109,            /* Saving status of module %s */
+    BUS_I_NOT_IMPLEMENTED = 110,   /* Function %s not implemented */
+    BUS_I_REVISION = 111,          /* Modules revision: %s */
+    BUS_I_BS_ADDRESS = 112,        /* 2.4: Bank Switcher address: %x */
+    BUS_I_PORT_1_WP = 113,         /* 2.4: Port 1 is write protected */
+    BUS_I_PORT_2_WP = 114,         /* 2.4: Port 2 is write protected */
+    BUS_I_PERF_CTR = 115,          /* 2.7: Value of PerfCtr %s is %d */
+    BUS_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached bus_unconfigure completed */
+    BUS_I_CACHED_CONFIG = 117,     /* 2.7: Cached bus_configure %x comp. */
+    BUS_I_UNCONFIG_L_HIT = 118,    /* 2.7: Late unconfig hit */
+    BUS_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
+    BUS_W_BAD_CONFIG = 202,        /* Bad bus_configure %x ignored */
+    BUS_W_BAD_UNCONFIG = 203,      /* Bad bus_unconfigure %x ignored */
+    BUS_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
+    BUS_W_HDW_READ = 205,          /* Bad HdwRead %x */
+    BUS_W_RESETTING_ALL = 206,     /* Resetting all modules */
+    BUS_W_RAM_INIT = 207,          /* Can't initialize internal RAM */
+    BUS_W_HDW_INIT = 208,          /* Can't initialize HDW */
+    BUS_W_BAD_KEY = 209,           /* 2.1: Bad key %s ignored */
+    BUS_W_BAD_OUT_BIT = 210,       /* 2.1: Bad out_bit %x ignored */
+    BUS_W_PORT_1_INIT = 211,       /* 2.4: Can't initialize Port 1 */
+    BUS_W_PORT_2_INIT = 212,       /* 2.4: Can't initialize Port 2 */
+    BUS_W_NO_VICTIM = 213,         /* 2.7: No cache victim; flush/retry */
+    BUS_E_BAD_READ = 301,          /* Read unmapped addr %x */
+    BUS_E_BAD_WRITE = 302,         /* Write unmapped addr %x datum %x */
+    BUS_E_ROM_WRITE = 303,         /* Write into ROM addr %x datum %x */
+    BUS_E_RAM_SAVE = 304,          /* Can't save internal RAM status */
+    BUS_E_HDW_SAVE = 305,          /* Can't save HDW status */
+    BUS_E_PORT_1_SAVE = 306,       /* 2.4: Can't save Port 1 status */
+    BUS_E_CE1_WRITE = 307,         /* 2.4: Ce1Write addr %x datum %x */
+    BUS_E_PORT_2_SAVE = 308,       /* 2.4: Can't save Port 2 status */
+    BUS_E_NCE3_READ = 309,         /* 2.4: Read from NCE3 addr %x */
+    BUS_E_NCE3_WRITE = 310,        /* 2.4: Wr. to NCE3 addr %x datum %x */
+    BUS_E_NO_MATCH = 311,          /* 3.2: Hw desription %s not found */
+    BUS_E_ROM_SAVE = 312,          /* 3.3: Can't save Flash ROM */
+    BUS_F_MAP_SAVE = 401,          /* Can't save bus_map information */
+    BUS_F_ROM_INIT = 402,          /* Can't initialize internal ROM */
+    BUS_F_MAP_ALLOC = 403,         /* Dynamic map allocation failed */
+    BUS_F_BAD_ALLOC_C = 404,       /* 2.7: Bad alloc_c %d aft FlushCache*/
+    BUS_F_CHAIN_CORRUPTED = 405,   /* 2.7: BusMap chain corrupted */
+    BUS_F_NO_VICTIM = 406,         /* 2.7: No cache victim after flush */
+    BUS_F_BUS_STATUS_ALLOC = 407,  /* 3.2: BusStatus_xx alloc failed %d */
+    BUS_F_NO_DESCRIPTION = 408,    /* 3.2: No module description */
+    BUS_M_NOT_MAPPED = 501,        /* Address %x not mapped */
+    BUS_M_MAPPED = 502,            /* Address %x mapped to %s:%x */
+    BUS_M_MAP_TABLE_TITLE = 503,   /* */
+    BUS_M_MAP_TABLE_ROW = 504,     /* %s %x %x %s */
+    BUS_M_MAP_CONFIGURED = 505,    /* Configured */
+    BUS_M_MAP_SZ_CONFIGURED = 506, /* Size configured */
+    BUS_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
+} modules_chf_message_id_t;
+
 #  include "types.h"
 
 /*---------------------------------------------------------------------------
@@ -477,68 +539,6 @@ struct BusStatus_49 {
   ---------------------------------------------------------------------------*/
 
 extern struct BusStatus bus_status;
-
-/*---------------------------------------------------------------------------
-        Chf condition codes
-  ---------------------------------------------------------------------------*/
-typedef enum {
-    BUS_I_CALLED = 101,            /* Function %s called */
-    BUS_I_INITIALIZING = 102,      /* Initializing module %s */
-    BUS_I_RESETTING = 103,         /* Resetting module %s */
-    BUS_I_GET_ID = 106,            /* bus_get_id returning %x */
-    BUS_I_CONFIG = 107,            /* bus_configure %s %x %x completed */
-    BUS_I_UNCONFIG = 108,          /* bus_unconfigure %s %x %x completed */
-    BUS_I_SAVING = 109,            /* Saving status of module %s */
-    BUS_I_NOT_IMPLEMENTED = 110,   /* Function %s not implemented */
-    BUS_I_REVISION = 111,          /* Modules revision: %s */
-    BUS_I_BS_ADDRESS = 112,        /* 2.4: Bank Switcher address: %x */
-    BUS_I_PORT_1_WP = 113,         /* 2.4: Port 1 is write protected */
-    BUS_I_PORT_2_WP = 114,         /* 2.4: Port 2 is write protected */
-    BUS_I_PERF_CTR = 115,          /* 2.7: Value of PerfCtr %s is %d */
-    BUS_I_CACHED_UNCONFIG = 116,   /* 2.7: Cached bus_unconfigure completed */
-    BUS_I_CACHED_CONFIG = 117,     /* 2.7: Cached bus_configure %x comp. */
-    BUS_I_UNCONFIG_L_HIT = 118,    /* 2.7: Late unconfig hit */
-    BUS_I_UNCONFIG_L_MISS = 119,   /* 2.7: Late unconfig miss */
-    BUS_W_BAD_CONFIG = 202,        /* Bad bus_configure %x ignored */
-    BUS_W_BAD_UNCONFIG = 203,      /* Bad bus_unconfigure %x ignored */
-    BUS_W_HDW_WRITE = 204,         /* Bad HdwWrite %x, %x */
-    BUS_W_HDW_READ = 205,          /* Bad HdwRead %x */
-    BUS_W_RESETTING_ALL = 206,     /* Resetting all modules */
-    BUS_W_RAM_INIT = 207,          /* Can't initialize internal RAM */
-    BUS_W_HDW_INIT = 208,          /* Can't initialize HDW */
-    BUS_W_BAD_KEY = 209,           /* 2.1: Bad key %s ignored */
-    BUS_W_BAD_OUT_BIT = 210,       /* 2.1: Bad out_bit %x ignored */
-    BUS_W_PORT_1_INIT = 211,       /* 2.4: Can't initialize Port 1 */
-    BUS_W_PORT_2_INIT = 212,       /* 2.4: Can't initialize Port 2 */
-    BUS_W_NO_VICTIM = 213,         /* 2.7: No cache victim; flush/retry */
-    BUS_E_BAD_READ = 301,          /* Read unmapped addr %x */
-    BUS_E_BAD_WRITE = 302,         /* Write unmapped addr %x datum %x */
-    BUS_E_ROM_WRITE = 303,         /* Write into ROM addr %x datum %x */
-    BUS_E_RAM_SAVE = 304,          /* Can't save internal RAM status */
-    BUS_E_HDW_SAVE = 305,          /* Can't save HDW status */
-    BUS_E_PORT_1_SAVE = 306,       /* 2.4: Can't save Port 1 status */
-    BUS_E_CE1_WRITE = 307,         /* 2.4: Ce1Write addr %x datum %x */
-    BUS_E_PORT_2_SAVE = 308,       /* 2.4: Can't save Port 2 status */
-    BUS_E_NCE3_READ = 309,         /* 2.4: Read from NCE3 addr %x */
-    BUS_E_NCE3_WRITE = 310,        /* 2.4: Wr. to NCE3 addr %x datum %x */
-    BUS_E_NO_MATCH = 311,          /* 3.2: Hw desription %s not found */
-    BUS_E_ROM_SAVE = 312,          /* 3.3: Can't save Flash ROM */
-    BUS_F_MAP_SAVE = 401,          /* Can't save bus_map information */
-    BUS_F_ROM_INIT = 402,          /* Can't initialize internal ROM */
-    BUS_F_MAP_ALLOC = 403,         /* Dynamic map allocation failed */
-    BUS_F_BAD_ALLOC_C = 404,       /* 2.7: Bad alloc_c %d aft FlushCache*/
-    BUS_F_CHAIN_CORRUPTED = 405,   /* 2.7: BusMap chain corrupted */
-    BUS_F_NO_VICTIM = 406,         /* 2.7: No cache victim after flush */
-    BUS_F_BUS_STATUS_ALLOC = 407,  /* 3.2: BusStatus_xx alloc failed %d */
-    BUS_F_NO_DESCRIPTION = 408,    /* 3.2: No module description */
-    BUS_M_NOT_MAPPED = 501,        /* Address %x not mapped */
-    BUS_M_MAPPED = 502,            /* Address %x mapped to %s:%x */
-    BUS_M_MAP_TABLE_TITLE = 503,   /* */
-    BUS_M_MAP_TABLE_ROW = 504,     /* %s %x %x %s */
-    BUS_M_MAP_CONFIGURED = 505,    /* Configured */
-    BUS_M_MAP_SZ_CONFIGURED = 506, /* Size configured */
-    BUS_M_MAP_UNCONFIGURED = 507,  /* Unconfigured */
-} modules_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

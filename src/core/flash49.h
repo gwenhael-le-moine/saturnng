@@ -66,6 +66,22 @@
 #  include "types.h"
 
 /*---------------------------------------------------------------------------
+        Chf condition codes
+  ---------------------------------------------------------------------------*/
+typedef enum {
+    FLASH_I_READ = 101,        /* Read from address %x: %d */
+    FLASH_I_WRITE = 102,       /* Write address %x, datum %x */
+    FLASH_I_FSM = 103,         /* FSM from state %d, cycle %d */
+    FLASH_I_FSM_AD = 104,      /* FSM address %x, data %x */
+    FLASH_I_FSM_RESULT = 105,  /* FSM next state %d, result %x */
+    FLASH_I_FSM_OP = 106,      /* FSM operation %s */
+    FLASH_W_BAD_CMD = 201,     /* Bad cmd st%d, cycle%d, a%x, d%d */
+    FLASH_W_BAD_ADDRESS = 202, /* Bad addr st%d, cycle%d, a%x, d%d */
+    FLASH_E_xxx = 301,
+    FLASH_F_xxx = 401,
+} flash49_chf_conditions_codes_t;
+
+/*---------------------------------------------------------------------------
         Macro/Data type definitions
   ---------------------------------------------------------------------------*/
 
@@ -128,22 +144,6 @@ enum FlashState {
     FLASH_ST_BL_ERASE,       /* Block erase started */
     FLASH_ST_N               /* Total # of FSM states */
 };
-
-/*---------------------------------------------------------------------------
-        Chf condition codes
-  ---------------------------------------------------------------------------*/
-typedef enum {
-    FLASH_I_READ = 101,        /* Read from address %x: %d */
-    FLASH_I_WRITE = 102,       /* Write address %x, datum %x */
-    FLASH_I_FSM = 103,         /* FSM from state %d, cycle %d */
-    FLASH_I_FSM_AD = 104,      /* FSM address %x, data %x */
-    FLASH_I_FSM_RESULT = 105,  /* FSM next state %d, result %x */
-    FLASH_I_FSM_OP = 106,      /* FSM operation %s */
-    FLASH_W_BAD_CMD = 201,     /* Bad cmd st%d, cycle%d, a%x, d%d */
-    FLASH_W_BAD_ADDRESS = 202, /* Bad addr st%d, cycle%d, a%x, d%d */
-    FLASH_E_xxx = 301,
-    FLASH_F_xxx = 401,
-} flash49_chf_conditions_codes_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes

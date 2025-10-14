@@ -102,6 +102,35 @@
 #  include "types.h"
 
 /*---------------------------------------------------------------------------
+        Chf condition codes
+  ---------------------------------------------------------------------------*/
+typedef enum {
+    CPU_I_CALLED = 101,          /* Function %s called */
+    CPU_I_EXECUTING = 102,       /* Executing @PC %X */
+    CPU_I_SHUTDN = 103,          /* Shutdown */
+    CPU_I_WAKE = 104,            /* Wake */
+    CPU_I_INT = 105,             /* %s request accepted */
+    CPU_I_INT_PENDING = 106,     /* %s request pending */
+    CPU_I_RTI_LOOP = 107,        /* RTI loop to service %s */
+    CPU_I_RTI_END = 108,         /* RTI returning */
+    CPU_I_INTON = 109,           /* INTON servicing %s */
+    CPU_I_REVISION = 110,        /* CPU emulation revision: %s */
+    CPU_I_TIMER1_EX = 111,       /* Timer 1 expired; ctrl=%x */
+    CPU_I_TIMER2_EX = 112,       /* Timer 1 expired; ctrl=%x */
+    CPU_I_EMULATOR_INT = 113,    /* Emulator interrupt req. detected */
+    CPU_I_TIMER_ST = 114,        /* 3.1: Timer %s st: ctrl %x, val %x */
+    CPU_I_TIMER_EXP = 115,       /* 3.1: Timer %s expiration %d ms */
+    CPU_I_IDLE_X_LOOP = 116,     /* 3.1: Start idle loop, t/out %d ms */
+    CPU_I_ELAPSED = 117,         /* 3.1: Spent %d us in idle loop */
+    CPU_W_RESETTING = 201,       /* Resetting CPU */
+    CPU_W_BAD_MONITOR_CMD = 202, /* Bad monitor command: %s */
+    CPU_E_BAD_OPCODE = 301,      /* Bad opc. pc=%x, value=%x */
+    CPU_E_SAVE = 302,            /* Can't save CPU status */
+    CPU_E_BAD_OPCODE2 = 304,     /* Bad opc. pc=%x, value=%x */
+    CPU_F_INTERR = 401,          /* Internal error %s */
+} cpu_chf_message_id_t;
+
+/*---------------------------------------------------------------------------
         Macro/Data type definitions - require types.h
 
   N_SCRATCH_REGISTER_ALL, used during scratch register space allocation
@@ -241,35 +270,6 @@ extern cpu_t cpu;
  */
 extern int inner_loop;     /* Inner loop multiplier */
 extern int inner_loop_max; /* Max value of inner_loop */
-
-/*---------------------------------------------------------------------------
-        Chf condition codes
-  ---------------------------------------------------------------------------*/
-typedef enum {
-    CPU_I_CALLED = 101,          /* Function %s called */
-    CPU_I_EXECUTING = 102,       /* Executing @PC %X */
-    CPU_I_SHUTDN = 103,          /* Shutdown */
-    CPU_I_WAKE = 104,            /* Wake */
-    CPU_I_INT = 105,             /* %s request accepted */
-    CPU_I_INT_PENDING = 106,     /* %s request pending */
-    CPU_I_RTI_LOOP = 107,        /* RTI loop to service %s */
-    CPU_I_RTI_END = 108,         /* RTI returning */
-    CPU_I_INTON = 109,           /* INTON servicing %s */
-    CPU_I_REVISION = 110,        /* CPU emulation revision: %s */
-    CPU_I_TIMER1_EX = 111,       /* Timer 1 expired; ctrl=%x */
-    CPU_I_TIMER2_EX = 112,       /* Timer 1 expired; ctrl=%x */
-    CPU_I_EMULATOR_INT = 113,    /* Emulator interrupt req. detected */
-    CPU_I_TIMER_ST = 114,        /* 3.1: Timer %s st: ctrl %x, val %x */
-    CPU_I_TIMER_EXP = 115,       /* 3.1: Timer %s expiration %d ms */
-    CPU_I_IDLE_X_LOOP = 116,     /* 3.1: Start idle loop, t/out %d ms */
-    CPU_I_ELAPSED = 117,         /* 3.1: Spent %d us in idle loop */
-    CPU_W_RESETTING = 201,       /* Resetting CPU */
-    CPU_W_BAD_MONITOR_CMD = 202, /* Bad monitor command: %s */
-    CPU_E_BAD_OPCODE = 301,      /* Bad opc. pc=%x, value=%x */
-    CPU_E_SAVE = 302,            /* Can't save CPU status */
-    CPU_E_BAD_OPCODE2 = 304,     /* Bad opc. pc=%x, value=%x */
-    CPU_F_INTERR = 401,          /* Internal error %s */
-} cpu_chf_message_id_t;
 
 /*---------------------------------------------------------------------------
         Function prototypes
