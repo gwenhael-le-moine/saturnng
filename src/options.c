@@ -65,7 +65,6 @@ static config_t __config = {
     .speed = 0,
 
     .debug_level = DEBUG_C_NONE,
-    .enable_BUSCC = false,
 
     .state_dir_path = ( char* )".",
 };
@@ -237,7 +236,6 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_reset = -1;
     int clopt_monitor = -1;
-    int clopt_enable_BUSCC = -1;
 
     int clopt_speed = -1;
 
@@ -250,7 +248,6 @@ config_t* config_init( int argc, char* argv[] )
         {"print-config",         no_argument,       &print_config_and_exit, true            },
 
         {"throttle",             no_argument,       &clopt_throttle,        true            },
-        /* {"big-screen",           no_argument,       &clopt_big_screen,      true            }, */
 
         {"speed",                required_argument, NULL,                   7111            },
 
@@ -294,8 +291,6 @@ config_t* config_init( int argc, char* argv[] )
         {"debug-timers",         no_argument,       NULL,                   38608           },
         {"debug-interruptions",  no_argument,       NULL,                   38609           },
         {"debug-modules",        no_argument,       NULL,                   38611           },
-
-        {"implement-BUSCC",      no_argument,       &clopt_enable_BUSCC,    true            },
 
         {0,                      0,                 0,                      0               }
     };
@@ -532,8 +527,6 @@ config_t* config_init( int argc, char* argv[] )
         __config.reset = clopt_reset;
     if ( clopt_monitor != -1 )
         __config.monitor = clopt_monitor;
-    if ( clopt_enable_BUSCC != -1 )
-        __config.enable_BUSCC = clopt_enable_BUSCC;
 
     if ( clopt_speed > 0 )
         __config.speed = clopt_speed;

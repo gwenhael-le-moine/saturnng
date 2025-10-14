@@ -95,7 +95,6 @@
 #include "bus.h"
 #include "chf_wrapper.h"
 #include "cpu.h"
-#include "cpu_buscc.h"
 #include "disassembler.h"
 #include "disk_io.h" /* 3.1: ReadStructFromFile/WriteStructToFile */
 #include "keyboard.h"
@@ -1922,10 +1921,7 @@ static void ExecGroup_80( void )
             cpu.cycles += 6;
             break;
         case 0xB: /* BUSCC */
-            if ( config.enable_BUSCC )
-                ExecGroup_80B();
-            else
-                DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "BUSCC not implemented" )
+            DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "BUSCC not implemented" )
             break;
         case 0xC: /* C=P n */
             n = bus_fetch_nibble( cpu.pc );
@@ -2022,13 +2018,6 @@ static void ExecSpecialGroup_81( int rp )
             n = bus_fetch_nibble( cpu.pc );
             cpu.pc++;
             switch ( n ) {
-                case 0x1:
-                    if ( config.big_screen && config.enable_BUSCC )
-                        DEBUG( CPU_CHF_MODULE_ID, DEBUG_C_IMPLEMENTATION, CPU_I_CALLED, "//TODO: LOOP2 (RPL2 80B00)" )
-                    else
-                        ERROR( CPU_CHF_MODULE_ID, CPU_E_BAD_OPCODE, cpu.pc, n )
-                    break;
-
                 case 0x2: /* PC=A */
                     cpu.pc = R2Addr( cpu.reg[ A ] );
                     cpu.cycles += 16;

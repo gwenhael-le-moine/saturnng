@@ -36,7 +36,6 @@ typedef struct {
     int speed;
 
     int debug_level;
-    bool enable_BUSCC;
 
     char* state_dir_path;
 

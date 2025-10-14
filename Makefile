@@ -65,7 +65,6 @@ HEADERS = src/options.h \
 	src/core/hdw.h \
 	src/core/emulator.h \
 	src/core/cpu.h \
-	src/core/cpu_buscc.h \
 	src/core/chf_wrapper.h \
 	src/ui4x/api.h \
 	src/ui4x/bitmaps_misc.h \
@@ -79,7 +78,6 @@ SRC = src/main.c \
 	src/options.c \
 	src/ui4x_api_impl.c \
 	src/core/cpu.c \
-	src/core/cpu_buscc.c \
 	src/core/disassembler.c \
 	src/core/disk_io.c \
 	src/core/emulator.c \
