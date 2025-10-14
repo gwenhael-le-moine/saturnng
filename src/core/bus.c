@@ -830,14 +830,15 @@ void bus_init( void )
        fails.
      */
     bool err = ReadStructFromFile( config.bus_path, sizeof( BUS_MAP.map_info ), &BUS_MAP.map_info );
-    if ( err ) {
+    if ( !err )
+        /* Rebuild page table (not saved on disk) */
+        RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
+    else {
         WARNING0( BUS_CHF_MODULE_ID, BUS_W_RESETTING_ALL )
 
         /* Reset all modules */
         bus_reset();
-    } else
-        /* Rebuild page table (not saved on disk) */
-        RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
+    }
 }
 
 /* .+
