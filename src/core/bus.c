@@ -102,6 +102,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/ucontext.h>
 
 #include "../libChf/src/Chf.h"
 
@@ -131,7 +132,7 @@
         Module description tables
   ---------------------------------------------------------------------------*/
 
-static const bus_t hw48_description = {
+static const bus_t bus_hp48 = {
     {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
     {"Hardware Regs.   (HDW)",  0x19, 5, hdw_init,   hdw_save,   hdw_read,   hdw_write,   MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
     {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  MODULE_UNCONFIGURED,    0,       0,       0},
@@ -139,7 +140,7 @@ static const bus_t hw48_description = {
     {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  MODULE_UNCONFIGURED,    0,       0,       0},
     {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, MODULE_UNCONFIGURED,    0,       0,       0}
 };
-static const bus_t hw49_description = {
+static const bus_t bus_hp49 = {
     {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0                },
     {"Hardware Regs.   (HDW)",  0x19, 5, hdw_init,   hdw_save,   hdw_read,   hdw_write,   MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
     {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  MODULE_UNCONFIGURED,    0,       0,       0                },
@@ -800,15 +801,19 @@ static void bus_map__free( bus_map_t* p )
 .- */
 void bus_init( void )
 {
+#ifndef USE_BUS_CACHE
+    fprintf( stdout, "bus cache _disabled_\n" );
+#endif
+
     switch ( config.model ) {
         case MODEL_48SX:
         case MODEL_48GX:
-            bus = hw48_description;
+            bus = bus_hp48;
             break;
         case MODEL_40G:
         case MODEL_49G:
         case MODEL_50G:
-            bus = hw49_description;
+            bus = bus_hp49;
             break;
         default:
             ERROR( BUS_CHF_MODULE_ID, BUS_E_NO_MATCH, "Unknown model" )
