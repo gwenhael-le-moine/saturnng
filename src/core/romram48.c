@@ -393,7 +393,7 @@ void Ce1Save48( void )
 Nibble Ce1Read48( Address rel_address )
 {
 
-    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_BS_ADDRESS, rel_address )
+    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_BS_ADDRESS, rel_address )
 
     /* Save the read address into the hdw accelerators.
        bs_address can be directly or-ed with a relative port address to

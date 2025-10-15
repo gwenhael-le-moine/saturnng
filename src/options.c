@@ -286,11 +286,11 @@ config_t* config_init( int argc, char* argv[] )
         {"debug-opcodes",        no_argument,       NULL,                   38601           },
         {"debug-flash",          no_argument,       NULL,                   38604           },
         {"debug-implementation", no_argument,       NULL,                   38605           },
-        {"debug-mod-cache",      no_argument,       NULL,                   38606           },
+        {"debug-bus-cache",      no_argument,       NULL,                   38606           },
         {"debug-serial",         no_argument,       NULL,                   38607           },
         {"debug-timers",         no_argument,       NULL,                   38608           },
         {"debug-interruptions",  no_argument,       NULL,                   38609           },
-        {"debug-modules",        no_argument,       NULL,                   38611           },
+        {"debug-bus",            no_argument,       NULL,                   38611           },
 
         {0,                      0,                 0,                      0               }
     };
@@ -340,11 +340,11 @@ config_t* config_init( int argc, char* argv[] )
                             "     --debug-opcodes        enables debugging opcodes (default: no)\n"
                             "     --debug-flash          enables debugging flash (default: no)\n"
                             "     --debug-implementation enables debugging implementation (default: no)\n"
-                            "     --debug-mod-cache      enables debugging mod cache (default: no)\n"
+                            "     --debug-bus-cache      enables debugging bus cache (default: no)\n"
                             "     --debug-serial         enables debugging serial (default: no)\n"
                             "     --debug-timers         enables debugging timers (default: no)\n"
                             "     --debug-interruptions  enables debugging interruptions (default: no)\n"
-                            "     --debug-modules        enables debugging modules (default: no)\n";
+                            "     --debug-bus        enables debugging bus (default: no)\n";
 
     while ( c != EOF ) {
         c = getopt_long( argc, argv, optstring, long_options, &option_index );
@@ -394,7 +394,7 @@ config_t* config_init( int argc, char* argv[] )
                 __config.debug_level |= DEBUG_C_INT;
                 break;
             case 38611:
-                __config.debug_level |= DEBUG_C_MODULES;
+                __config.debug_level |= DEBUG_C_BUS;
                 break;
 
             default:

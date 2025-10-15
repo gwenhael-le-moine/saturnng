@@ -431,7 +431,7 @@ void Ce1Save49( void )
 Nibble Ce1Read49( Address rel_address )
 {
 
-    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_BS_ADDRESS, rel_address )
+    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_BS_ADDRESS, rel_address )
 
     /* Save the ROM view base addresses address into the hdw accelerators.
        view[] can be directly or-ed with a relative port address to
@@ -469,7 +469,7 @@ Nibble Ce1Read49( Address rel_address )
 void Ce1Write49( Address rel_address, Nibble datum )
 {
 
-    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_BS_ADDRESS, rel_address )
+    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_BS_ADDRESS, rel_address )
 
     /* Save the ROM view base addresses address into the hdw accelerators.
        view[] can be directly or-ed with a relative port address to

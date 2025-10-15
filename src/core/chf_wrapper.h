@@ -147,7 +147,7 @@
         Debug classes
   ---------------------------------------------------------------------------*/
 typedef enum {
-    DEBUG_C_MODULES = 0x4000,        /* Modules configuration */
+    DEBUG_C_BUS = 0x4000,            /* Modules configuration */
     DEBUG_C_INT = 0x1000,            /* Interrupt activity */
     DEBUG_C_TIMERS = 0x0800,         /* Timers activity */
     DEBUG_C_SERIAL = 0x0400,         /* 2.5: Serial port activity */

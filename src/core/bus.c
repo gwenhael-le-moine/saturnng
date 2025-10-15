@@ -128,25 +128,33 @@
 #define BUS_HDW_INDEX 1
 #define BUS_NO_BUS_INDEX ( -1 )
 
+#define DEBUG_BUS( action, address )                                                                                                       \
+    if ( config.debug_level & ( DEBUG_C_BUS ) ) {                                                                                          \
+        fprintf( stderr, "DEBUG_BUS( %s, %x )\n", action, address );                                                                       \
+        char ob[ BUS_MAP_TABLE_OB_SIZE ];                                                                                                  \
+        monitor_BusMapTable( ob );                                                                                                         \
+        puts( ob );                                                                                                                        \
+    }
+
 /*---------------------------------------------------------------------------
         Module description tables
   ---------------------------------------------------------------------------*/
 
 static const bus_t bus_hp48 = {
-    {"ROM              (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
-    {"Hardware Regs.   (HDW)",  0x19, 5, hdw_init,   hdw_save,   hdw_read,   hdw_write,   MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
-    {"Internal RAM     (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  MODULE_UNCONFIGURED,    0,       0,       0},
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  MODULE_UNCONFIGURED,    0,       0,       0},
-    {"Port 1 Control   (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  MODULE_UNCONFIGURED,    0,       0,       0},
-    {"Port 2 Control   (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, MODULE_UNCONFIGURED,    0,       0,       0}
+    {"ROM            (ROM)",  0x00, 0, RomInit48,  RomSave48,  RomRead48,  RomWrite48,  MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0},
+    {"Hardware Regs. (HDW)",  0x19, 5, hdw_init,   hdw_save,   hdw_read,   hdw_write,   MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0},
+    {"Internal RAM   (RAM)",  0x03, 4, RamInit48,  RamSave48,  RamRead48,  RamWrite48,  MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Bank Select    (CE1)",  0x05, 2, Ce1Init48,  Ce1Save48,  Ce1Read48,  Ce1Write48,  MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Port 1 Control (CE2)",  0x07, 3, Ce2Init48,  Ce2Save48,  Ce2Read48,  Ce2Write48,  MODULE_UNCONFIGURED,    0,       0,       0},
+    {"Port 2 Control (NCE3)", 0x01, 1, NCe3Init48, NCe3Save48, NCe3Read48, NCe3Write48, MODULE_UNCONFIGURED,    0,       0,       0},
 };
 static const bus_t bus_hp49 = {
-    {"ROM              (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0                },
-    {"Hardware Regs.   (HDW)",  0x19, 5, hdw_init,   hdw_save,   hdw_read,   hdw_write,   MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
-    {"IRAM             (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  MODULE_UNCONFIGURED,    0,       0,       0                },
-    {"Bank Select      (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  MODULE_UNCONFIGURED,    0,       0,       0                },
-    {"ERAM Bank 0      (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  MODULE_UNCONFIGURED,    0,       0,       0                },
-    {"ERAM Bank 1      (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, MODULE_UNCONFIGURED,    0,       0,       BUS_MAP_FLAGS_ABS}
+    {"ROM            (ROM)",  0x00, 0, RomInit49,  RomSave49,  RomRead49,  RomWrite49,  MODULE_CONFIGURED,      0x00000, 0xFFFFF, 0                },
+    {"Hardware Regs. (HDW)",  0x19, 5, hdw_init,   hdw_save,   hdw_read,   hdw_write,   MODULE_SIZE_CONFIGURED, 0x00000, 0x00040, 0                },
+    {"IRAM           (RAM)",  0x03, 4, RamInit49,  RamSave49,  RamRead49,  RamWrite49,  MODULE_UNCONFIGURED,    0,       0,       0                },
+    {"Bank Select    (CE1)",  0x05, 2, Ce1Init49,  Ce1Save49,  Ce1Read49,  Ce1Write49,  MODULE_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 0    (CE2)",  0x07, 3, Ce2Init49,  Ce2Save49,  Ce2Read49,  Ce2Write49,  MODULE_UNCONFIGURED,    0,       0,       0                },
+    {"ERAM Bank 1    (NCE3)", 0x01, 1, NCe3Init49, NCe3Save49, NCe3Read49, NCe3Write49, MODULE_UNCONFIGURED,    0,       0,       BUS_MAP_FLAGS_ABS},
 };
 
 /*---------------------------------------------------------------------------
@@ -279,7 +287,7 @@ static void RebuildPageTable( int page_start, int page_end )
         prio = BUS_MIN_ACCESS_PRIO;
         for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
             if ( BUS_MAP.map_info[ mod ].config == MODULE_CONFIGURED && page_addr >= BUS_MAP.map_info[ mod ].abs_base_addr &&
-                 page_addr < BUS_MAP.map_info[ mod ].abs_base_addr + BUS_MAP.map_info[ mod ].size && prio < bus[ mod ].access_prio ) {
+                 page_addr < BUS_MAP.map_info[ mod ].abs_base_addr + BUS_MAP.map_info[ mod ].size && bus[ mod ].access_prio > prio ) {
                 winner = mod;
                 prio = bus[ mod ].access_prio;
             }
@@ -822,7 +830,7 @@ void bus_init( void )
 
     /* Scan the bus table, initializing all modules */
     for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
-        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_INITIALIZING, bus[ mod ].name )
+        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_INITIALIZING, bus[ mod ].name )
         bus[ mod ].init();
     }
 
@@ -878,7 +886,7 @@ void bus_save( void )
 {
     /* Scan the bus table, initializing all modules */
     for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
-        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_SAVING, bus[ mod ].name )
+        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_SAVING, bus[ mod ].name )
         bus[ mod ].save();
     }
 
@@ -942,7 +950,7 @@ Address bus_get_id( void )
              ( BUS_MAP.map_info[ mod ].config == MODULE_UNCONFIGURED ? 0x00000 : 0x000F0 ) |
              ( bus[ mod ].id + ( BUS_MAP.map_info[ mod ].config == MODULE_UNCONFIGURED ? 0 : 1 ) );
 
-    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_GET_ID, id )
+    DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_GET_ID, id )
     return id;
 }
 
@@ -975,7 +983,7 @@ void bus_reset( void )
        mapping information BUS_MAP.map_info.
     */
     for ( int mod = 0; mod < N_BUS_SIZE; mod++ ) {
-        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES, BUS_I_RESETTING, bus[ mod ].name )
+        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS, BUS_I_RESETTING, bus[ mod ].name )
 
         /* Set the module configuration status */
         BUS_MAP.map_info[ mod ].config = bus[ mod ].r_config;
@@ -996,6 +1004,8 @@ void bus_reset( void )
        undo the last config
     */
     BUS_MAP.cache.config_point = 1;
+
+    DEBUG_BUS( "RESET", 0 )
 }
 
 /* .+
@@ -1119,7 +1129,7 @@ void bus_configure( Address config_info )
         BUS_MAP.cache.config_point = 1;
 #endif
 
-        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_BUS_CACHE, BUS_I_CONFIG, bus[ mod ].name, BUS_MAP.map_info[ mod ].abs_base_addr,
+        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS | DEBUG_C_BUS_CACHE, BUS_I_CONFIG, bus[ mod ].name, BUS_MAP.map_info[ mod ].abs_base_addr,
                BUS_MAP.map_info[ mod ].size )
     }
 
@@ -1131,6 +1141,8 @@ void bus_configure( Address config_info )
     BUS_MAP.cache.unconfig[ mod ] = old;
     old->cache.ref_count++;
 #endif
+
+    DEBUG_BUS( "CONFIG", config_info )
 }
 
 /* .+
@@ -1253,15 +1265,15 @@ void bus_unconfigure( Address unconfig_info )
            undo the last config
         */
         BUS_MAP.cache.config_point = 1;
-#endif
 
         DEBUG0( BUS_CHF_MODULE_ID, DEBUG_C_BUS_CACHE, BUS_I_UNCONFIG_L_MISS )
 
-        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_MODULES | DEBUG_C_BUS_CACHE, BUS_I_UNCONFIG, bus[ mod ].name,
-               BUS_MAP.map_info[ mod ].abs_base_addr, BUS_MAP.map_info[ mod ].size );
-#ifdef USE_BUS_CACHE
+        DEBUG( BUS_CHF_MODULE_ID, DEBUG_C_BUS | DEBUG_C_BUS_CACHE, BUS_I_UNCONFIG, bus[ mod ].name, BUS_MAP.map_info[ mod ].abs_base_addr,
+               BUS_MAP.map_info[ mod ].size );
     }
 #endif
+
+    DEBUG_BUS( "UNCNFG", unconfig_info )
 }
 
 /* .+
