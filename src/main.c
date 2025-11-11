@@ -5,10 +5,10 @@
 #include <stdlib.h>
 #include <sys/time.h>
 
+#include "emulator_api.h"
 #include "options.h"
 
 #include "ui4x/api.h"
-#include "ui4x/common.h"
 
 #include "core/chf_wrapper.h"
 #include "core/cpu.h"
@@ -78,7 +78,8 @@ int main( int argc, char** argv )
     set_speed( config.speed );
 
     /* (G)UI */
-    setup_ui( &config );
+    setup_ui( &config, press_key, release_key, is_key_pressed, get_annunciators, get_display_state, get_lcd_buffer, get_contrast,
+              exit_emulator );
     ui_start( &config );
 
     sigset_t set;

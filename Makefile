@@ -59,6 +59,7 @@ endif
 LIBS = -L./src/libChf -lChf $(NCURSES_LIBS) $(LUA_LIBS) $(SDL_LIBS) $(GTK_LIBS)
 
 HEADERS = src/options.h \
+	src/emulator_api.h \
 	src/core/disk_io.h \
 	src/core/flash49.h \
 	src/core/romram49.h \
@@ -75,7 +76,6 @@ HEADERS = src/options.h \
 	src/core/chf_wrapper.h \
 	src/ui4x/api.h \
 	src/ui4x/bitmaps_misc.h \
-	src/ui4x/common.h \
 	src/ui4x/ncurses.h \
 	src/ui4x/inner.h \
 	$(SDL_HEADERS) \
@@ -83,7 +83,7 @@ HEADERS = src/options.h \
 
 SRC = src/main.c \
 	src/options.c \
-	src/ui4x_api_impl.c \
+	src/emulator_api.c \
 	src/core/cpu.c \
 	src/core/disassembler.c \
 	src/core/disk_io.c \
@@ -102,7 +102,7 @@ SRC = src/main.c \
 	src/ui4x/48gx.c \
 	src/ui4x/49g.c \
 	src/ui4x/50g.c \
-	src/ui4x/common.c \
+	src/ui4x/api.c \
 	src/ui4x/ncurses.c \
 	$(SDL_SRC) \
 	$(GTK_SRC)
@@ -122,7 +122,7 @@ EXTRA_WARNING_FLAGS := -Wunused-function \
 	$(call cc-option,-Wunused-variable)
 endif
 
-override CFLAGS := -std=c23 \
+override CFLAGS := -std=c2x \
 	-Wall -Wextra -Wpedantic \
 	-Wformat=2 -Wshadow \
 	-Wwrite-strings -Wstrict-prototypes -Wold-style-definition \
