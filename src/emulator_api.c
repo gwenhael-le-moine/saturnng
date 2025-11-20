@@ -191,7 +191,6 @@ typedef enum {
 } annunciators_bits_t;
 unsigned char get_annunciators( void )
 {
-    // hdw.lcd_ann;
     const int annunciators_bits[ NB_ANNUNCIATORS ] = { ANN_LEFT, ANN_RIGHT, ANN_ALPHA, ANN_BATTERY, ANN_BUSY, ANN_IO };
     char annunciators = 0;
 
