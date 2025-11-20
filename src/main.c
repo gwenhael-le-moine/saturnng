@@ -35,16 +35,16 @@ void signal_handler( int sig )
         case SIGALRM:
             if ( nb_refreshes_since_last_checking_events > QUERY_EVENTS_EVERY_X_FRAME ) {
                 nb_refreshes_since_last_checking_events = 0;
-                ui_get_event();
+                ui_handle_pending_inputs();
             }
 
-            ui_update_display();
+            ui_refresh_output();
 
             nb_refreshes_since_last_checking_events++;
             break;
 
         case SIGPIPE:
-            ui_stop();
+            exit_ui();
             exit_emulator();
             exit( EXIT_SUCCESS );
         default:
@@ -81,7 +81,6 @@ int main( int argc, char** argv )
     ui4x_config_t config_ui = {
         .model = config.model,
         .shiftless = config.shiftless,
-        .big_screen = config.big_screen,
         .black_lcd = config.black_lcd,
 
         .frontend = config.frontend,
@@ -91,7 +90,7 @@ int main( int argc, char** argv )
 
         .chromeless = config.chromeless,
         .fullscreen = config.fullscreen,
-        .scale = config.scale,
+        .zoom = config.scale,
 
         .tiny = config.tiny,
         .small = config.small,
@@ -102,9 +101,16 @@ int main( int argc, char** argv )
         .wire_name = config.wire_name,
         .ir_name = config.ir_name,
     };
-    setup_ui( &config_ui, press_key, release_key, is_key_pressed, get_annunciators, get_display_state, get_lcd_buffer, get_contrast,
-              exit_emulator );
-    ui_start();
+
+    ui4x_emulator_api_t emulator_api = { .press_key = press_key,
+                                         .release_key = release_key,
+                                         .is_key_pressed = is_key_pressed,
+                                         .is_display_on = get_display_state,
+                                         .get_annunciators = get_annunciators,
+                                         .get_lcd_buffer = get_lcd_buffer,
+                                         .get_contrast = get_contrast,
+                                         .do_stop = exit_emulator };
+    init_ui( &config_ui, &emulator_api );
 
     sigset_t set;
     struct sigaction sa;

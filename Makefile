@@ -21,9 +21,9 @@ PKG_CONFIG ?= pkg-config
 
 OPTIM ?= 2
 FULL_WARNINGS ?= no
+WITH_GTK ?= yes
 WITH_SDL ?= yes
 WITH_SDL2 ?= no
-WITH_GTK ?= no
 
 cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&1; \
 		  then echo $(1); fi)
@@ -98,6 +98,7 @@ SRC = src/main.c \
 	src/core/serial.c \
 	src/core/chf_messages.c \
 	src/ui4x/fonts.c \
+	src/ui4x/bitmaps_misc.c \
 	src/ui4x/48sx.c \
 	src/ui4x/48gx.c \
 	src/ui4x/49g.c \

@@ -1,11 +1,9 @@
 #ifndef _UI4x_SDL_H
 #  define _UI4x_SDL_H 1
 
-#  include <stdbool.h>
-
-extern void setup_frontend_sdl( void ( *emulator_api_press_key )( int hpkey ), void ( *emulator_api_release_key )( int hpkey ),
-                                bool ( *emulator_api_is_key_pressed )( int hpkey ),
-                                unsigned char ( *emulator_api_get_annunciators )( void ), bool ( *emulator_api_get_display_state )( void ),
-                                void ( *emulator_api_get_lcd_buffer )( int* target ), int ( *emulator_api_get_contrast )( void ) );
+extern void sdl_ui_refresh_lcd( void );
+extern void sdl_ui_handle_pending_inputs( void );
+extern void sdl_init_ui( void );
+extern void sdl_exit_ui( void );
 
 #endif /* _UI4x_SDL_H */

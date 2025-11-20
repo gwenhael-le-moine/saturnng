@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <stdlib.h>
 
 #include "options.h"
 
@@ -11,6 +11,8 @@
 #include "ui4x/api.h"
 
 #define KEYBOARD ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? keyboard48 : keyboard49 )
+
+#define NIBBLES_PER_ROW ( 34 )
 
 typedef struct hpkey_t {
     int code;
@@ -78,7 +80,7 @@ static hpkey_t keyboard48[ NB_HP48_KEYS ] = {
     {0x00,   false},
 };
 
-static hpkey_t keyboard49[ NB_HP49_KEYS ] = {
+static hpkey_t keyboard49[ NB_HP4950_KEYS ] = {
     /* From top left to bottom right */
     {0x50,   false},
     {0x51,   false},
@@ -147,7 +149,7 @@ static config_t __config;
 
 void press_key( int hpkey )
 {
-    if ( hpkey < 0 || hpkey > NB_KEYS )
+    if ( hpkey < 0 || hpkey > ui_get_nb_keys() )
         return;
     // Check not already pressed (may be important: avoids a useless do_kbd_int)
     if ( KEYBOARD[ hpkey ].pressed )
@@ -160,7 +162,7 @@ void press_key( int hpkey )
 
 void release_key( int hpkey )
 {
-    if ( hpkey < 0 || hpkey > NB_KEYS )
+    if ( hpkey < 0 || hpkey > ui_get_nb_keys() )
         return;
     // Check not already released (not critical)
     if ( !KEYBOARD[ hpkey ].pressed )
@@ -173,13 +175,32 @@ void release_key( int hpkey )
 
 bool is_key_pressed( int hpkey )
 {
-    if ( hpkey < 0 || hpkey > NB_KEYS )
+    if ( hpkey < 0 || hpkey > ui_get_nb_keys() )
         return false;
 
     return KEYBOARD[ hpkey ].pressed;
 }
 
-unsigned char get_annunciators( void ) { return hdw.lcd_ann; }
+typedef enum {
+    ANN_LEFT = 0x81,
+    ANN_RIGHT = 0x82,
+    ANN_ALPHA = 0x84,
+    ANN_BATTERY = 0x88,
+    ANN_BUSY = 0x90,
+    ANN_IO = 0xa0,
+} annunciators_bits_t;
+unsigned char get_annunciators( void )
+{
+    // hdw.lcd_ann;
+    const int annunciators_bits[ NB_ANNUNCIATORS ] = { ANN_LEFT, ANN_RIGHT, ANN_ALPHA, ANN_BATTERY, ANN_BUSY, ANN_IO };
+    char annunciators = 0;
+
+    for ( int i = 0; i < NB_ANNUNCIATORS; i++ )
+        if ( ( annunciators_bits[ i ] & hdw.lcd_ann ) == annunciators_bits[ i ] )
+            annunciators |= 0x01 << i;
+
+    return annunciators;
+}
 
 bool get_display_state( void ) { return hdw.lcd_on; }
 
@@ -205,7 +226,7 @@ void get_lcd_buffer( int* target )
 
     /* Scan menu display rows */
     addr = hdw.lcd_menu_addr;
-    for ( ; y < LCD_HEIGHT; y++ ) {
+    for ( ; y < ui_get_lcd_height(); y++ ) {
         /* Scan columns */
         for ( x = 0; x < NIBBLES_PER_ROW; x++ ) {
             v = bus_fetch_nibble( addr++ );
@@ -228,4 +249,11 @@ void init_emulator( config_t* conf )
     conf->wire_name = ( char* )SerialInit();
 }
 
-void exit_emulator( void ) { EmulatorExit( SAVE_AND_EXIT ); }
+void exit_emulator( void )
+{
+    EmulatorExit( SAVE_AND_EXIT );
+
+    exit_ui();
+
+    exit( EXIT_SUCCESS );
+}

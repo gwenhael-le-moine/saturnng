@@ -220,7 +220,6 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_model = -1;
     int clopt_verbose = -1;
-    /* int clopt_big_screen = -1; */
     int clopt_black_lcd = -1;
     int clopt_throttle = -1;
     int clopt_shiftless = -1;
@@ -255,7 +254,7 @@ config_t* config_init( int argc, char* argv[] )
         {"48gx",                 no_argument,       &clopt_model,           MODEL_48GX      },
         {"40g",                  no_argument,       &clopt_model,           MODEL_40G       },
         {"49g",                  no_argument,       &clopt_model,           MODEL_49G       },
-        {"50g",                  no_argument,       &clopt_model,           MODEL_50G       },
+        /* {"50g",                  no_argument,       &clopt_model,           MODEL_50G       }, */
 
         {"reset",                no_argument,       &clopt_reset,           true            },
         {"monitor",              no_argument,       &clopt_monitor,         true            },
