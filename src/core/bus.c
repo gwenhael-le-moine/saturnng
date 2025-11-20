@@ -842,7 +842,7 @@ void bus_init( void )
     /* Attempt to restore the bus_map from file; reset modules if the read
        fails.
      */
-    bool err = ReadStructFromFile( config.bus_path, sizeof( BUS_MAP.map_info ), &BUS_MAP.map_info );
+    bool err = ReadStructFromFile( path_file_in_datadir( BUS_FILE_NAME ), sizeof( BUS_MAP.map_info ), &BUS_MAP.map_info );
     if ( !err )
         /* Rebuild page table (not saved on disk) */
         RebuildPageTable( 0, N_PAGE_TABLE_ENTRIES - 1 );
@@ -891,7 +891,7 @@ void bus_save( void )
     }
 
     /* Attempt to save the bus_map from file */
-    bool err = WriteStructToFile( &BUS_MAP.map_info, sizeof( BUS_MAP.map_info ), config.bus_path );
+    bool err = WriteStructToFile( &BUS_MAP.map_info, sizeof( BUS_MAP.map_info ), path_file_in_datadir( BUS_FILE_NAME ) );
     if ( err )
         FATAL0( BUS_CHF_MODULE_ID, BUS_F_MAP_SAVE )
 }

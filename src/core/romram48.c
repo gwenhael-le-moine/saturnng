@@ -122,10 +122,10 @@ void RomInit48( void )
 
     bool err = true;
     if ( config.model == MODEL_48GX )
-        err = bus_read_nibblesFromFile( config.rom_path, N_ROM_SIZE_48, bus_status_48->rom );
+        err = bus_read_nibblesFromFile( path_file_in_datadir( ROM_FILE_NAME ), N_ROM_SIZE_48, bus_status_48->rom );
     if ( config.model == MODEL_48SX )
         // To load 48SX ROM, try again with half the size this time.
-        err = bus_read_nibblesFromFile( config.rom_path, N_ROM_SIZE_48 / 2, bus_status_48->rom );
+        err = bus_read_nibblesFromFile( path_file_in_datadir( ROM_FILE_NAME ), N_ROM_SIZE_48 / 2, bus_status_48->rom );
     if ( err )
         FATAL0( BUS_CHF_MODULE_ID, BUS_F_ROM_INIT )
 }
@@ -224,7 +224,7 @@ void RomWrite48( Address rel_address, Nibble datum )
 .- */
 void RamInit48( void )
 {
-    bool err = bus_read_nibblesFromFile( config.ram_path, N_RAM_SIZE_48, bus_status_48->ram );
+    bool err = bus_read_nibblesFromFile( path_file_in_datadir( RAM_FILE_NAME ), N_RAM_SIZE_48, bus_status_48->ram );
     if ( err ) {
         WARNING0( BUS_CHF_MODULE_ID, BUS_W_RAM_INIT )
 
@@ -255,7 +255,7 @@ void RamInit48( void )
 .- */
 void RamSave48( void )
 {
-    bool err = bus_write_nibblesToFile( bus_status_48->ram, N_RAM_SIZE_48, config.ram_path );
+    bool err = bus_write_nibblesToFile( bus_status_48->ram, N_RAM_SIZE_48, path_file_in_datadir( RAM_FILE_NAME ) );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_RAM_SAVE )
@@ -460,12 +460,12 @@ void Ce2Init48( void )
 {
     Nibble new_status;
 
-    bool err = bus_read_nibblesFromFile( config.port1_path, N_PORT_1_SIZE_48, bus_status_48->port_1 );
+    bool err = bus_read_nibblesFromFile( path_file_in_datadir( PORT1_FILE_NAME ), N_PORT_1_SIZE_48, bus_status_48->port_1 );
     if ( !err ) {
         /* Card present; check write protection */
         new_status = hdw.card_status | CE2_CARD_PRESENT;
 
-        if ( access( config.port1_path, W_OK ) == 0 )
+        if ( access( path_file_in_datadir( PORT1_FILE_NAME ), W_OK ) == 0 )
             new_status |= CE2_CARD_WE;
         else {
             new_status &= ~CE2_CARD_WE;
@@ -519,7 +519,7 @@ void Ce2Save48( void )
     if ( !( hdw.card_status & CE2_CARD_WE ) )
         return;
 
-    bool err = bus_write_nibblesToFile( bus_status_48->port_1, N_PORT_1_SIZE_48, config.port1_path );
+    bool err = bus_write_nibblesToFile( bus_status_48->port_1, N_PORT_1_SIZE_48, path_file_in_datadir( PORT1_FILE_NAME ) );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_PORT_1_SAVE )
@@ -600,12 +600,12 @@ void NCe3Init48( void )
     Nibble new_status;
 
 #ifdef N_PORT_2_BANK_48
-    bool err = bus_read_nibblesFromFile( config.port2_path, N_PORT_2_SIZE_48, bus_status_48->port_2 );
+    bool err = bus_read_nibblesFromFile( path_file_in_datadir( PORT2_FILE_NAME ), N_PORT_2_SIZE_48, bus_status_48->port_2 );
     if ( !err ) {
         /* Card present; check write protection */
         new_status = hdw.card_status | NCE3_CARD_PRESENT;
 
-        if ( access( config.port2_path, W_OK ) == 0 )
+        if ( access( path_file_in_datadir( PORT2_FILE_NAME ), W_OK ) == 0 )
             new_status |= NCE3_CARD_WE;
         else {
             new_status &= ~NCE3_CARD_WE;
@@ -665,7 +665,7 @@ void NCe3Save48( void )
     if ( !( hdw.card_status & NCE3_CARD_WE ) )
         return;
 
-    bool err = bus_write_nibblesToFile( bus_status_48->port_2, N_PORT_2_SIZE_48, config.port2_path );
+    bool err = bus_write_nibblesToFile( bus_status_48->port_2, N_PORT_2_SIZE_48, path_file_in_datadir( PORT2_FILE_NAME ) );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_PORT_2_SAVE )

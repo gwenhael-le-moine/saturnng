@@ -2302,7 +2302,7 @@ void CpuReset( void )
 .- */
 void CpuInit( void )
 {
-    if ( ReadStructFromFile( config.cpu_path, sizeof( cpu ), &cpu ) ) {
+    if ( ReadStructFromFile( path_file_in_datadir( CPU_FILE_NAME ), sizeof( cpu ), &cpu ) ) {
         WARNING0( CPU_CHF_MODULE_ID, CPU_W_RESETTING )
 
         CpuReset();
@@ -2333,7 +2333,7 @@ void CpuInit( void )
 .- */
 void CpuSave( void )
 {
-    if ( WriteStructToFile( &cpu, sizeof( cpu ), config.cpu_path ) )
+    if ( WriteStructToFile( &cpu, sizeof( cpu ), path_file_in_datadir( CPU_FILE_NAME ) ) )
         ERROR0( CPU_CHF_MODULE_ID, CPU_E_SAVE )
 }
 

@@ -90,7 +90,7 @@ int main( int argc, char** argv )
 
         .chromeless = config.chromeless,
         .fullscreen = config.fullscreen,
-        .zoom = config.scale,
+        .zoom = config.zoom,
 
         .tiny = config.tiny,
         .small = config.small,
@@ -102,7 +102,7 @@ int main( int argc, char** argv )
         .wire_name = config.wire_name,
         .ir_name = config.ir_name,
 
-        .style_filename = NULL /* FIXME */
+        .style_filename = config.style_filename == NULL ? NULL : path_file_in_datadir( config.style_filename )
     };
 
     ui4x_emulator_api_t emulator_api = { .press_key = press_key,

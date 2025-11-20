@@ -5,6 +5,15 @@
 
 #  include "ui4x/api.h"
 
+#  define CONFIG_FILE_NAME "config.lua"
+#  define BUS_FILE_NAME "mod"
+#  define CPU_FILE_NAME "cpu"
+#  define HDW_FILE_NAME "hdw"
+#  define ROM_FILE_NAME "rom"
+#  define RAM_FILE_NAME "ram"
+#  define PORT1_FILE_NAME "port1"
+#  define PORT2_FILE_NAME "port2"
+
 typedef struct config_t {
     /* duplicating ui4x_config_t here so that config_init can return one big struct */
     char* progname;
@@ -20,13 +29,15 @@ typedef struct config_t {
 
     bool chromeless;
     bool fullscreen;
-    double scale;
+    double zoom;
 
     bool tiny;
     bool small;
 
     char* wire_name;
     char* ir_name;
+
+    char* style_filename;
 
     bool verbose;
 
@@ -40,15 +51,6 @@ typedef struct config_t {
     int debug_level;
 
     char* datadir;
-
-    char* config_path;
-    char* bus_path;
-    char* cpu_path;
-    char* hdw_path;
-    char* rom_path;
-    char* ram_path;
-    char* port1_path;
-    char* port2_path;
 } config_t;
 
 /*---------------------------------------------------------------------------
@@ -59,6 +61,8 @@ extern config_t config;
 /*************/
 /* functions */
 /*************/
+extern char* path_file_in_datadir( const char* filename );
+
 extern config_t* config_init( int argc, char* argv[] );
 
 #endif /* !_UI4x_CONFIG_H */

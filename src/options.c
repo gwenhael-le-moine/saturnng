@@ -21,15 +21,6 @@
 #  define LUA_OK 0
 #endif
 
-#define CONFIG_FILE_NAME "config.lua"
-#define BUS_FILE_NAME "mod"
-#define CPU_FILE_NAME "cpu"
-#define HDW_FILE_NAME "hdw"
-#define ROM_FILE_NAME "rom"
-#define RAM_FILE_NAME "ram"
-#define PORT1_FILE_NAME "port1"
-#define PORT2_FILE_NAME "port2"
-
 static config_t __config = {
     .progname = ( char* )"saturn4xxx",
 
@@ -54,7 +45,7 @@ static config_t __config = {
 
     .chromeless = false,
     .fullscreen = false,
-    .scale = 1.0,
+    .zoom = 1.0,
 
     .tiny = false,
     .small = false,
@@ -191,7 +182,7 @@ static void print_config( void )
     fprintf( stdout, "black_lcd = %s\n", __config.black_lcd ? "true" : "false" );
     fprintf( stdout, "chromeless = %s\n", __config.chromeless ? "true" : "false" );
     fprintf( stdout, "fullscreen = %s\n", __config.fullscreen ? "true" : "false" );
-    fprintf( stdout, "scale = %f\n", __config.scale );
+    fprintf( stdout, "zoom = %f\n", __config.zoom );
     fprintf( stdout, "shiftless = %s\n", __config.shiftless ? "true" : "false" );
 
     fprintf( stdout, "\n" );
@@ -210,6 +201,8 @@ static char* normalize_filename( char* path, const char* name )
     return s;
 }
 
+char* path_file_in_datadir( const char* filename ) { return normalize_filename( __config.datadir, filename ); }
+
 config_t* config_init( int argc, char* argv[] )
 {
     int option_index;
@@ -227,7 +220,7 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_gray = -1;
     int clopt_chromeless = -1;
     int clopt_fullscreen = -1;
-    double clopt_scale = -1.0;
+    double clopt_zoom = -1.0;
 
     int clopt_tiny = -1;
     int clopt_small = -1;
@@ -257,7 +250,8 @@ config_t* config_init( int argc, char* argv[] )
         {"reset",                no_argument,       &clopt_reset,           true            },
         {"monitor",              no_argument,       &clopt_monitor,         true            },
 
-        {"state-dir",            required_argument, NULL,                   8999            },
+        {"datadir",            required_argument, NULL,                   8999            },
+        {"state-dir",            required_argument, NULL,                   8999            }, /* DEPRECATED */
 
         {"shiftless",            no_argument,       &clopt_shiftless,       true            },
 
@@ -266,11 +260,12 @@ config_t* config_init( int argc, char* argv[] )
 #endif
 #if defined( HAS_SDL )
         {"sdl",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    },
-        {"gui",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    },
+        {"gui",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    }, /* DEPRECATED */
 #endif
         {"chromeless",           no_argument,       &clopt_chromeless,      true            },
         {"fullscreen",           no_argument,       &clopt_fullscreen,      true            },
-        {"scale",                required_argument, NULL,                   7110            },
+        {"zoom",                required_argument, NULL,                   7110            },
+        {"scale",                required_argument, NULL,                   7110            }, /* DEPRECATED */
         {"black-lcd",            no_argument,       &clopt_black_lcd,       true            },
 
         {"tui",                  no_argument,       &clopt_frontend,        FRONTEND_NCURSES},
@@ -300,13 +295,12 @@ config_t* config_init( int argc, char* argv[] )
                             "     --throttle     throttle CPU speed\n"
                             "     --speed=<n>    set cpu's speed to <n> MHz "
                             "(default: 1.0)\n"
-                            /* "     --big-screen   131×80 screen (default: false)\n" */
                             "     --black-lcd    (default: false)\n"
                             "     --48gx         emulate a HP 48GX\n"
                             "     --48sx         emulate a HP 48SX\n"
                             "     --40g          emulate a HP 40G\n"
                             "     --49g          emulate a HP 49G\n"
-                            "     --state-dir=<path> use a different data directory "
+                            "     --datadir=<path> use a different data directory "
                             "(default: ~/.config/saturnMODEL/)\n"
 #if defined( HAS_SDL )
                             "     --sdl          graphical (SDL2) front-end (default: true)\n"
@@ -323,7 +317,7 @@ config_t* config_init( int argc, char* argv[] )
                             "false)\n"
                             "     --fullscreen   make the UI fullscreen "
                             "(default: false)\n"
-                            "     --scale=<n>    make the UI scale <n> times "
+                            "     --zoom=<n>    make the UI zoom <n> times "
                             "(default: 1.0)\n"
                             "     --mono         make the UI monochrome (default: "
                             "false)\n"
@@ -360,7 +354,7 @@ config_t* config_init( int argc, char* argv[] )
                 clopt_tiny = true;
                 break;
             case 7110:
-                clopt_scale = atof( optarg );
+                clopt_zoom = atof( optarg );
                 break;
             case 7111:
                 clopt_speed = atof( optarg );
@@ -402,19 +396,10 @@ config_t* config_init( int argc, char* argv[] )
     if ( clopt_datadir != NULL )
         __config.datadir = strdup( clopt_datadir );
 
-    __config.config_path = normalize_filename( __config.datadir, CONFIG_FILE_NAME );
-    __config.bus_path = normalize_filename( __config.datadir, BUS_FILE_NAME );
-    __config.cpu_path = normalize_filename( __config.datadir, CPU_FILE_NAME );
-    __config.hdw_path = normalize_filename( __config.datadir, HDW_FILE_NAME );
-    __config.rom_path = normalize_filename( __config.datadir, ROM_FILE_NAME );
-    __config.ram_path = normalize_filename( __config.datadir, RAM_FILE_NAME );
-    __config.port1_path = normalize_filename( __config.datadir, PORT1_FILE_NAME );
-    __config.port2_path = normalize_filename( __config.datadir, PORT2_FILE_NAME );
-
     /**********************/
     /* 1. read config.lua */
     /**********************/
-    bool haz_config_file = config_read( __config.config_path );
+    bool haz_config_file = config_read( path_file_in_datadir( CONFIG_FILE_NAME ) );
     if ( haz_config_file ) {
         lua_getglobal( config_lua_values, "verbose" );
         __config.verbose = lua_toboolean( config_lua_values, -1 );
@@ -462,6 +447,8 @@ config_t* config_init( int argc, char* argv[] )
         lua_getglobal( config_lua_values, "frontend" );
         const char* svalue = luaL_optstring( config_lua_values, -1, "sdl" );
         if ( svalue != NULL ) {
+            if ( strcmp( svalue, "gtk" ) == 0 )
+                __config.frontend = FRONTEND_GTK;
             if ( strcmp( svalue, "sdl" ) == 0 )
                 __config.frontend = FRONTEND_SDL;
             if ( strcmp( svalue, "tui" ) == 0 ) {
@@ -481,8 +468,12 @@ config_t* config_init( int argc, char* argv[] )
             }
         }
 
+        lua_getglobal( config_lua_values, "zoom" );
+        __config.zoom = luaL_optnumber( config_lua_values, -1, 1.0 );
+
+        /* DEPRECATED */
         lua_getglobal( config_lua_values, "scale" );
-        __config.scale = luaL_optnumber( config_lua_values, -1, 1.0 );
+        __config.zoom = luaL_optnumber( config_lua_values, -1, 1.0 );
 
         lua_getglobal( config_lua_values, "speed" );
         __config.speed = luaL_optnumber( config_lua_values, -1, 1 );
@@ -505,8 +496,8 @@ config_t* config_init( int argc, char* argv[] )
         __config.chromeless = clopt_chromeless == true;
     if ( clopt_fullscreen != -1 )
         __config.fullscreen = clopt_fullscreen == true;
-    if ( clopt_scale > 0.0 )
-        __config.scale = clopt_scale;
+    if ( clopt_zoom > 0.0 )
+        __config.zoom = clopt_zoom;
     if ( clopt_mono != -1 )
         __config.mono = clopt_mono == true;
     if ( clopt_small != -1 )
@@ -570,10 +561,10 @@ config_t* config_init( int argc, char* argv[] )
     }
 
     if ( !haz_config_file ) {
-        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", __config.config_path );
+        fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", path_file_in_datadir( CONFIG_FILE_NAME ) );
 
         fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", __config.datadir, __config.progname,
-                 __config.config_path );
+                 path_file_in_datadir( CONFIG_FILE_NAME ) );
     }
 
     return &__config;

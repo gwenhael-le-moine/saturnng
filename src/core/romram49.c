@@ -137,7 +137,7 @@ void RomInit49( void )
         FATAL( BUS_CHF_MODULE_ID, BUS_F_BUS_STATUS_ALLOC, sizeof( struct BusStatus_49 ) )
     }
 
-    bool err = bus_read_nibblesFromFile( config.rom_path, N_FLASH_SIZE_49, bus_status_49->flash );
+    bool err = bus_read_nibblesFromFile( path_file_in_datadir( ROM_FILE_NAME ), N_FLASH_SIZE_49, bus_status_49->flash );
     if ( err )
         FATAL0( BUS_CHF_MODULE_ID, BUS_F_ROM_INIT )
 }
@@ -164,7 +164,7 @@ void RomInit49( void )
 .- */
 void RomSave49( void )
 {
-    bool err = bus_write_nibblesToFile( bus_status_49->flash, N_FLASH_SIZE_49, config.rom_path );
+    bool err = bus_write_nibblesToFile( bus_status_49->flash, N_FLASH_SIZE_49, path_file_in_datadir( ROM_FILE_NAME ) );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_ROM_SAVE )
@@ -255,7 +255,7 @@ void RomWrite49( Address rel_address, Nibble datum )
 .- */
 void RamInit49( void )
 {
-    bool err = bus_read_nibblesFromFile( config.ram_path, N_RAM_SIZE_49, bus_status_49->ram );
+    bool err = bus_read_nibblesFromFile( path_file_in_datadir( RAM_FILE_NAME ), N_RAM_SIZE_49, bus_status_49->ram );
     if ( err ) {
         WARNING0( BUS_CHF_MODULE_ID, BUS_W_RAM_INIT )
 
@@ -284,7 +284,7 @@ void RamInit49( void )
 .- */
 void RamSave49( void )
 {
-    bool err = bus_write_nibblesToFile( bus_status_49->ram, N_RAM_SIZE_49, config.ram_path );
+    bool err = bus_write_nibblesToFile( bus_status_49->ram, N_RAM_SIZE_49, path_file_in_datadir( RAM_FILE_NAME ) );
     if ( err ) {
         SIGNAL_ERRNO
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_RAM_SAVE )

@@ -125,7 +125,7 @@ hdw_t hdw;
 .- */
 void hdw_init( void )
 {
-    bool err = ReadStructFromFile( config.hdw_path, sizeof( hdw ), &hdw );
+    bool err = ReadStructFromFile( path_file_in_datadir( HDW_FILE_NAME ), sizeof( hdw ), &hdw );
     if ( err ) {
         WARNING0( BUS_CHF_MODULE_ID, BUS_W_HDW_INIT )
 
@@ -155,7 +155,7 @@ void hdw_init( void )
 .- */
 void hdw_save( void )
 {
-    bool err = WriteStructToFile( &hdw, sizeof( hdw ), config.hdw_path );
+    bool err = WriteStructToFile( &hdw, sizeof( hdw ), path_file_in_datadir( HDW_FILE_NAME ) );
     if ( err )
         ERROR0( BUS_CHF_MODULE_ID, BUS_E_HDW_SAVE )
 }
