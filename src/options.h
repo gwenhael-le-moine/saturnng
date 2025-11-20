@@ -39,7 +39,7 @@ typedef struct config_t {
 
     int debug_level;
 
-    char* state_dir_path;
+    char* datadir;
 
     char* config_path;
     char* bus_path;

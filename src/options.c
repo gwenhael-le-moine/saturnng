@@ -66,7 +66,7 @@ static config_t __config = {
 
     .debug_level = DEBUG_C_NONE,
 
-    .state_dir_path = ( char* )".",
+    .datadir = ( char* )".",
 };
 
 lua_State* config_lua_values;
@@ -188,7 +188,6 @@ static void print_config( void )
 
     fprintf( stdout, "\n" );
     fprintf( stdout, " -- Following options are specific to sdl frontend\n" );
-    /* fprintf( stdout, "big_screen = %s\n", __config.big_screen ? "true" : "false" ); */
     fprintf( stdout, "black_lcd = %s\n", __config.black_lcd ? "true" : "false" );
     fprintf( stdout, "chromeless = %s\n", __config.chromeless ? "true" : "false" );
     fprintf( stdout, "fullscreen = %s\n", __config.fullscreen ? "true" : "false" );
@@ -238,7 +237,7 @@ config_t* config_init( int argc, char* argv[] )
 
     int clopt_speed = -1;
 
-    char* clopt_state_dir_path = ( char* )".";
+    char* clopt_datadir = ( char* )".";
 
     const char* optstring = "h";
     struct option long_options[] = {
@@ -254,7 +253,6 @@ config_t* config_init( int argc, char* argv[] )
         {"48gx",                 no_argument,       &clopt_model,           MODEL_48GX      },
         {"40g",                  no_argument,       &clopt_model,           MODEL_40G       },
         {"49g",                  no_argument,       &clopt_model,           MODEL_49G       },
-        /* {"50g",                  no_argument,       &clopt_model,           MODEL_50G       }, */
 
         {"reset",                no_argument,       &clopt_reset,           true            },
         {"monitor",              no_argument,       &clopt_monitor,         true            },
@@ -368,7 +366,7 @@ config_t* config_init( int argc, char* argv[] )
                 clopt_speed = atof( optarg );
                 break;
             case 8999:
-                clopt_state_dir_path = optarg;
+                clopt_datadir = optarg;
                 break;
 
             case 38601:
@@ -401,17 +399,17 @@ config_t* config_init( int argc, char* argv[] )
         }
     }
 
-    if ( clopt_state_dir_path != NULL )
-        __config.state_dir_path = strdup( clopt_state_dir_path );
+    if ( clopt_datadir != NULL )
+        __config.datadir = strdup( clopt_datadir );
 
-    __config.config_path = normalize_filename( __config.state_dir_path, CONFIG_FILE_NAME );
-    __config.bus_path = normalize_filename( __config.state_dir_path, BUS_FILE_NAME );
-    __config.cpu_path = normalize_filename( __config.state_dir_path, CPU_FILE_NAME );
-    __config.hdw_path = normalize_filename( __config.state_dir_path, HDW_FILE_NAME );
-    __config.rom_path = normalize_filename( __config.state_dir_path, ROM_FILE_NAME );
-    __config.ram_path = normalize_filename( __config.state_dir_path, RAM_FILE_NAME );
-    __config.port1_path = normalize_filename( __config.state_dir_path, PORT1_FILE_NAME );
-    __config.port2_path = normalize_filename( __config.state_dir_path, PORT2_FILE_NAME );
+    __config.config_path = normalize_filename( __config.datadir, CONFIG_FILE_NAME );
+    __config.bus_path = normalize_filename( __config.datadir, BUS_FILE_NAME );
+    __config.cpu_path = normalize_filename( __config.datadir, CPU_FILE_NAME );
+    __config.hdw_path = normalize_filename( __config.datadir, HDW_FILE_NAME );
+    __config.rom_path = normalize_filename( __config.datadir, ROM_FILE_NAME );
+    __config.ram_path = normalize_filename( __config.datadir, RAM_FILE_NAME );
+    __config.port1_path = normalize_filename( __config.datadir, PORT1_FILE_NAME );
+    __config.port2_path = normalize_filename( __config.datadir, PORT2_FILE_NAME );
 
     /**********************/
     /* 1. read config.lua */
@@ -499,8 +497,6 @@ config_t* config_init( int argc, char* argv[] )
         __config.model = clopt_model;
     if ( clopt_throttle != -1 )
         __config.throttle = clopt_throttle == true;
-    /* if ( clopt_big_screen != -1 ) */
-    /*     __config.big_screen = clopt_big_screen == true; */
     if ( clopt_black_lcd != -1 )
         __config.black_lcd = clopt_black_lcd == true;
     if ( clopt_frontend != -1 )
@@ -576,8 +572,8 @@ config_t* config_init( int argc, char* argv[] )
     if ( !haz_config_file ) {
         fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", __config.config_path );
 
-        fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", __config.state_dir_path,
-                 __config.progname, __config.config_path );
+        fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", __config.datadir, __config.progname,
+                 __config.config_path );
     }
 
     return &__config;
