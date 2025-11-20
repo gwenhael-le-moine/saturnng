@@ -184,6 +184,7 @@ static void print_config( void )
     fprintf( stdout, "fullscreen = %s\n", __config.fullscreen ? "true" : "false" );
     fprintf( stdout, "zoom = %f\n", __config.zoom );
     fprintf( stdout, "shiftless = %s\n", __config.shiftless ? "true" : "false" );
+    fprintf( stdout, "style = \"%s\" -- CSS file (relative to this file) (gtk only)\n", __config.style_filename );
 
     fprintf( stdout, "\n" );
     fprintf( stdout, "--- End of saturnng configuration ----------------------------------------------\n" );
@@ -231,8 +232,9 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_speed = -1;
 
     char* clopt_datadir = ( char* )".";
+    char* clopt_style_filename = NULL;
 
-    const char* optstring = "h";
+    const char* optstring = "hs:";
     struct option long_options[] = {
         {"help",                 no_argument,       NULL,                   'h'             },
         {"verbose",              no_argument,       &clopt_verbose,         true            },
@@ -250,7 +252,7 @@ config_t* config_init( int argc, char* argv[] )
         {"reset",                no_argument,       &clopt_reset,           true            },
         {"monitor",              no_argument,       &clopt_monitor,         true            },
 
-        {"datadir",            required_argument, NULL,                   8999            },
+        {"datadir",              required_argument, NULL,                   8999            },
         {"state-dir",            required_argument, NULL,                   8999            }, /* DEPRECATED */
 
         {"shiftless",            no_argument,       &clopt_shiftless,       true            },
@@ -264,7 +266,7 @@ config_t* config_init( int argc, char* argv[] )
 #endif
         {"chromeless",           no_argument,       &clopt_chromeless,      true            },
         {"fullscreen",           no_argument,       &clopt_fullscreen,      true            },
-        {"zoom",                required_argument, NULL,                   7110            },
+        {"zoom",                 required_argument, NULL,                   7110            },
         {"scale",                required_argument, NULL,                   7110            }, /* DEPRECATED */
         {"black-lcd",            no_argument,       &clopt_black_lcd,       true            },
 
@@ -274,6 +276,8 @@ config_t* config_init( int argc, char* argv[] )
 
         {"mono",                 no_argument,       &clopt_mono,            true            },
         {"gray",                 no_argument,       &clopt_gray,            true            },
+
+        {"style",                required_argument, NULL,                   's'             },
 
         {"debug-opcodes",        no_argument,       NULL,                   38601           },
         {"debug-flash",          no_argument,       NULL,                   38604           },
@@ -345,6 +349,9 @@ config_t* config_init( int argc, char* argv[] )
                 fprintf( stdout, help_text, __config.progname );
                 exit( EXIT_SUCCESS );
                 break;
+            case 's':
+                clopt_style_filename = strdup( optarg );
+                break;
             case 6110:
                 clopt_frontend = FRONTEND_NCURSES;
                 clopt_small = true;
@@ -401,6 +408,11 @@ config_t* config_init( int argc, char* argv[] )
     /**********************/
     bool haz_config_file = config_read( path_file_in_datadir( CONFIG_FILE_NAME ) );
     if ( haz_config_file ) {
+        lua_getglobal( config_lua_values, "style" );
+        const char* lua_style_filename = luaL_optstring( config_lua_values, -1, NULL );
+        if ( lua_style_filename != NULL )
+            __config.style_filename = strdup( lua_style_filename );
+
         lua_getglobal( config_lua_values, "verbose" );
         __config.verbose = lua_toboolean( config_lua_values, -1 );
 
@@ -541,7 +553,30 @@ config_t* config_init( int argc, char* argv[] )
     if ( __config.model == MODEL_49G )
         __config.black_lcd = true;
 
+    if ( clopt_style_filename != NULL )
+        __config.style_filename = strdup( clopt_style_filename );
+    else if ( __config.style_filename == NULL )
+        switch ( __config.model ) {
+            case MODEL_48GX:
+                __config.style_filename = "style-48gx.css";
+                break;
+            case MODEL_48SX:
+                __config.style_filename = "style-48sx.css";
+                break;
+            case MODEL_49G:
+                __config.style_filename = "style-49g.css";
+                break;
+            case MODEL_40G:
+                __config.style_filename = "style-40g.css";
+                break;
+            case MODEL_50G:
+                __config.style_filename = "style-50g.css";
+                break;
+        }
+
     if ( __config.verbose ) {
+        fprintf( stdout, "> datadir = %s\n", __config.datadir );
+
         if ( !print_config_and_exit )
             print_config();
 
