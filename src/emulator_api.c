@@ -217,7 +217,7 @@ void get_lcd_buffer( int* target )
 
             // split nibble
             for ( int nx = 0; nx < 4; nx++ )
-                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 1 : 0;
+                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 4 : 0;
         }
 
         addr += hdw.lcd_line_offset;
@@ -232,7 +232,7 @@ void get_lcd_buffer( int* target )
 
             // split nibble
             for ( int nx = 0; nx < 4; nx++ )
-                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 1 : 0;
+                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 4 : 0;
         }
     }
 }
