@@ -102,6 +102,7 @@ SRC = src/main.c \
 	src/ui4x/48sx.c \
 	src/ui4x/48gx.c \
 	src/ui4x/49g.c \
+	src/ui4x/40g.c \
 	src/ui4x/50g.c \
 	src/ui4x/api.c \
 	src/ui4x/ncurses.c \
@@ -123,7 +124,7 @@ EXTRA_WARNING_FLAGS := -Wunused-function \
 	$(call cc-option,-Wunused-variable)
 endif
 
-override CFLAGS := -std=c2x \
+override CFLAGS := -std=gnu2x \
 	-Wall -Wextra -Wpedantic \
 	-Wformat=2 -Wshadow \
 	-Wwrite-strings -Wstrict-prototypes -Wold-style-definition \
