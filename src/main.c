@@ -82,7 +82,7 @@ int main( int argc, char** argv )
         .model = config.model,
         .shiftless = config.shiftless,
         .black_lcd = config.black_lcd,
-        .newrpl_keyboard = config.netbook,
+        .newrpl_keyboard = false,
 
         .frontend = config.frontend,
 
@@ -98,7 +98,7 @@ int main( int argc, char** argv )
         .verbose = config.verbose,
 
         .zoom = config.zoom,
-        .netbook = false, /* FIXME */
+        .netbook = config.netbook,
         .netbook_pivot_line = 3,
 
         .name = config.progname,
