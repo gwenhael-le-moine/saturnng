@@ -15,12 +15,6 @@
 #    define PATCHLEVEL 0
 #  endif
 
-#  ifdef X50NG_DATADIR
-#    define GLOBAL_DATADIR X50NG_DATADIR
-#  else
-#    define GLOBAL_DATADIR opt.progpath
-#  endif
-
 #  define CONFIG_FILE_NAME "config.lua"
 #  define BUS_FILE_NAME "mod"
 #  define CPU_FILE_NAME "cpu"
