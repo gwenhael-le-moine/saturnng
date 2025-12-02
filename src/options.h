@@ -3,7 +3,23 @@
 
 #  include <stdbool.h>
 
-#  include "ui4x/api.h"
+#  include "ui4x/src/api.h"
+
+#  ifndef VERSION_MAJOR
+#    define VERSION_MAJOR 0
+#  endif
+#  ifndef VERSION_MINOR
+#    define VERSION_MINOR 0
+#  endif
+#  ifndef PATCHLEVEL
+#    define PATCHLEVEL 0
+#  endif
+
+#  ifdef X50NG_DATADIR
+#    define GLOBAL_DATADIR X50NG_DATADIR
+#  else
+#    define GLOBAL_DATADIR opt.progpath
+#  endif
 
 #  define CONFIG_FILE_NAME "config.lua"
 #  define BUS_FILE_NAME "mod"
@@ -16,12 +32,10 @@
 
 typedef struct config_t {
     /* duplicating ui4x_config_t here so that config_init can return one big struct */
-    char* progname;
-
     ui4x_model_t model;
     bool shiftless;
-    bool big_screen;
     bool black_lcd;
+    bool newrpl_keyboard;
 
     ui4x_frontend_t frontend;
     bool mono;
@@ -29,17 +43,26 @@ typedef struct config_t {
 
     bool chromeless;
     bool fullscreen;
-    double zoom;
 
     bool tiny;
     bool small;
 
+    bool verbose;
+
+    double zoom;
+    bool netbook;
+    int netbook_pivot_line;
+
+    char* name;
+    char* progname;
+    char* progpath;
     char* wire_name;
     char* ir_name;
 
+    char* datadir;
     char* style_filename;
 
-    bool verbose;
+    char* sd_dir;
 
     /* options below are specific to saturnng */
     bool throttle;
@@ -49,8 +72,6 @@ typedef struct config_t {
     int speed;
 
     int debug_level;
-
-    char* datadir;
 } config_t;
 
 /*---------------------------------------------------------------------------

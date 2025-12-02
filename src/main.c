@@ -8,7 +8,7 @@
 #include "emulator_api.h"
 #include "options.h"
 
-#include "ui4x/api.h"
+#include "ui4x/src/api.h"
 
 #include "core/chf_wrapper.h"
 #include "core/cpu.h"
@@ -82,7 +82,7 @@ int main( int argc, char** argv )
         .model = config.model,
         .shiftless = config.shiftless,
         .black_lcd = config.black_lcd,
-        .newrpl_keyboard = false,
+        .newrpl_keyboard = config.netbook,
 
         .frontend = config.frontend,
 

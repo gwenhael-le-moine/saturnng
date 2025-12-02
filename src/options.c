@@ -22,15 +22,10 @@
 #endif
 
 static config_t __config = {
-    .progname = ( char* )"saturn4xxx",
-
     .model = MODEL_48GX,
-    .throttle = false,
-    .verbose = false,
-
     .shiftless = false,
-    .big_screen = false,
     .black_lcd = false,
+    .newrpl_keyboard = false, /* hardcoded */
 
 #if defined( HAS_SDL )
     .frontend = FRONTEND_SDL,
@@ -39,25 +34,38 @@ static config_t __config = {
 #else
     .frontend = FRONTEND_NCURSES,
 #endif
-
     .mono = false,
     .gray = false,
 
     .chromeless = false,
     .fullscreen = false,
-    .zoom = 1.0,
 
     .tiny = false,
     .small = false,
 
-    .reset = false,
-    .monitor = false,
+    .verbose = false,
 
-    .speed = 0,
+    .zoom = 1.0,
+    .netbook = false,
+    .netbook_pivot_line = 3,
 
-    .debug_level = DEBUG_C_NONE,
+    .name = NULL,
+    .progname = ( char* )"saturn4xxx",
+    .progpath = NULL,
+    .wire_name = NULL,
+    .ir_name = NULL,
 
     .datadir = ( char* )".",
+    .style_filename = NULL,
+
+    .sd_dir = NULL,
+
+    /* options below are specific to saturnng */
+    .throttle = false,
+    .reset = false,
+    .monitor = false,
+    .speed = 0,
+    .debug_level = DEBUG_C_NONE,
 };
 
 lua_State* config_lua_values;
@@ -180,6 +188,7 @@ static void print_config( void )
     fprintf( stdout, "\n" );
     fprintf( stdout, " -- Following options are specific to sdl frontend\n" );
     fprintf( stdout, "black_lcd = %s\n", __config.black_lcd ? "true" : "false" );
+    fprintf( stdout, "netbook = %s\n", __config.netbook ? "true" : "false" );
     fprintf( stdout, "chromeless = %s\n", __config.chromeless ? "true" : "false" );
     fprintf( stdout, "fullscreen = %s\n", __config.fullscreen ? "true" : "false" );
     fprintf( stdout, "zoom = %f\n", __config.zoom );
@@ -221,6 +230,7 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_gray = -1;
     int clopt_chromeless = -1;
     int clopt_fullscreen = -1;
+    int clopt_netbook = -1;
     double clopt_zoom = -1.0;
 
     int clopt_tiny = -1;
@@ -264,6 +274,7 @@ config_t* config_init( int argc, char* argv[] )
         {"sdl",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    },
         {"gui",                  no_argument,       &clopt_frontend,        FRONTEND_SDL    }, /* DEPRECATED */
 #endif
+        {"netbook",              no_argument,       &clopt_netbook,         true            },
         {"chromeless",           no_argument,       &clopt_chromeless,      true            },
         {"fullscreen",           no_argument,       &clopt_fullscreen,      true            },
         {"zoom",                 required_argument, NULL,                   7110            },
@@ -419,14 +430,14 @@ config_t* config_init( int argc, char* argv[] )
         lua_getglobal( config_lua_values, "throttle" );
         __config.throttle = lua_toboolean( config_lua_values, -1 );
 
-        /* lua_getglobal( config_lua_values, "big_screen" ); */
-        /* __config.big_screen = lua_toboolean( config_lua_values, -1 ); */
-
         lua_getglobal( config_lua_values, "black_lcd" );
         __config.black_lcd = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "chromeless" );
         __config.chromeless = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "netbook" );
+        __config.netbook = lua_toboolean( config_lua_values, -1 );
 
         lua_getglobal( config_lua_values, "fullscreen" );
         __config.fullscreen = lua_toboolean( config_lua_values, -1 );
@@ -506,6 +517,8 @@ config_t* config_init( int argc, char* argv[] )
         __config.frontend = clopt_frontend;
     if ( clopt_chromeless != -1 )
         __config.chromeless = clopt_chromeless == true;
+    if ( clopt_netbook != -1 )
+        __config.netbook = clopt_netbook == true;
     if ( clopt_fullscreen != -1 )
         __config.fullscreen = clopt_fullscreen == true;
     if ( clopt_zoom > 0.0 )
@@ -545,8 +558,6 @@ config_t* config_init( int argc, char* argv[] )
             break;
         case MODEL_50G:
             strcat( __config.progname, "50g" );
-            /* __config.model = MODEL_49G; */
-            __config.big_screen = true;
             break;
     }
 

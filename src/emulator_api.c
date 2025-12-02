@@ -8,7 +8,7 @@
 #include "core/keyboard.h"
 #include "core/serial.h"
 
-#include "ui4x/api.h"
+#include "ui4x/src/api.h"
 
 #define KEYBOARD ( __config.model == MODEL_48GX || __config.model == MODEL_48SX ? keyboard48 : keyboard49 )
 
