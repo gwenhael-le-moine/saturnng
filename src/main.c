@@ -78,39 +78,60 @@ int main( int argc, char** argv )
     set_speed( config.speed );
 
     /* (G)UI */
-    ui4x_config_t config_ui = { .model = config.model,
-                                .shiftless = config.shiftless,
-                                .black_lcd = config.black_lcd,
+    ui4x_config_t config_ui = {
+        .model = config.model,
+        .shiftless = config.shiftless,
+        .black_lcd = config.black_lcd,
+        .newrpl_keyboard = false,
 
-                                .frontend = config.frontend,
+        .frontend = config.frontend,
 
-                                .mono = config.mono,
-                                .gray = config.gray,
+        .mono = config.mono,
+        .gray = config.gray,
 
-                                .chromeless = config.chromeless,
-                                .fullscreen = config.fullscreen,
-                                .zoom = config.zoom,
+        .chromeless = config.chromeless,
+        .fullscreen = config.fullscreen,
 
-                                .tiny = config.tiny,
-                                .small = config.small,
+        .tiny = config.tiny,
+        .small = config.small,
 
-                                .verbose = config.verbose,
+        .verbose = config.verbose,
 
-                                .name = config.progname,
-                                .progname = config.progname,
-                                .wire_name = config.wire_name,
-                                .ir_name = config.ir_name,
+        .zoom = config.zoom,
+        .netbook = false, /* FIXME */
+        .netbook_pivot_line = 3,
 
-                                .style_filename = config.style_filename == NULL ? NULL : path_file_in_datadir( config.style_filename ) };
+        .name = config.progname,
+        .progname = config.progname,
+        .progpath = NULL,
 
-    ui4x_emulator_api_t emulator_api = { .press_key = press_key,
-                                         .release_key = release_key,
-                                         .is_key_pressed = is_key_pressed,
-                                         .is_display_on = get_display_state,
-                                         .get_annunciators = get_annunciators,
-                                         .get_lcd_buffer = get_lcd_buffer,
-                                         .get_contrast = get_contrast,
-                                         .do_stop = exit_emulator };
+        .wire_name = config.wire_name,
+        .ir_name = config.ir_name,
+
+        .datadir = NULL,
+        .style_filename = config.style_filename == NULL ? NULL : path_file_in_datadir( config.style_filename ),
+
+        .sd_dir = NULL,
+    };
+
+    ui4x_emulator_api_t emulator_api = {
+        .press_key = press_key,
+        .release_key = release_key,
+        .is_key_pressed = is_key_pressed,
+        .is_display_on = get_display_state,
+        .get_annunciators = get_annunciators,
+        .get_lcd_buffer = get_lcd_buffer,
+        .get_contrast = get_contrast,
+        .do_mount_sd = NULL,
+        .do_unmount_sd = NULL,
+        .is_sd_mounted = NULL,
+        .get_sd_path = NULL,
+        .do_reset = NULL,
+        .do_stop = exit_emulator,
+        .do_sleep = NULL,
+        .do_wake = NULL,
+        .do_debug = NULL,
+    };
     init_ui( &config_ui, &emulator_api );
 
     sigset_t set;
