@@ -13,6 +13,10 @@ VERSION_MINOR = 6
 PATCHLEVEL = 0
 
 PREFIX ?= /usr
+BINDIR ?= $(PREFIX)/bin
+DATADIR ?= $(PREFIX)/share/$(NAME)
+MENUDIR ?= $(PREFIX)/share/applications
+MANDIR ?= $(PREFIX)/share/man/man1
 DOCDIR ?= $(PREFIX)/doc/$(NAME)
 INFODIR ?= $(PREFIX)/info
 
@@ -148,6 +152,7 @@ override CFLAGS := -std=gnu2x \
 	-DVERSION_MAJOR=$(VERSION_MAJOR) \
 	-DVERSION_MINOR=$(VERSION_MINOR) \
 	-DPATCHLEVEL=$(PATCHLEVEL) \
+	-DDATADIR=\"$(DATADIR)\" \
 	-I./src/ \
 	-I./src/libChf/src/ \
 	$(CFLAGS)
@@ -191,17 +196,17 @@ get-roms:
 
 # Installation
 install: dist/$(NAME) doc
-	install -m 755 -d -- $(DESTDIR)$(PREFIX)/bin
-	install -c -m 755 dist/$(NAME) $(DESTDIR)$(PREFIX)/bin/$(NAME)
-	install -c -m 755 dist/saturn48gx $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	install -c -m 755 dist/saturn48sx $(DESTDIR)$(PREFIX)/bin/saturn48sx
-	install -c -m 755 dist/saturn40g $(DESTDIR)$(PREFIX)/bin/saturn40g
-	install -c -m 755 dist/saturn49g $(DESTDIR)$(PREFIX)/bin/saturn49g
+	install -m 755 -d -- $(DESTDIR)$(BINDIR)
+	install -c -m 755 dist/$(NAME) $(DESTDIR)$(BINDIR)/$(NAME)
+	install -c -m 755 dist/saturn48gx $(DESTDIR)$(BINDIR)/saturn48gx
+	install -c -m 755 dist/saturn48sx $(DESTDIR)$(BINDIR)/saturn48sx
+	install -c -m 755 dist/saturn40g $(DESTDIR)$(BINDIR)/saturn40g
+	install -c -m 755 dist/saturn49g $(DESTDIR)$(BINDIR)/saturn49g
 
-	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/$(NAME)
-	install -c -m 644 dist/hplogo.png $(DESTDIR)$(PREFIX)/share/$(NAME)/hplogo.png
-	cp -R dist/ROMs/ $(DESTDIR)$(PREFIX)/share/$(NAME)/
-	cp src/ui4x/*.css "$(DESTDIR)$(PREFIX)/share/$(NAME)/"
+	install -m 755 -d -- $(DESTDIR)$(DATADIR)
+	install -c -m 644 dist/hplogo.png $(DESTDIR)$(DATADIR)/hplogo.png
+	cp -R dist/ROMs/ $(DESTDIR)$(DATADIR)/
+	cp src/ui4x/*.css "$(DESTDIR)$(DATADIR)/"
 
 	install -m 755 -d -- $(DESTDIR)$(DOCDIR)
 	cp -R COPYING LICENSE README* ./*.png docs-4.1.1.1 docs/*.{dvi,ps,pdf} $(DESTDIR)$(DOCDIR)
@@ -209,21 +214,21 @@ install: dist/$(NAME) doc
 	install -m 755 -d -- $(DESTDIR)$(INFODIR)
 	cp docs/*.info $(DESTDIR)$(INFODIR)
 
-	install -m 755 -d -- $(DESTDIR)$(PREFIX)/share/applications
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48sx.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn48sx.desktop
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn49g.desktop
-	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
+	install -m 755 -d -- $(DESTDIR$(MENUDIR)
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48gx.desktop > $(DESTDIR$(MENUDIR)/saturn48gx.desktop
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn48sx.desktop > $(DESTDIR$(MENUDIR)/saturn48sx.desktop
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn49g.desktop > $(DESTDIR$(MENUDIR)/saturn49g.desktop
+	sed "s|@PREFIX@|$(PREFIX)|g" dist/saturn40g.desktop > $(DESTDIR$(MENUDIR)/saturn40g.desktop
 
 uninstall:
-	rm -f $(DESTDIR)$(PREFIX)/bin/$(NAME)
-	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48gx
-	rm -f $(DESTDIR)$(PREFIX)/bin/saturn48sx
-	rm -f $(DESTDIR)$(PREFIX)/bin/saturn40g
-	rm -f $(DESTDIR)$(PREFIX)/bin/saturn49g
-	rm -fr $(DESTDIR)$(PREFIX)/share/$(NAME)
+	rm -f $(DESTDIR)$(BINDIR)/$(NAME)
+	rm -f $(DESTDIR)$(BINDIR)/saturn48gx
+	rm -f $(DESTDIR)$(BINDIR)/saturn48sx
+	rm -f $(DESTDIR)$(BINDIR)/saturn40g
+	rm -f $(DESTDIR)$(BINDIR)/saturn49g
+	rm -fr $(DESTDIR)$(DATADIR)
 	rm -fr $(DESTDIR)$(DOCDIR)
-	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48gx.desktop
-	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn48sx.desktop
-	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn49g.desktop
-	rm -f $(DESTDIR)$(PREFIX)/share/applications/saturn40g.desktop
+	rm -f $(DESTDIR$(MENUDIR)/saturn48gx.desktop
+	rm -f $(DESTDIR$(MENUDIR)/saturn48sx.desktop
+	rm -f $(DESTDIR$(MENUDIR)/saturn49g.desktop
+	rm -f $(DESTDIR$(MENUDIR)/saturn40g.desktop
