@@ -259,18 +259,6 @@ static void print_config( void )
     fprintf( stdout, "--- End of saturnng configuration ----------------------------------------------\n" );
 }
 
-/* Path/name dynamic allocator */
-static char* build_filename( char* path, const char* name )
-{
-    char* s = malloc( strlen( path ) + strlen( name ) + 2 );
-
-    strcpy( s, path );
-    strcat( s, "/" );
-    strcat( s, name );
-
-    return s;
-}
-
 char* path_file_in_datadir( const char* filename )
 {
     /* is filename readable as-is? */
@@ -299,6 +287,10 @@ config_t* config_init( int argc, char* argv[] )
     __config.progname = basename( strdup( argv[ 0 ] ) );
     __config.progpath = dirname( strdup( argv[ 0 ] ) );
 
+    /***************************/
+    /* 1. command-line options */
+    /***************************/
+    /* The cli options are temporaly stored in their clopt_* variables */
     char* clopt_style_filename = NULL;
     char* clopt_name = NULL;
     double clopt_zoom = -1.0;
@@ -398,9 +390,6 @@ config_t* config_init( int argc, char* argv[] )
                 clopt_frontend = FRONTEND_NCURSES;
                 clopt_tiny = true;
                 break;
-            case 7111:
-                clopt_speed = atof( optarg );
-                break;
             case 'd':
                 __config.datadir = strdup( optarg );
                 break;
@@ -421,6 +410,10 @@ config_t* config_init( int argc, char* argv[] )
                 __config.verbose = true;
                 break;
 
+            /* specific saturnng */
+            case 7111:
+                clopt_speed = atof( optarg );
+                break;
             case 38601:
                 __config.debug_level |= DEBUG_C_OPCODES;
                 break;
@@ -455,65 +448,22 @@ config_t* config_init( int argc, char* argv[] )
     /* 2. if datadir hasn't been set through --datadir then set it to its default */
     /******************************************************************************/
     if ( __config.datadir == NULL )
-        __config.datadir = strdup( "." );
+        __config.datadir = g_build_filename( g_get_user_config_dir(), __config.progname, NULL );
+
 
     /**********************/
-    /* 1. read config.lua */
+    /* 3. read config.lua */
     /**********************/
-    bool haz_config_file = config_read( path_file_in_datadir( CONFIG_FILE_NAME ) );
-    if ( haz_config_file ) {
-        lua_getglobal( config_lua_values, "style" );
-        const char* lua_style_filename = luaL_optstring( config_lua_values, -1, NULL );
-        if ( lua_style_filename != NULL )
-            __config.style_filename = strdup( lua_style_filename );
+    const char* config_lua_filename = g_build_filename( __config.datadir, CONFIG_LUA_FILE_NAME, NULL );
+    if ( __config.verbose )
+        fprintf( stderr, "Loading configuration file %s\n", config_lua_filename );
 
-        lua_getglobal( config_lua_values, "name" );
-        const char* lua_name = luaL_optstring( config_lua_values, -1, NULL );
-        if ( lua_name != NULL )
-            __config.name = strdup( lua_name );
-
-        lua_getglobal( config_lua_values, "verbose" );
-        __config.verbose = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "throttle" );
-        __config.throttle = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "black_lcd" );
-        __config.black_lcd = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "chromeless" );
-        __config.chromeless = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "netbook" );
-        __config.netbook = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "fullscreen" );
-        __config.fullscreen = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "gray" );
-        __config.gray = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "mono" );
-        __config.mono = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "shiftless" );
-        __config.shiftless = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "monitor" );
-        __config.monitor = lua_toboolean( config_lua_values, -1 );
-
-        lua_getglobal( config_lua_values, "model" );
-        const char* svalue_model = luaL_optstring( config_lua_values, -1, "49g" );
-        if ( svalue_model != NULL ) {
-            if ( strcmp( svalue_model, "49g" ) == 0 )
-                __config.model = MODEL_49G;
-            if ( strcmp( svalue_model, "40g" ) == 0 )
-                __config.model = MODEL_40G;
-            if ( strcmp( svalue_model, "48gx" ) == 0 )
-                __config.model = MODEL_48GX;
-            if ( strcmp( svalue_model, "48sx" ) == 0 )
-                __config.model = MODEL_48SX;
-        }
+    /* populates config_lua_values[]  */
+    __config.haz_config_file = config_read( config_lua_filename );
+    if ( __config.haz_config_file ) {
+        /* Now pull config options' values from config_lua_values by name
+           options are set directly into __config or temp filename variables
+         */
 
         lua_getglobal( config_lua_values, "frontend" );
         const char* svalue = luaL_optstring( config_lua_values, -1, "sdl" );
@@ -539,81 +489,76 @@ config_t* config_init( int argc, char* argv[] )
             }
         }
 
+        lua_getglobal( config_lua_values, "style" );
+        const char* lua_style_filename = luaL_optstring( config_lua_values, -1, NULL );
+        if ( lua_style_filename != NULL )
+            __config.style_filename = strdup( lua_style_filename );
+
+        lua_getglobal( config_lua_values, "name" );
+        const char* lua_name = luaL_optstring( config_lua_values, -1, NULL );
+        if ( lua_name != NULL )
+            __config.name = strdup( lua_name );
+
+        lua_getglobal( config_lua_values, "shiftless" );
+        __config.shiftless = lua_toboolean( config_lua_values, -1 );
+
         lua_getglobal( config_lua_values, "zoom" );
         __config.zoom = luaL_optnumber( config_lua_values, -1, 1.0 );
-
         /* DEPRECATED */
         lua_getglobal( config_lua_values, "scale" );
         __config.zoom = luaL_optnumber( config_lua_values, -1, 1.0 );
+
+        lua_getglobal( config_lua_values, "netbook" );
+        __config.netbook = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "netbook_pivot_line" );
+        __config.netbook_pivot_line = luaL_optinteger( config_lua_values, -1, __config.netbook_pivot_line );
+
+        lua_getglobal( config_lua_values, "chromeless" );
+        __config.chromeless = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "fullscreen" );
+        __config.fullscreen = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "mono" );
+        __config.mono = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "gray" );
+        __config.gray = lua_toboolean( config_lua_values, -1 );
+
+        /* specific saturnng */
+        lua_getglobal( config_lua_values, "verbose" );
+        __config.verbose = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "throttle" );
+        __config.throttle = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "black_lcd" );
+        __config.black_lcd = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "monitor" );
+        __config.monitor = lua_toboolean( config_lua_values, -1 );
+
+        lua_getglobal( config_lua_values, "model" );
+        const char* svalue_model = luaL_optstring( config_lua_values, -1, "49g" );
+        if ( svalue_model != NULL ) {
+            if ( strcmp( svalue_model, "49g" ) == 0 )
+                __config.model = MODEL_49G;
+            if ( strcmp( svalue_model, "40g" ) == 0 )
+                __config.model = MODEL_40G;
+            if ( strcmp( svalue_model, "48gx" ) == 0 )
+                __config.model = MODEL_48GX;
+            if ( strcmp( svalue_model, "48sx" ) == 0 )
+                __config.model = MODEL_48SX;
+        }
 
         lua_getglobal( config_lua_values, "speed" );
         __config.speed = luaL_optnumber( config_lua_values, -1, 1 );
     }
 
-    /****************************************************/
-    /* 2. treat command-line params which have priority */
-    /****************************************************/
-    if ( clopt_name != NULL )
-        __config.name = strdup( clopt_name );
-    else if ( __config.name == NULL )
-        __config.name = strdup( __config.progname );
-
-    if ( clopt_model != -1 )
-        __config.model = clopt_model;
-    if ( clopt_throttle != -1 )
-        __config.throttle = clopt_throttle == true;
-    if ( clopt_black_lcd != -1 )
-        __config.black_lcd = clopt_black_lcd == true;
-    if ( clopt_frontend != -1 )
-        __config.frontend = clopt_frontend;
-    if ( clopt_chromeless != -1 )
-        __config.chromeless = clopt_chromeless == true;
-    if ( clopt_netbook != -1 )
-        __config.netbook = clopt_netbook == true;
-    if ( clopt_fullscreen != -1 )
-        __config.fullscreen = clopt_fullscreen == true;
-    if ( clopt_zoom > 0.0 )
-        __config.zoom = clopt_zoom;
-    if ( clopt_mono != -1 )
-        __config.mono = clopt_mono == true;
-    if ( clopt_small != -1 )
-        __config.small = clopt_small == true;
-    if ( clopt_tiny != -1 )
-        __config.tiny = clopt_tiny == true;
-    if ( clopt_gray != -1 )
-        __config.gray = clopt_gray == true;
-    if ( clopt_shiftless != -1 )
-        __config.shiftless = clopt_shiftless == true;
-
-    if ( clopt_reset != -1 )
-        __config.reset = clopt_reset;
-    if ( clopt_monitor != -1 )
-        __config.monitor = clopt_monitor;
-
-    if ( clopt_speed > 0 )
-        __config.speed = clopt_speed;
-
-    switch ( __config.model ) {
-        case MODEL_48GX:
-            strcat( __config.progname, "48gx" );
-            break;
-        case MODEL_48SX:
-            strcat( __config.progname, "48sx" );
-            break;
-        case MODEL_49G:
-            strcat( __config.progname, "49g" );
-            break;
-        case MODEL_40G:
-            strcat( __config.progname, "40g" );
-            break;
-        case MODEL_50G:
-            strcat( __config.progname, "50g" );
-            break;
-    }
-
-    if ( __config.model == MODEL_49G )
-        __config.black_lcd = true;
-
+    /********************************************************************************/
+    /* 4. Finally chck if any cli options overrides its config file options's value */
+    /********************************************************************************/
     if ( clopt_style_filename != NULL )
         __config.style_filename = strdup( clopt_style_filename );
     else if ( __config.style_filename == NULL )
@@ -634,6 +579,81 @@ config_t* config_init( int argc, char* argv[] )
                 __config.style_filename = "style-50g.css";
                 break;
         }
+
+    if ( clopt_name != NULL )
+        __config.name = strdup( clopt_name );
+    else if ( __config.name == NULL )
+        __config.name = strdup( __config.progname );
+
+    if ( clopt_frontend != -1 )
+        __config.frontend = clopt_frontend;
+
+    if ( clopt_zoom > 0.0 )
+        __config.zoom = clopt_zoom;
+
+    if ( clopt_netbook != -1 )
+        __config.netbook = clopt_netbook == true;
+
+    if ( clopt_fullscreen != -1 )
+        __config.fullscreen = clopt_fullscreen == true;
+
+    if ( clopt_mono != -1 )
+        __config.mono = clopt_mono == true;
+
+    if ( clopt_small != -1 )
+        __config.small = clopt_small == true;
+
+    if ( clopt_tiny != -1 )
+        __config.tiny = clopt_tiny == true;
+
+    if ( clopt_chromeless != -1 )
+        __config.chromeless = clopt_chromeless == true;
+
+    if ( clopt_gray != -1 )
+        __config.gray = clopt_gray == true;
+
+    if ( clopt_shiftless != -1 )
+        __config.shiftless = clopt_shiftless == true;
+
+    if ( clopt_reset != -1 )
+        __config.reset = clopt_reset;
+
+    /* specific */
+    if ( clopt_model != -1 )
+        __config.model = clopt_model;
+
+    if ( clopt_throttle != -1 )
+        __config.throttle = clopt_throttle == true;
+
+    if ( clopt_black_lcd != -1 )
+        __config.black_lcd = clopt_black_lcd == true;
+
+    if ( clopt_monitor != -1 )
+        __config.monitor = clopt_monitor;
+
+    if ( clopt_speed > 0 )
+        __config.speed = clopt_speed;
+
+
+    switch ( __config.model ) {
+        case MODEL_48GX:
+            strcat( __config.progname, "48gx" );
+            break;
+        case MODEL_48SX:
+            strcat( __config.progname, "48sx" );
+            break;
+        case MODEL_49G:
+            strcat( __config.progname, "49g" );
+            break;
+        case MODEL_40G:
+            strcat( __config.progname, "40g" );
+            __config.black_lcd = true;
+            break;
+        case MODEL_50G:
+            strcat( __config.progname, "50g" );
+            __config.black_lcd = true;
+            break;
+    }
 
     if ( __config.verbose ) {
         fprintf( stdout, "> datadir = %s\n", __config.datadir );
@@ -656,7 +676,7 @@ config_t* config_init( int argc, char* argv[] )
         exit( EXIT_SUCCESS );
     }
 
-    if ( !haz_config_file ) {
+    if ( !__config.haz_config_file ) {
         fprintf( stdout, "\nConfiguration file %s doesn't seem to exist or is invalid!\n", path_file_in_datadir( CONFIG_FILE_NAME ) );
 
         fprintf( stdout, "You can solve this by running `mkdir -p %s && %s --print-config >> %s`\n\n", __config.datadir, __config.progname,

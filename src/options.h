@@ -59,6 +59,8 @@ typedef struct config_t {
     char* sd_dir;
 
     /* options below are specific to saturnng */
+    bool haz_config_file;
+
     bool throttle;
 
     bool reset;   /* 2.1: Force emulator reset */
