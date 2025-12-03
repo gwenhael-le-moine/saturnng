@@ -595,10 +595,10 @@ static void _gtk_ui_activate__load_and_apply_CSS( void )
 static void gtk_ui_activate( GtkApplication* app, void* data )
 {
     // create gtk_ui_window and widgets/stuff
-    /* if ( app == NULL ) */
-    gtk_ui_window = gtk_window_new();
-    /* else */
-    /*     gtk_ui_window = gtk_application_window_new( app ); */
+    if ( app == NULL )
+        gtk_ui_window = gtk_window_new();
+    else
+        gtk_ui_window = gtk_application_window_new( app );
 
     gtk_window_set_decorated( GTK_WINDOW( gtk_ui_window ), true );
     gtk_window_set_resizable( GTK_WINDOW( gtk_ui_window ), true );
