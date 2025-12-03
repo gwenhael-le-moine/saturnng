@@ -1,5 +1,5 @@
-#ifndef _UI4x_CONFIG_H
-#  define _UI4x_CONFIG_H 1
+#ifndef _OPTIONS_H
+#  define _OPTIONS_H 1
 
 #  include <stdbool.h>
 
@@ -80,4 +80,4 @@ extern char* path_file_in_datadir( const char* filename );
 
 extern config_t* config_init( int argc, char* argv[] );
 
-#endif /* !_UI4x_CONFIG_H */
+#endif /* !_OPTIONS_H */
