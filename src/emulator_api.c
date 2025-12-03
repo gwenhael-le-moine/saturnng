@@ -92,14 +92,14 @@ static hpkey_t keyboard49[ NB_HP4950_KEYS ] = {
     {0x57,   false},
     {0x47,   false},
     {0x37,   false},
-    {0x63,   false},            /* UP */
+    {0x63,   false}, /* UP */
     {0x27,   false},
 
     {0x17,   false},
     {0x07,   false},
-    {0x62,   false},            /* DOWN */
-    {0x61,   false},            /* LEFT */
-    {0x60,   false},            /* RIGHT */
+    {0x62,   false}, /* DOWN */
+    {0x61,   false}, /* LEFT */
+    {0x60,   false}, /* RIGHT */
 
     {0x46,   false},
     {0x36,   false},
