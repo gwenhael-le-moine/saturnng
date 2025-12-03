@@ -29,6 +29,8 @@
 #  define GLOBAL_DATADIR __config.progpath
 #endif
 
+#define CONFIG_LUA_FILE_NAME "config.lua"
+
 static config_t __config = {
     .model = MODEL_48GX,
     .shiftless = false,
@@ -284,8 +286,11 @@ char* path_file_in_datadir( const char* filename )
 
 config_t* config_init( int argc, char* argv[] )
 {
-    __config.progname = basename( strdup( argv[ 0 ] ) );
-    __config.progpath = dirname( strdup( argv[ 0 ] ) );
+    __config.progname = g_path_get_basename( argv[ 0 ] );
+    __config.progpath = g_path_get_dirname( argv[ 0 ] );
+
+    /* temporary variables for filenames later treated with make_filename_absolute() */
+    char* style_filename = NULL;
 
     /***************************/
     /* 1. command-line options */
@@ -294,9 +299,7 @@ config_t* config_init( int argc, char* argv[] )
     char* clopt_style_filename = NULL;
     char* clopt_name = NULL;
     double clopt_zoom = -1.0;
-    int clopt_model = -1;
     int clopt_black_lcd = -1;
-    int clopt_throttle = -1;
     int clopt_shiftless = -1;
     int clopt_frontend = -1;
     int clopt_mono = -1;
@@ -307,10 +310,14 @@ config_t* config_init( int argc, char* argv[] )
     int clopt_tiny = -1;
     int clopt_small = -1;
     int clopt_reset = -1;
-    int clopt_monitor = -1;
-    int clopt_speed = -1;
 
     int clopt_print_config_and_exit = false;
+
+    /* specific */
+    int clopt_model = -1;
+    int clopt_monitor = -1;
+    int clopt_speed = -1;
+    int clopt_throttle = -1;
 
     const char* optstring = "d:hn:rs:vVz:";
     struct option long_options[] = {
@@ -450,7 +457,6 @@ config_t* config_init( int argc, char* argv[] )
     if ( __config.datadir == NULL )
         __config.datadir = g_build_filename( g_get_user_config_dir(), __config.progname, NULL );
 
-
     /**********************/
     /* 3. read config.lua */
     /**********************/
@@ -492,7 +498,7 @@ config_t* config_init( int argc, char* argv[] )
         lua_getglobal( config_lua_values, "style" );
         const char* lua_style_filename = luaL_optstring( config_lua_values, -1, NULL );
         if ( lua_style_filename != NULL )
-            __config.style_filename = strdup( lua_style_filename );
+            style_filename = strdup( lua_style_filename );
 
         lua_getglobal( config_lua_values, "name" );
         const char* lua_name = luaL_optstring( config_lua_values, -1, NULL );
@@ -560,25 +566,27 @@ config_t* config_init( int argc, char* argv[] )
     /* 4. Finally chck if any cli options overrides its config file options's value */
     /********************************************************************************/
     if ( clopt_style_filename != NULL )
-        __config.style_filename = strdup( clopt_style_filename );
-    else if ( __config.style_filename == NULL )
+        style_filename = strdup( clopt_style_filename );
+    else if ( style_filename == NULL )
         switch ( __config.model ) {
             case MODEL_48GX:
-                __config.style_filename = "style-48gx.css";
+                style_filename = "style-48gx.css";
                 break;
             case MODEL_48SX:
-                __config.style_filename = "style-48sx.css";
+                style_filename = "style-48sx.css";
                 break;
             case MODEL_49G:
-                __config.style_filename = "style-49g.css";
+                style_filename = "style-49g.css";
                 break;
             case MODEL_40G:
-                __config.style_filename = "style-40g.css";
+                style_filename = "style-40g.css";
                 break;
             case MODEL_50G:
-                __config.style_filename = "style-50g.css";
+                style_filename = "style-50g.css";
                 break;
         }
+    /* make style filename absolute */
+    __config.style_filename = path_file_in_datadir( style_filename );
 
     if ( clopt_name != NULL )
         __config.name = strdup( clopt_name );
@@ -633,7 +641,6 @@ config_t* config_init( int argc, char* argv[] )
 
     if ( clopt_speed > 0 )
         __config.speed = clopt_speed;
-
 
     switch ( __config.model ) {
         case MODEL_48GX:

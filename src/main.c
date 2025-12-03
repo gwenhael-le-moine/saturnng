@@ -99,16 +99,16 @@ int main( int argc, char** argv )
 
         .zoom = config.zoom,
         .netbook = config.netbook,
-        .netbook_pivot_line = 3,
+        .netbook_pivot_line = config.netbook_pivot_line,
 
         .name = config.progname,
         .progname = config.progname,
-        .progpath = NULL,
+        .progpath = config.progpath,
 
         .wire_name = config.wire_name,
         .ir_name = config.ir_name,
 
-        .datadir = NULL,
+        .datadir = config.datadir,
         .style_filename = config.style_filename == NULL ? NULL : path_file_in_datadir( config.style_filename ),
 
         .sd_dir = NULL,
