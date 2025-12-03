@@ -14,11 +14,19 @@
 #include <lauxlib.h>
 #include <lua.h>
 
+#include <glib.h>
+
 #include "core/chf_wrapper.h"
 #include "options.h"
 
 #ifndef LUA_OK
 #  define LUA_OK 0
+#endif
+
+#ifdef DATADIR
+#  define GLOBAL_DATADIR DATADIR
+#else
+#  define GLOBAL_DATADIR __config.progpath
 #endif
 
 static config_t __config = {
@@ -263,25 +271,25 @@ static char* build_filename( char* path, const char* name )
     return s;
 }
 
-// char* path_file_in_datadir( const char* filename ) { return build_filename( __config.datadir, filename ); }
 char* path_file_in_datadir( const char* filename )
 {
     /* is filename readable as-is? */
-    char* full_path = strdup( filename );
-    if ( access( full_path, R_OK ) != 0 )
-        /* does filename exist in configured datadir? */
-        full_path = build_filename( __config.datadir, filename );
+    char* full_path = g_build_filename( filename, NULL );
+    if ( g_file_test( full_path, G_FILE_TEST_EXISTS ) )
+        return full_path;
 
-    /* if ( !access( full_path, R_OK ) ) */
-    /*     /\* does filename exist in global datadir? *\/ */
-    /*     full_path = build_filename( GLOBAL_DATADIR, filename ); */
+    /* does filename exist in configured datadir? */
+    full_path = g_build_filename( __config.datadir, filename, NULL );
+    if ( g_file_test( full_path, G_FILE_TEST_EXISTS ) )
+        return full_path;
 
-    if ( access( full_path, R_OK ) != 0 )
-        /* out of options, hope filename exists relatively to binary */
-        full_path = build_filename( __config.progpath, filename );
+    /* does filename exist in global datadir? */
+    full_path = g_build_filename( GLOBAL_DATADIR, filename, NULL );
+    if ( g_file_test( full_path, G_FILE_TEST_EXISTS ) )
+        return full_path;
 
-    if ( __config.verbose )
-        fprintf( stderr, "Found %s in %s\n", filename, full_path );
+    /* out of options, hope filename exists relatively to binary */
+    full_path = g_build_filename( __config.progpath, filename, NULL );
 
     return full_path;
 }
