@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "options.h"
 
@@ -208,6 +209,8 @@ void get_lcd_buffer( int* target )
     int x, y;
     Nibble v;
 
+    ( void )memset( target, 0, LCD_WIDTH * ui_get_lcd_height() );
+
     /* Scan active display rows */
     for ( y = 0; y <= hdw.lcd_vlc; y++ ) {
         /* Scan columns */
@@ -216,7 +219,7 @@ void get_lcd_buffer( int* target )
 
             // split nibble
             for ( int nx = 0; nx < 4; nx++ )
-                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 4 : 0;
+                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? ui_get_n_levels_of_gray() - 1 : 0;
         }
 
         addr += hdw.lcd_line_offset;
@@ -231,7 +234,7 @@ void get_lcd_buffer( int* target )
 
             // split nibble
             for ( int nx = 0; nx < 4; nx++ )
-                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? 4 : 0;
+                target[ ( y * LCD_WIDTH ) + ( x * 4 ) + nx ] = ( v & ( 1 << ( nx & 3 ) ) ) > 0 ? ui_get_n_levels_of_gray() - 1 : 0;
         }
     }
 }
