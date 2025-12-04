@@ -10,7 +10,7 @@ NAME = saturn
 
 VERSION_MAJOR = 5
 VERSION_MINOR = 6
-PATCHLEVEL = 0
+PATCHLEVEL = 99
 
 PREFIX ?= /usr
 BINDIR ?= $(PREFIX)/bin
@@ -36,7 +36,7 @@ cc-option = $(shell if $(CC) $(1) -c -x c /dev/null -o /dev/null > /dev/null 2>&
 LUA_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags $(LUA_VERSION))
 LUA_LIBS = $(shell "$(PKG_CONFIG)" --libs $(LUA_VERSION))
 
-NCURSES_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw)
+NCURSES_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags ncursesw) -DHAS_NCURSES=1
 NCURSES_LIBS = $(shell "$(PKG_CONFIG)" --libs ncursesw)
 
 ifeq ($(WITH_SDL), yes)
@@ -54,7 +54,7 @@ ifeq ($(WITH_SDL2), yes)
 endif
 
 ifeq ($(WITH_GTK), yes)
-	GTK_CFLAGS = -DHAS_GTK=1 $(shell "$(PKG_CONFIG)" --cflags gtk4)
+	GTK_CFLAGS = $(shell "$(PKG_CONFIG)" --cflags gtk4) -DHAS_GTK=1
 	GTK_LIBS = $(shell "$(PKG_CONFIG)" --libs gtk4)
 	GTK_SRC = src/ui4x/src/gtk.c
 	GTK_HEADERS = src/ui4x/src/gtk.h
